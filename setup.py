@@ -13,7 +13,7 @@ from setupbase import (
 
 
 setup_args = dict(
-    name            = 'jupyterlab-launcher',
+    name            = 'jupyterlab_launcher',
     version         = __version__,
     packages        = find_packages('.'),
     description     = "Jupyter Launcher",
