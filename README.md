@@ -1,10 +1,10 @@
 # jupyterlab launcher
 
-https://github.com/jupyterlab/jupyterlab-launcher
+https://github.com/jupyterlab/jupyterlab_launcher
 
 ## Install
 
-`pip install jupyterlab-launcher`
+`pip install jupyterlab_launcher`
 
 ## Usage
 The application author creates a JupyterLab build on their machine
@@ -16,7 +16,7 @@ configuration and creating a Python entry point that launches the app.
 ## Development Install
 
 ```
-git clone https://github.com/jupyterlab/jupyterlab-launcher.git
-cd jupyterlab-launcher
+git clone https://github.com/jupyterlab/jupyterlab_launcher.git
+cd jupyterlab_launcher
 pip install -e .
 ```
