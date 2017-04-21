@@ -6,6 +6,7 @@
 
 from __future__ import print_function
 from setuptools import setup, find_packages
+import sys
 from setupbase import (
     create_cmdclass, __version__
 )
@@ -38,6 +39,11 @@ setup_args = dict(
         'Programming Language :: Python :: 3.5',
     ],
 )
+
+if 'setuptools' in sys.modules:
+    setup_args['install_requires'] = [
+        'notebook>=4.2.0',
+    ]
 
 if __name__ == '__main__':
     setup(**setup_args)
