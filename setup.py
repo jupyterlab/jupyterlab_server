@@ -5,9 +5,9 @@
 # Distributed under the terms of the Modified BSD License.
 
 from __future__ import print_function
-from setuptools import setup
+from setuptools import setup, find_packages
 from setupbase import (
-    create_cmdclass, find_packages, __version__
+    create_cmdclass, __version__
 )
 
 
@@ -15,7 +15,7 @@ setup_args = dict(
     name            = 'jupyterlab-launcher',
     version         = __version__,
     packages        = find_packages('.'),
-    description     = "Jupyter Packaging Utilities",
+    description     = "Jupyter Launcher",
     long_description= """
     This package is used to launch an application built using JupyterLab
     """,

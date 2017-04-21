@@ -36,17 +36,6 @@ __version__ = version_ns['__version__']
 # Public Functions
 # ---------------------------------------------------------------------------
 
-
-def find_packages(top):
-    """
-    Find all of the packages.
-    """
-    packages = []
-    for d, _, _ in os.walk(top):
-        if os.path.exists(pjoin(d, '__init__.py')):
-            packages.append(d.replace(os.path.sep, '.'))
-
-
 def create_cmdclass(data_dirs=None):
     """Create a command class with the given optional wrappers.
 
