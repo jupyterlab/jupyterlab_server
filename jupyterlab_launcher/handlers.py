@@ -53,7 +53,7 @@ class LabHandler(IPythonHandler):
             mathjax_config=mathjax_config,
             css_files=self.css_files,
             bundle_files=self.bundle_files,
-            page_config=self.page_config
+            page_config=page_config
         )
         self.write(self.render_template('index.html', **config))
 
