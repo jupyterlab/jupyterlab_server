@@ -1,4 +1,7 @@
 include README.md
+include LICENSE
+include setupbase.py
+include jupyterlab_launcher/index.html
 
 # Patterns to exclude from any directory
 global-exclude *~
