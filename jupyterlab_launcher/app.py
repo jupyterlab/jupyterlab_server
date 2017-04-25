@@ -7,10 +7,9 @@ import json
 import os
 
 from notebook.notebookapp import NotebookApp
-from jupyter_core.paths import ENV_CONFIG_PATH
 from traitlets import Unicode
 
-from .handlers import add_handlers
+from .handlers import add_handlers, LabConfig
 
 
 class LabLauncherApp(NotebookApp):
@@ -18,11 +17,7 @@ class LabLauncherApp(NotebookApp):
     default_url = Unicode('/lab',
         help="The default URL to redirect to from `/`")
 
-    lab_page_title = Unicode('JupyterLab',
-        help="The title of the lab page")
-
-    lab_config_dir = Unicode(ENV_CONFIG_PATH[0],
-        help="The config directory of the lab")
+    lab_config = LabConfig()
 
     def start(self):
         config_dir = self.lab_config_dir
