@@ -31,14 +31,14 @@ class LabHandler(IPythonHandler):
     def get(self):
         config = self.lab_config
         page_config_file = os.path.join(config.config_dir, 'page_config.json')
-        runtime_dir = config.runtime_dir
+        build_dir = os.path.join(config.runtime_dir, 'build')
         prefix = config.prefix
 
         bundle_files = []
         css_files = []
         for entry in ['main']:
             css_file = entry + '.css'
-            if os.path.isfile(os.path.join(runtime_dir, css_file)):
+            if os.path.isfile(os.path.join(build_dir, css_file)):
                 css_files.append(ujoin(prefix, css_file))
             bundle_files.append(ujoin(prefix, entry + '.bundle.js'))
 
@@ -62,11 +62,11 @@ class LabHandler(IPythonHandler):
         mathjax_config = self.settings.get('mathjax_config',
                                            'TeX-AMS_HTML-full,Safe')
         config = dict(
-            page_title=self.page_title,
+            page_title=config.page_title,
             mathjax_url=self.mathjax_url,
             mathjax_config=mathjax_config,
-            css_files=self.css_files,
-            bundle_files=self.bundle_files,
+            css_files=css_files,
+            bundle_files=bundle_files,
             page_config=page_config
         )
         self.write(self.render_template('index.html', **config))
@@ -96,6 +96,9 @@ class LabConfig(HasTraits):
     version = Unicode('',
         help='The version of the application')
 
+    namespace = Unicode('',
+        help='The namespace of the application')
+
 
 def add_handlers(web_app, config):
     """Add the appropriate handlers to the web app.
@@ -104,16 +107,12 @@ def add_handlers(web_app, config):
     prefix = ujoin(base_url, config.prefix)
     runtime_dir = config.runtime_dir
 
-    if not os.path.exists(runtime_dir):
-        msg = 'Runtime directory does not exist: "%s"' % runtime_dir
-        raise ValueError(msg)
-
     handlers = [
         (prefix + r'/?', LabHandler, {
             'lab_config': config
         }),
         (prefix + r"/(.*)", FileFindHandler, {
-            'path': runtime_dir
+            'path': os.path.join(runtime_dir, 'build')
         })
     ]
     web_app.add_handlers(".*$", handlers)
