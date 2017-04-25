@@ -40,7 +40,20 @@ class LabHandler(IPythonHandler):
             css_file = entry + '.css'
             if os.path.isfile(os.path.join(build_dir, css_file)):
                 css_files.append(ujoin(prefix, css_file))
-            bundle_files.append(ujoin(prefix, entry + '.bundle.js'))
+            bundle_file = entry + '.bundle.js'
+            if os.path.isfile(os.path.join(build_dir, bundle_file)):
+                bundle_files.append(ujoin(prefix, bundle_file))
+
+        if not bundle_files:
+            msg = ('%s build artifacts not detected, please see ' +
+                   'README for build instructions.' % config.name)
+            self.log.error(msg)
+            self.write(self.render_template('error.html',
+                       status_code=500,
+                       status_message='%s Error' % config.name,
+                       page_title='%s Error' % config.name,
+                       message=msg))
+            return
 
         # Handle page config data.
         page_config = dict()
