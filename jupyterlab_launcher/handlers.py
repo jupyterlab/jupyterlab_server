@@ -10,7 +10,7 @@ from tornado import web
 from notebook.base.handlers import IPythonHandler, FileFindHandler
 from jinja2 import FileSystemLoader
 from notebook.utils import url_path_join as ujoin
-from traitlets import HasTraits, Unicode
+from traitlets import HasTraits, Unicode, Bool
 
 
 #-----------------------------------------------------------------------------
@@ -64,6 +64,7 @@ class LabHandler(IPythonHandler):
         page_config.setdefault('appName', config.name)
         page_config.setdefault('appVersion', config.version)
         page_config.setdefault('configDir', config.config_dir)
+        page_config.setdefault('devMode', config.dev_mode)
 
         if os.path.exists(page_config_file):
             with open(page_config_file) as fid:
@@ -111,6 +112,9 @@ class LabConfig(HasTraits):
 
     namespace = Unicode('',
         help='The namespace of the application')
+
+    dev_mode = Bool(False,
+        help='Whether the application is in dev mode')
 
 
 def add_handlers(web_app, config):
