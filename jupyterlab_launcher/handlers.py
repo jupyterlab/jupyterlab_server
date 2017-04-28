@@ -32,17 +32,17 @@ class LabHandler(IPythonHandler):
         config = self.lab_config
         page_config_file = os.path.join(config.config_dir, 'page_config.json')
         build_dir = os.path.join(config.runtime_dir, 'build')
-        prefix = config.prefix
+        url = config.page_url
 
         bundle_files = []
         css_files = []
         for entry in ['main']:
             css_file = entry + '.css'
             if os.path.isfile(os.path.join(build_dir, css_file)):
-                css_files.append(ujoin(prefix, css_file))
+                css_files.append(ujoin(url, css_file))
             bundle_file = entry + '.bundle.js'
             if os.path.isfile(os.path.join(build_dir, bundle_file)):
-                bundle_files.append(ujoin(prefix, bundle_file))
+                bundle_files.append(ujoin(url, bundle_file))
 
         if not bundle_files:
             msg = ('%s build artifacts not detected, please see ' +
@@ -101,8 +101,8 @@ class LabConfig(HasTraits):
     page_title = Unicode('JupyterLab',
         help='The application page title')
 
-    prefix = Unicode('/lab',
-        help='The handler prefix for the application')
+    page_url = Unicode('/lab',
+        help='The url for the application')
 
     name = Unicode('JupyterLab',
         help='The name of the application')
@@ -121,14 +121,14 @@ def add_handlers(web_app, config):
     """Add the appropriate handlers to the web app.
     """
     base_url = web_app.settings['base_url']
-    prefix = ujoin(base_url, config.prefix)
+    url = ujoin(base_url, config.page_url)
     runtime_dir = config.runtime_dir
 
     handlers = [
-        (prefix + r'/?', LabHandler, {
+        (url + r'/?', LabHandler, {
             'lab_config': config
         }),
-        (prefix + r"/(.*)", FileFindHandler, {
+        (url + r"/(.*)", FileFindHandler, {
             'path': os.path.join(runtime_dir, 'build')
         })
     ]
