@@ -46,7 +46,8 @@ class LabHandler(IPythonHandler):
 
         if not bundle_files:
             msg = ('%s build artifacts not detected, please see ' +
-                   'README for build instructions.' % config.name)
+                   'README for build instructions.')
+            msg = msg % config.name
             self.log.error(msg)
             self.write(self.render_template('error.html',
                        status_code=500,
@@ -61,10 +62,9 @@ class LabHandler(IPythonHandler):
         terminals = self.settings.get('terminals_available', False)
         page_config.setdefault('terminalsAvailable', terminals)
         page_config.setdefault('ignorePlugins', [])
-        page_config.setdefault('appName', config.name)
-        page_config.setdefault('appVersion', config.version)
-        page_config.setdefault('configDir', config.config_dir)
         page_config.setdefault('devMode', config.dev_mode)
+        page_config.setdefault('configDir', config.config_dir)
+        page_config.setdefault('runtimeDir', config.runtime_dir)
 
         if os.path.exists(page_config_file):
             with open(page_config_file) as fid:
@@ -98,20 +98,8 @@ class LabConfig(HasTraits):
     runtime_dir = Unicode('',
         help='The runtime directory')
 
-    page_title = Unicode('JupyterLab',
-        help='The application page title')
-
     page_url = Unicode('/lab',
         help='The url for the application')
-
-    name = Unicode('JupyterLab',
-        help='The name of the application')
-
-    version = Unicode('',
-        help='The version of the application')
-
-    namespace = Unicode('',
-        help='The namespace of the application')
 
     dev_mode = Bool(False,
         help='Whether the application is in dev mode')
@@ -124,6 +112,8 @@ def add_handlers(web_app, config):
     url = ujoin(base_url, config.page_url)
     runtime_dir = config.runtime_dir
 
+    # TODO: get the public webpack config path from the built assets
+    # and use it here
     handlers = [
         (url + r'/?', LabHandler, {
             'lab_config': config
