@@ -30,18 +30,19 @@ class LabHandler(IPythonHandler):
     @web.authenticated
     def get(self):
         config = self.lab_config
-        page_config_file = os.path.join(config.config_dir, 'page_config.json')
-        build_dir = os.path.join(config.runtime_dir, 'build')
+        settings_dir = config.settings_dir
+        page_config_file = os.path.join(settings_dir, 'page_config.json')
+        assets_dir = config.assets_dir
         url = config.page_url
 
         bundle_files = []
         css_files = []
         for entry in ['main']:
             css_file = entry + '.css'
-            if os.path.isfile(os.path.join(build_dir, css_file)):
+            if os.path.isfile(os.path.join(assets_dir, css_file)):
                 css_files.append(ujoin(url, css_file))
             bundle_file = entry + '.bundle.js'
-            if os.path.isfile(os.path.join(build_dir, bundle_file)):
+            if os.path.isfile(os.path.join(assets_dir, bundle_file)):
                 bundle_files.append(ujoin(url, bundle_file))
 
         if not bundle_files:
@@ -62,9 +63,12 @@ class LabHandler(IPythonHandler):
         terminals = self.settings.get('terminals_available', False)
         page_config.setdefault('terminalsAvailable', terminals)
         page_config.setdefault('ignorePlugins', [])
+        page_config.setdefault('appName', config.name)
+        page_config.setdefault('appVersion', config.version)
+        page_config.setdefault('appNamespace', config.namespace)
         page_config.setdefault('devMode', config.dev_mode)
-        page_config.setdefault('configDir', config.config_dir)
-        page_config.setdefault('runtimeDir', config.runtime_dir)
+        page_config.setdefault('settingsDir', config.settings_dir)
+        page_config.setdefault('assetsDir', config.assets_dir)
 
         if os.path.exists(page_config_file):
             with open(page_config_file) as fid:
@@ -92,11 +96,23 @@ class LabHandler(IPythonHandler):
 class LabConfig(HasTraits):
     """The lab application configuration object.
     """
-    config_dir = Unicode('',
-        help='The configuration directory')
+    settings_dir = Unicode('',
+        help='The settings directory')
 
-    runtime_dir = Unicode('',
-        help='The runtime directory')
+    assets_dir = Unicode('',
+        help='The assets directory')
+
+    name = Unicode('JupyterLab',
+        help='The name of the application')
+
+    version = Unicode('',
+        help='The version of the application')
+
+    namespace = Unicode('',
+        help='The namespace for the application')
+
+    page_title = Unicode('JupyterLab',
+        help='The page title for the application')
 
     page_url = Unicode('/lab',
         help='The url for the application')
@@ -110,16 +126,24 @@ def add_handlers(web_app, config):
     """
     base_url = web_app.settings['base_url']
     url = ujoin(base_url, config.page_url)
-    runtime_dir = config.runtime_dir
+    assets_dir = config.assets_dir
 
-    # TODO: get the public webpack config path from the built assets
-    # and use it here
+    hash_file = os.path.join(assets_dir, 'hash.md5')
+    if not os.path.exists(hash_file):
+        raise ValueError('Invalid assets directory %s' % assets_dir)
+
+    with open(hash_file) as fid:
+        public_url = ujoin(base_url, fid.read().strip())
+
     handlers = [
         (url + r'/?', LabHandler, {
             'lab_config': config
         }),
         (url + r"/(.*)", FileFindHandler, {
-            'path': os.path.join(runtime_dir, 'build')
+            'path': assets_dir
+        }),
+        (public_url + r"/(.*)", FileFindHandler, {
+            'path': assets_dir
         })
     ]
     web_app.add_handlers(".*$", handlers)
