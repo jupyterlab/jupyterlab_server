@@ -46,9 +46,9 @@ class LabHandler(IPythonHandler):
                 bundle_files.append(ujoin(url, bundle_file))
 
         if not bundle_files:
-            msg = ('%s build artifacts not detected, please see ' +
-                   'README for build instructions.')
-            msg = msg % config.name
+            msg = ('%s build artifacts not detected in "%s".\n' +
+                   'Please see README for build instructions.')
+            msg = msg % (config.name, config.assets_dir)
             self.log.error(msg)
             self.write(self.render_template('error.html',
                        status_code=500,
@@ -127,13 +127,12 @@ def add_handlers(web_app, config):
     base_url = web_app.settings['base_url']
     url = ujoin(base_url, config.page_url)
     assets_dir = config.assets_dir
+    public_url = url
 
     hash_file = os.path.join(assets_dir, 'hash.md5')
-    if not os.path.exists(hash_file):
-        raise ValueError('Invalid assets directory %s' % assets_dir)
-
-    with open(hash_file) as fid:
-        public_url = ujoin(base_url, fid.read().strip())
+    if os.path.exists(hash_file):
+        with open(hash_file) as fid:
+            public_url = ujoin(base_url, fid.read().strip())
 
     handlers = [
         (url + r'/?', LabHandler, {
