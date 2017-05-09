@@ -133,7 +133,7 @@ def add_handlers(web_app, config):
         data = json.load(fid)
 
     public_url = data['jupyterlab']['publicPath']
-    config.version = (config.version or data['jupyter']['version'] or
+    config.version = (config.version or data['jupyterlab']['version'] or
                       data['version'])
     config.name = config.name or data['jupyterlab']['name']
 
