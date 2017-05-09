@@ -102,7 +102,7 @@ class LabConfig(HasTraits):
     assets_dir = Unicode('',
         help='The assets directory')
 
-    name = Unicode('JupyterLab',
+    name = Unicode('',
         help='The name of the application')
 
     version = Unicode('',
@@ -127,12 +127,15 @@ def add_handlers(web_app, config):
     base_url = web_app.settings['base_url']
     url = ujoin(base_url, config.page_url)
     assets_dir = config.assets_dir
-    public_url = url
 
-    hash_file = os.path.join(assets_dir, 'hash.md5')
-    if os.path.exists(hash_file):
-        with open(hash_file) as fid:
-            public_url = ujoin(base_url, fid.read().strip())
+    package_file = os.path.join(assets_dir, 'package.json')
+    with open(package_file) as fid:
+        data = json.load(fid)
+
+    public_url = data['jupyterlab']['publicPath']
+    config.version = (config.version or data['jupyter']['version'] or
+                      data['version'])
+    config.name = config.name or data['jupyterlab']['name']
 
     handlers = [
         (url + r'/?', LabHandler, {
