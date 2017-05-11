@@ -79,6 +79,9 @@ class LabHandler(IPythonHandler):
 
         mathjax_config = self.settings.get('mathjax_config',
                                            'TeX-AMS_HTML-full,Safe')
+        
+        page_config = {key: json.dumps(value) for key, value in page_config.items()}
+
         config = dict(
             page_title=config.page_title,
             mathjax_url=self.mathjax_url,
