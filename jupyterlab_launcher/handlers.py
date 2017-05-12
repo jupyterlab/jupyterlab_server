@@ -135,7 +135,7 @@ def add_handlers(web_app, config):
     with open(package_file) as fid:
         data = json.load(fid)
 
-    public_url = data['jupyterlab']['publicPath']
+    public_url = ujoin(base_url, data['jupyterlab']['publicPath'])
     config.version = (config.version or data['jupyterlab']['version'] or
                       data['version'])
     config.name = config.name or data['jupyterlab']['name']
