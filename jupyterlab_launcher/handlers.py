@@ -33,7 +33,9 @@ class LabHandler(IPythonHandler):
         settings_dir = config.settings_dir
         page_config_file = os.path.join(settings_dir, 'page_config.json')
         assets_dir = config.assets_dir
-        url = config.page_url
+
+        base_url = self.settings['base_url']
+        url = ujoin(base_url, config.page_url)
 
         bundle_files = []
         css_files = []
@@ -79,10 +81,12 @@ class LabHandler(IPythonHandler):
 
         mathjax_config = self.settings.get('mathjax_config',
                                            'TeX-AMS_HTML-full,Safe')
-        
+
         page_config = {key: json.dumps(value) for key, value in page_config.items()}
 
         config = dict(
+            baseUrl=base_url,
+            wsUrl=self.settings['websocket_url'],
             page_title=config.page_title,
             mathjax_url=self.mathjax_url,
             mathjax_config=mathjax_config,
@@ -135,7 +139,7 @@ def add_handlers(web_app, config):
     with open(package_file) as fid:
         data = json.load(fid)
 
-    public_url = ujoin(base_url, data['jupyterlab']['publicPath'])
+    public_url = data['jupyterlab']['publicPath']
     config.version = (config.version or data['jupyterlab']['version'] or
                       data['version'])
     config.name = config.name or data['jupyterlab']['name']
