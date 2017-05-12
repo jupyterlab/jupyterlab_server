@@ -35,7 +35,7 @@ class LabHandler(IPythonHandler):
         assets_dir = config.assets_dir
 
         base_url = self.settings['base_url']
-        url = ujoin(base_url, config.page_url)
+        url = ujoin(base_url, config.page_url, '/')
 
         bundle_files = []
         css_files = []
@@ -85,14 +85,13 @@ class LabHandler(IPythonHandler):
         page_config = {key: json.dumps(value) for key, value in page_config.items()}
 
         config = dict(
-            baseUrl=base_url,
-            wsUrl=self.settings['websocket_url'],
             page_title=config.page_title,
             mathjax_url=self.mathjax_url,
             mathjax_config=mathjax_config,
             css_files=css_files,
             bundle_files=bundle_files,
-            page_config=page_config
+            page_config=page_config,
+            public_url=url
         )
         self.write(self.render_template('index.html', **config))
 
@@ -139,7 +138,9 @@ def add_handlers(web_app, config):
     with open(package_file) as fid:
         data = json.load(fid)
 
+    # TODO: remove this and associated handler in 0.3 release.
     public_url = data['jupyterlab']['publicPath']
+
     config.version = (config.version or data['jupyterlab']['version'] or
                       data['version'])
     config.name = config.name or data['jupyterlab']['name']

@@ -21,7 +21,8 @@ Distributed under the terms of the Modified BSD License.
     "{{ key }}": "{{ value }}",
     {% endfor -%}
     "baseUrl": "{{base_url | urlencode}}",
-    "wsUrl": "{{ws_url | urlencode}}"
+    "wsUrl": "{{ws_url | urlencode}}",
+    "publicUrl": "{{public_url | urlencode}}"
   }</script>
 
   {% block favicon %}<link rel="shortcut icon" type="image/x-icon" href="{{ base_url }}static/base/images/favicon.ico">{% endblock %}
