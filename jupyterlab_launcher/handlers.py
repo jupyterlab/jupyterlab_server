@@ -69,8 +69,12 @@ class LabHandler(IPythonHandler):
         page_config.setdefault('appVersion', config.version)
         page_config.setdefault('appNamespace', config.namespace)
         page_config.setdefault('devMode', config.dev_mode)
-        page_config.setdefault('settingsDir', config.settings_dir)
-        page_config.setdefault('assetsDir', config.assets_dir)
+        page_config.setdefault(
+            'settingsDir', config.settings_dir.replace(os.sep, '/')
+        )
+        page_config.setdefault(
+            'assetsDir', config.assets_dir.replace(os.sep, '/')
+        )
 
         if os.path.exists(page_config_file):
             with open(page_config_file) as fid:
@@ -81,8 +85,6 @@ class LabHandler(IPythonHandler):
 
         mathjax_config = self.settings.get('mathjax_config',
                                            'TeX-AMS_HTML-full,Safe')
-
-        page_config = {key: json.dumps(value) for key, value in page_config.items()}
 
         config = dict(
             page_title=config.page_title,
