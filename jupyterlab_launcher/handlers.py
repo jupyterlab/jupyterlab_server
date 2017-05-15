@@ -140,9 +140,6 @@ def add_handlers(web_app, config):
     with open(package_file) as fid:
         data = json.load(fid)
 
-    # TODO: remove this and associated handler in 0.3 release.
-    public_url = data['jupyterlab']['publicPath']
-
     config.version = (config.version or data['jupyterlab']['version'] or
                       data['version'])
     config.name = config.name or data['jupyterlab']['name']
@@ -154,8 +151,15 @@ def add_handlers(web_app, config):
         (url + r"/(.*)", FileFindHandler, {
             'path': assets_dir
         }),
-        (public_url + r"/(.*)", FileFindHandler, {
-            'path': assets_dir
-        })
+
     ]
+
+    # Backward compatibility.
+    if 'publicPath' in data['jupyterlab']:
+        handlers.append([
+            (data['jupyterlab']['publicPath'] + r"/(.*)", FileFindHandler, {
+                'path': assets_dir
+            })
+        ])
+
     web_app.add_handlers(".*$", handlers)
