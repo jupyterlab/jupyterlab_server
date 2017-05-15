@@ -156,10 +156,10 @@ def add_handlers(web_app, config):
 
     # Backward compatibility.
     if 'publicPath' in data['jupyterlab']:
-        handlers.append([
+        handlers.append(
             (data['jupyterlab']['publicPath'] + r"/(.*)", FileFindHandler, {
                 'path': assets_dir
             })
-        ])
+        )
 
     web_app.add_handlers(".*$", handlers)
