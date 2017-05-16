@@ -1,0 +1,12 @@
+# http://travis-ci.org/#!/ipython/ipython
+language: python
+python:
+    - 3.6
+    - 2.7
+sudo: false
+install:
+    - pip install setuptools pip --upgrade
+    - pip install -e .
+script:
+    - cd 
+    - python -c "import jupyterlab_launcher"

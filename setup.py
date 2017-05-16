@@ -41,10 +41,5 @@ setup_args = dict(
     ],
 )
 
-if 'setuptools' in sys.modules:
-    setup_args['install_requires'] = [
-        'notebook>=4.2.0',
-    ]
-
 if __name__ == '__main__':
     setup(**setup_args)

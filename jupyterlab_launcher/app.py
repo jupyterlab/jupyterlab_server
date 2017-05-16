@@ -3,8 +3,11 @@
 
 # Copyright (c) Jupyter Development Team.
 # Distributed under the terms of the Modified BSD License.
-from notebook.notebookapp import NotebookApp
-from traitlets import Unicode
+try:
+    from notebook.notebookapp import NotebookApp
+    from traitlets import Unicode
+except ImportError:
+    NotebookApp = object
 
 from .handlers import add_handlers, LabConfig
 
