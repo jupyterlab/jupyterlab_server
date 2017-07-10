@@ -35,7 +35,7 @@ class LabHandler(IPythonHandler):
         assets_dir = config.assets_dir
 
         base_url = self.settings['base_url']
-        url = ujoin(base_url, config.page_url, '/')
+        url = ujoin(base_url, config.page_url, '/static/')
 
         bundle_files = []
         css_files = []
@@ -148,7 +148,7 @@ def add_handlers(web_app, config):
         (url + r'/?', LabHandler, {
             'lab_config': config
         }),
-        (url + r"/(.*)", FileFindHandler, {
+        (url + r"/static/(.*)", FileFindHandler, {
             'path': assets_dir
         }),
 
