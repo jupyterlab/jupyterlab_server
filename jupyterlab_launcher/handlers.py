@@ -10,7 +10,7 @@ from tornado import web
 from notebook.base.handlers import IPythonHandler, FileFindHandler
 from jinja2 import FileSystemLoader
 from notebook.utils import url_path_join as ujoin
-from traitlets import HasTraits, Unicode, Bool
+from traitlets import HasTraits, Unicode, Bool, List
 
 from .settings_handler import SettingsHandler
 
@@ -38,15 +38,17 @@ class LabHandler(IPythonHandler):
         base_url = self.settings['base_url']
         url = ujoin(base_url, config.static_url)
 
-        bundle_files = []
-        css_files = []
-        for entry in ['main']:
-            css_file = entry + '.css'
-            if os.path.isfile(os.path.join(assets_dir, css_file)):
-                css_files.append(ujoin(url, css_file))
-            bundle_file = entry + '.bundle.js'
-            if os.path.isfile(os.path.join(assets_dir, bundle_file)):
-                bundle_files.append(ujoin(url, bundle_file))
+        bundle_files = config.static_css_files
+        css_files = config.static_bundle_files
+
+        if config.assets_dir:
+            for entry in ['main']:
+                css_file = entry + '.css'
+                if os.path.isfile(os.path.join(assets_dir, css_file)):
+                    css_files.append(ujoin(url, css_file))
+                bundle_file = entry + '.bundle.js'
+                if os.path.isfile(os.path.join(assets_dir, bundle_file)):
+                    bundle_files.append(ujoin(url, bundle_file))
 
         if not bundle_files:
             msg = ('%s build artifacts not detected in "%s".\n' +
@@ -106,10 +108,10 @@ class LabConfig(HasTraits):
     """The lab application configuration object.
     """
     settings_dir = Unicode('',
-        help='The settings directory')
+        help='The application settings directory')
 
     assets_dir = Unicode('',
-        help='The assets directory')
+        help='The assets directory or path')
 
     name = Unicode('',
         help='The name of the application')
@@ -128,6 +130,14 @@ class LabConfig(HasTraits):
 
     static_url = Unicode('/lab/static/',
         help='The static url for the application')
+
+    static_bundle_files = List(Unicode(),
+        help='The optional list of static bundle files to serve, can be used' \
+             ' to serve the core assets over cdn')
+
+    static_css_files = List(Unicode(),
+        help='The optional list of static css files to serve, can be used' \
+             ' to serve the core assets over cdn')
 
     dev_mode = Bool(False,
         help='Whether the application is in dev mode')
@@ -156,23 +166,26 @@ def add_handlers(web_app, config):
     assets_dir = config.assets_dir
     web_app.settings.setdefault('page_config_data', dict())
 
-    package_file = os.path.join(assets_dir, 'package.json')
-    with open(package_file) as fid:
-        data = json.load(fid)
-
-    config.version = (config.version or data['jupyterlab']['version'] or
-                      data['version'])
-    config.name = config.name or data['jupyterlab']['name']
-
     handlers = [
-        (url + r'/?', LabHandler, {
+        (ujoin(base_url, config.page_url, r'/?'), LabHandler, {
             'lab_config': config
-        }),
-        (url + r"/static/(.*)", FileFindHandler, {
-            'path': assets_dir
         })
     ]
 
+    if config.assets_dir:
+        static_url = ujoin(base_url, config.static_url, "/(.*)")
+        handlers.append((static_url, FileFindHandler, {
+            'path': assets_dir
+        }))
+
+        package_file = os.path.join(assets_dir, 'package.json')
+        with open(package_file) as fid:
+            data = json.load(fid)
+
+        config.version = (config.version or data['jupyterlab']['version'] or
+                          data['version'])
+        config.name = config.name or data['jupyterlab']['name']
+    
     if config.schemas_dir:
         settings_url = ujoin(base_url, config.settings_path)
         handlers.append((settings_url, SettingsHandler, {
@@ -187,13 +200,5 @@ def add_handlers(web_app, config):
         handlers.append((ujoin(themes_url, "(.*)"), FileFindHandler, {
             'path': config.themes_dir
         }))
-
-    # Backward compatibility.
-    if 'publicPath' in data['jupyterlab']:
-        handlers.append(
-            (data['jupyterlab']['publicPath'] + r"/(.*)", FileFindHandler, {
-                'path': assets_dir
-            })
-        )
 
     web_app.add_handlers(".*$", handlers)
