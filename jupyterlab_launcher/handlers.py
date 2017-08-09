@@ -12,6 +12,7 @@ from jinja2 import FileSystemLoader
 from notebook.utils import url_path_join as ujoin
 from traitlets import HasTraits, Unicode, Bool
 
+from .settings_handler import SettingsHandler
 
 #-----------------------------------------------------------------------------
 # Module globals
@@ -35,7 +36,7 @@ class LabHandler(IPythonHandler):
         assets_dir = config.assets_dir
 
         base_url = self.settings['base_url']
-        url = ujoin(base_url, config.page_url, '/static/')
+        url = ujoin(base_url, config.static_url)
 
         bundle_files = []
         css_files = []
@@ -125,8 +126,26 @@ class LabConfig(HasTraits):
     page_url = Unicode('/lab',
         help='The url for the application')
 
+    static_url = Unicode('/lab/static/',
+        help='The static url for the application')
+
     dev_mode = Bool(False,
         help='Whether the application is in dev mode')
+
+    settings_path = Unicode(r"/lab/api/settings/(?P<section_name>[\w.-]+)",
+        help='The path of the settings handler')
+
+    schemas_dir = Unicode('',
+        help='The location of the settings schemas directory')
+
+    user_settings_dir = Unicode('',
+        help='The location of the user settings directory')
+
+    themes_path = Unicode('/lab/api/themes/',
+        help='The path of the theme handler')
+
+    themes_dir = Unicode('',
+        help='The location of the themes directory')
 
 
 def add_handlers(web_app, config):
@@ -135,6 +154,7 @@ def add_handlers(web_app, config):
     base_url = web_app.settings['base_url']
     url = ujoin(base_url, config.page_url)
     assets_dir = config.assets_dir
+    web_app.settings.setdefault('page_config_data', dict())
 
     package_file = os.path.join(assets_dir, 'package.json')
     with open(package_file) as fid:
@@ -150,9 +170,23 @@ def add_handlers(web_app, config):
         }),
         (url + r"/static/(.*)", FileFindHandler, {
             'path': assets_dir
-        }),
-
+        })
     ]
+
+    if config.schemas_dir:
+        settings_url = ujoin(base_url, config.settings_path)
+        handlers.append((settings_url, SettingsHandler, {
+            'schemas_dir': config.schemas_dir,
+            'settings_dir': config.user_settings_dir
+        }))
+
+    themes_url = ujoin(base_url, config.themes_path)
+    web_app.settings['page_config_data']['themePath'] = themes_url
+
+    if config.themes_dir:
+        handlers.append((ujoin(themes_url, "(.*)"), FileFindHandler, {
+            'path': config.themes_dir
+        }))
 
     # Backward compatibility.
     if 'publicPath' in data['jupyterlab']:
