@@ -38,17 +38,17 @@ class LabHandler(IPythonHandler):
         base_url = self.settings['base_url']
         url = ujoin(base_url, config.static_url)
 
-        bundle_files = config.static_css_files
-        css_files = config.static_bundle_files
+        bundle_files = set(config.static_css_files)
+        css_files = set(config.static_bundle_files)
 
         if config.assets_dir:
             for entry in ['main']:
                 css_file = entry + '.css'
                 if os.path.isfile(os.path.join(assets_dir, css_file)):
-                    css_files.append(ujoin(url, css_file))
+                    css_files.add(ujoin(url, css_file))
                 bundle_file = entry + '.bundle.js'
                 if os.path.isfile(os.path.join(assets_dir, bundle_file)):
-                    bundle_files.append(ujoin(url, bundle_file))
+                    bundle_files.add(ujoin(url, bundle_file))
 
         if not bundle_files:
             msg = ('%s build artifacts not detected in "%s".\n' +
