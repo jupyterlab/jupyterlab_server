@@ -5,7 +5,6 @@ python:
 sudo: false
 install:
     - pip install setuptools pip --upgrade
-    - pip install -e .
+    - pip install -v -e ".[test]"
 script:
-    - cd 
-    - python -c "import jupyterlab_launcher"
+    - py.test

@@ -42,6 +42,8 @@ setup_args = dict(
 )
 
 if 'setuptools' in sys.modules:
+    'test:python_version == "2.7"': ['mock'],
+    'test': ['pytest', 'requests'],
     setup_args['install_requires'] = [
         'notebook>=4.2.0',
     ]
