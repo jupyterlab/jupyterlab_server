@@ -27,8 +27,8 @@ Distributed under the terms of the Modified BSD License.
 
   {% block favicon %}<link rel="shortcut icon" type="image/x-icon" href="{{ base_url }}static/base/images/favicon.ico">{% endblock %}
 
-  {% for bundle_file in bundle_files %}
-  <script src="{{ bundle_file }}" type="text/javascript" charset="utf-8"></script>
+  {% for js_file in js_files %}
+  <script src="{{ js_file }}" type="text/javascript" charset="utf-8"></script>
   {% endfor %}
 
   {% if mathjax_url %}

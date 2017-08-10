@@ -36,21 +36,19 @@ class LabHandler(IPythonHandler):
         assets_dir = config.assets_dir
 
         base_url = self.settings['base_url']
-        url = ujoin(base_url, config.static_url)
-
-        bundle_files = set(config.static_css_files)
-        css_files = set(config.static_bundle_files)
+        js_files = set(config.static_js_urls)
+        css_files = set(config.static_css_urls)
 
         if config.assets_dir:
             for entry in ['main']:
                 css_file = entry + '.css'
                 if os.path.isfile(os.path.join(assets_dir, css_file)):
-                    css_files.add(ujoin(url, css_file))
+                    css_files.add(ujoin(config.static_url, css_file))
                 bundle_file = entry + '.bundle.js'
                 if os.path.isfile(os.path.join(assets_dir, bundle_file)):
-                    bundle_files.add(ujoin(url, bundle_file))
+                    js_files.add(ujoin(config.static_url, bundle_file))
 
-        if not bundle_files:
+        if not js_files:
             msg = ('%s build artifacts not detected in "%s".\n' +
                    'Please see README for build instructions.')
             msg = msg % (config.name, config.assets_dir)
@@ -72,6 +70,8 @@ class LabHandler(IPythonHandler):
         page_config.setdefault('appVersion', config.version)
         page_config.setdefault('appNamespace', config.namespace)
         page_config.setdefault('devMode', config.dev_mode)
+        page_config.setdefault('settingsPath', config.settings_url)
+        page_config.setdefault('themePath', config.themes_url);
         page_config.setdefault(
             'settingsDir', config.settings_dir.replace(os.sep, '/')
         )
@@ -94,9 +94,9 @@ class LabHandler(IPythonHandler):
             mathjax_url=self.mathjax_url,
             mathjax_config=mathjax_config,
             css_files=css_files,
-            bundle_files=bundle_files,
+            js_files=js_files,
             page_config=page_config,
-            public_url=url
+            public_url=config.static_url
         )
         self.write(self.render_template('index.html', **config))
 
@@ -111,7 +111,7 @@ class LabConfig(HasTraits):
         help='The application settings directory')
 
     assets_dir = Unicode('',
-        help='The assets directory or path')
+        help='The location of the static assets directory')
 
     name = Unicode('',
         help='The name of the application')
@@ -128,22 +128,20 @@ class LabConfig(HasTraits):
     page_url = Unicode('/lab',
         help='The url for the application')
 
-    static_url = Unicode('/lab/static/',
-        help='The static url for the application')
+    static_url = Unicode('',
+        help='The optional override static url for the application')
 
-    static_bundle_files = List(Unicode(),
-        help='The optional list of static bundle files to serve, can be used' \
-             ' to serve the core assets over cdn')
+    static_js_urls = List(Unicode(),
+        help='The optional list of static JavaScript urls to serve')
 
-    static_css_files = List(Unicode(),
-        help='The optional list of static css files to serve, can be used' \
-             ' to serve the core assets over cdn')
+    static_css_urls = List(Unicode(),
+        help='The optional list of static CSS urls to serve')
 
     dev_mode = Bool(False,
         help='Whether the application is in dev mode')
 
-    settings_path = Unicode(r"/lab/api/settings/(?P<section_name>[\w.-]+)",
-        help='The path of the settings handler')
+    settings_url = Unicode('',
+        help='The optional override url of the settings handler')
 
     schemas_dir = Unicode('',
         help='The location of the settings schemas directory')
@@ -151,37 +149,32 @@ class LabConfig(HasTraits):
     user_settings_dir = Unicode('',
         help='The location of the user settings directory')
 
-    themes_path = Unicode('/lab/api/themes/',
-        help='The path of the theme handler')
+    themes_url = Unicode('',
+        help='The optional theme override url')
 
     themes_dir = Unicode('',
         help='The location of the themes directory')
-
-    remote_themes = Bool(False,
-        help='Whether the themes are hosted remotely')
 
 
 def add_handlers(web_app, config):
     """Add the appropriate handlers to the web app.
     """
+    # Set up the main page handler.
     base_url = web_app.settings['base_url']
-    url = ujoin(base_url, config.page_url)
-    assets_dir = config.assets_dir
-    web_app.settings.setdefault('page_config_data', dict())
-
     handlers = [
         (ujoin(base_url, config.page_url, r'/?'), LabHandler, {
             'lab_config': config
         })
     ]
 
-    if config.assets_dir:
-        static_url = ujoin(base_url, config.static_url, "/(.*)")
-        handlers.append((static_url, FileFindHandler, {
-            'path': assets_dir
+    # Handle the static assets.
+    if config.assets_dir and not config.static_url:
+        config.static_url = ujoin(base_url, "lab/static/")
+        handlers.append((config.static_url + "(.*)", FileFindHandler, {
+            'path': config.assets_dir
         }))
 
-        package_file = os.path.join(assets_dir, 'package.json')
+        package_file = os.path.join(config.assets_dir, 'package.json')
         with open(package_file) as fid:
             data = json.load(fid)
 
@@ -189,21 +182,19 @@ def add_handlers(web_app, config):
                           data['version'])
         config.name = config.name or data['jupyterlab']['name']
     
-    if config.schemas_dir:
-        settings_url = ujoin(base_url, config.settings_path)
-        handlers.append((settings_url, SettingsHandler, {
+    # Handle the settings. 
+    if config.schemas_dir and not config.settings_url:
+        config.settings_url = ujoin(base_url, r"lab/api/settings/")
+        settings_path = config.settings_url + '(?P<section_name>[\w.-]+)'
+        handlers.append((settings_path, SettingsHandler, {
             'schemas_dir': config.schemas_dir,
             'settings_dir': config.user_settings_dir
         }))
 
-    if not config.remote_themes:
-        themes_url = ujoin(base_url, config.themes_path)
-    else:
-        themes_url = config.themes_path
-    web_app.settings['page_config_data']['themePath'] = themes_url
-
-    if not config.remote_themes and config.themes_dir:
-        handlers.append((ujoin(themes_url, "(.*)"), FileFindHandler, {
+    # Handle the themes.
+    if config.themes_dir and not config.themes_url:
+        config.themes_url = ujoin(base_url, '/lab/api/themes/')
+        handlers.append((ujoin(config.themes_url, "(.*)"), FileFindHandler, {
             'path': config.themes_dir
         }))
 
