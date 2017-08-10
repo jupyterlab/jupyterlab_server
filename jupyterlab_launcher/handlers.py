@@ -157,6 +157,9 @@ class LabConfig(HasTraits):
     themes_dir = Unicode('',
         help='The location of the themes directory')
 
+    remote_themes = Bool(False,
+        help='Whether the themes are hosted remotely')
+
 
 def add_handlers(web_app, config):
     """Add the appropriate handlers to the web app.
@@ -193,10 +196,13 @@ def add_handlers(web_app, config):
             'settings_dir': config.user_settings_dir
         }))
 
-    themes_url = ujoin(base_url, config.themes_path)
+    if not config.remote_themes:
+        themes_url = ujoin(base_url, config.themes_path)
+    else:
+        themes_url = config.themes_path
     web_app.settings['page_config_data']['themePath'] = themes_url
 
-    if config.themes_dir:
+    if not config.remote_themes and config.themes_dir:
         handlers.append((ujoin(themes_url, "(.*)"), FileFindHandler, {
             'path': config.themes_dir
         }))
