@@ -21,6 +21,11 @@ from .settings_handler import SettingsHandler
 HERE = os.path.dirname(__file__)
 FILE_LOADER = FileSystemLoader(HERE)
 
+# The default paths for the application.
+default_static_path = r'lab/static/'
+default_settings_path = r'lab/api/settings/'
+default_themes_path = r'/lab/api/themes/'
+
 
 class LabHandler(IPythonHandler):
     """Render the JupyterLab View."""
@@ -169,7 +174,7 @@ def add_handlers(web_app, config):
 
     # Handle the static assets.
     if config.assets_dir and not config.static_url:
-        config.static_url = ujoin(base_url, "lab/static/")
+        config.static_url = ujoin(base_url, default_static_path)
         handlers.append((config.static_url + "(.*)", FileFindHandler, {
             'path': config.assets_dir
         }))
@@ -184,7 +189,7 @@ def add_handlers(web_app, config):
     
     # Handle the settings. 
     if config.schemas_dir and not config.settings_url:
-        config.settings_url = ujoin(base_url, r"lab/api/settings/")
+        config.settings_url = ujoin(base_url, default_settings_path)
         settings_path = config.settings_url + '(?P<section_name>[\w.-]+)'
         handlers.append((settings_path, SettingsHandler, {
             'schemas_dir': config.schemas_dir,
@@ -193,7 +198,7 @@ def add_handlers(web_app, config):
 
     # Handle the themes.
     if config.themes_dir and not config.themes_url:
-        config.themes_url = ujoin(base_url, '/lab/api/themes/')
+        config.themes_url = ujoin(base_url, default_themes_path)
         handlers.append((ujoin(config.themes_url, "(.*)"), FileFindHandler, {
             'path': config.themes_dir
         }))
