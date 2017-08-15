@@ -10,8 +10,9 @@ from tornado import web
 from notebook.base.handlers import IPythonHandler, FileFindHandler
 from jinja2 import FileSystemLoader
 from notebook.utils import url_path_join as ujoin
-from traitlets import HasTraits, Unicode, Bool
+from traitlets import HasTraits, Unicode, Bool, List
 
+from .settings_handler import SettingsHandler
 
 #-----------------------------------------------------------------------------
 # Module globals
@@ -19,6 +20,11 @@ from traitlets import HasTraits, Unicode, Bool
 
 HERE = os.path.dirname(__file__)
 FILE_LOADER = FileSystemLoader(HERE)
+
+# The default paths for the application.
+default_static_path = r'lab/static/'
+default_settings_path = r'lab/api/settings/'
+default_themes_path = r'/lab/api/themes/'
 
 
 class LabHandler(IPythonHandler):
@@ -35,19 +41,19 @@ class LabHandler(IPythonHandler):
         assets_dir = config.assets_dir
 
         base_url = self.settings['base_url']
-        url = ujoin(base_url, config.page_url, '/static/')
+        js_files = set(config.static_js_urls)
+        css_files = set(config.static_css_urls)
 
-        bundle_files = []
-        css_files = []
-        for entry in ['main']:
-            css_file = entry + '.css'
-            if os.path.isfile(os.path.join(assets_dir, css_file)):
-                css_files.append(ujoin(url, css_file))
-            bundle_file = entry + '.bundle.js'
-            if os.path.isfile(os.path.join(assets_dir, bundle_file)):
-                bundle_files.append(ujoin(url, bundle_file))
+        if config.assets_dir:
+            for entry in ['main']:
+                css_file = entry + '.css'
+                if os.path.isfile(os.path.join(assets_dir, css_file)):
+                    css_files.add(ujoin(config.static_url, css_file))
+                bundle_file = entry + '.bundle.js'
+                if os.path.isfile(os.path.join(assets_dir, bundle_file)):
+                    js_files.add(ujoin(config.static_url, bundle_file))
 
-        if not bundle_files:
+        if not js_files:
             msg = ('%s build artifacts not detected in "%s".\n' +
                    'Please see README for build instructions.')
             msg = msg % (config.name, config.assets_dir)
@@ -69,6 +75,8 @@ class LabHandler(IPythonHandler):
         page_config.setdefault('appVersion', config.version)
         page_config.setdefault('appNamespace', config.namespace)
         page_config.setdefault('devMode', config.dev_mode)
+        page_config.setdefault('settingsPath', config.settings_url)
+        page_config.setdefault('themePath', config.themes_url);
         page_config.setdefault(
             'settingsDir', config.settings_dir.replace(os.sep, '/')
         )
@@ -91,9 +99,9 @@ class LabHandler(IPythonHandler):
             mathjax_url=self.mathjax_url,
             mathjax_config=mathjax_config,
             css_files=css_files,
-            bundle_files=bundle_files,
+            js_files=js_files,
             page_config=page_config,
-            public_url=url
+            public_url=config.static_url
         )
         self.write(self.render_template('index.html', **config))
 
@@ -105,10 +113,10 @@ class LabConfig(HasTraits):
     """The lab application configuration object.
     """
     settings_dir = Unicode('',
-        help='The settings directory')
+        help='The application settings directory')
 
     assets_dir = Unicode('',
-        help='The assets directory')
+        help='The location of the static assets directory')
 
     name = Unicode('',
         help='The name of the application')
@@ -125,41 +133,74 @@ class LabConfig(HasTraits):
     page_url = Unicode('/lab',
         help='The url for the application')
 
+    static_url = Unicode('',
+        help='The optional override static url for the application')
+
+    static_js_urls = List(Unicode(),
+        help='The optional list of static JavaScript urls to serve')
+
+    static_css_urls = List(Unicode(),
+        help='The optional list of static CSS urls to serve')
+
     dev_mode = Bool(False,
         help='Whether the application is in dev mode')
+
+    settings_url = Unicode('',
+        help='The optional override url of the settings handler')
+
+    schemas_dir = Unicode('',
+        help='The location of the settings schemas directory')
+
+    user_settings_dir = Unicode('',
+        help='The location of the user settings directory')
+
+    themes_url = Unicode('',
+        help='The optional theme override url')
+
+    themes_dir = Unicode('',
+        help='The location of the themes directory')
 
 
 def add_handlers(web_app, config):
     """Add the appropriate handlers to the web app.
     """
+    # Set up the main page handler.
     base_url = web_app.settings['base_url']
-    url = ujoin(base_url, config.page_url)
-    assets_dir = config.assets_dir
-
-    package_file = os.path.join(assets_dir, 'package.json')
-    with open(package_file) as fid:
-        data = json.load(fid)
-
-    config.version = (config.version or data['jupyterlab']['version'] or
-                      data['version'])
-    config.name = config.name or data['jupyterlab']['name']
-
     handlers = [
-        (url + r'/?', LabHandler, {
+        (ujoin(base_url, config.page_url, r'/?'), LabHandler, {
             'lab_config': config
-        }),
-        (url + r"/static/(.*)", FileFindHandler, {
-            'path': assets_dir
-        }),
-
+        })
     ]
 
-    # Backward compatibility.
-    if 'publicPath' in data['jupyterlab']:
-        handlers.append(
-            (data['jupyterlab']['publicPath'] + r"/(.*)", FileFindHandler, {
-                'path': assets_dir
-            })
-        )
+    # Handle the static assets.
+    if config.assets_dir and not config.static_url:
+        config.static_url = ujoin(base_url, default_static_path)
+        handlers.append((config.static_url + "(.*)", FileFindHandler, {
+            'path': config.assets_dir
+        }))
+
+        package_file = os.path.join(config.assets_dir, 'package.json')
+        with open(package_file) as fid:
+            data = json.load(fid)
+
+        config.version = (config.version or data['jupyterlab']['version'] or
+                          data['version'])
+        config.name = config.name or data['jupyterlab']['name']
+    
+    # Handle the settings. 
+    if config.schemas_dir and not config.settings_url:
+        config.settings_url = ujoin(base_url, default_settings_path)
+        settings_path = config.settings_url + '(?P<section_name>[\w.-]+)'
+        handlers.append((settings_path, SettingsHandler, {
+            'schemas_dir': config.schemas_dir,
+            'settings_dir': config.user_settings_dir
+        }))
+
+    # Handle the themes.
+    if config.themes_dir and not config.themes_url:
+        config.themes_url = ujoin(base_url, default_themes_path)
+        handlers.append((ujoin(config.themes_url, "(.*)"), FileFindHandler, {
+            'path': config.themes_dir
+        }))
 
     web_app.add_handlers(".*$", handlers)

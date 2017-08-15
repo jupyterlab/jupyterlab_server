@@ -18,7 +18,7 @@ class LabLauncherApp(NotebookApp):
 
     def start(self):
         add_handlers(self.web_app, self.lab_config)
-        super.start()
+        NotebookApp.start(self)
 
 
 main = LabLauncherApp.launch_instance
