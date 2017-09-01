@@ -34,6 +34,7 @@ class LabHandler(IPythonHandler):
         self.lab_config = lab_config
 
     @web.authenticated
+    @web.removeslash
     def get(self):
         config = self.lab_config
         settings_dir = config.settings_dir
