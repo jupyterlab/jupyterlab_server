@@ -74,23 +74,6 @@ class SettingsHandler(APIHandler):
         self.set_status(204)
 
 
-def _path(root_dir, section_name, make_dirs = False):
-    """Parse the URL section name and find the local file system path."""
-
-    # Attempt to parse path, e.g. @jupyterlab/apputils-extension:themes.
-    try:
-        package_dir, plugin = section_name.split(":")
-        parent_dir = os.path.join(root_dir, package_dir)
-        path = os.path.join(parent_dir, plugin + ".json")
-    # This is deprecated and exists to support the older URL scheme.
-    except Exception as e:
-        path = os.path.join(root_dir, section_name + ".json")
-
-    if make_dirs and parent_dir and not os.path.exists(parent_dir):
-        os.makedirs(parent_dir)
-
-    return path
-
 def _get_schema(schemas_dir, section_name):
     """Retrieve and parse a JSON schema."""
 
@@ -109,3 +92,28 @@ def _get_schema(schemas_dir, section_name):
             raise web.HTTPError(500, message)
 
     return schema
+
+
+def _path(root_dir, section_name, make_dirs = False):
+    """Parse the URL section name and find the local file system path."""
+
+    parent_dir = ""
+
+    # Attempt to parse path, e.g. @jupyterlab/apputils-extension:themes.
+    try:
+        package_dir, plugin = section_name.split(":")
+        parent_dir = os.path.join(root_dir, package_dir)
+        path = os.path.join(parent_dir, plugin + ".json")
+    # This is deprecated and exists to support the older URL scheme.
+    except:
+        path = os.path.join(root_dir, section_name + ".json")
+
+    if make_dirs and parent_dir and not os.path.exists(parent_dir):
+        try:
+            os.makedirs(parent_dir)
+        except Exception as e:
+            name = section_name
+            message = "Failed writing settings ({}): {}".format(name, str(e))
+            raise web.HTTPError(500, message)
+
+    return path
