@@ -5,7 +5,6 @@
 import json
 import os
 from tornado import web
-import pdb
 
 from notebook.base.handlers import APIHandler, json_errors
 
