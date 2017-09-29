@@ -96,7 +96,7 @@ def _get_schema(schemas_dir, section_name):
 def _path(root_dir, section_name, make_dirs = False):
     """Parse the URL section name and find the local file system path."""
 
-    parent_dir = ""
+    parent_dir = root_dir
 
     # Attempt to parse path, e.g. @jupyterlab/apputils-extension:themes.
     try:
@@ -107,7 +107,7 @@ def _path(root_dir, section_name, make_dirs = False):
     except:
         path = os.path.join(root_dir, section_name + ".json")
 
-    if make_dirs and parent_dir and not os.path.exists(parent_dir):
+    if make_dirs and not os.path.exists(parent_dir):
         try:
             os.makedirs(parent_dir)
         except Exception as e:
