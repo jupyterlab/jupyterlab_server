@@ -188,11 +188,11 @@ def add_handlers(web_app, config):
         config.version = (config.version or data['jupyterlab']['version'] or
                           data['version'])
         config.name = config.name or data['jupyterlab']['name']
-    
-    # Handle the settings. 
+
+    # Handle the settings.
     if config.schemas_dir and not config.settings_url:
         config.settings_url = ujoin(base_url, default_settings_path)
-        settings_path = config.settings_url + '(?P<section_name>[\w.-]+)'
+        settings_path = config.settings_url + '(?P<section_name>.+)'
         handlers.append((settings_path, SettingsHandler, {
             'schemas_dir': config.schemas_dir,
             'settings_dir': config.user_settings_dir

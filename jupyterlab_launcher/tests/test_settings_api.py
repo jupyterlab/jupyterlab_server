@@ -23,7 +23,14 @@ class SettingsAPITest(LabTestBase):
     def setUp(self):
         self.settings_api = SettingsAPI(self.request)
 
-    def test_get(self):
+    def test_new_get(self):
+        id = '@jupyterlab/apputils-extension:themes'
+        data = self.settings_api.get(id).json()
+        assert data['id'] == id
+        assert len(data['schema'])
+        assert 'data' in data
+
+    def test_old_get(self):
         id = 'jupyter.extensions.shortcuts'
         data = self.settings_api.get(id).json()
         assert data['id'] == id
