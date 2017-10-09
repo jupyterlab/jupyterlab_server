@@ -41,7 +41,6 @@ class LabHandler(IPythonHandler):
         page_config_file = os.path.join(settings_dir, 'page_config.json')
         assets_dir = config.assets_dir
 
-        base_url = self.settings['base_url']
         js_files = set(config.static_js_urls)
         css_files = set(config.static_css_urls)
 
@@ -55,8 +54,7 @@ class LabHandler(IPythonHandler):
                     js_files.add(ujoin(config.static_url, bundle_file))
 
         if not js_files:
-            msg = ('%s build artifacts not detected in "%s".\n' +
-                   'Please see README for build instructions.')
+            msg = '%s assets not detected in "%s"'
             msg = msg % (config.name, config.assets_dir)
             self.log.error(msg)
             self.write(self.render_template('error.html',
@@ -77,7 +75,7 @@ class LabHandler(IPythonHandler):
         page_config.setdefault('appNamespace', config.namespace)
         page_config.setdefault('devMode', config.dev_mode)
         page_config.setdefault('settingsPath', config.settings_url)
-        page_config.setdefault('themePath', config.themes_url);
+        page_config.setdefault('themePath', config.themes_url)
         page_config.setdefault(
             'settingsDir', config.settings_dir.replace(os.sep, '/')
         )
@@ -174,7 +172,8 @@ def add_handlers(web_app, config):
     ]
 
     # Handle the static assets.
-    if config.assets_dir and not config.static_url:
+    if (config.assets_dir and not config.static_url and
+            os.path.exists(config.assets_dir)):
         config.static_url = ujoin(base_url, default_static_path)
         handlers.append((config.static_url + "(.*)", FileFindHandler, {
             'path': config.assets_dir,
@@ -204,5 +203,7 @@ def add_handlers(web_app, config):
         handlers.append((ujoin(config.themes_url, "(.*)"), FileFindHandler, {
             'path': config.themes_dir
         }))
+
+    config.name = config.name or 'Application'
 
     web_app.add_handlers(".*$", handlers)
