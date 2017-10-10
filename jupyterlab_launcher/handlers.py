@@ -201,7 +201,8 @@ def add_handlers(web_app, config):
     if config.themes_dir and not config.themes_url:
         config.themes_url = ujoin(base_url, default_themes_path)
         handlers.append((ujoin(config.themes_url, "(.*)"), FileFindHandler, {
-            'path': config.themes_dir
+            'path': config.themes_dir,
+            'no_cache_paths': ['/']  # don't cache anything
         }))
 
     config.name = config.name or 'Application'
