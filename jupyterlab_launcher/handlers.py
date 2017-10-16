@@ -172,8 +172,7 @@ def add_handlers(web_app, config):
     ]
 
     # Handle the static assets.
-    if (config.assets_dir and not config.static_url and
-            os.path.exists(config.assets_dir)):
+    if config.assets_dir and not config.static_url:
         config.static_url = ujoin(base_url, default_static_path)
         handlers.append((config.static_url + "(.*)", FileFindHandler, {
             'path': config.assets_dir,
@@ -181,12 +180,15 @@ def add_handlers(web_app, config):
         }))
 
         package_file = os.path.join(config.assets_dir, 'package.json')
-        with open(package_file) as fid:
-            data = json.load(fid)
+        if os.path.exists(package_file):
+            with open(package_file) as fid:
+                data = json.load(fid)
 
-        config.version = (config.version or data['jupyterlab']['version'] or
-                          data['version'])
-        config.name = config.name or data['jupyterlab']['name']
+            config.version = (
+                config.version or data['jupyterlab']['version'] or
+                data['version']
+            )
+            config.name = config.name or data['jupyterlab']['name']
 
     # Handle the settings.
     if config.schemas_dir and not config.settings_url:
