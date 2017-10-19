@@ -15,6 +15,9 @@ except ImportError:
     Validator = None
 
 
+_file_extension = ".jupyterlab-settings"
+
+
 class SettingsHandler(APIHandler):
 
     def initialize(self, schemas_dir, settings_dir):
@@ -27,7 +30,7 @@ class SettingsHandler(APIHandler):
         self.set_header("Content-Type", "application/json")
 
         schema = _get_schema(self.schemas_dir, section_name)
-        path = _path(self.settings_dir, section_name)
+        path = _path(self.settings_dir, section_name, _file_extension)
         settings = dict()
 
         if os.path.exists(path):
@@ -67,7 +70,8 @@ class SettingsHandler(APIHandler):
             except ValidationError as e:
                 raise web.HTTPError(400, str(e))
 
-        with open(_path(self.settings_dir, section_name, True), "w") as fid:
+        path = _path(self.settings_dir, section_name, _file_extension, True)
+        with open(path, "w") as fid:
             json.dump(data, fid)
 
         self.set_status(204)
@@ -93,7 +97,7 @@ def _get_schema(schemas_dir, section_name):
     return schema
 
 
-def _path(root_dir, section_name, make_dirs = False):
+def _path(root_dir, section_name, file_extension = ".json", make_dirs = False):
     """Parse the URL section name and find the local file system path."""
 
     parent_dir = root_dir
@@ -102,10 +106,10 @@ def _path(root_dir, section_name, make_dirs = False):
     try:
         package_dir, plugin = section_name.split(":")
         parent_dir = os.path.join(root_dir, package_dir)
-        path = os.path.join(parent_dir, plugin + ".json")
+        path = os.path.join(parent_dir, plugin + file_extension)
     # This is deprecated and exists to support the older URL scheme.
     except:
-        path = os.path.join(root_dir, section_name + ".json")
+        path = os.path.join(root_dir, section_name + file_extension)
 
     if make_dirs and not os.path.exists(parent_dir):
         try:
