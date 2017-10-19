@@ -47,6 +47,9 @@ div#header, div#site {
 window.onload = function () {
   var tb = document.getElementsByClassName('traceback')[0];
   tb.scrollTop = tb.scrollHeight;
+  {% if message %}
+  console.error("{{message}}")
+  {% endif %}
 };
 </script>
 {% endblock script %}
