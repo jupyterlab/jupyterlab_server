@@ -5,6 +5,7 @@
 import json
 import os
 from tornado import web
+from .json_minify import json_minify
 
 from notebook.base.handlers import APIHandler, json_errors
 
@@ -31,13 +32,16 @@ class SettingsHandler(APIHandler):
 
         schema = _get_schema(self.schemas_dir, section_name)
         path = _path(self.settings_dir, section_name, _file_extension)
+        user = ''
         settings = dict()
 
         if os.path.exists(path):
-            with open(path) as fid:
+            with open(path) as file:
                 # Attempt to load the settings file.
                 try:
-                    settings = json.load(fid)
+                    user = file.read()
+                    minified = json_minify(user)
+                    settings = json.loads(minified)
                 except Exception as e:
                     self.log.warn(str(e))
 
@@ -48,9 +52,10 @@ class SettingsHandler(APIHandler):
                 validator.validate(settings)
             except ValidationError as e:
                 self.log.warn(str(e))
+                user = ''
                 settings = dict()
 
-        resp = dict(id=section_name, data=dict(user=settings), schema=schema)
+        resp = dict(id=section_name, data=dict(user=user), schema=schema)
         self.finish(json.dumps(resp))
 
     @json_errors
