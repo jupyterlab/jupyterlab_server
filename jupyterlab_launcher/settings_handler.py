@@ -32,30 +32,29 @@ class SettingsHandler(APIHandler):
 
         schema = _get_schema(self.schemas_dir, section_name)
         path = _path(self.settings_dir, section_name, _file_extension)
-        user = ''
+        raw = ''
         settings = dict()
 
         if os.path.exists(path):
             with open(path) as fid:
-                # Attempt to load the settings file.
+                # Attempt to load and parse the settings file.
                 try:
-                    user = fid.read()
-                    minified = json_minify(user)
-                    settings = json.loads(minified)
+                    raw = fid.read()
+                    settings = json.loads(json_minify(raw))
                 except Exception as e:
                     self.log.warn(str(e))
 
-        # Validate the data against the schema.
+        # Validate the parsed data against the schema.
         if Validator is not None and len(settings):
             validator = Validator(schema)
             try:
                 validator.validate(settings)
             except ValidationError as e:
                 self.log.warn(str(e))
-                user = ''
-                settings = dict()
+                raw = ''
 
-        resp = dict(id=section_name, data=dict(user=user), schema=schema)
+        # Send back the raw data to the client.
+        resp = dict(id=section_name, data=raw, schema=schema)
         self.finish(json.dumps(resp))
 
     @json_errors
@@ -64,21 +63,20 @@ class SettingsHandler(APIHandler):
         if not self.settings_dir:
             raise web.HTTPError(404, "No current settings directory")
 
-        # Will raise 400 if content is not valid JSON.
-        data = self.get_json_body()
-        minified = json_minify(data)
+        raw = self.request.body.strip().decode(u"utf-8")
 
         # Validate the data against the schema.
         if Validator is not None:
             validator = Validator(_get_schema(self.schemas_dir, section_name))
             try:
-                validator.validate(minified)
+                validator.validate(json.loads(json_minify(raw)))
             except ValidationError as e:
                 raise web.HTTPError(400, str(e))
 
+        # Write the raw data (comments included) to a file.
         path = _path(self.settings_dir, section_name, _file_extension, True)
         with open(path, "w") as fid:
-            json.dump(data, fid)
+            fid.write(raw)
 
         self.set_status(204)
 
