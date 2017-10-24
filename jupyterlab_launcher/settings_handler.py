@@ -66,12 +66,13 @@ class SettingsHandler(APIHandler):
 
         # Will raise 400 if content is not valid JSON.
         data = self.get_json_body()
+        minified = json_minify(data)
 
         # Validate the data against the schema.
         if Validator is not None:
             validator = Validator(_get_schema(self.schemas_dir, section_name))
             try:
-                validator.validate(data)
+                validator.validate(minified)
             except ValidationError as e:
                 raise web.HTTPError(400, str(e))
 
