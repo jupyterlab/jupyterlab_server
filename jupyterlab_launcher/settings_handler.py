@@ -36,10 +36,10 @@ class SettingsHandler(APIHandler):
         settings = dict()
 
         if os.path.exists(path):
-            with open(path) as file:
+            with open(path) as fid:
                 # Attempt to load the settings file.
                 try:
-                    user = file.read()
+                    user = fid.read()
                     minified = json_minify(user)
                     settings = json.loads(minified)
                 except Exception as e:
