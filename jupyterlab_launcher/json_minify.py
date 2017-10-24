@@ -2,7 +2,7 @@
 #
 # It is licensed under the following license:
 
-# Copyright © 2017 Kyle Simpson <getify@gmail.com>
+# Copyright (c) 2017 Kyle Simpson <getify@gmail.com>
 
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the “Software”), to deal
