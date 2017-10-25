@@ -54,7 +54,7 @@ class LabHandler(IPythonHandler):
                     js_files.add(ujoin(config.static_url, bundle_file))
 
         if not js_files:
-            msg = '%s assets not detected in "%s"'
+            msg = '%s assets not found in "%s"'
             msg = msg % (config.name, config.assets_dir)
             self.log.error(msg)
             self.write(self.render_template('error.html',
@@ -125,6 +125,9 @@ class LabConfig(HasTraits):
 
     namespace = Unicode('',
         help='The namespace for the application')
+
+    error_message = Unicode('',
+        help='The error message to show when assets are not detected')
 
     page_title = Unicode('JupyterLab',
         help='The page title for the application')
