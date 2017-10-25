@@ -56,7 +56,7 @@ class LabHandler(IPythonHandler):
         if not js_files:
             msg = '%s assets not found in "%s"'
             msg = msg % (config.name, config.assets_dir)
-            self.log.error(msg)
+            self.log.error(config.error_message or msg)
             self.write(self.render_template('error.html',
                        status_code=500,
                        status_message='%s Error' % config.name,
