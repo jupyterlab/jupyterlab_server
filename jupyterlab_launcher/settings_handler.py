@@ -32,14 +32,14 @@ class SettingsHandler(APIHandler):
 
         schema = _get_schema(self.schemas_dir, section_name)
         path = _path(self.settings_dir, section_name, _file_extension)
-        raw = ''
+        raw = '{}'
         settings = dict()
 
         if os.path.exists(path):
             with open(path) as fid:
                 # Attempt to load and parse the settings file.
                 try:
-                    raw = fid.read()
+                    raw = fid.read() or raw
                     settings = json.loads(json_minify(raw))
                 except Exception as e:
                     self.log.warn(str(e))
@@ -51,10 +51,10 @@ class SettingsHandler(APIHandler):
                 validator.validate(settings)
             except ValidationError as e:
                 self.log.warn(str(e))
-                raw = ''
+                raw = '{}'
 
         # Send back the raw data to the client.
-        resp = dict(id=section_name, data=raw, schema=schema)
+        resp = dict(id=section_name, data=settings, raw=raw, schema=schema)
         self.finish(json.dumps(resp))
 
     @json_errors
