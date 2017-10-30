@@ -54,12 +54,12 @@ class SettingsHandler(APIHandler):
                 raw = '{}'
 
         # Send back the raw data to the client.
-        resp = dict(id=section_name, data=settings, raw=raw, schema=schema)
+        resp = dict(id=section_name, raw=raw, schema=schema)
         self.finish(json.dumps(resp))
 
     @json_errors
     @web.authenticated
-    def patch(self, section_name):
+    def put(self, section_name):
         if not self.settings_dir:
             raise web.HTTPError(404, "No current settings directory")
 
