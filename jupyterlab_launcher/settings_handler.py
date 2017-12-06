@@ -4,16 +4,12 @@
 # Distributed under the terms of the Modified BSD License.
 import json
 import os
+from jsonschema import ValidationError
+from jsonschema import Draft4Validator as Validator
 from tornado import web
 from .json_minify import json_minify
 
 from notebook.base.handlers import APIHandler, json_errors
-
-try:
-    from jsonschema import ValidationError
-    from jsonschema import Draft4Validator as Validator
-except ImportError:
-    Validator = None
 
 
 _file_extension = ".jupyterlab-settings"
@@ -53,7 +49,7 @@ class SettingsHandler(APIHandler):
                     self.log.warn(str(e))
 
         # Validate the parsed data against the schema.
-        if Validator is not None and len(settings):
+        if len(settings):
             validator = Validator(schema)
             try:
                 validator.validate(settings)
@@ -75,13 +71,12 @@ class SettingsHandler(APIHandler):
         raw = self.request.body.strip().decode(u"utf-8")
 
         # Validate the data against the schema.
-        if Validator is not None:
-            schema = _get_schema(self.schemas_dir, section_name, self.overrides)
-            validator = Validator(schema)
-            try:
-                validator.validate(json.loads(json_minify(raw)))
-            except ValidationError as e:
-                raise web.HTTPError(400, str(e))
+        schema = _get_schema(self.schemas_dir, section_name, self.overrides)
+        validator = Validator(schema)
+        try:
+            validator.validate(json.loads(json_minify(raw)))
+        except ValidationError as e:
+            raise web.HTTPError(400, str(e))
 
         # Write the raw data (comments included) to a file.
         path = _path(self.settings_dir, section_name, _file_extension, True)
