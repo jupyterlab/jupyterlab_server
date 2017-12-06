@@ -24,6 +24,7 @@ class SettingsHandler(APIHandler):
     def initialize(self, app_settings_dir, schemas_dir, settings_dir):
         self.schemas_dir = schemas_dir
         self.settings_dir = settings_dir
+        self.overrides = dict()
         overrides_file = os.path.join(app_settings_dir, "overrides.json")
         if os.path.exists(overrides_file):
             with open(overrides_file) as fid:
@@ -31,17 +32,15 @@ class SettingsHandler(APIHandler):
                     self.overrides = json.load(fid)
                 except Exception as e:
                     self.log.warn(str(e))
-                    self.overrides = dict()
 
     @json_errors
     @web.authenticated
     def get(self, section_name):
         self.set_header("Content-Type", "application/json")
 
-        overrides = self.overrides
-        schema = _get_schema(self.schemas_dir, section_name)
+        schema = _get_schema(self.schemas_dir, section_name, self.overrides)
         path = _path(self.settings_dir, section_name, _file_extension)
-        raw = '{}'
+        raw = "{}"
         settings = dict()
 
         if os.path.exists(path):
@@ -60,16 +59,7 @@ class SettingsHandler(APIHandler):
                 validator.validate(settings)
             except ValidationError as e:
                 self.log.warn(str(e))
-                raw = '{}'
-
-        # Override default values in the schema if necessary.
-        if section_name in overrides:
-            defaults = overrides[section_name]
-            for key in defaults:
-                if key in schema['properties']:
-                    schema['properties'][key]['default'] = defaults[key]
-                else:
-                    schema['properties'][key] = dict(default=defaults[key])
+                raw = "{}"
 
         # Send back the raw data to the client.
         resp = dict(id=section_name, raw=raw, schema=schema)
@@ -86,7 +76,8 @@ class SettingsHandler(APIHandler):
 
         # Validate the data against the schema.
         if Validator is not None:
-            validator = Validator(_get_schema(self.schemas_dir, section_name))
+            schema = _get_schema(self.schemas_dir, section_name, self.overrides)
+            validator = Validator(schema)
             try:
                 validator.validate(json.loads(json_minify(raw)))
             except ValidationError as e:
@@ -100,7 +91,7 @@ class SettingsHandler(APIHandler):
         self.set_status(204)
 
 
-def _get_schema(schemas_dir, section_name):
+def _get_schema(schemas_dir, section_name, overrides):
     """Retrieve and parse a JSON schema."""
 
     path = _path(schemas_dir, section_name)
@@ -116,6 +107,23 @@ def _get_schema(schemas_dir, section_name):
             name = section_name
             message = "Failed parsing schema ({}): {}".format(name, str(e))
             raise web.HTTPError(500, message)
+
+    # Override default values in the schema if necessary.
+    if section_name in overrides:
+        defaults = overrides[section_name]
+        for key in defaults:
+            if key in schema["properties"]:
+                schema["properties"][key]["default"] = defaults[key]
+            else:
+                schema["properties"][key] = dict(default=defaults[key])
+
+    # Validate the schema.
+    try:
+        Validator.check_schema(schema)
+    except Exception as e:
+        name = section_name
+        message = "Failed validating schema ({}): {}".format(name, str(e))
+        raise web.HTTPError(500, message)
 
     return schema
 
