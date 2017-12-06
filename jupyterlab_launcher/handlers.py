@@ -198,6 +198,7 @@ def add_handlers(web_app, config):
         config.settings_url = ujoin(base_url, default_settings_path)
         settings_path = config.settings_url + '(?P<section_name>.+)'
         handlers.append((settings_path, SettingsHandler, {
+            'app_settings_dir': config.settings_dir,
             'schemas_dir': config.schemas_dir,
             'settings_dir': config.user_settings_dir
         }))
