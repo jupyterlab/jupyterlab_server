@@ -21,15 +21,24 @@ _file_extension = ".jupyterlab-settings"
 
 class SettingsHandler(APIHandler):
 
-    def initialize(self, schemas_dir, settings_dir):
+    def initialize(self, app_settings_dir, schemas_dir, settings_dir):
         self.schemas_dir = schemas_dir
         self.settings_dir = settings_dir
+        overrides_file = os.path.join(app_settings_dir, "overrides.json")
+        if os.path.exists(overrides_file):
+            with open(overrides_file) as fid:
+                try:
+                    self.overrides = json.load(fid)
+                except Exception as e:
+                    self.log.warn(str(e))
+                    self.overrides = dict()
 
     @json_errors
     @web.authenticated
     def get(self, section_name):
         self.set_header("Content-Type", "application/json")
 
+        overrides = self.overrides
         schema = _get_schema(self.schemas_dir, section_name)
         path = _path(self.settings_dir, section_name, _file_extension)
         raw = '{}'
@@ -53,8 +62,18 @@ class SettingsHandler(APIHandler):
                 self.log.warn(str(e))
                 raw = '{}'
 
+        # Override default values in the schema if necessary.
+        if section_name in overrides:
+            defaults = overrides[section_name]
+            for key in defaults:
+                if key in schema['properties']:
+                    schema['properties'][key]['default'] = defaults[key]
+                else:
+                    schema['properties'][key] = dict(default=defaults[key])
+
         # Send back the raw data to the client.
         resp = dict(id=section_name, raw=raw, schema=schema)
+
         self.finish(json.dumps(resp))
 
     @json_errors
