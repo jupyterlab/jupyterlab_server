@@ -90,12 +90,11 @@ class LabHandler(IPythonHandler):
         self.write(self.render_template('index.html', page_config=page_config))
 
     def get_template(self, name):
-        name = 'foo'
         return self.file_loader.load(self.settings['jinja2_env'], name)
 
     def render_template(self, name, **ns):
         try:
-            IPythonHandler.render_template(self, name, **ns)
+            return IPythonHandler.render_template(self, name, **ns)
         except TemplateError:
             return DEFAULT_TEMPLATE.generate(
                 name=name, path=self.lab_config.templates_dir
