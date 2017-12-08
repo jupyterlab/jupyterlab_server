@@ -5,10 +5,10 @@
 # Distributed under the terms of the Modified BSD License.
 import json
 import os
-from tornado import web
 
+from tornado import web, template
 from notebook.base.handlers import IPythonHandler, FileFindHandler
-from jinja2 import FileSystemLoader
+from jinja2 import FileSystemLoader, TemplateError
 from notebook.utils import url_path_join as ujoin
 from traitlets import HasTraits, Bool, Unicode
 
@@ -23,6 +23,21 @@ from .settings_handler import SettingsHandler
 default_public_url = '/lab/static/'
 default_settings_url = '/lab/api/settings/'
 default_themes_url = '/lab/api/themes/'
+
+
+DEFAULT_TEMPLATE = template.Template("""
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Error</title>
+</head>
+<body>
+<h2>Cannot find template: "{{name}}"</h2>
+<p>In "{{path}}"</p>
+</body>
+</html>
+""")
 
 
 class LabHandler(IPythonHandler):
@@ -66,14 +81,25 @@ class LabHandler(IPythonHandler):
         # Handle error when the assets are not available locally.
         local_index = os.path.join(config.static_dir, 'index.html')
         if config.static_dir and not os.path.exists(local_index):
-            self.write(self.render_template('error.html', page_config=page_config))
+            self.write(self.render_template(
+                'error.html', static_dir=config.static_dir
+            ))
             return
 
         # Write the template with the config.
         self.write(self.render_template('index.html', page_config=page_config))
 
     def get_template(self, name):
+        name = 'foo'
         return self.file_loader.load(self.settings['jinja2_env'], name)
+
+    def render_template(self, name, **ns):
+        try:
+            IPythonHandler.render_template(self, name, **ns)
+        except TemplateError:
+            return DEFAULT_TEMPLATE.generate(
+                name=name, path=self.lab_config.templates_dir
+            )
 
 
 class LabConfig(HasTraits):
