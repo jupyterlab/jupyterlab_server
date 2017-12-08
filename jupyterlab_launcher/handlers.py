@@ -39,7 +39,7 @@ class LabHandler(IPythonHandler):
         settings_dir = config.app_settings_dir
 
         # Handle page config data.
-        page_config = self.settings.getdefault('page_config_data', {})
+        page_config = self.settings.setdefault('page_config_data', {})
         terminals = self.settings.get('terminals_available', False)
         server_root = self.settings.get('server_root_dir', '')
         page_config.setdefault('terminalsAvailable', terminals)
@@ -52,7 +52,7 @@ class LabHandler(IPythonHandler):
         page_config.setdefault('mathjaxUrl', self.mathjax_url)
 
         for name in config.trait_names():
-            page_config[_camelCase[name]] = getattr(config, name)
+            page_config[_camelCase(name)] = getattr(config, name)
 
         # Load the current page config file if available.
         page_config_file = os.path.join(settings_dir, 'page_config.json')
@@ -63,17 +63,14 @@ class LabHandler(IPythonHandler):
                 except Exception as e:
                     print(e)
 
-        # Wrap the page config in a dictionary to give it a namespace.
-        config = dict(page_config=page_config)
-
         # Handle error when the assets are not available locally.
         local_index = os.path.join(config.static_dir, 'index.html')
         if config.static_dir and not os.path.exists(local_index):
-            self.write(self.render_template('error.html', **config))
+            self.write(self.render_template('error.html', page_config=page_config))
             return
 
         # Write the template with the config.
-        self.write(self.render_template('index.html', **config))
+        self.write(self.render_template('index.html', page_config=page_config))
 
     def get_template(self, name):
         return self.file_loader.load(self.settings['jinja2_env'], name)
@@ -152,10 +149,10 @@ def add_handlers(web_app, config):
     no_cache_paths = ['/'] if config.cache_files else []
 
     # Handle local static assets.
-    if config.assets_dir:
+    if config.static_dir:
         config.public_url = ujoin(base_url, default_public_url)
-        handlers.append((config.static_url + "(.*)", FileFindHandler, {
-            'path': config.assets_dir,
+        handlers.append((config.public_url + "(.*)", FileFindHandler, {
+            'path': config.static_dir,
             'no_cache_paths': no_cache_paths
         }))
 
@@ -164,7 +161,7 @@ def add_handlers(web_app, config):
         config.settings_url = ujoin(base_url, default_settings_url)
         settings_path = config.settings_url + '(?P<section_name>.+)'
         handlers.append((settings_path, SettingsHandler, {
-            'app_settings_dir': config.settings_dir,
+            'app_settings_dir': config.app_settings_dir,
             'schemas_dir': config.schemas_dir,
             'settings_dir': config.user_settings_dir
         }))
