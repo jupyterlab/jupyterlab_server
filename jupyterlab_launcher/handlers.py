@@ -52,7 +52,7 @@ class LabHandler(IPythonHandler):
         page_config.setdefault('mathjaxUrl', self.mathjax_url)
 
         for name in config.trait_names():
-            page_config[name] = getattr(config, name)
+            page_config[_camelCase[name]] = getattr(config, name)
 
         # Load the current page config file if available.
         page_config_file = os.path.join(settings_dir, 'page_config.json')
@@ -82,6 +82,15 @@ class LabHandler(IPythonHandler):
 class LabConfig(HasTraits):
     """The lab application configuration object.
     """
+    app_name = Unicode('',
+        help='The name of the application')
+
+    app_version = Unicode('',
+        help='The version of the application')
+
+    app_namespace = Unicode('',
+        help='The namespace of the application')
+
     page_url = Unicode('/lab',
         help='The url path for the application')
 
@@ -110,7 +119,7 @@ class LabConfig(HasTraits):
               'If given, a handler will be added for settings')
 
     themes_url = Unicode(default_themes_url,
-        help='The theme path')
+        help='The theme url')
 
     themes_dir = Unicode('',
         help=('The optional location of the themes directory.  '
@@ -169,3 +178,11 @@ def add_handlers(web_app, config):
         }))
 
     web_app.add_handlers(".*$", handlers)
+
+
+def _camelCase(base):
+    """Convert a string to camelCase.
+    https://stackoverflow.com/a/20744956
+    """
+    output = ''.join(x for x in base.title() if x.isalpha())
+    return output[0].lower() + output[1:]
