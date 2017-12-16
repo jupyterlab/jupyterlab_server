@@ -155,8 +155,6 @@ class LabConfig(HasTraits):
         help=('Whether to cache files on the server. This should be '
               '`True` unless in development mode'))
 
-class TreeHandler(LabHandler):
-    pass
 
 def add_handlers(web_app, config):
     """Add the appropriate handlers to the web app.
@@ -174,7 +172,7 @@ def add_handlers(web_app, config):
         (ujoin(base_url, config.page_url, r'/?'), LabHandler, {
             'lab_config': config
         }),
-        (ujoin(base_url, config.tree_url, r'/?'), TreeHandler, {
+        (ujoin(base_url, config.tree_url, r'/?.*'), LabHandler, {
             'lab_config': config
         })
     ]
