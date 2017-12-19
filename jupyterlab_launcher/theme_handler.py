@@ -50,10 +50,8 @@ class ThemesHandler(FileFindHandler):
 
         # Replace relative paths with mangled paths.
         # We only match strings that are relative urls,
-        # e.g. `@import './foo.css' and `url('../foo.css')`
-        pattern = (r"@import '(\..*)'|"
-                   r'@import "(\..*)"|'
-                   r"url\('(\..*)'\)|"
+        # e.g. `url('../foo.css')`
+        pattern = (r"url\('(\..*)'\)|"
                    r'url\("(\..*)"\)')
 
         def replacer(m):
