@@ -7,6 +7,11 @@ from os import path as osp
 import os
 import re
 
+try:
+    from urllib.parse import urlparse
+except ImportError:
+    from urlparse import urlparse
+
 from notebook.base.handlers import FileFindHandler
 
 
@@ -51,14 +56,20 @@ class ThemesHandler(FileFindHandler):
         # Replace relative paths with mangled paths.
         # We only match strings that are relative urls,
         # e.g. `url('../foo.css')`
-        pattern = (r"url\('(\..*)'\)|"
-                   r'url\("(\..*)"\)')
+        pattern = (r"url\('(.*)'\)|"
+                   r'url\("(.*)"\)')
 
         def replacer(m):
             """Replace the matched relative url with the mangled url."""
             group = m.group()
             # Get the part that matched
             part = [g for g in m.groups() if g][0]
+
+            # Ignore urls that start with `/` or have a protocol like `http`.
+            parsed = urlparse(part)
+            if part.startswith('/') or parsed.scheme:
+                return group
+
             mangled = osp.realpath(osp.join(basepath, part))
             return group.replace(part, mangled)
 
