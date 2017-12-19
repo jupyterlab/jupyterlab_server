@@ -13,7 +13,7 @@ from notebook.utils import url_path_join as ujoin
 from traitlets import HasTraits, Bool, Unicode
 
 from .settings_handler import SettingsHandler
-
+from .theme_handler import ThemesHandler
 
 # -----------------------------------------------------------------------------
 # Module globals
@@ -171,7 +171,8 @@ def add_handlers(web_app, config):
     ]
 
     # Cache all or none of the files depending on the `cache_files` setting.
-    no_cache_paths = ['/'] if config.cache_files else []
+    config.cache_files = False
+    no_cache_paths = [] if config.cache_files else ['/']
 
     # Handle local static assets.
     if config.static_dir:
@@ -194,7 +195,8 @@ def add_handlers(web_app, config):
     # Handle local themes.
     if config.themes_dir:
         config.themes_url = ujoin(base_url, default_themes_url)
-        handlers.append((ujoin(config.themes_url, "(.*)"), FileFindHandler, {
+        handlers.append((ujoin(config.themes_url, "(.*)"), ThemesHandler, {
+            'themes_url': config.themes_url,
             'path': config.themes_dir,
             'no_cache_paths': no_cache_paths
         }))
