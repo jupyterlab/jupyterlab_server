@@ -16,7 +16,7 @@ from notebook.base.handlers import FileFindHandler
 
 
 class ThemesHandler(FileFindHandler):
-    """A file handler that mangles relative paths in CSS files."""
+    """A file handler that mangles local urls in CSS files."""
 
     def initialize(self, path, default_filename=None,
             no_cache_paths=None, themes_url=None):
@@ -53,9 +53,9 @@ class ThemesHandler(FileFindHandler):
         basedir = osp.dirname(self.path).replace(os.sep, '/')
         basepath = osp.join(self.themes_url, basedir)
 
-        # Replace relative paths with mangled paths.
-        # We only match strings that are relative urls,
-        # e.g. `url('../foo.css')`
+        # Replace local paths with mangled paths.
+        # We only match strings that are local urls,
+        # e.g. `url('../foo.css')`, `url('images/foo.png')`
         pattern = (r"url\('(.*)'\)|"
                    r'url\("(.*)"\)')
 
