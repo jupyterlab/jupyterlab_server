@@ -13,7 +13,7 @@ from notebook.utils import url_path_join as ujoin
 from traitlets import HasTraits, Bool, Unicode
 
 from .settings_handler import SettingsHandler
-from .theme_handler import ThemesHandler
+from .themes_handler import ThemesHandler
 
 # -----------------------------------------------------------------------------
 # Module globals
