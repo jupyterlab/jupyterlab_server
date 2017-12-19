@@ -171,7 +171,6 @@ def add_handlers(web_app, config):
     ]
 
     # Cache all or none of the files depending on the `cache_files` setting.
-    config.cache_files = False
     no_cache_paths = [] if config.cache_files else ['/']
 
     # Handle local static assets.
