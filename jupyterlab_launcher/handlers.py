@@ -23,6 +23,7 @@ from .themes_handler import ThemesHandler
 default_public_url = '/lab/static/'
 default_settings_url = '/lab/api/settings/'
 default_themes_url = '/lab/api/themes/'
+default_tree_url = '/lab/tree/'
 
 
 DEFAULT_TEMPLATE = template.Template("""
@@ -147,9 +148,19 @@ class LabConfig(HasTraits):
         help=('The optional location of the themes directory.  '
               'If given, a handler will be added for themes'))
 
+    tree_url = Unicode(default_tree_url,
+        help='The url path of the tree handler')
+
     cache_files = Bool(True,
         help=('Whether to cache files on the server. This should be '
               '`True` unless in development mode'))
+
+class NotFoundHandler(LabHandler):
+    def render_template(self, name, **ns):
+        if 'page_config' in ns:
+            ns['page_config'] = ns['page_config'].copy()
+            ns['page_config']['notFoundUrl'] = self.request.path
+        return LabHandler.render_template(self, name, **ns)
 
 
 def add_handlers(web_app, config):
@@ -166,6 +177,9 @@ def add_handlers(web_app, config):
     base_url = web_app.settings['base_url']
     handlers = [
         (ujoin(base_url, config.page_url, r'/?'), LabHandler, {
+            'lab_config': config
+        }),
+        (ujoin(base_url, config.tree_url, r'/?.*'), LabHandler, {
             'lab_config': config
         })
     ]
@@ -199,6 +213,11 @@ def add_handlers(web_app, config):
             'path': config.themes_dir,
             'no_cache_paths': no_cache_paths
         }))
+
+    # Let the lab handler act as the fallthrough option instead of a 404.
+    handlers.append((ujoin(base_url, config.page_url, r'/?.*'), NotFoundHandler, {
+        'lab_config': config
+    }))
 
     web_app.add_handlers(".*$", handlers)
 
