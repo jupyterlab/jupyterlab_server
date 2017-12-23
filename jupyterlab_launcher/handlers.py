@@ -155,6 +155,13 @@ class LabConfig(HasTraits):
         help=('Whether to cache files on the server. This should be '
               '`True` unless in development mode'))
 
+class NotFoundHandler(LabHandler):
+    def render_template(self, name, **ns):
+        if 'page_config' in ns:
+            ns['page_config'] = ns['page_config'].copy()
+            ns['page_config']['notFoundUrl'] = self.request.path
+        return LabHandler.render_template(self, name, **ns)
+
 
 def add_handlers(web_app, config):
     """Add the appropriate handlers to the web app.
@@ -206,6 +213,11 @@ def add_handlers(web_app, config):
             'path': config.themes_dir,
             'no_cache_paths': no_cache_paths
         }))
+
+    # Let the lab handler act as the fallthrough option instead of a 404.
+    handlers.append((ujoin(base_url, config.page_url, r'/?.*'), NotFoundHandler, {
+        'lab_config': config
+    }))
 
     web_app.add_handlers(".*$", handlers)
 
