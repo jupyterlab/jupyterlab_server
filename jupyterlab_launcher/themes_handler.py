@@ -13,6 +13,7 @@ except ImportError:
     from urlparse import urlparse
 
 from notebook.base.handlers import FileFindHandler
+from notebook.utils import url_path_join as ujoin
 
 
 class ThemesHandler(FileFindHandler):
@@ -51,7 +52,7 @@ class ThemesHandler(FileFindHandler):
             data = fid.read().decode('utf-8')
 
         basedir = osp.dirname(self.path).replace(os.sep, '/')
-        basepath = osp.join(self.themes_url, basedir)
+        basepath = ujoin(self.themes_url, basedir)
 
         # Replace local paths with mangled paths.
         # We only match strings that are local urls,
@@ -70,7 +71,6 @@ class ThemesHandler(FileFindHandler):
             if part.startswith('/') or parsed.scheme:
                 return group
 
-            mangled = osp.realpath(osp.join(basepath, part))
-            return group.replace(part, mangled)
+            return group.replace(part, ujoin(basepath, part))
 
         return re.sub(pattern, replacer, data).encode('utf-8')

@@ -58,6 +58,7 @@ class LabHandler(IPythonHandler):
         page_config = self.settings.setdefault('page_config_data', {})
         terminals = self.settings.get('terminals_available', False)
         server_root = self.settings.get('server_root_dir', '')
+        server_root = server_root.replace(os.sep, '/')
         page_config.setdefault('terminalsAvailable', terminals)
         page_config.setdefault('ignorePlugins', [])
         page_config.setdefault('serverRoot', server_root)
