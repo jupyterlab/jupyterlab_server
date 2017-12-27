@@ -128,14 +128,10 @@ def _path(root_dir, section_name, file_extension='.json', make_dirs=False):
 
     parent_dir = root_dir
 
-    # Attempt to parse path, e.g. @jupyterlab/apputils-extension:themes.
-    try:
-        package_dir, plugin = section_name.split(":")
-        parent_dir = os.path.join(root_dir, package_dir)
-        path = os.path.join(parent_dir, plugin + file_extension)
-    # This is deprecated and exists to support the older URL scheme.
-    except:
-        path = os.path.join(root_dir, section_name + file_extension)
+    # Parse path, e.g. @jupyterlab/apputils-extension:themes.
+    package_dir, plugin = section_name.split(':')
+    parent_dir = os.path.join(root_dir, package_dir)
+    path = os.path.join(parent_dir, plugin + file_extension)
 
     if make_dirs and not os.path.exists(parent_dir):
         try:
