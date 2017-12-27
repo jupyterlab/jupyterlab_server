@@ -106,55 +106,58 @@ class LabHandler(IPythonHandler):
 class LabConfig(HasTraits):
     """The lab application configuration object.
     """
-    app_name = Unicode('',
-        help='The name of the application')
+    _help = 'The name of the application.'
+    app_name = Unicode('', help=_help)
 
-    app_version = Unicode('',
-        help='The version of the application')
+    _help = 'The version of the application.'
+    app_version = Unicode('', help=_help)
 
-    app_namespace = Unicode('',
-        help='The namespace of the application')
+    _help = 'The namespace of the application.'
+    app_namespace = Unicode('', help=_help)
 
-    page_url = Unicode('/lab',
-        help='The url path for the application')
+    _help = 'The url path for the application.'
+    page_url = Unicode('/lab', help=_help)
 
-    app_settings_dir = Unicode('',
-        help='The application settings directory')
+    _help = 'The application settings directory.'
+    app_settings_dir = Unicode('', help=_help)
 
-    templates_dir = Unicode('',
-        help='The templates directory for the application')
+    _help = 'The templates directory for the application.'
+    templates_dir = Unicode('', help=_help)
 
-    static_dir = Unicode('',
-        help=('The optional location of the local static files.  '
-              'If given, a handler will be added to server the files.'))
+    _help = ('The optional location of local static files. '
+             'If given, a static file handler will be added,')
+    static_dir = Unicode('', help=_help)
 
-    public_url = Unicode(default_public_url,
-        help=('The url public path for the application static files.  '
-              'This can be a CDN if desired'))
+    _help = ('The url public path for static application files. '
+             'This can be a CDN if desired.')
+    public_url = Unicode(default_public_url, help=_help)
 
-    settings_url = Unicode(default_settings_url,
-        help='The url path of the settings handler')
+    _help = 'The url path of the settings handler.'
+    settings_url = Unicode(default_settings_url, help=_help)
 
-    user_settings_dir = Unicode('',
-        help='The optional location of the user settings directory')
+    _help = 'The optional location of the user settings directory.'
+    user_settings_dir = Unicode('', help=_help)
 
-    schemas_dir = Unicode('',
-        help='The optional location of the settings schemas directory.  '
-              'If given, a handler will be added for settings')
+    _help = ('The optional location of the settings schemas directory. '
+             'If given, a handler will be added for settings.')
+    schemas_dir = Unicode('', help=_help)
 
-    themes_url = Unicode(default_themes_url,
-        help='The theme url')
 
-    themes_dir = Unicode('',
-        help=('The optional location of the themes directory.  '
-              'If given, a handler will be added for themes'))
 
-    tree_url = Unicode(default_tree_url,
-        help='The url path of the tree handler')
+    _help = 'The theme url.'
+    themes_url = Unicode(default_themes_url, help=_help)
 
-    cache_files = Bool(True,
-        help=('Whether to cache files on the server. This should be '
-              '`True` unless in development mode'))
+    _help = ('The optional location of the themes directory. '
+             'If given, a handler will be added for themes.')
+    themes_dir = Unicode('', help=_help)
+
+    _help = 'The url path of the tree handler.'
+    tree_url = Unicode(default_tree_url, help=_help)
+
+    _help = ('Whether to cache files on the server. '
+             'This should be `True` unless in development mode.')
+    cache_files = Bool(True, help=_help)
+
 
 class NotFoundHandler(LabHandler):
     def render_template(self, name, **ns):
@@ -191,7 +194,7 @@ def add_handlers(web_app, config):
     # Handle local static assets.
     if config.static_dir:
         config.public_url = ujoin(base_url, default_public_url)
-        handlers.append((config.public_url + "(.*)", FileFindHandler, {
+        handlers.append((config.public_url + '(.*)', FileFindHandler, {
             'path': config.static_dir,
             'no_cache_paths': no_cache_paths
         }))
@@ -209,18 +212,24 @@ def add_handlers(web_app, config):
     # Handle local themes.
     if config.themes_dir:
         config.themes_url = ujoin(base_url, default_themes_url)
-        handlers.append((ujoin(config.themes_url, "(.*)"), ThemesHandler, {
-            'themes_url': config.themes_url,
-            'path': config.themes_dir,
-            'no_cache_paths': no_cache_paths
-        }))
+        handlers.append((
+            ujoin(config.themes_url, '(.*)'),
+            ThemesHandler,
+            {
+                'themes_url': config.themes_url,
+                'path': config.themes_dir,
+                'no_cache_paths': no_cache_paths
+            }
+        ))
 
     # Let the lab handler act as the fallthrough option instead of a 404.
-    handlers.append((ujoin(base_url, config.page_url, r'/?.*'), NotFoundHandler, {
-        'lab_config': config
-    }))
+    handlers.append((
+        ujoin(base_url, config.page_url, r'/?.*'),
+        NotFoundHandler,
+        {'lab_config': config}
+    ))
 
-    web_app.add_handlers(".*$", handlers)
+    web_app.add_handlers('.*$', handlers)
 
 
 def _camelCase(base):
