@@ -117,7 +117,7 @@ def _get_schema(schemas_dir, section_name, overrides):
         Validator.check_schema(schema)
     except Exception as e:
         name = section_name
-        message = "Failed validating schema ({}): {}".format(name, str(e))
+        message = 'Failed validating schema ({}): {}'.format(name, str(e))
         raise web.HTTPError(500, message)
 
     return schema
@@ -128,10 +128,14 @@ def _path(root_dir, section_name, file_extension='.json', make_dirs=False):
 
     parent_dir = root_dir
 
-    # Parse path, e.g. @jupyterlab/apputils-extension:themes.
-    package_dir, plugin = section_name.split(':')
-    parent_dir = os.path.join(root_dir, package_dir)
-    path = os.path.join(parent_dir, plugin + file_extension)
+    # Try to parse path, e.g. @jupyterlab/apputils-extension:themes.
+    try:
+        package_dir, plugin = section_name.split(':')
+        parent_dir = os.path.join(root_dir, package_dir)
+        path = os.path.join(parent_dir, plugin + file_extension)
+    except Exception:
+        message = 'Settings not found ({})'.format(section_name)
+        raise web.HTTPError(404, message)
 
     if make_dirs and not os.path.exists(parent_dir):
         try:

@@ -23,15 +23,8 @@ class SettingsAPITest(LabTestBase):
     def setUp(self):
         self.settings_api = SettingsAPI(self.request)
 
-    def test_new_get(self):
+    def test_get(self):
         id = '@jupyterlab/apputils-extension:themes'
-        data = self.settings_api.get(id).json()
-        assert data['id'] == id
-        assert len(data['schema'])
-        assert 'raw' in data
-
-    def test_old_get(self):
-        id = 'jupyter.extensions.shortcuts'
         data = self.settings_api.get(id).json()
         assert data['id'] == id
         assert len(data['schema'])
@@ -42,7 +35,7 @@ class SettingsAPITest(LabTestBase):
             self.settings_api.get('foo')
 
     def test_patch(self):
-        id = 'jupyter.extensions.shortcuts'
+        id = '@jupyterlab/shortcuts-extension:plugin'
         resp = self.settings_api.patch(id, dict())
         assert resp.status_code == 204
 
@@ -51,7 +44,7 @@ class SettingsAPITest(LabTestBase):
             self.settings_api.patch('foo', dict())
 
     def test_patch_bad_data(self):
-        id = 'jupyter.services.codemirror-commands'
+        id = '@jupyterlab/codemirror-extension:commands'
         data = dict(keyMap=10)
         with assert_http_error(400):
             self.settings_api.patch(id, data)
