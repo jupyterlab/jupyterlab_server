@@ -12,6 +12,7 @@ from jinja2 import FileSystemLoader, TemplateError
 from notebook.utils import url_path_join as ujoin
 from traitlets import HasTraits, Bool, Unicode
 
+from .sessions_handler import SessionsAPIHandler
 from .settings_handler import SettingsHandler
 from .themes_handler import ThemesHandler
 
@@ -21,6 +22,8 @@ from .themes_handler import ThemesHandler
 
 # The default urls for the application.
 default_public_url = '/lab/static/'
+default_sessions_url = '/lab/sessions/'
+default_sessions_api_url = '/lab/api/sessions/'
 default_settings_url = '/lab/api/settings/'
 default_themes_url = '/lab/api/themes/'
 default_tree_url = '/lab/tree/'
@@ -139,7 +142,13 @@ class LabConfig(HasTraits):
                                 'schemas directory. If given, a handler will '
                                 'be added for settings.'))
 
+    sessions_dir = Unicode('',
+                           help=('The optional location of the saved sessions '
+                                 'directory. If given, a handler will be '
+                                 'added for sessions.'))
 
+    sessions_url = Unicode(default_sessions_url,
+                           help='The url path of the sessions handler.')
 
     themes_url = Unicode(default_themes_url, help='The theme url.')
 
@@ -205,6 +214,21 @@ def add_handlers(web_app, config):
             'schemas_dir': config.schemas_dir,
             'settings_dir': config.user_settings_dir
         }))
+
+    # Handle saved sessions.
+    if config.sessions_dir:
+        config.sessions_url = ujoin(base_url, default_sessions_url)
+        handlers.append((
+            ujoin(config.sessions_url, r'/?.*'),
+            LabHandler,
+            {'lab_config': config}
+        ))
+        config.sessions_api_url = ujoin(base_url, default_sessions_api_url)
+        handlers.append((
+            ujoin(config.sessions_api_url, r'/?.*'),
+            SessionsAPIHandler,
+            {'sessions_url': config.sessions_url, 'path': config.sessions_dir}
+        ))
 
     # Handle local themes.
     if config.themes_dir:
