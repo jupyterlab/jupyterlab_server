@@ -106,57 +106,54 @@ class LabHandler(IPythonHandler):
 class LabConfig(HasTraits):
     """The lab application configuration object.
     """
-    _help = 'The name of the application.'
-    app_name = Unicode('', help=_help)
+    app_name = Unicode('', help='The name of the application.')
 
-    _help = 'The version of the application.'
-    app_version = Unicode('', help=_help)
+    app_version = Unicode('', help='The version of the application.')
 
-    _help = 'The namespace of the application.'
-    app_namespace = Unicode('', help=_help)
+    app_namespace = Unicode('', help='The namespace of the application.')
 
-    _help = 'The url path for the application.'
-    page_url = Unicode('/lab', help=_help)
+    page_url = Unicode('/lab', help='The url path for the application.')
 
-    _help = 'The application settings directory.'
-    app_settings_dir = Unicode('', help=_help)
+    app_settings_dir = Unicode('', help='The application settings directory.')
 
-    _help = 'The templates directory for the application.'
-    templates_dir = Unicode('', help=_help)
+    templates_dir = Unicode('', help='The application templates directory.')
 
-    _help = ('The optional location of local static files. '
-             'If given, a static file handler will be added,')
-    static_dir = Unicode('', help=_help)
+    static_dir = Unicode('',
+                         help=('The optional location of local static files. '
+                               'If given, a static file handler will be '
+                               'added.'))
 
-    _help = ('The url public path for static application files. '
-             'This can be a CDN if desired.')
-    public_url = Unicode(default_public_url, help=_help)
+    public_url = Unicode(default_public_url,
+                         help=('The url public path for static application '
+                               'files. This can be a CDN if desired.'))
 
-    _help = 'The url path of the settings handler.'
-    settings_url = Unicode(default_settings_url, help=_help)
+    settings_url = Unicode(default_settings_url,
+                           help='The url path of the settings handler.')
 
-    _help = 'The optional location of the user settings directory.'
-    user_settings_dir = Unicode('', help=_help)
+    user_settings_dir = Unicode('',
+                                help=('The optional location of the user '
+                                      'settings directory.'))
 
-    _help = ('The optional location of the settings schemas directory. '
-             'If given, a handler will be added for settings.')
-    schemas_dir = Unicode('', help=_help)
+    schemas_dir = Unicode('',
+                          help=('The optional location of the settings '
+                                'schemas directory. If given, a handler will '
+                                'be added for settings.'))
 
 
 
-    _help = 'The theme url.'
-    themes_url = Unicode(default_themes_url, help=_help)
+    themes_url = Unicode(default_themes_url, help='The theme url.')
 
-    _help = ('The optional location of the themes directory. '
-             'If given, a handler will be added for themes.')
-    themes_dir = Unicode('', help=_help)
+    themes_dir = Unicode('',
+                         help=('The optional location of the themes '
+                               'directory. If given, a handler will be added '
+                               'for themes.'))
 
-    _help = 'The url path of the tree handler.'
-    tree_url = Unicode(default_tree_url, help=_help)
+    tree_url = Unicode(default_tree_url,
+                       help='The url path of the tree handler.')
 
-    _help = ('Whether to cache files on the server. '
-             'This should be `True` unless in development mode.')
-    cache_files = Bool(True, help=_help)
+    cache_files = Bool(True,
+                       help=('Whether to cache files on the server. '
+                             'This should be `True` except in dev mode.'))
 
 
 class NotFoundHandler(LabHandler):
