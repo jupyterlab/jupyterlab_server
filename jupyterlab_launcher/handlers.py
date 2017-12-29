@@ -224,11 +224,11 @@ def add_handlers(web_app, config):
             {'lab_config': config}
         ))
         config.sessions_api_url = ujoin(base_url, default_sessions_api_url)
-        handlers.append((
-            ujoin(config.sessions_api_url, r'/?.*'),
-            SessionsAPIHandler,
-            {'sessions_url': config.sessions_url, 'path': config.sessions_dir}
-        ))
+        sessions_path = config.sessions_api_url + '(?P<section_name>.+)'
+        handlers.append((sessions_path, SessionsAPIHandler, {
+            'sessions_url': config.sessions_url,
+            'path': config.sessions_dir
+        }))
 
     # Handle local themes.
     if config.themes_dir:

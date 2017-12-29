@@ -28,7 +28,9 @@ class SessionsAPIHandler(APIHandler):
                 try:
                     session = json.load(fid)
                 except Exception as e:
-                    self.log.warn(str(e))
+                    raise web.HTTPError(500, str(e))
+        else:
+            raise web.HTTPError(404, 'Session not found: %r' % section_name)
 
         self.finish(json.dumps(dict(id=section_name, session=session)))
 
