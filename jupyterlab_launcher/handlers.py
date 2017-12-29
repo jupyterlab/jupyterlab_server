@@ -12,7 +12,7 @@ from jinja2 import FileSystemLoader, TemplateError
 from notebook.utils import url_path_join as ujoin
 from traitlets import HasTraits, Bool, Unicode
 
-from .sessions_handler import SessionsAPIHandler
+from .sessions_handler import SessionsHandler
 from .settings_handler import SettingsHandler
 from .themes_handler import ThemesHandler
 
@@ -185,13 +185,11 @@ def add_handlers(web_app, config):
 
     # Set up the main page handler.
     base_url = web_app.settings['base_url']
+    lab_url = ujoin(base_url, config.page_url, r'/?')
+    tree_url = ujoin(base_url, config.tree_url, r'/?.*')
     handlers = [
-        (ujoin(base_url, config.page_url, r'/?'), LabHandler, {
-            'lab_config': config
-        }),
-        (ujoin(base_url, config.tree_url, r'/?.*'), LabHandler, {
-            'lab_config': config
-        })
+        (lab_url, LabHandler, {'lab_config': config}),
+        (tree_url, LabHandler, {'lab_config': config})
     ]
 
     # Cache all or none of the files depending on the `cache_files` setting.
@@ -217,15 +215,15 @@ def add_handlers(web_app, config):
 
     # Handle saved sessions.
     if config.sessions_dir:
+        # Handle JupyterLab client URLs that include sessions.
         config.sessions_url = ujoin(base_url, default_sessions_url)
-        handlers.append((
-            ujoin(config.sessions_url, r'/?.*'),
-            LabHandler,
-            {'lab_config': config}
-        ))
+        sessions_path = ujoin(base_url, config.sessions_url, r'/?.*')
+        handlers.append((sessions_path, LabHandler, {'lab_config': config}))
+
+        # Handle API requests for sessions.
         config.sessions_api_url = ujoin(base_url, default_sessions_api_url)
-        sessions_path = config.sessions_api_url + '(?P<section_name>.+)'
-        handlers.append((sessions_path, SessionsAPIHandler, {
+        sessions_api_path = config.sessions_api_url + '(?P<section_name>.+)'
+        handlers.append((sessions_api_path, SessionsHandler, {
             'sessions_url': config.sessions_url,
             'path': config.sessions_dir
         }))

@@ -12,7 +12,7 @@ from notebook.base.handlers import APIHandler, json_errors
 _file_extension = '.jupyterlab-session'
 
 
-class SessionsAPIHandler(APIHandler):
+class SessionsHandler(APIHandler):
 
     def initialize(self, path, default_filename=None, sessions_url=None):
         self.sessions_dir = path
