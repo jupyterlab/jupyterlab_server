@@ -186,7 +186,7 @@ def add_handlers(web_app, config):
     # Set up the main page handler.
     base_url = web_app.settings['base_url']
     lab_url = ujoin(base_url, config.page_url, r'/?')
-    tree_url = ujoin(base_url, config.tree_url, r'/?.*')
+    tree_url = ujoin(base_url, config.tree_url, r'/.+')
     handlers = [
         (lab_url, LabHandler, {'lab_config': config}),
         (tree_url, LabHandler, {'lab_config': config})
@@ -217,7 +217,7 @@ def add_handlers(web_app, config):
     if config.sessions_dir:
         # Handle JupyterLab client URLs that include sessions.
         config.sessions_url = ujoin(base_url, default_sessions_url)
-        sessions_path = ujoin(base_url, config.sessions_url, r'/?.*')
+        sessions_path = ujoin(base_url, config.sessions_url, r'/.+')
         handlers.append((sessions_path, LabHandler, {'lab_config': config}))
 
         # Handle API requests for sessions.
