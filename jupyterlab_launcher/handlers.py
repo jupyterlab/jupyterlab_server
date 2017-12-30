@@ -12,7 +12,7 @@ from jinja2 import FileSystemLoader, TemplateError
 from notebook.utils import url_path_join as ujoin
 from traitlets import HasTraits, Bool, Unicode
 
-from .sessions_handler import SessionsHandler
+from .workspaces_handler import WorkspacesHandler
 from .settings_handler import SettingsHandler
 from .themes_handler import ThemesHandler
 
@@ -22,8 +22,8 @@ from .themes_handler import ThemesHandler
 
 # The default urls for the application.
 default_public_url = '/lab/static/'
-default_sessions_url = '/lab/sessions/'
-default_sessions_api_url = '/lab/api/sessions/'
+default_workspaces_url = '/lab/workspaces/'
+default_workspaces_api_url = '/lab/api/workspaces/'
 default_settings_url = '/lab/api/settings/'
 default_themes_url = '/lab/api/themes/'
 default_tree_url = '/lab/tree/'
@@ -142,13 +142,13 @@ class LabConfig(HasTraits):
                                 'schemas directory. If given, a handler will '
                                 'be added for settings.'))
 
-    sessions_dir = Unicode('',
-                           help=('The optional location of the saved sessions '
-                                 'directory. If given, a handler will be '
-                                 'added for sessions.'))
+    workspaces_dir = Unicode('',
+                             help=('The optional location of the saved '
+                                   'workspaces directory. If given, a handler '
+                                   'will be added for workspaces.'))
 
-    sessions_url = Unicode(default_sessions_url,
-                           help='The url path of the sessions handler.')
+    workspaces_url = Unicode(default_workspaces_url,
+                             help='The url path of the workspaces handler.')
 
     themes_url = Unicode(default_themes_url, help='The theme url.')
 
@@ -213,19 +213,19 @@ def add_handlers(web_app, config):
             'settings_dir': config.user_settings_dir
         }))
 
-    # Handle saved sessions.
-    if config.sessions_dir:
-        # Handle JupyterLab client URLs that include sessions.
-        config.sessions_url = ujoin(base_url, default_sessions_url)
-        sessions_path = ujoin(base_url, config.sessions_url, r'/.+')
-        handlers.append((sessions_path, LabHandler, {'lab_config': config}))
+    # Handle saved workspaces.
+    if config.workspaces_dir:
+        # Handle JupyterLab client URLs that include workspaces.
+        config.workspaces_url = ujoin(base_url, default_workspaces_url)
+        workspaces_path = ujoin(base_url, config.workspaces_url, r'/.+')
+        handlers.append((workspaces_path, LabHandler, {'lab_config': config}))
 
-        # Handle API requests for sessions.
-        config.sessions_api_url = ujoin(base_url, default_sessions_api_url)
-        sessions_api_path = config.sessions_api_url + '(?P<section_name>.+)'
-        handlers.append((sessions_api_path, SessionsHandler, {
-            'sessions_url': config.sessions_url,
-            'path': config.sessions_dir
+        # Handle API requests for workspaces.
+        config.workspaces_api_url = ujoin(base_url, default_workspaces_api_url)
+        workspaces_api_path = config.workspaces_api_url + '(?P<space_name>.+)'
+        handlers.append((workspaces_api_path, WorkspacesHandler, {
+            'workspaces_url': config.workspaces_url,
+            'path': config.workspaces_dir
         }))
 
     # Handle local themes.
