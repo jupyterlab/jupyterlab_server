@@ -12,7 +12,7 @@ from .handlers import add_handlers, LabConfig
 class LabLauncherApp(NotebookApp):
 
     default_url = Unicode('/lab',
-        help="The default URL to redirect to from `/`")
+                          help='The default URL to redirect to from `/`')
 
     lab_config = LabConfig()
 

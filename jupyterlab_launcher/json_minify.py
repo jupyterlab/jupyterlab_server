@@ -1,4 +1,5 @@
-# This file comes from https://raw.githubusercontent.com/getify/JSON.minify/1e3590ddb043b62c851506d9ae8425336335d879/json_minify/__init__.py
+# This file comes from
+# https://raw.githubusercontent.com/getify/JSON.minify/1e3590ddb043b62c851506d9ae8425336335d879/json_minify/__init__.py
 #
 # It is licensed under the following license:
 
@@ -11,8 +12,8 @@
 # copies of the Software, and to permit persons to whom the Software is
 # furnished to do so, subject to the following conditions:
 
-# The above copyright notice and this permission notice shall be included in all
-# copies or substantial portions of the Software.
+# The above copyright notice and this permission notice shall be included in
+# all copies or substantial portions of the Software.
 
 # THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 # IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,

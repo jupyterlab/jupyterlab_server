@@ -69,8 +69,9 @@ class LabTestBase(NotebookTestBase):
         started = Event()
 
         lab_config = LabConfig(schemas_dir=pjoin(here, 'schemas'),
-            user_settings_dir=tmp('user_settings'))
-        
+                               user_settings_dir=tmp('user_settings'),
+                               workspaces_dir=pjoin(here, 'workspaces'))
+
         def start_thread():
             app = cls.notebook = LabLauncherApp(
                 port=cls.port,
@@ -119,7 +120,7 @@ class APITester(object):
 
     def _req(self, verb, path, body=None):
         response = self.request(verb,
-                url_path_join(self.url, path), data=body)
+                                url_path_join(self.url, path), data=body)
 
         if 400 <= response.status_code < 600:
             try:
