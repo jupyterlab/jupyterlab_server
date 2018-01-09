@@ -243,7 +243,7 @@ def add_handlers(web_app, config):
 
     # Let the lab handler act as the fallthrough option instead of a 404.
     handlers.append((
-        ujoin(base_url, config.page_url, r'/?.*'),
+        ujoin(base_url, config.page_url, r'[/?].*'),
         NotFoundHandler,
         {'lab_config': config}
     ))
