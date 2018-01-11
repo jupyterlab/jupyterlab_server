@@ -217,7 +217,7 @@ def add_handlers(web_app, config):
     if config.workspaces_dir:
         # Handle JupyterLab client URLs that include workspaces.
         config.workspaces_url = ujoin(base_url, default_workspaces_url)
-        workspaces_path = ujoin(base_url, config.workspaces_url, r'/.+')
+        workspaces_path = ujoin(config.workspaces_url, r'/.+')
         handlers.append((workspaces_path, LabHandler, {'lab_config': config}))
 
         # Handle API requests for workspaces.
