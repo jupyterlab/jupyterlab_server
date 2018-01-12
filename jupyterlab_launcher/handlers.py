@@ -176,6 +176,8 @@ class NotFoundHandler(LabHandler):
 def add_handlers(web_app, config):
     """Add the appropriate handlers to the web app.
     """
+    base_url = web_app.settings['base_url']
+
     # Normalize directories.
     for name in config.trait_names():
         if not name.endswith('_dir'):
@@ -183,10 +185,18 @@ def add_handlers(web_app, config):
         value = getattr(config, name)
         setattr(config, name, value.replace(os.sep, '/'))
 
+    # Normalize served urls.
+    for name in config.trait_names():
+        if not name.endswith('_url'):
+            continue
+        value = getattr(config, name)
+        if not value.startswith('/') or value.startswith(base_url):
+            continue
+        setattr(config, name, ujoin(base_url, value))
+
     # Set up the main page handler.
-    base_url = web_app.settings['base_url']
-    lab_url = ujoin(base_url, config.page_url, r'/?')
-    tree_url = ujoin(base_url, config.tree_url, r'/.+')
+    lab_url = ujoin(config.page_url, r'/?')
+    tree_url = ujoin(config.tree_url, r'/.+')
     handlers = [
         (lab_url, LabHandler, {'lab_config': config}),
         (tree_url, LabHandler, {'lab_config': config})
@@ -197,7 +207,6 @@ def add_handlers(web_app, config):
 
     # Handle local static assets.
     if config.static_dir:
-        config.public_url = ujoin(base_url, default_public_url)
         handlers.append((config.public_url + '(.*)', FileFindHandler, {
             'path': config.static_dir,
             'no_cache_paths': no_cache_paths
@@ -205,7 +214,6 @@ def add_handlers(web_app, config):
 
     # Handle local settings.
     if config.schemas_dir:
-        config.settings_url = ujoin(base_url, default_settings_url)
         settings_path = config.settings_url + '(?P<section_name>.+)'
         handlers.append((settings_path, SettingsHandler, {
             'app_settings_dir': config.app_settings_dir,
@@ -216,12 +224,10 @@ def add_handlers(web_app, config):
     # Handle saved workspaces.
     if config.workspaces_dir:
         # Handle JupyterLab client URLs that include workspaces.
-        config.workspaces_url = ujoin(base_url, default_workspaces_url)
         workspaces_path = ujoin(config.workspaces_url, r'/.+')
         handlers.append((workspaces_path, LabHandler, {'lab_config': config}))
 
         # Handle API requests for workspaces.
-        config.workspaces_api_url = ujoin(base_url, default_workspaces_api_url)
         workspaces_api_path = config.workspaces_api_url + '(?P<space_name>.+)'
         handlers.append((workspaces_api_path, WorkspacesHandler, {
             'workspaces_url': config.workspaces_url,
@@ -230,7 +236,6 @@ def add_handlers(web_app, config):
 
     # Handle local themes.
     if config.themes_dir:
-        config.themes_url = ujoin(base_url, default_themes_url)
         handlers.append((
             ujoin(config.themes_url, '(.*)'),
             ThemesHandler,
@@ -243,7 +248,7 @@ def add_handlers(web_app, config):
 
     # Let the lab handler act as the fallthrough option instead of a 404.
     handlers.append((
-        ujoin(base_url, config.page_url, r'[/?].*'),
+        ujoin(config.page_url, r'[/?].*'),
         NotFoundHandler,
         {'lab_config': config}
     ))
