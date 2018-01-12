@@ -185,12 +185,12 @@ def add_handlers(web_app, config):
         value = getattr(config, name)
         setattr(config, name, value.replace(os.sep, '/'))
 
-    # Normalize urls.
+    # Normalize served urls.
     for name in config.trait_names():
         if not name.endswith('_url'):
             continue
         value = getattr(config, name)
-        if value.startswith(base_url):
+        if not value.startswith('/') or value.startswith(base_url):
             continue
         setattr(config, name, ujoin(base_url, value))
 
