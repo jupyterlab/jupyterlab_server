@@ -183,10 +183,10 @@ def add_handlers(web_app, config):
         value = getattr(config, name)
         setattr(config, name, value.replace(os.sep, '/'))
 
-    # Set up the main page handler.
+    # Set up the main page handler and tree handler.
     base_url = web_app.settings['base_url']
-    lab_url = ujoin(base_url, config.page_url, r'/?')
-    tree_url = ujoin(base_url, config.tree_url, r'/.+')
+    lab_url = ujoin(base_url, config.page_url)
+    tree_url = ujoin(base_url, config.tree_url + r'.+')
     handlers = [
         (lab_url, LabHandler, {'lab_config': config}),
         (tree_url, LabHandler, {'lab_config': config})
@@ -242,11 +242,8 @@ def add_handlers(web_app, config):
         ))
 
     # Let the lab handler act as the fallthrough option instead of a 404.
-    handlers.append((
-        ujoin(base_url, config.page_url, r'[/?].*'),
-        NotFoundHandler,
-        {'lab_config': config}
-    ))
+    fallthrough_url = ujoin(base_url, config.page_url, r'.*')
+    handlers.append((fallthrough_url, NotFoundHandler, {'lab_config': config}))
 
     web_app.add_handlers('.*$', handlers)
 
