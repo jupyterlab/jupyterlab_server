@@ -44,7 +44,7 @@ class WorkspacesHandler(APIHandler):
 
         if not os.path.exists(directory):
             try:
-                os.mkdir(directory)
+                os.makedirs(directory)
             except Exception as e:
                 raise web.HTTPError(500, str(e))
 
