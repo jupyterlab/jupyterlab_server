@@ -2,6 +2,7 @@ include README.md
 include LICENSE
 include setupbase.py
 include jupyterlab_launcher/*.html
+recursive-include jupyterlab_launcher/tests *.json *.jupyterlab-workspace
 
 # Patterns to exclude from any directory
 global-exclude *~
