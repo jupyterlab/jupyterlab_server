@@ -27,7 +27,7 @@ class SettingsHandler(APIHandler):
                 try:
                     self.overrides = json.load(fid)
                 except Exception as e:
-                    self.log.warn(str(e))
+                    self.log.warn('Failed loading overrides {}'.format(str(e)))
 
     @json_errors
     @web.authenticated
@@ -46,7 +46,8 @@ class SettingsHandler(APIHandler):
                     raw = fid.read() or raw
                     settings = json.loads(json_minify(raw))
                 except Exception as e:
-                    self.log.warn(str(e))
+                    message = 'Failed loading settings ({}): {}'
+                    self.log.warn(message.format(section_name, str(e)))
 
         # Validate the parsed data against the schema.
         if len(settings):
@@ -54,7 +55,8 @@ class SettingsHandler(APIHandler):
             try:
                 validator.validate(settings)
             except ValidationError as e:
-                self.log.warn(str(e))
+                message = 'Failed validating settings ({}): {}'
+                self.log.warn(message.format(section_name, str(e)))
                 raw = '{}'
 
         # Send back the raw data to the client.
