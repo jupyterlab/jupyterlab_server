@@ -89,6 +89,8 @@ class Process(object):
             The environment for the process.
         kill_event: :class:`~threading.Event`, optional
             An event used to kill the process operation.
+        quiet: bool, optional
+            Whether to suppress output.
         """
         if not isinstance(cmd, (list, tuple)):
             raise ValueError('Command must be given as a list')
@@ -102,7 +104,11 @@ class Process(object):
             self.logger.info('> ' + list2cmdline(cmd))
         self.cmd = cmd
 
-        self.proc = self._create_process(cwd=cwd, env=env)
+        kwargs = {}
+        if quiet:
+            kwargs['stdout'] = subprocess.DEVNULL
+
+        self.proc = self._create_process(cwd=cwd, env=env, **kwargs)
         self._kill_event = kill_event or threading.Event()
 
         Process._procs.add(self)
