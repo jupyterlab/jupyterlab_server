@@ -19,9 +19,12 @@ class WorkspacesHandler(APIHandler):
 
     @json_errors
     @web.authenticated
-    def get(self, space_name):
+    def get(self, space_name=''):
         directory = self.workspaces_dir
         self.set_header('Content-Type', 'application/json')
+        if not space_name:
+            raise web.HTTPError(404, 'Workspaces list not yet implemented')
+
         workspace_path = os.path.join(directory, space_name + _file_extension)
         if os.path.exists(workspace_path):
             with open(workspace_path) as fid:

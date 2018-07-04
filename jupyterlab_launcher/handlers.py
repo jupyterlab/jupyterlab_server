@@ -222,8 +222,17 @@ def add_handlers(web_app, config):
 
         # Handle API requests for workspaces.
         config.workspaces_api_url = ujoin(base_url, default_workspaces_api_url)
-        workspaces_api_path = config.workspaces_api_url + '(?P<space_name>.+)'
+
+        # Handle requests for the list of workspaces. Make slash optional.
+        workspaces_api_path = config.workspaces_api_url + '?'
         handlers.append((workspaces_api_path, WorkspacesHandler, {
+            'workspaces_url': config.workspaces_url,
+            'path': config.workspaces_dir
+        }))
+
+        # Handle requests for an individually named workspace.
+        workspace_api_path = config.workspaces_api_url + '(?P<space_name>.+)'
+        handlers.append((workspace_api_path, WorkspacesHandler, {
             'workspaces_url': config.workspaces_url,
             'path': config.workspaces_dir
         }))
