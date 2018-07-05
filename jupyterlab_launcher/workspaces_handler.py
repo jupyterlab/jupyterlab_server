@@ -17,11 +17,39 @@ class WorkspacesHandler(APIHandler):
     def initialize(self, path, default_filename=None, workspaces_url=None):
         self.workspaces_dir = path
 
+    def ensure_directory(self):
+        if not self.workspaces_dir:
+            raise web.HTTPError(500, 'No current workspaces directory set')
+
+    @json_errors
+    @web.authenticated
+    def delete(self, space_name):
+        self.set_header('Content-Type', 'application/json')
+        self.ensure_directory()
+        directory = self.workspaces_dir
+
+        if not space_name:
+            raise web.HTTPError(400, 'Workspace name is required for DELETE')
+
+        workspace_path = os.path.join(directory, space_name + _file_extension)
+        if not os.path.exists(workspace_path):
+            raise web.HTTPError(404, 'Workspace not found: %r' % space_name)
+
+        # Attempt to delete the workspace file.
+        try:
+            os.remove(workspace_path)
+        except Exception as e:
+            raise web.HTTPError(500, str(e))
+
+        self.set_status(204)
+
     @json_errors
     @web.authenticated
     def get(self, space_name=''):
-        directory = self.workspaces_dir
         self.set_header('Content-Type', 'application/json')
+        self.ensure_directory()
+        directory = self.workspaces_dir
+
         if not space_name:
             raise web.HTTPError(404, 'Workspaces list not yet implemented')
 
@@ -41,9 +69,8 @@ class WorkspacesHandler(APIHandler):
     @json_errors
     @web.authenticated
     def put(self, space_name):
+        self.ensure_directory()
         directory = self.workspaces_dir
-        if not directory:
-            raise web.HTTPError(500, 'No current workspaces directory')
 
         if not os.path.exists(directory):
             try:
@@ -62,8 +89,10 @@ class WorkspacesHandler(APIHandler):
             raise web.HTTPError(400, str(e))
 
         # Make sure metadata ID matches the workspace name.
-        if workspace['metadata']['id'] != space_name:
-            message = 'Workspace metadata ID mismatch: %r' % space_name
+        metadata_id = workspace['metadata']['id']
+        if metadata_id != space_name:
+            message = ('Workspace metadata ID mismatch: expected "%r" got "%r"'
+                       % (space_name, metadata_id))
             raise web.HTTPError(400, message)
 
         # Write the workspace data to a file.

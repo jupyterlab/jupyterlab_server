@@ -9,6 +9,9 @@ class WorkspacesAPI(APITester):
 
     url = 'lab/api/workspaces'
 
+    def delete(self, section_name):
+        return self._req('DELETE', section_name)
+
     def get(self, section_name):
         return self._req('GET', section_name)
 
@@ -22,13 +25,22 @@ class WorkspacesAPITest(LabTestBase):
     def setUp(self):
         self.workspaces_api = WorkspacesAPI(self.request)
 
+    def test_delete(self):
+        orig = 'foo'
+        copy = 'bar'
+        data = self.workspaces_api.get(orig).json()
+        data['metadata']['id'] = copy
+
+        assert self.workspaces_api.put(copy, data).status_code == 204
+        assert self.workspaces_api.delete(copy).status_code == 204
+
     def test_get(self):
         id = 'foo'
-        data = self.workspaces_api.get(id).json()
-        assert data['metadata']['id'] == id
+
+        assert self.workspaces_api.get(id).json()['metadata']['id'] == id
 
     def test_put(self):
         id = 'foo'
         data = self.workspaces_api.get(id).json()
-        resp = self.workspaces_api.put(id, data)
-        assert resp.status_code == 204
+
+        assert self.workspaces_api.put(id, data).status_code == 204
