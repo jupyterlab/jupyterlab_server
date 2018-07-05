@@ -32,8 +32,6 @@ class SettingsHandler(APIHandler):
     @json_errors
     @web.authenticated
     def get(self, section_name):
-        self.set_header('Content-Type', 'application/json')
-
         schema = _get_schema(self.schemas_dir, section_name, self.overrides)
         path = _path(self.settings_dir, section_name, _file_extension)
         raw = '{}'

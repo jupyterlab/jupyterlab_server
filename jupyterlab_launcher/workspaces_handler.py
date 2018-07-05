@@ -21,22 +21,21 @@ class WorkspacesHandler(APIHandler):
         if not self.workspaces_dir:
             raise web.HTTPError(500, 'No current workspaces directory set')
 
+        return self.workspaces_dir
+
     @json_errors
     @web.authenticated
     def delete(self, space_name):
-        self.set_header('Content-Type', 'application/json')
-        self.ensure_directory()
-        directory = self.workspaces_dir
+        directory = self.ensure_directory()
 
         if not space_name:
             raise web.HTTPError(400, 'Workspace name is required for DELETE')
 
         workspace_path = os.path.join(directory, space_name + _file_extension)
         if not os.path.exists(workspace_path):
-            raise web.HTTPError(404, 'Workspace not found: %r' % space_name)
+            raise web.HTTPError(404, 'Workspace %r not found' % space_name)
 
-        # Attempt to delete the workspace file.
-        try:
+        try:  # to delete the workspace file.
             os.remove(workspace_path)
         except Exception as e:
             raise web.HTTPError(500, str(e))
@@ -46,9 +45,7 @@ class WorkspacesHandler(APIHandler):
     @json_errors
     @web.authenticated
     def get(self, space_name=''):
-        self.set_header('Content-Type', 'application/json')
-        self.ensure_directory()
-        directory = self.workspaces_dir
+        directory = self.ensure_directory()
 
         if not space_name:
             raise web.HTTPError(404, 'Workspaces list not yet implemented')
@@ -56,21 +53,19 @@ class WorkspacesHandler(APIHandler):
         workspace_path = os.path.join(directory, space_name + _file_extension)
         if os.path.exists(workspace_path):
             with open(workspace_path) as fid:
-                # Attempt to load and parse the workspace file.
-                try:
+                try:  # to load and parse the workspace file.
                     workspace = json.load(fid)
                 except Exception as e:
                     raise web.HTTPError(500, str(e))
         else:
-            raise web.HTTPError(404, 'Workspace not found: %r' % space_name)
+            raise web.HTTPError(404, 'Workspace %r not found' % space_name)
 
         self.finish(json.dumps(workspace))
 
     @json_errors
     @web.authenticated
     def put(self, space_name):
-        self.ensure_directory()
-        directory = self.workspaces_dir
+        directory = self.ensure_directory()
 
         if not os.path.exists(directory):
             try:
