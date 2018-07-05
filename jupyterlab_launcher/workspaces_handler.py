@@ -19,7 +19,7 @@ class WorkspacesHandler(APIHandler):
 
     def ensure_directory(self):
         if not self.workspaces_dir:
-            raise web.HTTPError(500, 'No current workspaces directory set')
+            raise web.HTTPError(500, 'Workspaces directory is not set')
 
         return self.workspaces_dir
 
@@ -37,10 +37,9 @@ class WorkspacesHandler(APIHandler):
 
         try:  # to delete the workspace file.
             os.remove(workspace_path)
+            return self.set_status(204)
         except Exception as e:
             raise web.HTTPError(500, str(e))
-
-        self.set_status(204)
 
     @json_errors
     @web.authenticated
@@ -48,19 +47,27 @@ class WorkspacesHandler(APIHandler):
         directory = self.ensure_directory()
 
         if not space_name:
-            raise web.HTTPError(404, 'Workspaces list not yet implemented')
+            if not os.path.exists(directory):
+                return self.finish(json.dumps(dict(workspaces=[])))
+
+            try:  # to read the contents of the workspaces directory.
+                items = map(lambda x: x.name, os.scandir(directory))
+                items = filter(lambda x: x.endswith(_file_extension), items)
+                items = sorted(map(lambda x: x[:-len(_file_extension)], items))
+
+                return self.finish(json.dumps(dict(workspaces=items)))
+            except Exception as e:
+                raise web.HTTPError(500, str(e))
 
         workspace_path = os.path.join(directory, space_name + _file_extension)
         if os.path.exists(workspace_path):
             with open(workspace_path) as fid:
                 try:  # to load and parse the workspace file.
-                    workspace = json.load(fid)
+                    return self.finish(json.dumps(json.load(fid)))
                 except Exception as e:
                     raise web.HTTPError(500, str(e))
         else:
             raise web.HTTPError(404, 'Workspace %r not found' % space_name)
-
-        self.finish(json.dumps(workspace))
 
     @json_errors
     @web.authenticated
@@ -86,7 +93,7 @@ class WorkspacesHandler(APIHandler):
         # Make sure metadata ID matches the workspace name.
         metadata_id = workspace['metadata']['id']
         if metadata_id != space_name:
-            message = ('Workspace metadata ID mismatch: expected "%r" got "%r"'
+            message = ('Workspace metadata ID mismatch: expected %r got %r'
                        % (space_name, metadata_id))
             raise web.HTTPError(400, message)
 
