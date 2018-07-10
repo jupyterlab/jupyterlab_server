@@ -9,6 +9,7 @@ from notebook.notebookapp import NotebookApp
 from tornado.ioloop import IOLoop
 from traitlets import Bool
 
+from .handlers import add_handlers, LabConfig
 from .process import Process
 
 
@@ -16,6 +17,8 @@ class ProcessApp(NotebookApp):
     """A notebook app that runs a separate process and exits on completion."""
 
     open_browser = Bool(False)
+
+    lab_config = LabConfig()
 
     def get_command(self):
         """Get the command and kwargs to run with `Process`.
@@ -26,6 +29,7 @@ class ProcessApp(NotebookApp):
     def start(self):
         """Start the application.
         """
+        add_handlers(self.web_app, self.lab_config)
         IOLoop.current().add_callback(self._run_command)
         NotebookApp.start(self)
 
