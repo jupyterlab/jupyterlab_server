@@ -51,9 +51,10 @@ class WorkspacesHandler(APIHandler):
                 return self.finish(json.dumps(dict(workspaces=[])))
 
             try:  # to read the contents of the workspaces directory.
-                items = map(lambda x: x.name, os.scandir(directory))
-                items = filter(lambda x: x.endswith(_file_extension), items)
-                items = sorted(map(lambda x: x[:-len(_file_extension)], items))
+                items = [item[:-len(_file_extension)]
+                         for item in os.listdir(directory)
+                         if item.endswith(_file_extension)]
+                items.sort()
 
                 return self.finish(json.dumps(dict(workspaces=items)))
             except Exception as e:
