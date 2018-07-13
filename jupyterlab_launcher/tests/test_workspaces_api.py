@@ -1,5 +1,7 @@
 """Test the kernels service API."""
 import json
+import os
+import shutil
 
 from jupyterlab_launcher.tests.utils import LabTestBase, APITester
 
@@ -23,6 +25,14 @@ class WorkspacesAPITest(LabTestBase):
     """Test the workspaces web service API"""
 
     def setUp(self):
+        data = os.path.join(
+            os.path.abspath(os.path.dirname(__file__)),
+            'workspaces')
+        for item in os.listdir(data):
+            src = os.path.join(data, item)
+            dst = os.path.join(self.lab_config.workspaces_dir, item)
+            if not os.path.exists(dst):
+                shutil.copy(src, self.lab_config.workspaces_dir)
         self.workspaces_api = WorkspacesAPI(self.request)
 
     def test_delete(self):

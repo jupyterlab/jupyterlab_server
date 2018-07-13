@@ -23,6 +23,8 @@ here = os.path.dirname(__file__)
 
 
 class LabTestBase(NotebookTestBase):
+    Application = LabLauncherApp
+    """The application being tested. Sub-classes should change this."""
 
     @classmethod
     def setup_class(cls):
@@ -38,20 +40,30 @@ class LabTestBase(NotebookTestBase):
             return path
 
         cls.home_dir = tmp('home')
-        data_dir = cls.data_dir = tmp('data')
-        config_dir = cls.config_dir = tmp('config')
-        runtime_dir = cls.runtime_dir = tmp('runtime')
-        cls.notebook_dir = tmp('notebooks')
+        cls.data_dir = tmp('data')
+        cls.config_dir = tmp('config')
+        cls.runtime_dir = tmp('runtime')
+        cls.lab_dir = tmp('lab')
+        cls.lab_schemas = tmp('labschemas')
+        cls.lab_settings = tmp('labsettings')
+        cls.lab_workspaces = tmp('labworkspaces')
         cls.env_patch = patch.dict('os.environ', {
             'HOME': cls.home_dir,
             'PYTHONPATH': os.pathsep.join(sys.path),
             'IPYTHONDIR': pjoin(cls.home_dir, '.ipython'),
             'JUPYTER_NO_CONFIG': '1',  # needed in the future
-            'JUPYTER_CONFIG_DIR': config_dir,
-            'JUPYTER_DATA_DIR': data_dir,
-            'JUPYTER_RUNTIME_DIR': runtime_dir,
+            'JUPYTER_CONFIG_DIR': cls.config_dir,
+            'JUPYTER_DATA_DIR': cls.data_dir,
+            'JUPYTER_RUNTIME_DIR': cls.runtime_dir,
+            'JUPYTERLAB_DIR': cls.lab_dir,
+            'JUPYTERLAB_SETTINGS_DIR': cls.lab_settings
         })
         cls.env_patch.start()
+        cls.lab_config = LabConfig(
+            schemas_dir=cls.lab_schemas,
+            user_settings_dir=cls.lab_settings,
+            workspaces_dir=cls.lab_workspaces)
+        cls.notebook_dir = tmp('notebooks')
         cls.path_patch = patch.multiple(
             jupyter_core.paths,
             SYSTEM_JUPYTER_PATH=[tmp('share', 'jupyter')],
@@ -61,22 +73,19 @@ class LabTestBase(NotebookTestBase):
         )
         cls.path_patch.start()
 
-        config = cls.config or Config()
-        config.NotebookNotary.db_file = ':memory:'
+        cls.config = cls.config or Config()
+        cls.config.NotebookNotary.db_file = ':memory:'
 
         cls.token = hexlify(os.urandom(4)).decode('ascii')
 
         started = Event()
 
-        lab_config = LabConfig(schemas_dir=pjoin(here, 'schemas'),
-                               user_settings_dir=tmp('user_settings'),
-                               workspaces_dir=pjoin(here, 'workspaces'))
-
         def start_thread():
             if 'asyncio' in sys.modules:
                 import asyncio
                 asyncio.set_event_loop(asyncio.new_event_loop())
-            app = cls.notebook = LabLauncherApp(
+            app = cls.notebook = cls.Application(
+                app_dir=cls.lab_dir,
                 port=cls.port,
                 port_retries=0,
                 open_browser=False,
@@ -85,10 +94,10 @@ class LabTestBase(NotebookTestBase):
                 runtime_dir=cls.runtime_dir,
                 notebook_dir=cls.notebook_dir,
                 base_url=cls.url_prefix,
-                config=config,
+                config=cls.config,
                 allow_root=True,
                 token=cls.token,
-                lab_config=lab_config
+                lab_config=cls.lab_config
             )
             # don't register signal handler during tests
             app.init_signal = lambda: None

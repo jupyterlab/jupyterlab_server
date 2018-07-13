@@ -1,5 +1,7 @@
 """Test the kernels service API."""
 import json
+import os
+import shutil
 
 from jupyterlab_launcher.tests.utils import LabTestBase, APITester
 from notebook.tests.launchnotebook import assert_http_error
@@ -21,6 +23,13 @@ class SettingsAPITest(LabTestBase):
     """Test the settings web service API"""
 
     def setUp(self):
+        src = os.path.join(
+            os.path.abspath(os.path.dirname(__file__)),
+            'schemas',
+            '@jupyterlab')
+        dst = os.path.join(self.lab_config.schemas_dir, '@jupyterlab')
+        if not os.path.exists(dst):
+            shutil.copytree(src, dst)
         self.settings_api = SettingsAPI(self.request)
 
     def test_get(self):
