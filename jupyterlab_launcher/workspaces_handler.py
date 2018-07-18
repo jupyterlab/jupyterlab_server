@@ -17,30 +17,63 @@ class WorkspacesHandler(APIHandler):
     def initialize(self, path, default_filename=None, workspaces_url=None):
         self.workspaces_dir = path
 
+    def ensure_directory(self):
+        if not self.workspaces_dir:
+            raise web.HTTPError(500, 'Workspaces directory is not set')
+
+        return self.workspaces_dir
+
     @json_errors
     @web.authenticated
-    def get(self, space_name):
-        directory = self.workspaces_dir
-        self.set_header('Content-Type', 'application/json')
+    def delete(self, space_name):
+        directory = self.ensure_directory()
+
+        if not space_name:
+            raise web.HTTPError(400, 'Workspace name is required for DELETE')
+
+        workspace_path = os.path.join(directory, space_name + _file_extension)
+        if not os.path.exists(workspace_path):
+            raise web.HTTPError(404, 'Workspace %r not found' % space_name)
+
+        try:  # to delete the workspace file.
+            os.remove(workspace_path)
+            return self.set_status(204)
+        except Exception as e:
+            raise web.HTTPError(500, str(e))
+
+    @json_errors
+    @web.authenticated
+    def get(self, space_name=''):
+        directory = self.ensure_directory()
+
+        if not space_name:
+            if not os.path.exists(directory):
+                return self.finish(json.dumps(dict(workspaces=[])))
+
+            try:  # to read the contents of the workspaces directory.
+                items = [item[:-len(_file_extension)]
+                         for item in os.listdir(directory)
+                         if item.endswith(_file_extension)]
+                items.sort()
+
+                return self.finish(json.dumps(dict(workspaces=items)))
+            except Exception as e:
+                raise web.HTTPError(500, str(e))
+
         workspace_path = os.path.join(directory, space_name + _file_extension)
         if os.path.exists(workspace_path):
             with open(workspace_path) as fid:
-                # Attempt to load and parse the workspace file.
-                try:
-                    workspace = json.load(fid)
+                try:  # to load and parse the workspace file.
+                    return self.finish(json.dumps(json.load(fid)))
                 except Exception as e:
                     raise web.HTTPError(500, str(e))
         else:
-            raise web.HTTPError(404, 'Workspace not found: %r' % space_name)
-
-        self.finish(json.dumps(workspace))
+            raise web.HTTPError(404, 'Workspace %r not found' % space_name)
 
     @json_errors
     @web.authenticated
     def put(self, space_name):
-        directory = self.workspaces_dir
-        if not directory:
-            raise web.HTTPError(500, 'No current workspaces directory')
+        directory = self.ensure_directory()
 
         if not os.path.exists(directory):
             try:
@@ -59,8 +92,10 @@ class WorkspacesHandler(APIHandler):
             raise web.HTTPError(400, str(e))
 
         # Make sure metadata ID matches the workspace name.
-        if workspace['metadata']['id'] != space_name:
-            message = 'Workspace metadata ID mismatch: %r' % space_name
+        metadata_id = workspace['metadata']['id']
+        if metadata_id != space_name:
+            message = ('Workspace metadata ID mismatch: expected %r got %r'
+                       % (space_name, metadata_id))
             raise web.HTTPError(400, message)
 
         # Write the workspace data to a file.
