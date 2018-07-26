@@ -16,7 +16,6 @@ setup_args = dict(
     name            = 'jupyterlab_launcher',
     version         = __version__,
     packages        = find_packages('.'),
-    package_data    = { 'jupyterlab_launcher': ['*.html'] },
     description     = "Jupyter Launcher",
     long_description= """
     This package is used to launch an application built using JupyterLab
@@ -39,6 +38,7 @@ setup_args = dict(
         'Programming Language :: Python :: 3.4',
         'Programming Language :: Python :: 3.5',
     ],
+    include_package_data = True
 )
 
 if 'setuptools' in sys.modules:
