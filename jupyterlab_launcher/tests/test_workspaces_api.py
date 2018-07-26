@@ -31,8 +31,9 @@ class WorkspacesAPITest(LabTestBase):
         for item in os.listdir(data):
             src = os.path.join(data, item)
             dst = os.path.join(self.lab_config.workspaces_dir, item)
-            if not os.path.exists(dst):
-                shutil.copy(src, self.lab_config.workspaces_dir)
+            if os.path.exists(dst):
+                os.remove(dst)
+            shutil.copy(src, self.lab_config.workspaces_dir)
         self.workspaces_api = WorkspacesAPI(self.request)
 
     def test_delete(self):

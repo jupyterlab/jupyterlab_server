@@ -23,21 +23,35 @@ class SettingsAPITest(LabTestBase):
     """Test the settings web service API"""
 
     def setUp(self):
+        # Copy the schema files.
         src = os.path.join(
             os.path.abspath(os.path.dirname(__file__)),
             'schemas',
             '@jupyterlab')
         dst = os.path.join(self.lab_config.schemas_dir, '@jupyterlab')
-        if not os.path.exists(dst):
-            shutil.copytree(src, dst)
+        if os.path.exists(dst):
+            shutil.rmtree(dst)
+        shutil.copytree(src, dst)
+
+        # Copy the overrides file.
+        src = os.path.join(
+            os.path.abspath(os.path.dirname(__file__)),
+            'app-settings',
+            'overrides.json')
+        dst = os.path.join(self.lab_config.app_settings_dir, 'overrides.json')
+        if os.path.exists(dst):
+            os.remove(dst)
+        shutil.copyfile(src, dst)
         self.settings_api = SettingsAPI(self.request)
 
     def test_get(self):
         id = '@jupyterlab/apputils-extension:themes'
         data = self.settings_api.get(id).json()
+        schema = data['schema']
 
         assert data['id'] == id
-        assert len(data['schema'])
+        # Check that overrides.json file is respected.
+        assert schema['properties']['theme']['default'] == 'JupyterLab Dark'
         assert 'raw' in data
 
     def test_get_bad(self):

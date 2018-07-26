@@ -44,6 +44,7 @@ class LabTestBase(NotebookTestBase):
         cls.config_dir = tmp('config')
         cls.runtime_dir = tmp('runtime')
         cls.lab_dir = tmp('lab')
+        cls.app_settings_dir = tmp('appsettings')
         cls.lab_schemas = tmp('labschemas')
         cls.lab_settings = tmp('labsettings')
         cls.lab_workspaces = tmp('labworkspaces')
@@ -60,6 +61,7 @@ class LabTestBase(NotebookTestBase):
         })
         cls.env_patch.start()
         cls.lab_config = LabConfig(
+            app_settings_dir=cls.app_settings_dir,
             schemas_dir=cls.lab_schemas,
             user_settings_dir=cls.lab_settings,
             workspaces_dir=cls.lab_workspaces)
