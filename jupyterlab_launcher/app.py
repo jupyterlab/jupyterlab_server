@@ -3,13 +3,17 @@
 
 # Copyright (c) Jupyter Development Team.
 # Distributed under the terms of the Modified BSD License.
-from notebook.notebookapp import NotebookApp
+try:
+    from notebook.notebookapp import NotebookApp as ServerApp
+except ImportError:
+    from jupyter_server.serverapp import ServerApp
+
 from traitlets import Unicode
 
 from .handlers import add_handlers, LabConfig
 
 
-class LabLauncherApp(NotebookApp):
+class LabLauncherApp(ServerApp):
 
     default_url = Unicode('/lab',
                           help='The default URL to redirect to from `/`')
@@ -18,7 +22,7 @@ class LabLauncherApp(NotebookApp):
 
     def start(self):
         add_handlers(self.web_app, self.lab_config)
-        NotebookApp.start(self)
+        ServerApp.start(self)
 
 
 main = LabLauncherApp.launch_instance

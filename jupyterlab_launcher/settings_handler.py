@@ -9,7 +9,11 @@ from jsonschema import Draft4Validator as Validator
 from tornado import web
 from .json_minify import json_minify
 
-from notebook.base.handlers import APIHandler, json_errors
+
+try:
+    from notebook.base.handlers import APIHandler, json_errors
+except ImportError:
+    from jupyter_server.base.handlers import APIHandler, json_errors
 
 
 _file_extension = '.jupyterlab-settings'

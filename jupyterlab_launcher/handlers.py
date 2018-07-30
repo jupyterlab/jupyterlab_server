@@ -7,9 +7,15 @@ import json
 import os
 
 from tornado import web, template
-from notebook.base.handlers import IPythonHandler, FileFindHandler
 from jinja2 import FileSystemLoader, TemplateError
-from notebook.utils import url_path_join as ujoin
+
+try:
+    from notebook.base.handlers import IPythonHandler as JupyterHandler, FileFindHandler
+    from notebook.utils import url_path_join as ujoin
+except ImportError:
+    from jupyter_server.base.handlers import JupyterHandler, FileFindHandler
+    from jupyter_server.utils import url_path_join as ujoin
+
 from traitlets import HasTraits, Bool, Unicode
 
 from .workspaces_handler import WorkspacesHandler
@@ -44,7 +50,7 @@ DEFAULT_TEMPLATE = template.Template("""
 """)
 
 
-class LabHandler(IPythonHandler):
+class LabHandler(JupyterHandler):
     """Render the JupyterLab View."""
 
     def initialize(self, lab_config):
@@ -99,7 +105,7 @@ class LabHandler(IPythonHandler):
 
     def render_template(self, name, **ns):
         try:
-            return IPythonHandler.render_template(self, name, **ns)
+            return JupyterHandler.render_template(self, name, **ns)
         except TemplateError:
             return DEFAULT_TEMPLATE.generate(
                 name=name, path=self.lab_config.templates_dir
