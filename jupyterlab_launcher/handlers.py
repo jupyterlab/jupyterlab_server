@@ -186,7 +186,8 @@ def add_handlers(web_app, config):
     # Set up the main page handler and tree handler.
     base_url = web_app.settings['base_url']
     lab_url = ujoin(base_url, config.page_url)
-    tree_url = ujoin(base_url, config.tree_url + r'.+')
+    config.tree_url = ujoin(base_url, config.tree_url)
+    tree_url = ujoin(config.tree_url, r'.+')
     handlers = [
         (lab_url, LabHandler, {'lab_config': config}),
         (tree_url, LabHandler, {'lab_config': config})
