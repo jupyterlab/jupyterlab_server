@@ -142,6 +142,9 @@ class LabConfig(HasTraits):
                                 'schemas directory. If given, a handler will '
                                 'be added for settings.'))
 
+    workspaces_api_url = Unicode(default_workspaces_api_url,
+                             help='The url path of the workspaces API.')
+
     workspaces_dir = Unicode('',
                              help=('The optional location of the saved '
                                    'workspaces directory. If given, a handler '
@@ -185,12 +188,11 @@ def add_handlers(web_app, config):
 
     # Set up the main page handler and tree handler.
     base_url = web_app.settings['base_url']
-    lab_url = ujoin(base_url, config.page_url)
-    config.tree_url = ujoin(base_url, config.tree_url)
-    tree_url = ujoin(config.tree_url, r'.+')
+    lab_path = ujoin(base_url, config.page_url)
+    tree_path = ujoin(base_url, config.tree_url, r'.+')
     handlers = [
-        (lab_url, LabHandler, {'lab_config': config}),
-        (tree_url, LabHandler, {'lab_config': config})
+        (lab_path, LabHandler, {'lab_config': config}),
+        (tree_path, LabHandler, {'lab_config': config})
     ]
 
     # Cache all or none of the files depending on the `cache_files` setting.
@@ -198,16 +200,18 @@ def add_handlers(web_app, config):
 
     # Handle local static assets.
     if config.static_dir:
-        config.public_url = ujoin(base_url, default_public_url)
-        handlers.append((config.public_url + '(.*)', FileFindHandler, {
+        public_path = ujoin(base_url, config.public_url + '(.*)')
+        handlers.append((public_path, FileFindHandler, {
             'path': config.static_dir,
             'no_cache_paths': no_cache_paths
         }))
 
     # Handle local settings.
     if config.schemas_dir:
-        config.settings_url = ujoin(base_url, default_settings_url)
-        settings_path = config.settings_url + '(?P<section_name>.+)'
+        settings_path = ujoin(
+            base_url,
+            config.settings_url + '(?P<section_name>.+)'
+        )
         handlers.append((settings_path, SettingsHandler, {
             'app_settings_dir': config.app_settings_dir,
             'schemas_dir': config.schemas_dir,
@@ -217,22 +221,21 @@ def add_handlers(web_app, config):
     # Handle saved workspaces.
     if config.workspaces_dir:
         # Handle JupyterLab client URLs that include workspaces.
-        config.workspaces_url = ujoin(base_url, default_workspaces_url)
-        workspaces_path = ujoin(config.workspaces_url, r'/.+')
+        workspaces_path = ujoin(base_url, config.workspaces_url, r'/.+')
         handlers.append((workspaces_path, LabHandler, {'lab_config': config}))
 
-        # Handle API requests for workspaces.
-        config.workspaces_api_url = ujoin(base_url, default_workspaces_api_url)
-
         # Handle requests for the list of workspaces. Make slash optional.
-        workspaces_api_path = config.workspaces_api_url + '?'
+        workspaces_api_path = ujoin(base_url, config.workspaces_api_url + '?')
         handlers.append((workspaces_api_path, WorkspacesHandler, {
             'workspaces_url': config.workspaces_url,
             'path': config.workspaces_dir
         }))
 
         # Handle requests for an individually named workspace.
-        workspace_api_path = config.workspaces_api_url + '(?P<space_name>.+)'
+        workspace_api_path = ujoin(
+            base_url,
+            config.workspaces_api_url + '(?P<space_name>.+)'
+        )
         handlers.append((workspace_api_path, WorkspacesHandler, {
             'workspaces_url': config.workspaces_url,
             'path': config.workspaces_dir
@@ -240,9 +243,9 @@ def add_handlers(web_app, config):
 
     # Handle local themes.
     if config.themes_dir:
-        config.themes_url = ujoin(base_url, default_themes_url)
+        themes_path = ujoin(base_url, config.themes_url, '(.*)')
         handlers.append((
-            ujoin(config.themes_url, '(.*)'),
+            themes_path,
             ThemesHandler,
             {
                 'themes_url': config.themes_url,
