@@ -10,12 +10,9 @@ import sys
 import unicodedata
 import urllib
 from tornado import web
+from jupyter_server.utils import url_path_join as ujoin
 
-try:
-    from notebook.base.handlers import APIHandler, json_errors
-except ImportError:
-    from jupyter_server.base.handlers import APIHandler, json_errors
-    from jupyter_server.utils import url_path_join as ujoin
+from .server import APIHandler, json_errors
 
 
 PY2 = sys.version_info[0] < 3

@@ -3,13 +3,10 @@
 
 # Copyright (c) Jupyter Development Team.
 # Distributed under the terms of the Modified BSD License.
-try:
-    from notebook.notebookapp import NotebookApp as ServerApp
-except ImportError:
-    from jupyter_server.serverapp import ServerApp
 
 from traitlets import Unicode
 
+from .server import ServerApp
 from .handlers import add_handlers, LabConfig
 
 

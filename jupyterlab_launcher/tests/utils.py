@@ -13,12 +13,8 @@ except ImportError:
 from ipython_genutils.tempdir import TemporaryDirectory
 from jupyterlab_launcher import LabLauncherApp, LabConfig
 
-try:
-    from notebook.tests.launchnotebook import NotebookTestBase as ServerTestBase
-    from notebook.utils import url_path_join
-except ImportError:
-    from jupyter_server.tests.launchserver import ServerTestBase
-    from jupyter_server.utils import url_path_join
+from ..servertest import ServerTestBase
+from ..server import url_path_join
 
 import jupyter_core
 from traitlets.config import Config

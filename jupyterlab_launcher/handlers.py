@@ -9,15 +9,9 @@ import os
 from tornado import web, template
 from jinja2 import FileSystemLoader, TemplateError
 
-try:
-    from notebook.base.handlers import IPythonHandler as JupyterHandler, FileFindHandler
-    from notebook.utils import url_path_join as ujoin
-except ImportError:
-    from jupyter_server.base.handlers import JupyterHandler, FileFindHandler
-    from jupyter_server.utils import url_path_join as ujoin
-
 from traitlets import HasTraits, Bool, Unicode
 
+from .server import JupyterHandler, FileFindHandler, url_path_join as ujoin
 from .workspaces_handler import WorkspacesHandler
 from .settings_handler import SettingsHandler
 from .themes_handler import ThemesHandler
