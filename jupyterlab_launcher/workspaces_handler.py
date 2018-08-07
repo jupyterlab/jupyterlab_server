@@ -6,11 +6,11 @@ import hashlib
 import json
 import os
 import re
+import unicodedata
 
 from notebook.base.handlers import APIHandler, json_errors
 from notebook.utils import url_path_join as ujoin
 from tornado import web
-from translitcodec import codecs
 from urllib.parse import unquote
 
 
@@ -19,10 +19,6 @@ _cache = dict()
 
 # The JupyterLab workspace file extension.
 _file_extension = '.jupyterlab-workspace'
-
-# Regular expression for transforming a URL path into a slug.
-# cf. http://flask.pocoo.org/snippets/5/
-_punct_re = re.compile(r'[\t !"#$%&\'()*\-/<=>?@\[\\\]^_`{|},.]+')
 
 
 def _list_workspaces(directory, prefix):
@@ -52,18 +48,24 @@ def _list_workspaces(directory, prefix):
 
 
 def _slug(raw, base, sign=True):
-    """Transform a raw workspace name as a file system safe slug."""
-    result = []
-    raw = ujoin(base, raw)
-    raw = unquote(raw)
-    for word in _punct_re.split(raw.lower()):
-        word = codecs.encode(word, 'translit/long')
-        if word:
-            result.append(word)
+    """
+    Convert spaces to hyphens. Remove characters that aren't alphanumerics
+    underscores, or hyphens. Convert to lowercase. Strip leading and trailing
+    whitespace. And add an optional short signature to prevent collisions.
+    Modified from Django utils:
+    https://github.com/django/django/blob/master/django/utils/text.py
+    """
+    value = unquote(ujoin(base, raw))
+    value = (unicodedata
+             .normalize('NFKC', value)
+             .encode('ascii', 'ignore')
+             .decode('ascii'))
+    value = re.sub(r'[^\w\s-]', '', value).strip().lower()
+    value = re.sub(r'[-\s]+', '-', value)
     if sign:
         signature = hashlib.sha256(raw.encode('utf-8')).hexdigest()[:4]
-        result.append(signature)
-    return u'-'.join(result)
+        value = value + '-' + signature
+    return value
 
 
 class WorkspacesHandler(APIHandler):
@@ -81,7 +83,7 @@ class WorkspacesHandler(APIHandler):
     @json_errors
     @web.authenticated
     def delete(self, space_name):
-        base_url = self.settings['base_url']
+        base_url = self.base_url
         directory = self.ensure_directory()
 
         if not space_name:
@@ -91,7 +93,8 @@ class WorkspacesHandler(APIHandler):
         workspace_path = os.path.join(directory, slug + _file_extension)
 
         if not os.path.exists(workspace_path):
-            raise web.HTTPError(404, 'Workspace %r not found' % space_name)
+            raise web.HTTPError(404, 'Workspace %r (%r) not found' %
+                                     (space_name, slug))
 
         try:  # to delete the workspace file.
             os.remove(workspace_path)
@@ -102,7 +105,7 @@ class WorkspacesHandler(APIHandler):
     @json_errors
     @web.authenticated
     def get(self, space_name=''):
-        base_url = self.settings['base_url']
+        base_url = self.base_url
         directory = self.ensure_directory()
 
         if not space_name:
@@ -120,12 +123,13 @@ class WorkspacesHandler(APIHandler):
                 except Exception as e:
                     raise web.HTTPError(500, str(e))
         else:
-            raise web.HTTPError(404, 'Workspace %r not found' % space_name)
+            raise web.HTTPError(404, 'Workspace %r (%r) not found' %
+                                     (space_name, slug))
 
     @json_errors
     @web.authenticated
     def put(self, space_name):
-        base_url = self.settings['base_url']
+        base_url = self.base_url
         directory = self.ensure_directory()
 
         if not os.path.exists(directory):
