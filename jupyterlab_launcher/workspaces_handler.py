@@ -155,8 +155,11 @@ class WorkspacesHandler(APIHandler):
             raise web.HTTPError(400, str(e))
 
         # Make sure metadata ID matches the workspace name.
+        # Transparently support an optional inital root `/`.
         metadata_id = workspace['metadata']['id']
-        if metadata_id != space_name:
+        metadata_id = (metadata_id if metadata_id.startswith('/')
+                       else '/' + metadata_id)
+        if metadata_id != '/' + space_name:
             message = ('Workspace metadata ID mismatch: expected %r got %r'
                        % (space_name, metadata_id))
             raise web.HTTPError(400, message)
