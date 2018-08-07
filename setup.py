@@ -49,6 +49,7 @@ if 'setuptools' in sys.modules:
     setup_args['install_requires'] = [
         'jsonschema>=2.6.0',
         'notebook>=4.2.0',
+        'translitcodec>=0.4.0'
     ]
 
 if __name__ == '__main__':

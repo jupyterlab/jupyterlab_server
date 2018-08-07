@@ -143,7 +143,7 @@ class LabConfig(HasTraits):
                                 'be added for settings.'))
 
     workspaces_api_url = Unicode(default_workspaces_api_url,
-                             help='The url path of the workspaces API.')
+                                 help='The url path of the workspaces API.')
 
     workspaces_dir = Unicode('',
                              help=('The optional location of the saved '

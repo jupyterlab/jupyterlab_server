@@ -4,6 +4,7 @@ import os
 import shutil
 
 from jupyterlab_launcher.tests.utils import LabTestBase, APITester
+from notebook.tests.launchnotebook import assert_http_error
 
 
 class WorkspacesAPI(APITester):
@@ -37,11 +38,10 @@ class WorkspacesAPITest(LabTestBase):
         self.workspaces_api = WorkspacesAPI(self.request)
 
     def test_delete(self):
-        orig = 'foo'
+        orig = 'f/o/o/'
         copy = 'baz'
         data = self.workspaces_api.get(orig).json()
         data['metadata']['id'] = copy
-
         assert self.workspaces_api.put(copy, data).status_code == 204
         assert self.workspaces_api.delete(copy).status_code == 204
 
@@ -51,7 +51,7 @@ class WorkspacesAPITest(LabTestBase):
         assert self.workspaces_api.get(id).json()['metadata']['id'] == id
 
     def test_listing(self):
-        listing = set(['foo', 'bar'])
+        listing = set(['foo', 'f/o/o'])
 
         assert set(self.workspaces_api.get().json()['workspaces']) == listing
 
@@ -60,3 +60,11 @@ class WorkspacesAPITest(LabTestBase):
         data = self.workspaces_api.get(id).json()
 
         assert self.workspaces_api.put(id, data).status_code == 204
+
+    def test_bad_put(self):
+        orig = 'foo'
+        copy = 'bar'
+        data = self.workspaces_api.get(orig).json()
+
+        with assert_http_error(400):
+            self.workspaces_api.put(copy, data)
