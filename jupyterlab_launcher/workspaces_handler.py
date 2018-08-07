@@ -6,12 +6,16 @@ import hashlib
 import json
 import os
 import re
+import sys
 import unicodedata
+import urllib
 
 from notebook.base.handlers import APIHandler, json_errors
 from notebook.utils import url_path_join as ujoin
 from tornado import web
-from urllib.parse import unquote
+
+
+PY2 = sys.version_info[0] < 3
 
 
 # A cache of workspace names and their slug file name counterparts.
@@ -55,7 +59,9 @@ def _slug(raw, base, sign=True):
     Modified from Django utils:
     https://github.com/django/django/blob/master/django/utils/text.py
     """
-    value = unquote(ujoin(base, raw))
+    value = (
+        urllib.unquote(ujoin(base, raw)) if PY2
+        else urllib.parse.unquote(ujoin(base, raw)))
     value = (unicodedata
              .normalize('NFKC', value)
              .encode('ascii', 'ignore')
