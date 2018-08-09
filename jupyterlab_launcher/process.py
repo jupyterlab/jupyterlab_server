@@ -109,6 +109,9 @@ class Process(object):
             # subprocess.DEVNULL was only implemented in version 3.3
             if hasattr(subprocess, 'DEVNULL'):
                 kwargs['stdout'] = subprocess.DEVNULL
+            else:
+                msg = 'Please install subprocess32 v3.3 or higher.'
+                raise ValueError(msg)
 
         self.proc = self._create_process(cwd=cwd, env=env, **kwargs)
         self._kill_event = kill_event or threading.Event()
