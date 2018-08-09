@@ -79,10 +79,7 @@ def _slug(raw, base, sign=True, max_length=128 - len(_file_extension)):
              .decode('ascii'))
     value = re.sub(r'[^\w\s-]', '', value).strip()
     value = re.sub(r'[-\s]+', '-', value)
-    if signature:
-        return value[:max_length - len(signature)] + signature
-    else:
-        return value[:max_length]
+    return value[:max_length - len(signature)] + signature
 
 
 class WorkspacesHandler(APIHandler):
