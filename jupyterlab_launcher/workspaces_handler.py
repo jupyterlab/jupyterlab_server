@@ -51,27 +51,38 @@ def _list_workspaces(directory, prefix):
     return workspaces
 
 
-def _slug(raw, base, sign=True):
+def _slug(raw, base, sign=True, max_length=128 - len(_file_extension)):
     """
+    Use the common superset of raw and base values to build a slug shorter
+    than max_length.
     Convert spaces to hyphens. Remove characters that aren't alphanumerics
     underscores, or hyphens. Convert to lowercase. Strip leading and trailing
-    whitespace. And add an optional short signature to prevent collisions.
+    whitespace.
+    Add an optional short signature suffix to prevent collisions.
     Modified from Django utils:
     https://github.com/django/django/blob/master/django/utils/text.py
     """
-    value = (
-        urllib.unquote(ujoin(base, raw)) if PY2
-        else urllib.parse.unquote(ujoin(base, raw)))
+    signature = ''
+    if sign:
+        signature = '-' + hashlib.sha256(raw.encode('utf-8')).hexdigest()[:4]
+    base = (base if base.startswith('/') else '/' + base).lower()
+    raw = (raw if raw.startswith('/') else '/' + raw).lower()
+    common = 0
+    limit = min(len(base), len(raw))
+    while common < limit and base[common] == raw[common]:
+        common += 1
+    value = ujoin(base[common:], raw)
+    value = urllib.unquote(value) if PY2 else urllib.parse.unquote(value)
     value = (unicodedata
              .normalize('NFKC', value)
              .encode('ascii', 'ignore')
              .decode('ascii'))
-    value = re.sub(r'[^\w\s-]', '', value).strip().lower()
+    value = re.sub(r'[^\w\s-]', '', value).strip()
     value = re.sub(r'[-\s]+', '-', value)
-    if sign:
-        signature = hashlib.sha256(raw.encode('utf-8')).hexdigest()[:4]
-        value = value + '-' + signature
-    return value
+    if signature:
+        return value[:max_length - len(signature)] + signature
+    else:
+        return value[:max_length]
 
 
 class WorkspacesHandler(APIHandler):
