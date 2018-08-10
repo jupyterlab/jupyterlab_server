@@ -72,7 +72,8 @@ def _slug(raw, base, sign=True, max_length=128 - len(_file_extension)):
     while common < limit and base[common] == raw[common]:
         common += 1
     value = ujoin(base[common:], raw)
-    value = urllib.unquote(value) if PY2 else urllib.parse.unquote(value)
+    value = (unicode(urllib.unquote(value))
+             if PY2 else urllib.parse.unquote(value))
     value = (unicodedata
              .normalize('NFKC', value)
              .encode('ascii', 'ignore')
