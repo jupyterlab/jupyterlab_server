@@ -1,8 +1,5 @@
 # coding: utf-8
 """A lab app that runs a sub process for a demo or a test."""
-
-from __future__ import print_function, absolute_import
-
 import sys
 
 from tornado.ioloop import IOLoop
@@ -31,7 +28,7 @@ class ProcessApp(ServerApp):
         """
         add_handlers(self.web_app, self.lab_config)
         IOLoop.current().add_callback(self._run_command)
-        NotebookApp.start(self)
+        ServerApp.start(self)
 
     def _run_command(self):
         command, kwargs = self.get_command()
