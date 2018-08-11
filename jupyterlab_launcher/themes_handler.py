@@ -6,11 +6,7 @@
 from os import path as osp
 import os
 import re
-
-try:
-    from urllib.parse import urlparse
-except ImportError:
-    from urlparse import urlparse
+from urllib.parse import urlparse
 
 from .server import FileFindHandler, url_path_join as ujoin
 

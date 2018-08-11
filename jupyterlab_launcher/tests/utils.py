@@ -1,16 +1,12 @@
+from binascii import hexlify
 import errno
 import os
 import sys
 from os.path import join as pjoin
-from binascii import hexlify
+from tempfile import TemporaryDirectory
 from threading import Thread, Event
+from unittest.mock import patch
 
-try:
-    from unittest.mock import patch
-except ImportError:
-    from mock import patch  # py2
-
-from ipython_genutils.tempdir import TemporaryDirectory
 from jupyterlab_launcher import LabLauncherApp, LabConfig
 
 from ..servertest import ServerTestBase

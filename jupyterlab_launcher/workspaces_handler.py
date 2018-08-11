@@ -6,15 +6,11 @@ import hashlib
 import json
 import os
 import re
-import sys
 import unicodedata
 import urllib
 from tornado import web
 
 from .server import APIHandler, json_errors, url_path_join as ujoin
-
-
-PY2 = sys.version_info[0] < 3
 
 
 # A cache of workspace names and their slug file name counterparts.
@@ -71,8 +67,7 @@ def _slug(raw, base, sign=True, max_length=128 - len(_file_extension)):
     while common < limit and base[common] == raw[common]:
         common += 1
     value = ujoin(base[common:], raw)
-    value = (unicode(urllib.unquote(value))
-             if PY2 else urllib.parse.unquote(value))
+    value = urllib.parse.unquote(value)
     value = (unicodedata
              .normalize('NFKC', value)
              .encode('ascii', 'ignore')
