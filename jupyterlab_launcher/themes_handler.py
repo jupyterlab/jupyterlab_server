@@ -12,8 +12,7 @@ try:
 except ImportError:
     from urlparse import urlparse
 
-from notebook.base.handlers import FileFindHandler
-from notebook.utils import url_path_join as ujoin
+from .server import FileFindHandler, url_path_join as ujoin
 
 
 class ThemesHandler(FileFindHandler):

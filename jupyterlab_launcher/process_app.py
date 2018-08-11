@@ -5,15 +5,15 @@ from __future__ import print_function, absolute_import
 
 import sys
 
-from notebook.notebookapp import NotebookApp
 from tornado.ioloop import IOLoop
 from traitlets import Bool
 
+from .server import ServerApp
 from .handlers import add_handlers, LabConfig
 from .process import Process
 
 
-class ProcessApp(NotebookApp):
+class ProcessApp(ServerApp):
     """A notebook app that runs a separate process and exits on completion."""
 
     open_browser = Bool(False)

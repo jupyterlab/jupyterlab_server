@@ -12,8 +12,10 @@ except ImportError:
 
 from ipython_genutils.tempdir import TemporaryDirectory
 from jupyterlab_launcher import LabLauncherApp, LabConfig
-from notebook.tests.launchnotebook import NotebookTestBase
-from notebook.utils import url_path_join
+
+from ..servertest import ServerTestBase
+from ..server import url_path_join
+
 import jupyter_core
 from traitlets.config import Config
 from tornado.ioloop import IOLoop
@@ -22,7 +24,7 @@ from tornado.ioloop import IOLoop
 here = os.path.dirname(__file__)
 
 
-class LabTestBase(NotebookTestBase):
+class LabTestBase(ServerTestBase):
     Application = LabLauncherApp
     """The application being tested. Sub-classes should change this."""
 

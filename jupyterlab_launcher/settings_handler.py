@@ -4,13 +4,13 @@
 # Distributed under the terms of the Modified BSD License.
 import json
 import os
+
 from jsonschema import ValidationError
 from jsonschema import Draft4Validator as Validator
 from tornado import web
+
 from .json_minify import json_minify
-
-from notebook.base.handlers import APIHandler, json_errors
-
+from .server import APIHandler, json_errors
 
 _file_extension = '.jupyterlab-settings'
 
