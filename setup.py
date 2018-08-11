@@ -4,7 +4,6 @@
 # Copyright (c) Jupyter Development Team.
 # Distributed under the terms of the Modified BSD License.
 
-from __future__ import print_function
 from setuptools import setup, find_packages
 import sys
 from setupbase import (
@@ -33,7 +32,6 @@ setup_args = dict(
         'Intended Audience :: Science/Research',
         'License :: OSI Approved :: BSD License',
         'Programming Language :: Python',
-        'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3',
         'Programming Language :: Python :: 3.4',
         'Programming Language :: Python :: 3.5',
@@ -42,8 +40,8 @@ setup_args = dict(
 )
 
 if 'setuptools' in sys.modules:
+    setup_args['python_requires'] = '>=3.5'
     setup_args['extras_require'] = {
-        'test:python_version == "2.7"': ['mock'],
         'test': ['pytest', 'requests']
     }
     setup_args['install_requires'] = [

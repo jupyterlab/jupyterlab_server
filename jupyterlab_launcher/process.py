@@ -3,13 +3,14 @@
 
 # Copyright (c) Jupyter Development Team.
 # Distributed under the terms of the Modified BSD License.
-from __future__ import print_function
 
 import atexit
 import logging
 import os
 import re
+from shutil import which as _which
 import signal
+import subprocess
 import sys
 import threading
 import time
@@ -17,12 +18,6 @@ import weakref
 
 from tornado import gen
 
-from ipython_genutils.py3compat import which as _which
-
-try:
-    import subprocess32 as subprocess
-except ImportError:
-    import subprocess
 
 try:
     import pty
