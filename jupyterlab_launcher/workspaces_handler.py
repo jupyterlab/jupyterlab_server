@@ -12,12 +12,11 @@ from tornado import web
 
 from .server import APIHandler, json_errors, url_path_join as ujoin
 
+# The JupyterLab workspace file extension.
+WORKSPACE_EXTENSION = '.jupyterlab-workspace'
 
 # A cache of workspace names and their slug file name counterparts.
 _cache = dict()
-
-# The JupyterLab workspace file extension.
-_file_extension = '.jupyterlab-workspace'
 
 
 def _list_workspaces(directory, prefix):
@@ -46,7 +45,7 @@ def _list_workspaces(directory, prefix):
     return workspaces
 
 
-def _slug(raw, base, sign=True, max_length=128 - len(_file_extension)):
+def slugify(raw, base, sign=True, max_length=128 - len(WORKSPACE_EXTENSION)):
     """
     Use the common superset of raw and base values to build a slug shorter
     than max_length.
@@ -98,8 +97,8 @@ class WorkspacesHandler(APIHandler):
         if not space_name:
             raise web.HTTPError(400, 'Workspace name is required for DELETE')
 
-        slug = _slug(space_name, base_url)
-        workspace_path = os.path.join(directory, slug + _file_extension)
+        slug = slugify(space_name, base_url)
+        workspace_path = os.path.join(directory, slug + WORKSPACE_EXTENSION)
 
         if not os.path.exists(workspace_path):
             raise web.HTTPError(404, 'Workspace %r (%r) not found' %
@@ -118,12 +117,12 @@ class WorkspacesHandler(APIHandler):
         directory = self.ensure_directory()
 
         if not space_name:
-            prefix = _slug('', base_url, sign=False)
+            prefix = slugify('', base_url, sign=False)
             workspaces = _list_workspaces(directory, prefix)
             return self.finish(json.dumps(dict(workspaces=workspaces)))
 
-        slug = _slug(space_name, base_url)
-        workspace_path = os.path.join(directory, slug + _file_extension)
+        slug = slugify(space_name, base_url)
+        workspace_path = os.path.join(directory, slug + WORKSPACE_EXTENSION)
 
         if os.path.exists(workspace_path):
             with open(workspace_path) as fid:
@@ -167,8 +166,8 @@ class WorkspacesHandler(APIHandler):
                        % (space_name, metadata_id))
             raise web.HTTPError(400, message)
 
-        slug = _slug(space_name, base_url)
-        workspace_path = os.path.join(directory, slug + _file_extension)
+        slug = slugify(space_name, base_url)
+        workspace_path = os.path.join(directory, slug + WORKSPACE_EXTENSION)
 
         # Write the workspace data to a file.
         with open(workspace_path, 'w') as fid:
