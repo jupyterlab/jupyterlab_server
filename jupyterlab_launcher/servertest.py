@@ -6,8 +6,12 @@
 #
 
 try:
-    from notebook.tests.launchnotebook import NotebookTestBase as ServerTestBase
+    from notebook.tests.launchnotebook import (
+        NotebookTestBase as ServerTestBase
+    )
     from notebook.tests.launchnotebook import assert_http_error
 except ImportError:
     from jupyter_server.tests.launchserver import ServerTestBase
     from jupyter_server.tests.launchnotebook import assert_http_error
+    assert ServerTestBase
+    assert assert_http_error
