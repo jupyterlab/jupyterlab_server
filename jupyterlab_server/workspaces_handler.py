@@ -27,7 +27,7 @@ def _list_workspaces(directory, prefix):
     items = [item
              for item in os.listdir(directory)
              if item.startswith(prefix) and
-             item.endswith(_file_extension)]
+             item.endswith(WORKSPACE_EXTENSION)]
     items.sort()
 
     for slug in items:

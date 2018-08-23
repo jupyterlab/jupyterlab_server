@@ -1,5 +1,5 @@
 # coding: utf-8
-"""Jupyter Lab Launcher"""
+"""Jupyter Lab Server"""
 
 # Copyright (c) Jupyter Development Team.
 # Distributed under the terms of the Modified BSD License.
@@ -10,7 +10,7 @@ from .server import ServerApp
 from .handlers import add_handlers, LabConfig
 
 
-class LabLauncherApp(ServerApp):
+class LabServerApp(ServerApp):
 
     default_url = Unicode('/lab',
                           help='The default URL to redirect to from `/`')
@@ -22,4 +22,4 @@ class LabLauncherApp(ServerApp):
         ServerApp.start(self)
 
 
-main = LabLauncherApp.launch_instance
+main = LabServerApp.launch_instance

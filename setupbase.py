@@ -24,7 +24,7 @@ except ImportError:
 
 here = os.path.abspath(os.path.dirname(__file__))
 is_repo = os.path.exists(pjoin(here, '.git'))
-name = 'jupyterlab_launcher'
+name = 'jupyterlab_server'
 
 version_ns = {}
 with io.open(pjoin(here, name, '_version.py'), encoding="utf8") as f:

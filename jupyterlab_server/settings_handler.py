@@ -11,8 +11,7 @@ from tornado import web
 
 from .json_minify import json_minify
 from .server import APIHandler, json_errors
-
-_file_extension = '.jupyterlab-settings'
+from .workspaces_handler import WORKSPACE_EXTENSION
 
 
 class SettingsHandler(APIHandler):
@@ -33,7 +32,7 @@ class SettingsHandler(APIHandler):
     @web.authenticated
     def get(self, section_name):
         schema = _get_schema(self.schemas_dir, section_name, self.overrides)
-        path = _path(self.settings_dir, section_name, _file_extension)
+        path = _path(self.settings_dir, section_name, WORKSPACE_EXTENSION)
         raw = '{}'
         settings = dict()
 
@@ -79,7 +78,8 @@ class SettingsHandler(APIHandler):
             raise web.HTTPError(400, str(e))
 
         # Write the raw data (comments included) to a file.
-        path = _path(self.settings_dir, section_name, _file_extension, True)
+        settings_dir = self.settings_dir
+        path = _path(settings_dir, section_name, WORKSPACE_EXTENSION, True)
         with open(path, 'w') as fid:
             fid.write(raw)
 

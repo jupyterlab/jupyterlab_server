@@ -1,5 +1,5 @@
 # coding: utf-8
-"""Jupyter Lab Launcher handlers"""
+"""Jupyter Lab Server handlers"""
 
 # Copyright (c) Jupyter Development Team.
 # Distributed under the terms of the Modified BSD License.

@@ -3,7 +3,7 @@ import json
 import os
 import shutil
 
-from jupyterlab_launcher.tests.utils import LabTestBase, APITester
+from jupyterlab_server.tests.utils import LabTestBase, APITester
 from ..servertest import assert_http_error
 
 

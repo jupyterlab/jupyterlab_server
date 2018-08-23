@@ -1,5 +1,5 @@
 # coding: utf-8
-"""JupyterLab Launcher process handler"""
+"""JupyterLab Server process handler"""
 
 # Copyright (c) Jupyter Development Team.
 # Distributed under the terms of the Modified BSD License.

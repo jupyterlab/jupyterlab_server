@@ -9,10 +9,10 @@ import sys
 from setupbase import create_cmdclass, __version__
 
 setup_args = dict(
-    name='jupyterlab_launcher',
+    name='jupyterlab_server',
     version=__version__,
     packages=find_packages('.'),
-    description='Jupyter Launcher',
+    description='Jupyter Server',
     long_description="""
     This package is used to launch an application built using JupyterLab
     """,
