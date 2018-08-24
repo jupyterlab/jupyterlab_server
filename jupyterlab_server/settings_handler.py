@@ -64,7 +64,8 @@ class SettingsHandler(APIHandler):
     @json_errors
     @web.authenticated
     def put(self, section_name):
-        if not self.settings_dir:
+        settings_dir = self.settings_dir
+        if not settings_dir:
             raise web.HTTPError(404, 'No current settings directory')
 
         raw = self.request.body.strip().decode(u'utf-8')
@@ -78,7 +79,6 @@ class SettingsHandler(APIHandler):
             raise web.HTTPError(400, str(e))
 
         # Write the raw data (comments included) to a file.
-        settings_dir = self.settings_dir
         path = _path(settings_dir, section_name, WORKSPACE_EXTENSION, True)
         with open(path, 'w') as fid:
             fid.write(raw)

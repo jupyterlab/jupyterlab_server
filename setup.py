@@ -4,9 +4,9 @@
 # Copyright (c) Jupyter Development Team.
 # Distributed under the terms of the Modified BSD License.
 
-from setuptools import setup, find_packages
-import sys
 from setupbase import create_cmdclass, __version__
+from setuptools import find_packages, setup
+import sys
 
 setup_args = dict(
     name='jupyterlab_server',
