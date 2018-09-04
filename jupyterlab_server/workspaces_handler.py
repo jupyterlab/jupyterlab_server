@@ -20,6 +20,10 @@ _cache = dict()
 
 
 def _list_workspaces(directory, prefix):
+    """
+    Return the list of workspaces in a given directory beginning with the
+    given prefix.
+    """
     workspaces = []
     if not os.path.exists(directory):
         return workspaces
