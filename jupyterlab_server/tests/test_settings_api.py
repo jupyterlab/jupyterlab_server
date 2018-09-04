@@ -54,14 +54,12 @@ class SettingsAPITest(LabTestBase):
         assert schema['properties']['theme']['default'] == 'JupyterLab Dark'
         assert 'raw' in data
 
-    def test_listing(self):
-        listing = set([])
-
-        assert set(self.settings_api.get('').json()['settings']) == listing
-
     def test_get_bad(self):
         with assert_http_error(404):
             self.settings_api.get('foo')
+
+    def test_listing(self):
+        assert set(self.settings_api.get('').json()['settings']) == set([])
 
     def test_patch(self):
         id = '@jupyterlab/shortcuts-extension:plugin'
