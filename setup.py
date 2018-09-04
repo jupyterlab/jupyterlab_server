@@ -12,7 +12,7 @@ setup_args = dict(
     name='jupyterlab_server',
     version=__version__,
     packages=find_packages('.'),
-    description='Jupyter Server',
+    description='JupyterLab Server',
     long_description="""
     This package is used to launch an application built using JupyterLab
     """,

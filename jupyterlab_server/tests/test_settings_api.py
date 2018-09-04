@@ -12,7 +12,7 @@ class SettingsAPI(APITester):
 
     url = 'lab/api/settings'
 
-    def get(self, section_name):
+    def get(self, section_name=''):
         return self._req('GET', section_name)
 
     def put(self, section_name, body):
@@ -53,6 +53,11 @@ class SettingsAPITest(LabTestBase):
         # Check that overrides.json file is respected.
         assert schema['properties']['theme']['default'] == 'JupyterLab Dark'
         assert 'raw' in data
+
+    def test_listing(self):
+        listing = set([])
+
+        assert set(self.settings_api.get('').json()['settings']) == listing
 
     def test_get_bad(self):
         with assert_http_error(404):

@@ -56,11 +56,13 @@ def slugify(raw, base, sign=True, max_length=128 - len(WORKSPACE_EXTENSION)):
     Modified from Django utils:
     https://github.com/django/django/blob/master/django/utils/text.py
     """
+    raw = raw if raw.startswith('/') else '/' + raw
     signature = ''
     if sign:
-        signature = '-' + hashlib.sha256(raw.encode('utf-8')).hexdigest()[:4]
+        data = raw[1:]  # Remove initial slash that always exists for digest.
+        signature = '-' + hashlib.sha256(data.encode('utf-8')).hexdigest()[:4]
     base = (base if base.startswith('/') else '/' + base).lower()
-    raw = (raw if raw.startswith('/') else '/' + raw).lower()
+    raw = raw.lower()
     common = 0
     limit = min(len(base), len(raw))
     while common < limit and base[common] == raw[common]:

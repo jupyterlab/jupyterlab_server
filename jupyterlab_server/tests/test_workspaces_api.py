@@ -51,6 +51,7 @@ class WorkspacesAPITest(LabTestBase):
         assert self.workspaces_api.get(id).json()['metadata']['id'] == id
 
     def test_listing(self):
+        # ID fields are from workspaces/*.jupyterlab-workspace
         listing = set(['foo', 'f/o/o/'])
 
         assert set(self.workspaces_api.get().json()['workspaces']) == listing

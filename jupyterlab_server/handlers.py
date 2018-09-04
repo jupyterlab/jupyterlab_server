@@ -208,11 +208,18 @@ def add_handlers(web_app, config):
 
     # Handle local settings.
     if config.schemas_dir:
-        settings_path = ujoin(
-            base_url,
-            config.settings_url + '(?P<section_name>.+)'
-        )
+        # Handle requests for the list of settings. Make slash optional.
+        settings_path = ujoin(base_url, config.settings_url + '?')
         handlers.append((settings_path, SettingsHandler, {
+            'app_settings_dir': config.app_settings_dir,
+            'schemas_dir': config.schemas_dir,
+            'settings_dir': config.user_settings_dir
+        }))
+
+        # Handle requests for an individual set of settings.
+        setting_path = ujoin(
+            base_url, config.settings_url + '(?P<section_name>.+)')
+        handlers.append((setting_path, SettingsHandler, {
             'app_settings_dir': config.app_settings_dir,
             'schemas_dir': config.schemas_dir,
             'settings_dir': config.user_settings_dir

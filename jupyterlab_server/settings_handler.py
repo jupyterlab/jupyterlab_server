@@ -30,7 +30,10 @@ class SettingsHandler(APIHandler):
 
     @json_errors
     @web.authenticated
-    def get(self, section_name):
+    def get(self, section_name=''):
+        if not section_name:
+            return self.finish(json.dumps(dict(settings=[])))
+
         schema = _get_schema(self.schemas_dir, section_name, self.overrides)
         path = _path(self.settings_dir, section_name, WORKSPACE_EXTENSION)
         raw = '{}'

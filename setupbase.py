@@ -27,7 +27,7 @@ is_repo = os.path.exists(pjoin(here, '.git'))
 name = 'jupyterlab_server'
 
 version_ns = {}
-with io.open(pjoin(here, name, '_version.py'), encoding="utf8") as f:
+with io.open(pjoin(here, name, '_version.py'), encoding='utf8') as f:
     exec(f.read(), {}, version_ns)
 __version__ = version_ns['__version__']
 
@@ -65,5 +65,5 @@ class bdist_egg_disabled(bdist_egg):
     """
 
     def run(self):
-        sys.exit("Aborting implicit building of eggs. Use `pip install .` " +
-                 " to install from source.")
+        sys.exit('Aborting implicit building of eggs. Use `pip install .` ' +
+                 ' to install from source.')
