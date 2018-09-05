@@ -12,11 +12,11 @@ class SettingsAPI(APITester):
 
     url = 'lab/api/settings'
 
-    def get(self, section_name=''):
-        return self._req('GET', section_name)
+    def get(self, schema_name=''):
+        return self._req('GET', schema_name)
 
-    def put(self, section_name, body):
-        return self._req('PUT', section_name, json.dumps(body))
+    def put(self, schema_name, body):
+        return self._req('PUT', schema_name, json.dumps(body))
 
 
 class SettingsAPITest(LabTestBase):

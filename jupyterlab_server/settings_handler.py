@@ -14,10 +14,10 @@ from .json_minify import json_minify
 from .server import APIHandler, json_errors
 
 
-def _override(section_name, schema, overrides):
+def _override(schema_name, schema, overrides):
     """Override default values in the schema if necessary."""
-    if section_name in overrides:
-        defaults = overrides[section_name]
+    if schema_name in overrides:
+        defaults = overrides[schema_name]
         for key in defaults:
             if key in schema['properties']:
                 schema['properties'][key]['default'] = defaults[key]
@@ -40,27 +40,27 @@ def _list_settings(schemas_dir, settings_dir, overrides, extension='.json'):
     schema_paths.sort()
 
     for schema_path in schema_paths:
-        # Generate the section_name used to request individual settings.
+        # Generate the schema_name used to request individual settings.
         rel_path = os.path.relpath(schema_path, schemas_dir)
         section_dir, section_base = os.path.split(rel_path)
-        section_name = ':'.join([
+        schema_name = ':'.join([
             section_dir,
             section_base[:-len(extension)]  # Remove file extension.
         ]).replace('\\', '/')               # Normalize slashes.
 
         # Create plugin dictionary to populate with schema and settings.
-        plugin = dict(id=section_name)
+        plugin = dict(id=schema_name)
 
         # Populate the schema and its default overrides.
         with open(schema_path) as fid:
             try:  # to load and parse the schema file.
                 schema = json.load(fid)
-                plugin['schema'] = _override(section_name, schema, overrides)
+                plugin['schema'] = _override(schema_name, schema, overrides)
             except Exception as e:
                 raise web.HTTPError(500, str(e))
 
         # Populate the user setting overrides.
-        plugin_path = _path(settings_dir, section_name)
+        plugin_path = _path(settings_dir, schema_name)
         plugin['raw'] = '{}'
         plugin['settings'] = dict()
         if os.path.exists(plugin_path):
@@ -70,7 +70,7 @@ def _list_settings(schemas_dir, settings_dir, overrides, extension='.json'):
                     plugin['settings'] = json.loads(json_minify(plugin['raw']))
                 except Exception as e:
                     message = 'Failed loading settings (%s): %s'
-                    raise web.HTTPError(500, message % (section_name, str(e)))
+                    raise web.HTTPError(500, message % (schema_name, str(e)))
 
         # Add the plugin to the list of settings.
         settings.append(plugin)
@@ -95,17 +95,17 @@ class SettingsHandler(APIHandler):
 
     @json_errors
     @web.authenticated
-    def get(self, section_name=''):
+    def get(self, schema_name=''):
         overrides = self.overrides
         schemas_dir = self.schemas_dir
         settings_dir = self.settings_dir
 
-        if not section_name:
+        if not schema_name:
             settings = _list_settings(schemas_dir, settings_dir, overrides)
             return self.finish(json.dumps(dict(settings=settings)))
 
-        schema = _get_schema(schemas_dir, section_name, overrides)
-        path = _path(settings_dir, section_name)
+        schema = _get_schema(schemas_dir, schema_name, overrides)
+        path = _path(settings_dir, schema_name)
         raw = '{}'
         settings = dict()
 
@@ -116,7 +116,7 @@ class SettingsHandler(APIHandler):
                     settings = json.loads(json_minify(raw))
                 except Exception as e:
                     message = 'Failed loading settings ({}): {}'
-                    self.log.warn(message.format(section_name, str(e)))
+                    self.log.warn(message.format(schema_name, str(e)))
 
         # Validate the parsed data against the schema.
         if len(settings):
@@ -125,16 +125,16 @@ class SettingsHandler(APIHandler):
                 validator.validate(settings)
             except ValidationError as e:
                 message = 'Failed validating settings ({}): {}'
-                self.log.warn(message.format(section_name, str(e)))
+                self.log.warn(message.format(schema_name, str(e)))
                 raw = '{}'
 
         # Send back the raw data to the client.
-        resp = dict(id=section_name, raw=raw, schema=schema)
+        resp = dict(id=schema_name, raw=raw, schema=schema)
         self.finish(json.dumps(resp))
 
     @json_errors
     @web.authenticated
-    def put(self, section_name):
+    def put(self, schema_name):
         overrides = self.overrides
         schemas_dir = self.schemas_dir
         settings_dir = self.settings_dir
@@ -145,7 +145,7 @@ class SettingsHandler(APIHandler):
         raw = self.request.body.strip().decode(u'utf-8')
 
         # Validate the data against the schema.
-        schema = _get_schema(schemas_dir, section_name, overrides)
+        schema = _get_schema(schemas_dir, schema_name, overrides)
         validator = Validator(schema)
         try:
             validator.validate(json.loads(json_minify(raw)))
@@ -153,17 +153,17 @@ class SettingsHandler(APIHandler):
             raise web.HTTPError(400, str(e))
 
         # Write the raw data (comments included) to a file.
-        path = _path(settings_dir, section_name, True)
+        path = _path(settings_dir, schema_name, True)
         with open(path, 'w') as fid:
             fid.write(raw)
 
         self.set_status(204)
 
 
-def _get_schema(schemas_dir, section_name, overrides):
+def _get_schema(schemas_dir, schema_name, overrides):
     """Retrieve and parse a JSON schema."""
 
-    path = _path(schemas_dir, section_name)
+    path = _path(schemas_dir, schema_name)
 
     if not os.path.exists(path):
         raise web.HTTPError(404, 'Schema not found: %r' % path)
@@ -173,41 +173,41 @@ def _get_schema(schemas_dir, section_name, overrides):
         try:
             schema = json.load(fid)
         except Exception as e:
-            name = section_name
+            name = schema_name
             message = 'Failed parsing schema ({}): {}'.format(name, str(e))
             raise web.HTTPError(500, message)
 
-    schema = _override(section_name, schema, overrides)
+    schema = _override(schema_name, schema, overrides)
 
     # Validate the schema.
     try:
         Validator.check_schema(schema)
     except Exception as e:
-        name = section_name
+        name = schema_name
         message = 'Failed validating schema ({}): {}'.format(name, str(e))
         raise web.HTTPError(500, message)
 
     return schema
 
 
-def _path(root_dir, section_name, make_dirs=False, extension='.json'):
+def _path(root_dir, schema_name, make_dirs=False, extension='.json'):
     """Parse the URL section name and find the local file system path."""
 
     parent_dir = root_dir
 
     try:  # to parse path, e.g. @jupyterlab/apputils-extension:themes.
-        package_dir, plugin = section_name.split(':')
+        package_dir, plugin = schema_name.split(':')
         parent_dir = os.path.join(root_dir, package_dir)
         path = os.path.join(parent_dir, plugin + extension)
     except Exception:
-        message = 'Settings not found ({})'.format(section_name)
+        message = 'Settings not found ({})'.format(schema_name)
         raise web.HTTPError(404, message)
 
     if make_dirs and not os.path.exists(parent_dir):
         try:
             os.makedirs(parent_dir)
         except Exception as e:
-            name = section_name
+            name = schema_name
             message = 'Failed writing settings ({}): {}'.format(name, str(e))
             raise web.HTTPError(500, message)
 

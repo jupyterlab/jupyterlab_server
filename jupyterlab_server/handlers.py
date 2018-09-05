@@ -220,7 +220,7 @@ def add_handlers(web_app, config):
 
         # Handle requests for an individual set of settings.
         setting_path = ujoin(
-            base_url, config.settings_url + '(?P<section_name>.+)')
+            base_url, config.settings_url + '(?P<schema_name>.+)')
         handlers.append((setting_path, SettingsHandler, settings_config))
 
     # Handle saved workspaces.
