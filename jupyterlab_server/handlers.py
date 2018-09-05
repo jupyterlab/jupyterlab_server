@@ -208,22 +208,20 @@ def add_handlers(web_app, config):
 
     # Handle local settings.
     if config.schemas_dir:
-        # Handle requests for the list of settings. Make slash optional.
-        settings_path = ujoin(base_url, config.settings_url + '?')
-        handlers.append((settings_path, SettingsHandler, {
+        settings_config = {
             'app_settings_dir': config.app_settings_dir,
             'schemas_dir': config.schemas_dir,
             'settings_dir': config.user_settings_dir
-        }))
+        }
+
+        # Handle requests for the list of settings. Make slash optional.
+        settings_path = ujoin(base_url, config.settings_url + '?')
+        handlers.append((settings_path, SettingsHandler, settings_config))
 
         # Handle requests for an individual set of settings.
         setting_path = ujoin(
             base_url, config.settings_url + '(?P<section_name>.+)')
-        handlers.append((setting_path, SettingsHandler, {
-            'app_settings_dir': config.app_settings_dir,
-            'schemas_dir': config.schemas_dir,
-            'settings_dir': config.user_settings_dir
-        }))
+        handlers.append((setting_path, SettingsHandler, settings_config))
 
     # Handle saved workspaces.
     if config.workspaces_dir:
@@ -231,22 +229,21 @@ def add_handlers(web_app, config):
         workspaces_path = ujoin(base_url, config.workspaces_url, r'/.+')
         handlers.append((workspaces_path, LabHandler, {'lab_config': config}))
 
-        # Handle requests for the list of workspaces. Make slash optional.
-        workspaces_api_path = ujoin(base_url, config.workspaces_api_url + '?')
-        handlers.append((workspaces_api_path, WorkspacesHandler, {
+        workspaces_config = {
             'workspaces_url': config.workspaces_url,
             'path': config.workspaces_dir
-        }))
+        }
+
+        # Handle requests for the list of workspaces. Make slash optional.
+        workspaces_api_path = ujoin(base_url, config.workspaces_api_url + '?')
+        handlers.append((
+            workspaces_api_path, WorkspacesHandler, workspaces_config))
 
         # Handle requests for an individually named workspace.
         workspace_api_path = ujoin(
-            base_url,
-            config.workspaces_api_url + '(?P<space_name>.+)'
-        )
-        handlers.append((workspace_api_path, WorkspacesHandler, {
-            'workspaces_url': config.workspaces_url,
-            'path': config.workspaces_dir
-        }))
+            base_url, config.workspaces_api_url + '(?P<space_name>.+)')
+        handlers.append((
+            workspace_api_path, WorkspacesHandler, workspaces_config))
 
     # Handle local themes.
     if config.themes_dir:
