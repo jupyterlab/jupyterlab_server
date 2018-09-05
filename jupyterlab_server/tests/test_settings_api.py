@@ -59,7 +59,13 @@ class SettingsAPITest(LabTestBase):
             self.settings_api.get('foo')
 
     def test_listing(self):
-        assert set(self.settings_api.get('').json()['settings']) == set([])
+        ids = [
+            '@jupyterlab/apputils-extension:themes',
+            '@jupyterlab/codemirror-extension:commands',
+            '@jupyterlab/shortcuts-extension:plugin'
+        ]
+        response = self.settings_api.get('').json()['settings']
+        assert set([item['id'] for item in response]) == set(ids)
 
     def test_patch(self):
         id = '@jupyterlab/shortcuts-extension:plugin'
