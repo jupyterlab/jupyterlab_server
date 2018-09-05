@@ -36,8 +36,7 @@ def _list_settings(schemas_dir, settings_dir, overrides, extension='.json'):
         return settings
 
     schema_pattern = schemas_dir + '/**/*' + extension
-    schema_paths = [path for path in glob(schema_pattern, recursive=True)
-                    if not os.path.basename(path) == 'package.json']
+    schema_paths = [path for path in glob(schema_pattern, recursive=True)]
     schema_paths.sort()
 
     for schema_path in schema_paths:
