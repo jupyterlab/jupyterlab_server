@@ -13,5 +13,6 @@ __all__ = [
     'LabHandler',
     'LabServerApp',
     'slugify',
+    'SETTINGS_EXTENSION',
     'WORKSPACE_EXTENSION'
 ]
