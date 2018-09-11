@@ -1,5 +1,5 @@
 # coding: utf-8
-"""Jupyter Lab Server"""
+"""JupyterLab Server"""
 
 # Copyright (c) Jupyter Development Team.
 # Distributed under the terms of the Modified BSD License.
