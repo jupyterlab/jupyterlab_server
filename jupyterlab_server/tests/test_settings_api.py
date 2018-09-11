@@ -64,8 +64,14 @@ class SettingsAPITest(LabTestBase):
             '@jupyterlab/codemirror-extension:commands',
             '@jupyterlab/shortcuts-extension:plugin'
         ]
-        response = self.settings_api.get('').json()['settings']
-        assert set([item['id'] for item in response]) == set(ids)
+        versions = ['N/A', 'N/A', 'test-version']
+
+        response = self.settings_api.get('').json()
+        response_ids = [item['id'] for item in response['settings']]
+        response_versions = [item['version'] for item in response['settings']]
+
+        assert set(response_ids) == set(ids)
+        assert set(response_versions) == set(versions)
 
     def test_patch(self):
         id = '@jupyterlab/shortcuts-extension:plugin'
