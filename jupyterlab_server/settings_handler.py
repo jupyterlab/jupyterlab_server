@@ -158,7 +158,12 @@ def _override(schema_name, schema, overrides):
 
 
 def _path(root_dir, schema_name, make_dirs=False, extension='.json'):
-    """Parse the URL section name and find the local file system path."""
+    """
+    Returns the local file system path for a schema name in the given root
+    directory. This function can be used to filed user overrides in addition to
+    schema files. If the `make_dirs` flag is set to `True` it will create the
+    parent directory for the calculated path if it does not exist.
+    """
 
     parent_dir = root_dir
     notfound_error = 'Settings not found (%s)'
@@ -188,14 +193,14 @@ class SettingsHandler(APIHandler):
         self.settings_dir = settings_dir
 
         overrides_path = os.path.join(app_settings_dir, 'overrides.json')
-        override_error = 'Failed loading overrides: %s'
+        overrides_warning = 'Failed loading overrides: %s'
 
         if os.path.exists(overrides_path):
             with open(overrides_path) as fid:
                 try:
                     self.overrides = json.load(fid)
                 except Exception as e:
-                    self.log.warn(override_error % str(e))
+                    self.log.warn(overrides_warning % str(e))
 
     @json_errors
     @web.authenticated
@@ -234,6 +239,7 @@ class SettingsHandler(APIHandler):
         schemas_dir = self.schemas_dir
         settings_dir = self.settings_dir
         settings_error = 'No current settings directory'
+        validation_error = 'Failed validating input: %s'
 
         if not settings_dir:
             raise web.HTTPError(500, settings_error)
@@ -246,11 +252,10 @@ class SettingsHandler(APIHandler):
         try:
             validator.validate(json.loads(json_minify(raw)))
         except ValidationError as e:
-            raise web.HTTPError(400, str(e))
+            raise web.HTTPError(400, validation_error % str(e))
 
         # Write the raw data (comments included) to a file.
         path = _path(settings_dir, schema_name, True, SETTINGS_EXTENSION)
-        print('path: %s' % path)
         with open(path, 'w') as fid:
             fid.write(raw)
 
