@@ -3,7 +3,7 @@ import json
 import os
 import shutil
 
-from jupyterlab_launcher.tests.utils import LabTestBase, APITester
+from jupyterlab_server.tests.utils import LabTestBase, APITester
 from notebook.tests.launchnotebook import assert_http_error
 
 
@@ -12,14 +12,14 @@ class WorkspacesAPI(APITester):
 
     url = 'lab/api/workspaces'
 
-    def delete(self, section_name):
-        return self._req('DELETE', section_name)
+    def delete(self, space_name):
+        return self._req('DELETE', space_name)
 
-    def get(self, section_name=''):
-        return self._req('GET', section_name)
+    def get(self, space_name=''):
+        return self._req('GET', space_name)
 
-    def put(self, section_name, body):
-        return self._req('PUT', section_name, json.dumps(body))
+    def put(self, space_name, body):
+        return self._req('PUT', space_name, json.dumps(body))
 
 
 class WorkspacesAPITest(LabTestBase):
@@ -51,6 +51,7 @@ class WorkspacesAPITest(LabTestBase):
         assert self.workspaces_api.get(id).json()['metadata']['id'] == id
 
     def test_listing(self):
+        # ID fields are from workspaces/*.jupyterlab-workspace
         listing = set(['foo', 'f/o/o/'])
 
         assert set(self.workspaces_api.get().json()['workspaces']) == listing

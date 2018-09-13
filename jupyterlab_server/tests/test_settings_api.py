@@ -3,7 +3,7 @@ import json
 import os
 import shutil
 
-from jupyterlab_launcher.tests.utils import LabTestBase, APITester
+from jupyterlab_server.tests.utils import LabTestBase, APITester
 from ..servertest import assert_http_error
 
 
@@ -12,11 +12,11 @@ class SettingsAPI(APITester):
 
     url = 'lab/api/settings'
 
-    def get(self, section_name):
-        return self._req('GET', section_name)
+    def get(self, schema_name=''):
+        return self._req('GET', schema_name)
 
-    def put(self, section_name, body):
-        return self._req('PUT', section_name, json.dumps(body))
+    def put(self, schema_name, body):
+        return self._req('PUT', schema_name, json.dumps(body))
 
 
 class SettingsAPITest(LabTestBase):
@@ -57,6 +57,21 @@ class SettingsAPITest(LabTestBase):
     def test_get_bad(self):
         with assert_http_error(404):
             self.settings_api.get('foo')
+
+    def test_listing(self):
+        ids = [
+            '@jupyterlab/apputils-extension:themes',
+            '@jupyterlab/codemirror-extension:commands',
+            '@jupyterlab/shortcuts-extension:plugin'
+        ]
+        versions = ['N/A', 'N/A', 'test-version']
+
+        response = self.settings_api.get('').json()
+        response_ids = [item['id'] for item in response['settings']]
+        response_versions = [item['version'] for item in response['settings']]
+
+        assert set(response_ids) == set(ids)
+        assert set(response_versions) == set(versions)
 
     def test_patch(self):
         id = '@jupyterlab/shortcuts-extension:plugin'

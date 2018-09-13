@@ -7,7 +7,7 @@ from tempfile import TemporaryDirectory
 from threading import Thread, Event
 from unittest.mock import patch
 
-from jupyterlab_launcher import LabLauncherApp, LabConfig
+from jupyterlab_server import LabServerApp, LabConfig
 
 from ..servertest import ServerTestBase
 from ..server import url_path_join
@@ -21,7 +21,7 @@ here = os.path.dirname(__file__)
 
 
 class LabTestBase(ServerTestBase):
-    Application = LabLauncherApp
+    Application = LabServerApp
     """The application being tested. Sub-classes should change this."""
 
     @classmethod
