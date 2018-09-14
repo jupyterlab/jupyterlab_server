@@ -19,7 +19,7 @@ class LabServerApp(ServerApp):
 
     def start(self):
         add_handlers(self.web_app, self.lab_config)
-        ServerApp.start(self)
+        super().start()
 
 
 main = LabServerApp.launch_instance

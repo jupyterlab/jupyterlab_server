@@ -83,14 +83,6 @@ class LabHandler(JupyterHandler):
                 except Exception as e:
                     print(e)
 
-        # Handle error when the assets are not available locally.
-        local_index = os.path.join(config.static_dir, 'index.html')
-        if config.static_dir and not os.path.exists(local_index):
-            self.write(self.render_template(
-                'error.html', static_dir=config.static_dir
-            ))
-            return
-
         # Write the template with the config.
         self.write(self.render_template('index.html', page_config=page_config))
 
