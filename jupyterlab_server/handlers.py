@@ -9,7 +9,7 @@ import os
 from tornado import web, template
 from jinja2 import FileSystemLoader, TemplateError
 
-from traitlets import HasTraits, Bool, Unicode
+from traitlets import HasTraits, Bool, Unicode, default
 
 from .server import JupyterHandler, FileFindHandler, url_path_join as ujoin
 from .workspaces_handler import WorkspacesHandler
@@ -19,14 +19,6 @@ from .themes_handler import ThemesHandler
 # -----------------------------------------------------------------------------
 # Module globals
 # -----------------------------------------------------------------------------
-
-# The default urls for the application.
-default_public_url = '/lab/static/'
-default_workspaces_url = '/lab/workspaces/'
-default_workspaces_api_url = '/lab/api/workspaces/'
-default_settings_url = '/lab/api/settings/'
-default_themes_url = '/lab/api/themes/'
-default_tree_url = '/lab/tree/'
 
 
 DEFAULT_TEMPLATE = template.Template("""
@@ -118,12 +110,10 @@ class LabConfig(HasTraits):
                                'If given, a static file handler will be '
                                'added.'))
 
-    public_url = Unicode(default_public_url,
-                         help=('The url public path for static application '
+    public_url = Unicode(help=('The url public path for static application '
                                'files. This can be a CDN if desired.'))
 
-    settings_url = Unicode(default_settings_url,
-                           help='The url path of the settings handler.')
+    settings_url = Unicode(help='The url path of the settings handler.')
 
     user_settings_dir = Unicode('',
                                 help=('The optional location of the user '
@@ -134,30 +124,51 @@ class LabConfig(HasTraits):
                                 'schemas directory. If given, a handler will '
                                 'be added for settings.'))
 
-    workspaces_api_url = Unicode(default_workspaces_api_url,
-                                 help='The url path of the workspaces API.')
+    workspaces_api_url = Unicode(help='The url path of the workspaces API.')
 
     workspaces_dir = Unicode('',
                              help=('The optional location of the saved '
                                    'workspaces directory. If given, a handler '
                                    'will be added for workspaces.'))
 
-    workspaces_url = Unicode(default_workspaces_url,
-                             help='The url path of the workspaces handler.')
+    workspaces_url = Unicode(help='The url path of the workspaces handler.')
 
-    themes_url = Unicode(default_themes_url, help='The theme url.')
+    themes_url = Unicode(help='The theme url.')
 
     themes_dir = Unicode('',
                          help=('The optional location of the themes '
                                'directory. If given, a handler will be added '
                                'for themes.'))
 
-    tree_url = Unicode(default_tree_url,
-                       help='The url path of the tree handler.')
+    tree_url = Unicode(help='The url path of the tree handler.')
 
     cache_files = Bool(True,
                        help=('Whether to cache files on the server. '
                              'This should be `True` except in dev mode.'))
+
+    @default('public_url')
+    def _default_public_url(self):
+        return ujoin(self.page_url, 'static/')
+
+    @default('workspaces_url')
+    def _default_workspaces_url(self):
+        return ujoin(self.page_url, 'workspaces/')
+
+    @default('workspaces_api_url')
+    def _default_workspaces_api_url(self):
+        return ujoin(self.page_url, 'api', 'workspaces/')
+
+    @default('settings_url')
+    def _default_settings_url(self):
+        return ujoin(self.page_url, 'api', 'settings/')
+
+    @default('themes_url')
+    def _default_themes_url(self):
+        return ujoin(self.page_url, 'api', 'themes/')
+
+    @default('tree_url')
+    def _default_tree_url(self):
+        return ujoin(self.page_url, 'tree/')
 
 
 class NotFoundHandler(LabHandler):
