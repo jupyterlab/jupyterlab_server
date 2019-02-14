@@ -15,16 +15,12 @@ from .server import APIHandler, json_errors, url_path_join as ujoin
 # The JupyterLab workspace file extension.
 WORKSPACE_EXTENSION = '.jupyterlab-workspace'
 
-# A cache of workspace names and their slug file name counterparts.
-_cache = dict()
-
-
 def _list_workspaces(directory, prefix):
     """
     Return the list of workspaces in a given directory beginning with the
     given prefix.
     """
-    workspaces = []
+    workspaces = { 'ids': [], 'values': [] }
     if not os.path.exists(directory):
         return workspaces
 
@@ -35,15 +31,13 @@ def _list_workspaces(directory, prefix):
     items.sort()
 
     for slug in items:
-        if slug in _cache:
-            workspaces.append(_cache[slug])
-            continue
         workspace_path = os.path.join(directory, slug)
         if os.path.exists(workspace_path):
             with open(workspace_path) as fid:
                 try:  # to load and parse the workspace file.
-                    _cache[slug] = json.load(fid)['metadata']['id']
-                    workspaces.append(_cache[slug])
+                    workspace = json.load(fid)
+                    workspaces.get('ids').append(workspace['metadata']['id'])
+                    workspaces.get('values').append(workspace)
                 except Exception as e:
                     raise web.HTTPError(500, str(e))
     return workspaces
