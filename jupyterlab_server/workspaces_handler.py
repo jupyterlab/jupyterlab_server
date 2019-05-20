@@ -161,6 +161,7 @@ class WorkspacesHandler(APIHandler):
         metadata_id = workspace['metadata']['id']
         metadata_id = (metadata_id if metadata_id.startswith('/')
                        else '/' + metadata_id)
+        metadata_id = urllib.parse.unquote(metadata_id)
         if metadata_id != '/' + space_name:
             message = ('Workspace metadata ID mismatch: expected %r got %r'
                        % (space_name, metadata_id))
