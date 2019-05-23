@@ -250,12 +250,13 @@ def add_handlers(web_app, config):
 
     # Handle local themes.
     if config.themes_dir:
-        themes_path = ujoin(base_url, config.themes_url, '(.*)')
+        themes_url = ujoin(base_url, config.themes_url)
+        themes_path = ujoin(themes_url, '(.*)')
         handlers.append((
             themes_path,
             ThemesHandler,
             {
-                'themes_url': config.themes_url,
+                'themes_url': themes_url,
                 'path': config.themes_dir,
                 'no_cache_paths': no_cache_paths
             }
