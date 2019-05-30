@@ -131,8 +131,10 @@ class WorkspacesHandler(APIHandler):
                 except Exception as e:
                     raise web.HTTPError(500, str(e))
         else:
-            raise web.HTTPError(404, 'Workspace %r (%r) not found' %
-                                     (space_name, slug))
+            id = (space_name if space_name.startswith('/')
+                             else '/' + space_name)
+            workspace = dict(data=dict(), metadata=dict(id=id))
+            return self.finish(json.dumps(workspace))
 
     @json_errors
     @web.authenticated
