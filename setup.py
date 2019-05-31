@@ -8,14 +8,14 @@ from setupbase import create_cmdclass, __version__
 from setuptools import find_packages, setup
 import sys
 
+
 setup_args = dict(
     name='jupyterlab_server',
     version=__version__,
     packages=find_packages('.'),
     description='JupyterLab Server',
-    long_description="""
-    This package is used to launch an application built using JupyterLab
-    """,
+    long_description=open('./README.md').read(),
+    long_description_content_type='text/markdown',
     author='Jupyter Development Team',
     author_email='jupyter@googlegroups.com',
     url='http://jupyter.org',
