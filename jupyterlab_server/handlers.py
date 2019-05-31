@@ -54,6 +54,11 @@ class LabHandler(JupyterHandler):
         terminals = self.settings.get('terminals_available', False)
         server_root = self.settings.get('server_root_dir', '')
         server_root = server_root.replace(os.sep, '/')
+        base_url = self.settings.get('base_url')
+        frontend_url = config.public_url
+        if frontend_url.startswith(config.page_url):
+            frontend_url = ujoin(base_url, frontend_url)
+        page_config.setdefault('frontendUrl', frontend_url)
         page_config.setdefault('terminalsAvailable', terminals)
         page_config.setdefault('ignorePlugins', [])
         page_config.setdefault('serverRoot', server_root)
