@@ -18,7 +18,7 @@ setup_args = dict(
     long_description_content_type='text/markdown',
     author='Jupyter Development Team',
     author_email='jupyter@googlegroups.com',
-    url='http://jupyter.org',
+    url='https://jupyter.org',
     license='BSD',
     platforms='Linux, Mac OS X, Windows',
     keywords=['Jupyter', 'JupyterLab'],
@@ -39,7 +39,7 @@ setup_args = dict(
 if 'setuptools' in sys.modules:
     setup_args['python_requires'] = '>=3.5'
     setup_args['extras_require'] = {'test': ['pytest', 'requests']}
-    setup_args['install_requires'] = ['jsonschema>=2.6.0', 'notebook>=4.2.0']
+    setup_args['install_requires'] = ['jsonschema>=3.0.1', 'notebook>=4.2.0']
 
 if __name__ == '__main__':
     setup(**setup_args)
