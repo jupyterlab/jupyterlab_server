@@ -43,7 +43,7 @@ def _list_workspaces(directory, prefix):
     return workspaces
 
 
-def slugify(raw, base, sign=True, max_length=128 - len(WORKSPACE_EXTENSION)):
+def slugify(raw, base='', sign=True, max_length=128 - len(WORKSPACE_EXTENSION)):
     """
     Use the common superset of raw and base values to build a slug shorter
     than max_length.
@@ -90,13 +90,12 @@ class WorkspacesHandler(APIHandler):
 
     @web.authenticated
     def delete(self, space_name):
-        base_url = self.base_url
         directory = self.ensure_directory()
 
         if not space_name:
             raise web.HTTPError(400, 'Workspace name is required for DELETE')
 
-        slug = slugify(space_name, base_url)
+        slug = slugify(space_name)
         workspace_path = os.path.join(directory, slug + WORKSPACE_EXTENSION)
 
         if not os.path.exists(workspace_path):
@@ -111,15 +110,14 @@ class WorkspacesHandler(APIHandler):
 
     @web.authenticated
     def get(self, space_name=''):
-        base_url = self.base_url
         directory = self.ensure_directory()
 
         if not space_name:
-            prefix = slugify('', base_url, sign=False)
+            prefix = slugify('', sign=False)
             workspaces = _list_workspaces(directory, prefix)
             return self.finish(json.dumps(dict(workspaces=workspaces)))
 
-        slug = slugify(space_name, base_url)
+        slug = slugify(space_name)
         workspace_path = os.path.join(directory, slug + WORKSPACE_EXTENSION)
 
         if os.path.exists(workspace_path):
@@ -135,8 +133,10 @@ class WorkspacesHandler(APIHandler):
             return self.finish(json.dumps(workspace))
 
     @web.authenticated
-    def put(self, space_name):
-        base_url = self.base_url
+    def put(self, space_name=''):
+        if not space_name:
+            raise web.HTTPError(400, 'Workspace name is required for PUT.')
+
         directory = self.ensure_directory()
 
         if not os.path.exists(directory):
@@ -166,7 +166,7 @@ class WorkspacesHandler(APIHandler):
                        % (space_name, metadata_id))
             raise web.HTTPError(400, message)
 
-        slug = slugify(space_name, base_url)
+        slug = slugify(space_name)
         workspace_path = os.path.join(directory, slug + WORKSPACE_EXTENSION)
 
         # Write the workspace data to a file.
