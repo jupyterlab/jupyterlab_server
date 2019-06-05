@@ -88,7 +88,6 @@ class WorkspacesHandler(APIHandler):
 
         return self.workspaces_dir
 
-    @json_errors
     @web.authenticated
     def delete(self, space_name):
         base_url = self.base_url
@@ -110,7 +109,6 @@ class WorkspacesHandler(APIHandler):
         except Exception as e:
             raise web.HTTPError(500, str(e))
 
-    @json_errors
     @web.authenticated
     def get(self, space_name=''):
         base_url = self.base_url
@@ -136,7 +134,6 @@ class WorkspacesHandler(APIHandler):
             workspace = dict(data=dict(), metadata=dict(id=id))
             return self.finish(json.dumps(workspace))
 
-    @json_errors
     @web.authenticated
     def put(self, space_name):
         base_url = self.base_url
