@@ -46,7 +46,7 @@ def _list_workspaces(directory, prefix):
 def slugify(raw, base='', sign=True, max_length=128 - len(WORKSPACE_EXTENSION)):
     """
     Use the common superset of raw and base values to build a slug shorter
-    than max_length.
+    than max_length. By default, base value is an empty string.
     Convert spaces to hyphens. Remove characters that aren't alphanumerics
     underscores, or hyphens. Convert to lowercase. Strip leading and trailing
     whitespace.
