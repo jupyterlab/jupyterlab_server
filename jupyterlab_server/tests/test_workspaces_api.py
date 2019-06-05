@@ -47,26 +47,28 @@ class WorkspacesAPITest(LabTestBase):
 
     def test_get(self):
         id = 'foo'
-
         assert self.workspaces_api.get(id).json()['metadata']['id'] == id
 
     def test_listing(self):
         # ID fields are from workspaces/*.jupyterlab-workspace
         listing = set(['foo', 'f/o/o/'])
         output = set(self.workspaces_api.get().json()['workspaces']['ids'])
-
         assert output == listing
 
     def test_put(self):
         id = 'foo'
         data = self.workspaces_api.get(id).json()
-
         assert self.workspaces_api.put(id, data).status_code == 204
 
     def test_bad_put(self):
         orig = 'foo'
         copy = 'bar'
         data = self.workspaces_api.get(orig).json()
-
         with assert_http_error(400):
             self.workspaces_api.put(copy, data)
+
+    def test_blank_put(self):
+        orig = 'foo'
+        data = self.workspaces_api.get(orig).json()
+        with assert_http_error(400):
+            self.workspaces_api.put('', data)
