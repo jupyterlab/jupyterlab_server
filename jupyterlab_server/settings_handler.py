@@ -202,7 +202,6 @@ class SettingsHandler(APIHandler):
                 except Exception as e:
                     self.log.warn(overrides_warning % str(e))
 
-    @json_errors
     @web.authenticated
     def get(self, schema_name=''):
         overrides = self.overrides
@@ -232,7 +231,6 @@ class SettingsHandler(APIHandler):
             version=version
         )))
 
-    @json_errors
     @web.authenticated
     def put(self, schema_name):
         overrides = self.overrides
