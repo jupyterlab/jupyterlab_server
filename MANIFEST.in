@@ -1,7 +1,7 @@
 include README.md
 include LICENSE
 include setupbase.py
-include jupyterlab_server/*.html
+include jupyterlab_server/templates/*.html
 recursive-include jupyterlab_server/tests *.json *.jupyterlab-workspace
 
 # Patterns to exclude from any directory
