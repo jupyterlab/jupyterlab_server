@@ -6,11 +6,11 @@ import json
 import os
 
 from glob import glob
+import json5
 from jsonschema import ValidationError
 from jsonschema import Draft4Validator as Validator
 from tornado import web
 
-from .json_minify import json_minify
 from .server import APIHandler, json_errors
 
 
@@ -66,7 +66,7 @@ def _get_settings(settings_dir, schema_name, schema):
         with open(path) as fid:
             try:  # to load and parse the settings file.
                 raw = fid.read() or raw
-                settings = json.loads(json_minify(raw))
+                settings = json5.loads(raw)
             except Exception as e:
                 raise web.HTTPError(500, parse_error % (schema_name, str(e)))
 
@@ -248,7 +248,7 @@ class SettingsHandler(APIHandler):
         schema = _get_schema(schemas_dir, schema_name, overrides)
         validator = Validator(schema)
         try:
-            validator.validate(json.loads(json_minify(raw)))
+            validator.validate(json5.loads(raw))
         except ValidationError as e:
             raise web.HTTPError(400, validation_error % str(e))
 
