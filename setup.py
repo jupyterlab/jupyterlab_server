@@ -39,7 +39,11 @@ setup_args = dict(
 if 'setuptools' in sys.modules:
     setup_args['python_requires'] = '>=3.5'
     setup_args['extras_require'] = {'test': ['pytest', 'requests']}
-    setup_args['install_requires'] = ['jsonschema>=3.0.1', 'notebook>=4.2.0']
+    setup_args['install_requires'] = [
+        'json5',
+        'jsonschema>=3.0.1',
+        'notebook>=4.2.0',
+    ]
 
 if __name__ == '__main__':
     setup(**setup_args)
