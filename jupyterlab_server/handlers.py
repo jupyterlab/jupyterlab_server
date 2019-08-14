@@ -92,7 +92,7 @@ class LabHandler(JupyterHandler):
 
         # JSON escape Python values in page_config
         for key, value in page_config.items():
-            page_config[key] = json.dumps(value)[1:-1]
+            page_config[key] = json.dumps(str(value))[1:-1]
 
         # Load the current page config file if available.
         page_config_file = os.path.join(settings_dir, 'page_config.json')
