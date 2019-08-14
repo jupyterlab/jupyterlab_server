@@ -59,6 +59,7 @@ class LabHandler(JupyterHandler):
     @web.authenticated
     @web.removeslash
     def get(self):
+        self.application.store_id = getattr(self.application, 'store_id', 0)
         config = self.lab_config
         settings_dir = config.app_settings_dir
 
@@ -72,6 +73,8 @@ class LabHandler(JupyterHandler):
         page_config.setdefault('terminalsAvailable', terminals)
         page_config.setdefault('ignorePlugins', [])
         page_config.setdefault('serverRoot', server_root)
+        page_config['store_id'] = self.application.store_id
+        self.application.store_id += 1
 
         mathjax_config = self.settings.get('mathjax_config',
                                            'TeX-AMS_HTML-full,Safe')
