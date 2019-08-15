@@ -10,14 +10,15 @@
     {% endfor %}
   {% endblock %}
 
-  <script id="jupyter-config-data" type="application/json">{
-    {% for key, value in page_config.items() -%}
-    "{{ key }}": "{{ value }}",
-    {% endfor -%}
-    "baseUrl": "{{ base_url }}",
-    "wsUrl": "{{ ws_url }}",
-    "staticUrl": "{{ static_url }}"
-  }</script>
+{# Copy so we do not modify the page_config with updates. #}
+{% set page_config_full = page_config.copy() %}
+
+{# Set a dummy variable - we just want the side effect of the update. #}
+{% set _ = page_config_full.update(baseUrl=base_url, wsUrl=ws_url, staticUrl=static_url) %}
+
+  <script id="jupyter-config-data" type="application/json">
+    {{ page_config_full | tojson }}
+  </script>
 
   {% block favicon %}
   {% endblock %}
