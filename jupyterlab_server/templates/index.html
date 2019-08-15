@@ -2,28 +2,29 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>{% block title %}{{page_title}}{% endblock %}</title>
+  <title>{% block title %}{{page_title | escape }}{% endblock %}</title>
 
   {% block stylesheet %}
     {% for css_file in css_files %}
-      <link href="{{ css_file }}" rel="stylesheet">
+      <link href="{{ css_file | urlencode }}" rel="stylesheet">
     {% endfor %}
   {% endblock %}
 
-  <script id="jupyter-config-data" type="application/json">{
-    {% for key, value in page_config.items() -%}
-    "{{ key }}": "{{ value }}",
-    {% endfor -%}
-    "baseUrl": "{{ base_url }}",
-    "wsUrl": "{{ ws_url }}",
-    "staticUrl": "{{ static_url }}"
-  }</script>
+{# Copy so we do not modify the page_config with updates. #}
+{% set page_config_full = page_config.copy() %}
+
+{# Set a dummy variable - we just want the side effect of the update. #}
+{% set _ = page_config_full.update(baseUrl=base_url, wsUrl=ws_url, staticUrl=static_url) %}
+
+  <script id="jupyter-config-data" type="application/json">
+    {{ page_config_full | tojson }}
+  </script>
 
   {% block favicon %}
   {% endblock %}
 
   {% for js_file in js_files %}
-  <script src="{{ js_file }}" type="text/javascript" charset="utf-8"></script>
+  <script src="{{ js_file | urlencode }}" type="text/javascript" charset="utf-8"></script>
   {% endfor %}
 
   {% block meta %}
