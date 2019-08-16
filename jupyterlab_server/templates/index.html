@@ -6,7 +6,7 @@
 
   {% block stylesheet %}
     {% for css_file in css_files %}
-      <link href="{{ css_file | urlencode }}" rel="stylesheet">
+      <link href="{{ css_file | escape }}" rel="stylesheet">
     {% endfor %}
   {% endblock %}
 
@@ -24,7 +24,7 @@
   {% endblock %}
 
   {% for js_file in js_files %}
-  <script src="{{ js_file | urlencode }}" type="text/javascript" charset="utf-8"></script>
+  <script src="{{ js_file | escape }}" type="text/javascript" charset="utf-8"></script>
   {% endfor %}
 
   {% block meta %}
