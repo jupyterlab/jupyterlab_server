@@ -43,6 +43,7 @@ if 'setuptools' in sys.modules:
         'json5',
         'jsonschema>=3.0.1',
         'notebook>=4.2.0',
+        'jinja2>=2.10'
     ]
 
 if __name__ == '__main__':
