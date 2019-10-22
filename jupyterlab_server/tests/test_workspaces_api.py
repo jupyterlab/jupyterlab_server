@@ -4,7 +4,7 @@ import os
 import shutil
 
 from jupyterlab_server.tests.utils import LabTestBase, APITester
-from notebook.tests.launchnotebook import assert_http_error
+from jupyter_server.tests.launchnotebook import assert_http_error
 
 
 class WorkspacesAPI(APITester):

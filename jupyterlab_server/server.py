@@ -11,17 +11,17 @@
 # Also provides the constants GREEN_ENABLED, GREEN_OK, RED_DISABLED, RED_X
 
 try:
-    from notebook.base.handlers import (
+    from jupyter_server.base.handlers import (
         APIHandler,
         FileFindHandler,
         IPythonHandler as JupyterHandler,
         json_errors
     )
-    from notebook.notebookapp import aliases, flags, NotebookApp as ServerApp
-    from notebook.serverextensions import (
+    from jupyter_server.notebookapp import aliases, flags, NotebookApp as ServerApp
+    from jupyter_server.serverextensions import (
         GREEN_ENABLED, GREEN_OK, RED_DISABLED, RED_X
     )
-    from notebook.utils import url_escape, url_path_join
+    from jupyter_server.utils import url_escape, url_path_join
 except ImportError:
     from jupyter_server.base.handlers import (                          # noqa
         APIHandler, FileFindHandler, json_errors, JupyterHandler

@@ -6,7 +6,7 @@
 #
 
 try:
-    from notebook.tests.launchnotebook import (
+    from jupyter_server.tests.launchnotebook import (
         assert_http_error,
         NotebookTestBase as ServerTestBase
     )
