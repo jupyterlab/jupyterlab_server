@@ -42,7 +42,6 @@ if 'setuptools' in sys.modules:
     setup_args['install_requires'] = [
         'json5',
         'jsonschema>=3.0.1',
-        'notebook>=4.2.0',
         'jinja2>=2.10'
     ]
 
