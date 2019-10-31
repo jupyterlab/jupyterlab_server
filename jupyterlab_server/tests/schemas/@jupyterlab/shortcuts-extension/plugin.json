@@ -54,7 +54,7 @@
       "properties": {
         "command": { "default": "completer:invoke-notebook" },
         "keys": { "default": ["Tab"] },
-        "selector": { "default": ".jp-jupyter_server.jp-mod-editMode .jp-mod-completer-enabled" }
+        "selector": { "default": ".jp-Notebook.jp-mod-editMode .jp-mod-completer-enabled" }
       },
       "type": "object"
     },
@@ -289,7 +289,7 @@
         "command": { "default": "notebook:enter-command-mode" },
         "keys": { "default": ["Escape"] },
         "selector": {
-          "default": ".jp-jupyter_server.jp-mod-editMode"
+          "default": ".jp-Notebook.jp-mod-editMode"
         }
       },
       "type": "object"
@@ -299,7 +299,7 @@
       "properties": {
         "command": { "default": "notebook:enter-command-mode" },
         "keys": { "default": ["Ctrl M"] },
-        "selector": { "default": ".jp-jupyter_server.jp-mod-editMode" }
+        "selector": { "default": ".jp-Notebook.jp-mod-editMode" }
       },
       "type": "object"
     },
@@ -461,7 +461,7 @@
       "properties": {
         "command": { "default": "notebook:run-cell" },
         "keys": { "default": ["Ctrl Enter"] },
-        "selector": { "default": ".jp-jupyter_server.jp-mod-editMode" }
+        "selector": { "default": ".jp-Notebook.jp-mod-editMode" }
       },
       "type": "object"
     },
@@ -479,7 +479,7 @@
       "properties": {
         "command": { "default": "notebook:run-cell-and-insert-below" },
         "keys": { "default": ["Alt Enter"] },
-        "selector": { "default": ".jp-jupyter_server.jp-mod-editMode" }
+        "selector": { "default": ".jp-Notebook.jp-mod-editMode" }
       },
       "type": "object"
     },
@@ -488,7 +488,7 @@
       "properties": {
         "command": { "default": "notebook:run-cell-and-select-next" },
         "keys": { "default": ["Shift Enter"] },
-        "selector": { "default": ".jp-jupyter_server.jp-mod-editMode" }
+        "selector": { "default": ".jp-Notebook.jp-mod-editMode" }
       },
       "type": "object"
     },
@@ -506,7 +506,7 @@
       "properties": {
         "command": { "default": "notebook:split-cell-at-cursor" },
         "keys": { "default": ["Ctrl Shift -"] },
-        "selector": { "default": ".jp-jupyter_server.jp-mod-editMode" }
+        "selector": { "default": ".jp-Notebook.jp-mod-editMode" }
       },
       "type": "object"
     },
@@ -578,7 +578,7 @@
       "properties": {
         "command": { "default": "tooltip:launch-notebook" },
         "keys": { "default": ["Shift Tab"] },
-        "selector": { "default": ".jp-jupyter_server.jp-mod-editMode .jp-InputArea-editor:not(.jp-mod-has-primary-selection)" }
+        "selector": { "default": ".jp-Notebook.jp-mod-editMode .jp-InputArea-editor:not(.jp-mod-has-primary-selection)" }
       },
       "type": "object"
     }
