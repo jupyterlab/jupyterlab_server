@@ -42,7 +42,8 @@ if 'setuptools' in sys.modules:
     setup_args['install_requires'] = [
         'json5',
         'jsonschema>=3.0.1',
-        'jinja2>=2.10'
+        'jinja2>=2.10',
+        'jupyter_server'
     ]
 
 if __name__ == '__main__':
