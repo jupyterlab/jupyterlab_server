@@ -39,11 +39,12 @@ setup_args = dict(
 if 'setuptools' in sys.modules:
     setup_args['python_requires'] = '>=3.5'
     setup_args['extras_require'] = {'test': ['pytest', 'requests']}
+    # TODO Pin to a released jupyter_server once available.
     setup_args['install_requires'] = [
         'json5',
         'jsonschema>=3.0.1',
         'jinja2>=2.10',
-        'jupyter_server'
+        'jupyter_server @ git+https://github.com/Zsailer/jupyter_server/@subcommands'
     ]
 
 if __name__ == '__main__':
