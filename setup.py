@@ -44,7 +44,9 @@ if 'setuptools' in sys.modules:
         'json5',
         'jsonschema>=3.0.1',
         'jinja2>=2.10',
-        'jupyter_server @ git+https://github.com/jupyter/jupyter_server/@master',
+    ],
+    setup_args['dependency_links'] = [
+        'https://github.com/jupyter/jupyter_server/tarball/master#egg=master',
     ]
 
 if __name__ == '__main__':
