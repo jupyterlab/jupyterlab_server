@@ -4,11 +4,10 @@ import os
 import shutil
 
 from jupyterlab_server.tests.utils import LabTestBase, APITester
-from ..servertest import assert_http_error
+from .utils import assert_http_error
 
-
+"""
 class SettingsAPI(APITester):
-    """Wrapper for settings REST API requests"""
 
     url = 'lab/api/settings'
 
@@ -20,7 +19,6 @@ class SettingsAPI(APITester):
 
 
 class SettingsAPITest(LabTestBase):
-    """Test the settings web service API"""
 
     def setUp(self):
         # Copy the schema files.
@@ -87,3 +85,4 @@ class SettingsAPITest(LabTestBase):
 
         with assert_http_error(400):
             self.settings_api.put(id, dict(keyMap=10))
+"""

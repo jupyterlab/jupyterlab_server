@@ -9,9 +9,9 @@ from traitlets import Unicode
 
 from .handlers import add_handlers, LabConfig
 
-from jupyter_server.extension.application import ExtensionApp
+from jupyter_server.extension.application import ExtensionApp, ExtensionAppJinjaMixin
 
-class LabServerApp(ExtensionApp):
+class LabServerApp(ExtensionAppJinjaMixin, ExtensionApp):
 
     default_url = Unicode('/lab',
                           help='The default URL to redirect to from `/`')

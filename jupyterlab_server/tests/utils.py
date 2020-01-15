@@ -6,10 +6,11 @@ from os.path import join as pjoin
 from tempfile import TemporaryDirectory
 from threading import Thread, Event
 from unittest.mock import patch
+from contextlib import contextmanager
 
 from jupyterlab_server import LabServerApp, LabConfig
 
-from ..servertest import ServerTestBase
+from .utilsbase import ServerTestBase
 from ..server import url_path_join
 
 import jupyter_core
@@ -19,6 +20,18 @@ from tornado.ioloop import IOLoop
 
 here = os.path.dirname(__file__)
 
+@contextmanager
+def assert_http_error(status, msg=None):
+    try:
+        yield
+    except requests.HTTPError as e:
+        real_status = e.response.status_code
+        assert real_status == status, \
+                    "Expected status %d, got %d" % (status, real_status)
+        if msg:
+            assert msg in str(e), e
+    else:
+        assert False, "Expected HTTP error status"
 
 class LabTestBase(ServerTestBase):
     Application = LabServerApp
