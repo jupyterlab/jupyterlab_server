@@ -187,7 +187,8 @@ def _path(root_dir, schema_name, make_dirs=False, extension='.json'):
 
 class SettingsHandler(APIHandler):
 
-    def initialize(self, app_settings_dir, schemas_dir, settings_dir):
+    def initialize(self, app_settings_dir, schemas_dir, settings_dir, **kwargs):
+        super().initialize(kwargs['extension_name'])
         self.overrides = dict()
         self.schemas_dir = schemas_dir
         self.settings_dir = settings_dir

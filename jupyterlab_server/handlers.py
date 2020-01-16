@@ -52,7 +52,8 @@ def is_url(url):
 class LabHandler(JupyterHandler):
     """Render the JupyterLab View."""
 
-    def initialize(self, lab_config):
+    def initialize(self, lab_config, **kwargs):
+        super().initialize(kwargs['extension_name'])
         self.lab_config = lab_config
         self.file_loader = FileSystemLoader(lab_config.templates_dir)
 
@@ -105,8 +106,8 @@ class LabHandler(JupyterHandler):
         # Write the template with the config.
         self.write(self.render_template('index.html', page_config=page_config))
 
-    def get_template(self, name):
-        return self.file_loader.load(self.settings['jinja2_env'], name)
+#    def get_template(self, name):
+#        return self.file_loader.load(self.settings['jinja2_env'], name)
 
     def render_template(self, name, **ns):
         try:
@@ -206,7 +207,7 @@ class NotFoundHandler(LabHandler):
         return LabHandler.render_template(self, name, **ns)
 
 
-def add_handlers(web_app, config):
+def add_handlers(labserverapp, web_app, config):
     """Add the appropriate handlers to the web app.
     """
     # Normalize directories.
@@ -307,8 +308,8 @@ def add_handlers(web_app, config):
     fallthrough_url = ujoin(base_url, config.app_url, r'.*')
     handlers.append((fallthrough_url, NotFoundHandler, {'lab_config': config}))
 
-    web_app.add_handlers('.*$', handlers)
-
+#    web_app.add_handlers('.*$', handlers)
+    labserverapp.handlers.extend(handlers)
 
 def _camelCase(base):
     """Convert a string to camelCase.

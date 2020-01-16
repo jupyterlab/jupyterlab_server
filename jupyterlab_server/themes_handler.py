@@ -15,10 +15,11 @@ class ThemesHandler(FileFindHandler):
     """A file handler that mangles local urls in CSS files."""
 
     def initialize(self, path, default_filename=None,
-                   no_cache_paths=None, themes_url=None):
+                   no_cache_paths=None, themes_url=None, **kwargs):
         FileFindHandler.initialize(self, path,
                                    default_filename=default_filename,
-                                   no_cache_paths=no_cache_paths)
+                                   no_cache_paths=no_cache_paths,
+                                   extension_name=kwargs['extension_name'])
         self.themes_url = themes_url
 
     def get_content(self, abspath, start=None, end=None):

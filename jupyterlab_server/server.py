@@ -1,4 +1,4 @@
-from jupyter_server.base.handlers import (                          # noqa
+from jupyter_server.extension.handlers import (                          # noqa
     APIHandler, FileFindHandler, json_errors, JupyterHandler
 )
 from jupyter_server.extension.serverextension import (                          # noqa
