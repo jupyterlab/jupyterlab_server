@@ -12,6 +12,8 @@ from jinja2 import FileSystemLoader, TemplateError
 
 from traitlets import HasTraits, Bool, Unicode, default
 
+from jupyter_server.extension.handler import ExtensionHandlerMixin, ExtensionHandlerJinjaMixin
+
 from .server import JupyterHandler, FileFindHandler, url_path_join as ujoin
 from .workspaces_handler import WorkspacesHandler
 from .settings_handler import SettingsHandler
@@ -49,7 +51,7 @@ def is_url(url):
     return False
 
 
-class LabHandler(JupyterHandler):
+class LabHandler(ExtensionHandlerMixin, ExtensionHandlerJinjaMixin, JupyterHandler):
     """Render the JupyterLab View."""
 
     def initialize(self, lab_config, **kwargs):
@@ -104,12 +106,12 @@ class LabHandler(JupyterHandler):
                     print(e)
 
         # Write the template with the config.
-        self.write(self.render_template('index.html', page_config=page_config))
+        self.write(self.render_lab_template('index.html', page_config=page_config))
 
 #    def get_template(self, name):
 #        return self.file_loader.load(self.settings['jinja2_env'], name)
 
-    def render_template(self, name, **ns):
+    def render_lab_template(self, name, **ns):
         try:
             return JupyterHandler.render_template(self, name, **ns)
         except TemplateError:
@@ -204,7 +206,7 @@ class NotFoundHandler(LabHandler):
         if 'page_config' in ns:
             ns['page_config'] = ns['page_config'].copy()
             ns['page_config']['notFoundUrl'] = self.request.path
-        return LabHandler.render_template(self, name, **ns)
+        return self.render_lab_template(name, **ns)
 
 
 def add_handlers(labserverapp, web_app, config):

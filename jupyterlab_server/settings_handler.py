@@ -13,6 +13,7 @@ from tornado import web
 
 from .server import APIHandler, json_errors
 
+from jupyter_server.extension.handler import ExtensionHandlerMixin, ExtensionHandlerJinjaMixin
 
 # The JupyterLab settings file extension.
 SETTINGS_EXTENSION = '.jupyterlab-settings'
@@ -185,7 +186,7 @@ def _path(root_dir, schema_name, make_dirs=False, extension='.json'):
     return path
 
 
-class SettingsHandler(APIHandler):
+class SettingsHandler(ExtensionHandlerMixin, ExtensionHandlerJinjaMixin, APIHandler):
 
     def initialize(self, app_settings_dir, schemas_dir, settings_dir, **kwargs):
         super().initialize(kwargs['extension_name'])

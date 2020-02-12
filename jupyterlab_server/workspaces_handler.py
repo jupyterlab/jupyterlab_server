@@ -12,6 +12,8 @@ from tornado import web
 
 from .server import APIHandler, json_errors, url_path_join as ujoin
 
+from jupyter_server.extension.handler import ExtensionHandlerMixin, ExtensionHandlerJinjaMixin
+
 # The JupyterLab workspace file extension.
 WORKSPACE_EXTENSION = '.jupyterlab-workspace'
 
@@ -76,7 +78,7 @@ def slugify(raw, base='', sign=True, max_length=128 - len(WORKSPACE_EXTENSION)):
     return value[:max_length - len(signature)] + signature
 
 
-class WorkspacesHandler(APIHandler):
+class WorkspacesHandler(ExtensionHandlerMixin, ExtensionHandlerJinjaMixin, APIHandler):
 
     def initialize(self, path, workspaces_url=None, **kwargs):
         super().initialize(kwargs['extension_name'])
