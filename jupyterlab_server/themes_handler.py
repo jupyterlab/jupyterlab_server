@@ -18,8 +18,7 @@ class ThemesHandler(FileFindHandler):
                    no_cache_paths=None, themes_url=None, **kwargs):
         FileFindHandler.initialize(self, path,
                                    default_filename=default_filename,
-                                   no_cache_paths=no_cache_paths,
-                                   extension_name=kwargs['extension_name'])
+                                   no_cache_paths=no_cache_paths)
         self.themes_url = themes_url
 
     def get_content(self, abspath, start=None, end=None):

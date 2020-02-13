@@ -205,7 +205,7 @@ class SettingsHandler(ExtensionHandlerMixin, ExtensionHandlerJinjaMixin, APIHand
                     self.log.warn(overrides_warning % str(e))
 
     @web.authenticated
-    def get(self, schema_name=''):
+    def get(self, schema_name=''):        
         overrides = self.overrides
         schemas_dir = self.schemas_dir
         settings_dir = self.settings_dir

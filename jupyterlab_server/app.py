@@ -64,7 +64,7 @@ class LabServerApp(ExtensionAppJinjaMixin, ExtensionApp):
                 "{}_jinja2_env".format(self.extension_name): self.jinja2_env 
             }
         )
-        
+
     def initialize_handlers(self):
         add_handlers(self, self.serverapp.web_app, self.lab_config)
 

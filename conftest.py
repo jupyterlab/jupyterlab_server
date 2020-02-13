@@ -1,4 +1,4 @@
-import pytest
+import pytest, shutil, os
 
 from jupyterlab_server import LabServerApp, LabConfig
 
@@ -9,8 +9,17 @@ pytest_plugins = "pytest_jupyter_server"
 from jupyterlab_server.tests.utils import here
 from jupyterlab_server.app import LabServerApp
 
+def mkdir(tmp_path, *parts):
+    path = tmp_path.joinpath(*parts)
+    if not path.exists():
+        path.mkdir(parents=True)
+    return path
+
+settings_dir = pytest.fixture(lambda tmp_path: mkdir(tmp_path, "settings"))
+schemas_dir = pytest.fixture(lambda tmp_path: mkdir(tmp_path, "schemas"))
+
 @pytest.fixture
-def make_lab_extension_app(root_dir, template_dir):
+def make_lab_extension_app(root_dir, template_dir, settings_dir, schemas_dir):
     def _make_lab_extension_app(**kwargs):
         class TestLabServerApp(LabServerApp):
             base_url = '/lab'
@@ -20,10 +29,14 @@ def make_lab_extension_app(root_dir, template_dir):
                 app_name = 'JupyterLab Test App',
                 static_dir = str(root_dir),
                 templates_dir = str(template_dir),
-                app_url = '/',
+                app_url = '/lab',
+                app_settings_dir = str(settings_dir),
+                schemas_dir = str(schemas_dir),
             )
         app = TestLabServerApp()
         return app
+
+    # Create the index files.
     index = template_dir.joinpath("index.html")
     index.write_text("""
 <!DOCTYPE html>
@@ -56,6 +69,31 @@ def make_lab_extension_app(root_dir, template_dir):
 </body>
 </html>
 """)
+
+    # Copy the schema files.
+    src = os.path.join(
+        os.path.abspath(os.path.dirname(__file__)),
+        'jupyterlab_server',
+        'tests',
+        'schemas',
+        '@jupyterlab')
+    dst = os.path.join(schemas_dir, '@jupyterlab')
+    if os.path.exists(dst):
+        shutil.rmtree(dst)
+    shutil.copytree(src, dst)
+
+    # Copy the overrides file.
+    src = os.path.join(
+        os.path.abspath(os.path.dirname(__file__)),
+        'jupyterlab_server',
+        'tests',
+        'app-settings',
+        'overrides.json')
+    dst = os.path.join(settings_dir, 'overrides.json')
+    if os.path.exists(dst):
+        os.remove(dst)
+    shutil.copyfile(src, dst)
+
     return _make_lab_extension_app
 
 
