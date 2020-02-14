@@ -1,73 +1,82 @@
 """Test the kernels service API."""
 import json
 import os
+import pytest
 import shutil
+import tornado
 
-from jupyterlab_server.tests.utils import LabTestBase, APITester
-from .utils import assert_http_error
+from .utils import expected_http_error
 
-"""
-class WorkspacesAPI(APITester):
+async def test_delete(fetch, labserverapp):
+    orig = 'f/o/o/'
+    copy = 'baz'
+    r = await fetch('lab', 'api', 'workspaces', orig)
+    assert r.code == 200
+    res = r.body.decode()
+    data = json.loads(res)
+    data['metadata']['id'] = copy
+    r2 = await fetch('lab', 'api', 'workspaces', copy, 
+        method='PUT',
+        body=json.dumps(data))
+    assert r2.code == 204
+    r3 = await fetch('lab', 'api', 'workspaces', copy,
+        method='DELETE',
+        )
+    assert r3.code == 204
 
-    url = 'lab/api/workspaces'
+async def test_get(fetch, labserverapp):
+    id = 'foo'
+    r = await fetch('lab', 'api', 'workspaces', id)
+    assert r.code == 200
+    res = r.body.decode()
+    data = json.loads(res)
+    assert data['metadata']['id'] == id
 
-    def delete(self, space_name):
-        return self._req('DELETE', space_name)
+async def test_listing(fetch, labserverapp):
+    # ID fields are from workspaces/*.jupyterlab-workspace
+    listing = set(['foo', 'f/o/o/'])
+    r = await fetch('lab', 'api', 'workspaces')
+    assert r.code == 200
+    res = r.body.decode()
+    data = json.loads(res)
+    output = set(data['workspaces']['ids'])
+    assert output == listing
 
-    def get(self, space_name=''):
-        return self._req('GET', space_name)
+async def test_put(fetch, labserverapp):
+    id = 'foo'
+    r = await fetch('lab', 'api', 'workspaces', id)
+    assert r.code == 200
+    res = r.body.decode()
+    data = json.loads(res)
+    r2 = await fetch('lab', 'api', 'workspaces', id, 
+        method='PUT',
+        body=json.dumps(data)
+        )
+    assert r2.code == 204
 
-    def put(self, space_name, body):
-        return self._req('PUT', space_name, json.dumps(body))
+async def test_bad_put(fetch, labserverapp):
+    orig = 'foo'
+    copy = 'bar'
+    r = await fetch('lab', 'api', 'workspaces', orig)
+    assert r.code == 200
+    res = r.body.decode()
+    data = json.loads(res)
+    with pytest.raises(tornado.httpclient.HTTPClientError) as e:
+        await fetch('lab', 'api', 'workspaces', copy,
+            method='PUT',
+            body=json.dumps(data)
+        )
+    assert expected_http_error(e, 400)
 
-
-class WorkspacesAPITest(LabTestBase):
-
-    def setUp(self):
-        data = os.path.join(
-            os.path.abspath(os.path.dirname(__file__)),
-            'workspaces')
-        for item in os.listdir(data):
-            src = os.path.join(data, item)
-            dst = os.path.join(self.lab_config.workspaces_dir, item)
-            if os.path.exists(dst):
-                os.remove(dst)
-            shutil.copy(src, self.lab_config.workspaces_dir)
-        self.workspaces_api = WorkspacesAPI(self.request)
-
-    def test_delete(self):
-        orig = 'f/o/o/'
-        copy = 'baz'
-        data = self.workspaces_api.get(orig).json()
-        data['metadata']['id'] = copy
-        assert self.workspaces_api.put(copy, data).status_code == 204
-        assert self.workspaces_api.delete(copy).status_code == 204
-
-    def test_get(self):
-        id = 'foo'
-        assert self.workspaces_api.get(id).json()['metadata']['id'] == id
-
-    def test_listing(self):
-        # ID fields are from workspaces/*.jupyterlab-workspace
-        listing = set(['foo', 'f/o/o/'])
-        output = set(self.workspaces_api.get().json()['workspaces']['ids'])
-        assert output == listing
-
-    def test_put(self):
-        id = 'foo'
-        data = self.workspaces_api.get(id).json()
-        assert self.workspaces_api.put(id, data).status_code == 204
-
-    def test_bad_put(self):
-        orig = 'foo'
-        copy = 'bar'
-        data = self.workspaces_api.get(orig).json()
-        with assert_http_error(400):
-            self.workspaces_api.put(copy, data)
-
-    def test_blank_put(self):
-        orig = 'foo'
-        data = self.workspaces_api.get(orig).json()
-        with assert_http_error(400):
-            self.workspaces_api.put('', data)
-"""
+async def test_blank_put(fetch, labserverapp):
+    orig = 'foo'
+    r = await fetch('lab', 'api', 'workspaces', orig)
+    assert r.code == 200
+    res = r.body.decode()
+    data = json.loads(res)
+    with pytest.raises(tornado.httpclient.HTTPClientError) as e:
+        await fetch('lab', 'api', 'workspaces',
+            method='PUT',
+            body=json.dumps(data)
+        )
+    assert expected_http_error(e, 400)

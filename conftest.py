@@ -15,12 +15,13 @@ def mkdir(tmp_path, *parts):
         path.mkdir(parents=True)
     return path
 
-app_settings_dir = pytest.fixture(lambda tmp_path: mkdir(tmp_path, "app_settings"))
-user_settings_dir = pytest.fixture(lambda tmp_path: mkdir(tmp_path, "user_settings"))
-schemas_dir = pytest.fixture(lambda tmp_path: mkdir(tmp_path, "schemas"))
+app_settings_dir = pytest.fixture(lambda tmp_path: mkdir(tmp_path, 'app_settings'))
+user_settings_dir = pytest.fixture(lambda tmp_path: mkdir(tmp_path, 'user_settings'))
+schemas_dir = pytest.fixture(lambda tmp_path: mkdir(tmp_path, 'schemas'))
+workspaces_dir = pytest.fixture(lambda tmp_path: mkdir(tmp_path, 'workspaces'))
 
 @pytest.fixture
-def make_lab_extension_app(root_dir, template_dir, app_settings_dir, user_settings_dir, schemas_dir):
+def make_lab_extension_app(root_dir, template_dir, app_settings_dir, user_settings_dir, schemas_dir, workspaces_dir):
     def _make_lab_extension_app(**kwargs):
         class TestLabServerApp(LabServerApp):
             base_url = '/lab'
@@ -34,12 +35,13 @@ def make_lab_extension_app(root_dir, template_dir, app_settings_dir, user_settin
                 app_settings_dir = str(app_settings_dir),
                 user_settings_dir = str(user_settings_dir),
                 schemas_dir = str(schemas_dir),
+                workspaces_dir = str(workspaces_dir),
             )
         app = TestLabServerApp()
         return app
 
     # Create the index files.
-    index = template_dir.joinpath("index.html")
+    index = template_dir.joinpath('index.html')
     index.write_text("""
 <!DOCTYPE html>
 <html>
@@ -95,6 +97,19 @@ def make_lab_extension_app(root_dir, template_dir, app_settings_dir, user_settin
     if os.path.exists(dst):
         os.remove(dst)
     shutil.copyfile(src, dst)
+
+    # Copy workspaces.
+    data = os.path.join(
+        os.path.abspath(os.path.dirname(__file__)),
+        'jupyterlab_server',
+        'tests',
+        'workspaces')
+    for item in os.listdir(data):
+        src = os.path.join(data, item)
+        dst = os.path.join(str(workspaces_dir), item)
+        if os.path.exists(dst):
+            os.remove(dst)
+        shutil.copy(src, str(workspaces_dir))
 
     return _make_lab_extension_app
 
