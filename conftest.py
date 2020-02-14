@@ -15,11 +15,12 @@ def mkdir(tmp_path, *parts):
         path.mkdir(parents=True)
     return path
 
-settings_dir = pytest.fixture(lambda tmp_path: mkdir(tmp_path, "settings"))
+app_settings_dir = pytest.fixture(lambda tmp_path: mkdir(tmp_path, "app_settings"))
+user_settings_dir = pytest.fixture(lambda tmp_path: mkdir(tmp_path, "user_settings"))
 schemas_dir = pytest.fixture(lambda tmp_path: mkdir(tmp_path, "schemas"))
 
 @pytest.fixture
-def make_lab_extension_app(root_dir, template_dir, settings_dir, schemas_dir):
+def make_lab_extension_app(root_dir, template_dir, app_settings_dir, user_settings_dir, schemas_dir):
     def _make_lab_extension_app(**kwargs):
         class TestLabServerApp(LabServerApp):
             base_url = '/lab'
@@ -30,7 +31,8 @@ def make_lab_extension_app(root_dir, template_dir, settings_dir, schemas_dir):
                 static_dir = str(root_dir),
                 templates_dir = str(template_dir),
                 app_url = '/lab',
-                app_settings_dir = str(settings_dir),
+                app_settings_dir = str(app_settings_dir),
+                user_settings_dir = str(user_settings_dir),
                 schemas_dir = str(schemas_dir),
             )
         app = TestLabServerApp()
@@ -89,7 +91,7 @@ def make_lab_extension_app(root_dir, template_dir, settings_dir, schemas_dir):
         'tests',
         'app-settings',
         'overrides.json')
-    dst = os.path.join(settings_dir, 'overrides.json')
+    dst = os.path.join(app_settings_dir, 'overrides.json')
     if os.path.exists(dst):
         os.remove(dst)
     shutil.copyfile(src, dst)

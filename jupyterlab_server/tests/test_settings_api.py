@@ -1,11 +1,15 @@
 """Test the Settings service API.
 """
 
-import pytest, json
+import pytest
+import json
+import tornado
+
+from .utils import expected_http_error
 
 async def test_get(fetch, labserverapp):
     id = '@jupyterlab/apputils-extension:themes'
-    r = await fetch('/lab/api/settings/{}'.format(id))
+    r = await fetch('lab', 'api', 'settings', id)
     assert r.code == 200
     res = r.body.decode()
     data = json.loads(res)
@@ -15,34 +19,48 @@ async def test_get(fetch, labserverapp):
     assert schema['properties']['theme']['default'] == 'JupyterLab Dark'
     assert 'raw' in res
 
-"""
-    def test_get_bad(self):
-        with assert_http_error(404):
-            self.settings_api.get('foo')
+async def test_get_bad(fetch, labserverapp):
+    with pytest.raises(tornado.httpclient.HTTPClientError) as e:
+        await fetch('foo')
+    assert expected_http_error(e, 404)
 
-    def test_listing(self):
-        ids = [
-            '@jupyterlab/apputils-extension:themes',
-            '@jupyterlab/codemirror-extension:commands',
-            '@jupyterlab/shortcuts-extension:plugin'
-        ]
-        versions = ['N/A', 'N/A', 'test-version']
-        response = self.settings_api.get('').json()
-        response_ids = [item['id'] for item in response['settings']]
-        response_versions = [item['version'] for item in response['settings']]
-        assert set(response_ids) == set(ids)
-        assert set(response_versions) == set(versions)
+async def test_listing(fetch, labserverapp):
+    ids = [
+        '@jupyterlab/apputils-extension:themes',
+        '@jupyterlab/codemirror-extension:commands',
+        '@jupyterlab/shortcuts-extension:plugin'
+    ]
+    versions = ['N/A', 'N/A', 'test-version']
+    r = await fetch('lab', 'api', 'settings')
+    assert r.code == 200
+    res = r.body.decode()
+    response = json.loads(res)
+    response_ids = [item['id'] for item in response['settings']]
+    response_versions = [item['version'] for item in response['settings']]
+    assert set(response_ids) == set(ids)
+    assert set(response_versions) == set(versions)
 
-    def test_patch(self):
-        id = '@jupyterlab/shortcuts-extension:plugin'
-        assert self.settings_api.put(id, dict()).status_code == 204
+async def test_patch(fetch, labserverapp):
+    id = '@jupyterlab/shortcuts-extension:plugin'
+    r = await fetch('lab', 'api', 'settings', id, 
+        method='PUT',
+        body=json.dumps({})
+        )
+    assert r.code == 204
 
-    def test_patch_wrong_id(self):
-        with assert_http_error(404):
-            self.settings_api.put('foo', dict())
+async def test_patch_wrong_id(fetch, labserverapp):
+    with pytest.raises(tornado.httpclient.HTTPClientError) as e:
+        await fetch('foo',
+            method='PUT',
+            body=json.dumps({})
+        )
+    assert expected_http_error(e, 404)
 
-    def test_patch_bad_data(self):
-        id = '@jupyterlab/codemirror-extension:commands'
-        with assert_http_error(400):
-            self.settings_api.put(id, dict(keyMap=10))
-"""
+async def test_patch_bad_data(fetch, labserverapp):
+    id = '@jupyterlab/codemirror-extension:commands'
+    with pytest.raises(tornado.httpclient.HTTPClientError) as e:
+        await fetch('foo',
+            method='PUT',
+            body=json.dumps({'keyMap': 10})
+        )
+    assert expected_http_error(e, 404)
