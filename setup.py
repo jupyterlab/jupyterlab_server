@@ -30,15 +30,21 @@ setup_args = dict(
         'License :: OSI Approved :: BSD License',
         'Programming Language :: Python',
         'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.4',
         'Programming Language :: Python :: 3.5',
+        'Programming Language :: Python :: 3.6',
+        'Programming Language :: Python :: 3.7',
+        'Programming Language :: Python :: 3.8',
     ],
     include_package_data=True
 )
 
 if 'setuptools' in sys.modules:
     setup_args['python_requires'] = '>=3.5'
-    setup_args['extras_require'] = {'test': ['pytest', 'requests']}
+    setup_args['extras_require'] = {
+        'test': ['nose', 'coverage', 'requests', 'nose_warnings_filters', 'requests',
+                 'pytest==5.3.2', 'pytest-cov', 'pytest-tornasync', 'pytest-console-scripts'],
+        'test:sys_platform == "win32"': ['nose-exclude'],
+    }
     # TODO Pin to a released jupyter_server once available.
     setup_args['install_requires'] = [
         'json5',
