@@ -81,7 +81,7 @@ def make_lab_extension_app(root_dir, template_dir, app_settings_dir, user_settin
         'tests',
         'schemas',
         '@jupyterlab')
-    dst = os.path.join(schemas_dir, '@jupyterlab')
+    dst = os.path.join(str(schemas_dir), '@jupyterlab')
     if os.path.exists(dst):
         shutil.rmtree(dst)
     shutil.copytree(src, dst)
@@ -93,7 +93,7 @@ def make_lab_extension_app(root_dir, template_dir, app_settings_dir, user_settin
         'tests',
         'app-settings',
         'overrides.json')
-    dst = os.path.join(app_settings_dir, 'overrides.json')
+    dst = os.path.join(str(app_settings_dir), 'overrides.json')
     if os.path.exists(dst):
         os.remove(dst)
     shutil.copyfile(src, dst)
