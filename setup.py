@@ -52,6 +52,11 @@ if 'setuptools' in sys.modules:
         'jinja2>=2.10',
         'jupyter_server@ git+https://github.com/datalayer-contrib/jupyter-server.git@extension_handlers',
     ],
+    setup_args['entry_points'] = {
+        'pytest11': [
+            'pytest_jupyterlab_server = jupyterlab_server.pytest_plugin'
+        ],
+    }
 
 if __name__ == '__main__':
     setup(**setup_args)
