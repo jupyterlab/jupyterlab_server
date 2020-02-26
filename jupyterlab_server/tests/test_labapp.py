@@ -8,8 +8,8 @@ from .utils import expected_http_error
 
 
 @pytest.fixture
-def notebooks(create_notebook, make_lab_extension_app):
-    make_lab_extension_app()
+def notebooks(create_notebook, make_labserver_extension_app):
+    make_labserver_extension_app()
     nbpaths = (
         'notebook1.ipynb',
         'jlab_test_notebooks/notebook2.ipynb',

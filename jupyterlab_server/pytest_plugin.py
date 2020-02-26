@@ -19,8 +19,8 @@ schemas_dir = pytest.fixture(lambda tmp_path: mkdir(tmp_path, 'schemas'))
 workspaces_dir = pytest.fixture(lambda tmp_path: mkdir(tmp_path, 'workspaces'))
 
 @pytest.fixture
-def make_lab_extension_app(root_dir, template_dir, app_settings_dir, user_settings_dir, schemas_dir, workspaces_dir):
-    def _make_lab_extension_app(**kwargs):
+def make_labserver_extension_app(root_dir, template_dir, app_settings_dir, user_settings_dir, schemas_dir, workspaces_dir):
+    def _make_labserver_extension_app(**kwargs):
         class TestLabServerApp(LabServerApp):
             base_url = '/lab'
             default_url = Unicode('/',
@@ -106,11 +106,11 @@ def make_lab_extension_app(root_dir, template_dir, app_settings_dir, user_settin
             os.remove(dst)
         shutil.copy(src, str(workspaces_dir))
 
-    return _make_lab_extension_app
+    return _make_labserver_extension_app
 
 
 @pytest.fixture
-def labserverapp(serverapp, make_lab_extension_app):
-    app = make_lab_extension_app()
+def labserverapp(serverapp, make_labserver_extension_app):
+    app = make_labserver_extension_app()
     app.initialize(serverapp)
     return app
