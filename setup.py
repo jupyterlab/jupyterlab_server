@@ -45,7 +45,7 @@ if 'setuptools' in sys.modules:
                  'pytest==5.3.2', 'pytest-cov', 'pytest-tornasync', 'pytest-console-scripts'],
         'test:sys_platform == "win32"': ['nose-exclude'],
     }
-    # TODO Pin to a released jupyter_server once available.
+    # TODO(@echarles) Pin to a released jupyter_server once available.
     setup_args['install_requires'] = [
         'json5',
         'jsonschema>=3.0.1',
