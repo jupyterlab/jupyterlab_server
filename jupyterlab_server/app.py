@@ -21,7 +21,7 @@ class LabServerApp(ExtensionAppJinjaMixin, ExtensionApp):
 
     # The name of the extension
     extension_name = "lab"
-
+    
     # Te url that your extension will serve its homepage.
     default_url = '/lab'
 
@@ -66,6 +66,6 @@ class LabServerApp(ExtensionAppJinjaMixin, ExtensionApp):
         )
 
     def initialize_handlers(self):
-        add_handlers(self, self.serverapp.web_app, self.lab_config)
+        add_handlers(self.serverapp.web_app, self.lab_config)
 
 main = launch_new_instance = LabServerApp.launch_instance

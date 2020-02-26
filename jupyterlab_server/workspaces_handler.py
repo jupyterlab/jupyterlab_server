@@ -81,7 +81,7 @@ def slugify(raw, base='', sign=True, max_length=128 - len(WORKSPACE_EXTENSION)):
 class WorkspacesHandler(ExtensionHandlerMixin, ExtensionHandlerJinjaMixin, APIHandler):
 
     def initialize(self, path, workspaces_url=None, **kwargs):
-        super().initialize(kwargs['extension_name'])
+        super().initialize('lab')
         self.workspaces_dir = path
 
     def ensure_directory(self):
