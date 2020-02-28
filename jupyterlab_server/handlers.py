@@ -82,8 +82,10 @@ class LabHandler(ExtensionHandlerMixin, ExtensionHandlerJinjaMixin, JupyterHandl
 
         mathjax_config = self.settings.get('mathjax_config',
                                            'TeX-AMS_HTML-full,Safe')
+        mathjax_url = self.settings.get('mathjax_url',
+                                           'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js')
         page_config.setdefault('mathjaxConfig', mathjax_config)
-        page_config.setdefault('fullMathjaxUrl', self.mathjax_url)
+        page_config.setdefault('fullMathjaxUrl', mathjax_url)
 
         # Put all our config in page_config
         for name in config.trait_names():
