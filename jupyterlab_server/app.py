@@ -37,6 +37,12 @@ class LabServerApp(ExtensionAppJinjaMixin, ExtensionApp):
     # Should your extension expose other server extensions when launched directly?
     load_other_extensions = True
 
+    @staticmethod
+    def _jupyter_server_extension_paths():
+        return [{
+            'module': 'jupyterlab_server'
+        }]
+
     def initialize_settings(self):
         settings = self.serverapp.web_app.settings
         # By default, make terminals available.
