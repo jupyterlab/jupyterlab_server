@@ -20,7 +20,7 @@ class LabServerApp(ExtensionAppJinjaMixin, ExtensionApp):
     lab_config = LabConfig()
 
     # The name of the extension
-    extension_name = "lab"
+    extension_name = "jupyterlab"
     
     # Te url that your extension will serve its homepage.
     default_url = '/lab'
@@ -67,7 +67,9 @@ class LabServerApp(ExtensionAppJinjaMixin, ExtensionApp):
         )
         self.settings.update(
             {
-                "{}_jinja2_env".format(self.extension_name): self.jinja2_env 
+                # TODO(@echarles) Discuss this with @Zsailer
+                "{}_jinja2_env".format('lab'): self.jinja2_env 
+#                "{}_jinja2_env".format(self.extension_name): self.jinja2_env 
             }
         )
 
