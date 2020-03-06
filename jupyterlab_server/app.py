@@ -7,73 +7,60 @@
 import os, jinja2
 from traitlets import Unicode
 from jinja2 import Environment, FileSystemLoader
+from traitlets import Bool, Unicode, default
+from jupyter_server.extension.application import ExtensionApp, ExtensionAppJinjaMixin
+
+from .server import url_path_join as ujoin
+
 
 from .handlers import add_handlers, LabConfig
 
-from jupyter_server.extension.application import ExtensionApp, ExtensionAppJinjaMixin
 
-class LabServerApp(ExtensionAppJinjaMixin, ExtensionApp):
+class LabServerApp(ExtensionAppJinjaMixin, LabConfig, ExtensionApp):
 
     default_url = Unicode('/lab',
                           help='The default URL to redirect to from `/`')
 
-    lab_config = LabConfig()
-
     # The name of the extension
-    extension_name = "jupyterlab"
-    
+    extension_name = "jupyterlab_server"
+
     # Te url that your extension will serve its homepage.
     default_url = '/lab'
-
-    template_paths = [
-        lab_config.templates_dir
-    ]
-
-    # Local path to static files directory.
-    static_paths = [
-        lab_config.static_url
-    ]
 
     # Should your extension expose other server extensions when launched directly?
     load_other_extensions = True
 
-    @staticmethod
-    def _jupyter_server_extension_paths():
-        return [{
-            'module': 'jupyterlab_server'
-        }]
+    @default('static_url')
+    def _default_static_url(self):
+        return ujoin('static/', self.extension_name)
+
+    @default('workspaces_url')
+    def _default_workspaces_url(self):
+        return ujoin(self.app_url, 'workspaces/')
+
+    @default('workspaces_api_url')
+    def _default_workspaces_api_url(self):
+        return ujoin(self.app_url, 'api', 'workspaces/')
+
+    @default('settings_url')
+    def _default_settings_url(self):
+        return ujoin(self.app_url, 'api', 'settings/')
+
+    @default('themes_url')
+    def _default_themes_url(self):
+        return ujoin(self.app_url, 'api', 'themes/')
+
+    @default('tree_url')
+    def _default_tree_url(self):
+        return ujoin(self.app_url, 'tree/')
 
     def initialize_settings(self):
         settings = self.serverapp.web_app.settings
         # By default, make terminals available.
         settings.setdefault('terminals_available', True)
 
-    def initialize_templates(self):
-        self.template_paths = [
-            self.lab_config.templates_dir
-        ]
-        self.static_paths = [
-            self.lab_config.static_url
-        ]
-        if len(self.template_paths) > 0:
-            self.settings.update({
-                "{}_template_paths".format(self.extension_name): self.template_paths
-            })
-        self.jinja2_env = Environment(
-            loader=FileSystemLoader(self.template_paths), 
-            extensions=['jinja2.ext.i18n'],
-            autoescape=True,
-            **self.jinja2_options
-        )
-        self.settings.update(
-            {
-                # TODO(@echarles) Discuss this with @Zsailer
-                "{}_jinja2_env".format('lab'): self.jinja2_env 
-#                "{}_jinja2_env".format(self.extension_name): self.jinja2_env 
-            }
-        )
-
     def initialize_handlers(self):
-        add_handlers(self.serverapp.web_app, self.lab_config)
+        add_handlers(self.handlers, self)
+
 
 main = launch_new_instance = LabServerApp.launch_instance

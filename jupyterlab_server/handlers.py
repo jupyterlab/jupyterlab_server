@@ -54,18 +54,18 @@ def is_url(url):
 class LabHandler(ExtensionHandlerMixin, ExtensionHandlerJinjaMixin, JupyterHandler):
     """Render the JupyterLab View."""
 
-
-    def initialize(self, lab_config, **kwargs):
-        super().initialize('lab')
-        self.lab_config = lab_config
-        self.file_loader = FileSystemLoader(lab_config.templates_dir)
+    # def initialize(self, lab_config, extension_name='jupyterlab_server', **kwargs):
+    #     super().initialize(extension_name)
+    #     # self.lab_config = lab_config
+    #     # self.file_loader = FileSystemLoader(lab_config.templates_dir)
 
     @web.authenticated
     @web.removeslash
     def get(self):
         self.application.store_id = getattr(self.application, 'store_id', 0)
-        config = self.lab_config
-        settings_dir = config.app_settings_dir
+        config = LabConfig()
+        app = self.extensionapp
+        settings_dir = app.app_settings_dir
 
         # Handle page config data.
         page_config = self.settings.setdefault('page_config_data', {})
@@ -90,14 +90,14 @@ class LabHandler(ExtensionHandlerMixin, ExtensionHandlerJinjaMixin, JupyterHandl
 
         # Put all our config in page_config
         for name in config.trait_names():
-            page_config[_camelCase(name)] = getattr(config, name)
+            page_config[_camelCase(name)] = getattr(app, name)
 
         # Add full versions of all the urls
         for name in config.trait_names():
             if not name.endswith('_url'):
                 continue
             full_name = _camelCase('full_' + name)
-            full_url = ujoin(base_url, getattr(config, name))
+            full_url = ujoin(base_url, getattr(app, name))
             page_config[full_name] = full_url
 
         # Load the current page config file if available.
@@ -110,18 +110,7 @@ class LabHandler(ExtensionHandlerMixin, ExtensionHandlerJinjaMixin, JupyterHandl
                     print(e)
 
         # Write the template with the config.
-        self.write(self.render_lab_template('index.html', page_config=page_config))
-
-#    def get_template(self, name):
-#        return self.file_loader.load(self.settings['jinja2_env'], name)
-
-    def render_lab_template(self, name, **ns):
-        try:
-            return JupyterHandler.render_template(self, name, **ns)
-        except TemplateError:
-            return DEFAULT_TEMPLATE.generate(
-                name=name, path=self.lab_config.templates_dir
-            )
+        self.write(self.render_template('index.html', page_config=page_config))
 
 
 class LabConfig(HasTraits):
@@ -180,9 +169,11 @@ class LabConfig(HasTraits):
                        help=('Whether to cache files on the server. '
                              'This should be `True` except in dev mode.'))
 
+    extension_name = Unicode()
+
     @default('static_url')
     def _default_static_url(self):
-        return ujoin('static/', self.app_url)
+        return ujoin('static/', self.extension_name)
 
     @default('workspaces_url')
     def _default_workspaces_url(self):
@@ -210,111 +201,99 @@ class NotFoundHandler(LabHandler):
         if 'page_config' in ns:
             ns['page_config'] = ns['page_config'].copy()
             ns['page_config']['notFoundUrl'] = self.request.path
-        return self.render_lab_template(name, **ns)
+        return super().render_template(name, **ns)
 
 
-def add_handlers(web_app, config):
+def add_handlers(handlers, app):
     """Add the appropriate handlers to the web app.
     """
     # Normalize directories.
-    for name in config.trait_names():
+    for name in LabConfig.class_trait_names():
         if not name.endswith('_dir'):
             continue
-        value = getattr(config, name)
-        setattr(config, name, value.replace(os.sep, '/'))
+        value = getattr(app, name)
+        setattr(app, name, value.replace(os.sep, '/'))
 
     # Normalize urls
     # Local urls should have a leading slash but no trailing slash
-    for name in config.trait_names():
+    for name in LabConfig.class_trait_names():
         if not name.endswith('_url'):
             continue
-        value = getattr(config, name)
+        value = getattr(app, name)
         if is_url(value):
             continue
         if not value.startswith('/'):
             value = '/' + value
         if value.endswith('/'):
             value = value[:-1]
-        setattr(config, name, value)
+        setattr(app, name, value)
 
     # Set up the main page handler and tree handler.
-    base_url = web_app.settings['base_url']
-    lab_path = ujoin(base_url, config.app_url)
-    tree_path = ujoin(base_url, config.tree_url, r'.+')
-    handlers = [
-        (lab_path, LabHandler, {'lab_config': config}),
-        (tree_path, LabHandler, {'lab_config': config})
-    ]
+    lab_path = app.app_url
+    tree_path = ujoin(app.tree_url, r'.+')
+    handlers.extend([
+        (lab_path, LabHandler),
+        (tree_path, LabHandler)
+    ])
 
     # Cache all or none of the files depending on the `cache_files` setting.
-    no_cache_paths = [] if config.cache_files else ['/']
-
-    # Handle local static assets.
-    if config.static_dir:
-        static_path = ujoin(base_url, config.static_url, '(.*)')
-        handlers.append((static_path, FileFindHandler, {
-            'path': config.static_dir,
-            'no_cache_paths': no_cache_paths
-        }))
+    no_cache_paths = [] if app.cache_files else ['/']
 
     # Handle local settings.
-    if config.schemas_dir:
+    if app.schemas_dir:
         settings_config = {
-            'app_settings_dir': config.app_settings_dir,
-            'schemas_dir': config.schemas_dir,
-            'settings_dir': config.user_settings_dir
+            'app_settings_dir': app.app_settings_dir,
+            'schemas_dir': app.schemas_dir,
+            'settings_dir': app.user_settings_dir
         }
 
         # Handle requests for the list of settings. Make slash optional.
-        settings_path = ujoin(base_url, config.settings_url, '?')
+        settings_path = ujoin(app.settings_url, '?')
         handlers.append((settings_path, SettingsHandler, settings_config))
 
         # Handle requests for an individual set of settings.
-        setting_path = ujoin(
-            base_url, config.settings_url, '(?P<schema_name>.+)')
+        setting_path = ujoin(app.settings_url, '(?P<schema_name>.+)')
         handlers.append((setting_path, SettingsHandler, settings_config))
 
     # Handle saved workspaces.
-    if config.workspaces_dir:
+    if app.workspaces_dir:
         # Handle JupyterLab client URLs that include workspaces.
-        workspaces_path = ujoin(base_url, config.workspaces_url, r'.+')
-        handlers.append((workspaces_path, LabHandler, {'lab_config': config}))
+        workspaces_path = ujoin(app.workspaces_url, r'.+')
+        handlers.append((workspaces_path, LabHandler))
 
         workspaces_config = {
-            'workspaces_url': config.workspaces_url,
-            'path': config.workspaces_dir
+            'workspaces_url': app.workspaces_url,
+            'path': app.workspaces_dir
         }
 
         # Handle requests for the list of workspaces. Make slash optional.
-        workspaces_api_path = ujoin(base_url, config.workspaces_api_url, '?')
+        workspaces_api_path = ujoin(app.workspaces_api_url, '?')
         handlers.append((
             workspaces_api_path, WorkspacesHandler, workspaces_config))
 
         # Handle requests for an individually named workspace.
-        workspace_api_path = ujoin(
-            base_url, config.workspaces_api_url, '(?P<space_name>.+)')
+        workspace_api_path = ujoin(app.workspaces_api_url, '(?P<space_name>.+)')
         handlers.append((
             workspace_api_path, WorkspacesHandler, workspaces_config))
 
     # Handle local themes.
-    if config.themes_dir:
-        themes_url = ujoin(base_url, config.themes_url)
+    if app.themes_dir:
+        themes_url = app.themes_url
         themes_path = ujoin(themes_url, '(.*)')
         handlers.append((
             themes_path,
             ThemesHandler,
             {
                 'themes_url': themes_url,
-                'path': config.themes_dir,
+                'path': app.themes_dir,
                 'no_cache_paths': no_cache_paths
             }
         ))
 
     # Let the lab handler act as the fallthrough option instead of a 404.
-    fallthrough_url = ujoin(base_url, config.app_url, r'.*')
-    handlers.append((fallthrough_url, NotFoundHandler, {'lab_config': config}))
+    fallthrough_url = ujoin(app.app_url, r'.*')
+    handlers.append((fallthrough_url, NotFoundHandler))
 
-    web_app.add_handlers('.*$', handlers)
 
 def _camelCase(base):
     """Convert a string to camelCase.
