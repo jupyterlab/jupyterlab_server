@@ -15,6 +15,12 @@ class LabServerApp(ServerApp):
     default_url = Unicode('/lab',
                           help='The default URL to redirect to from `/`')
 
+    blacklist_uri = Unicode('', config=True,
+        help="The default URI to get the black list")
+
+    whitelist_uri = Unicode('', config=True,
+        help="The default URI to get the white list")
+
     lab_config = LabConfig()
 
     def start(self):
