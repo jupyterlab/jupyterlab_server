@@ -15,6 +15,7 @@ from traitlets import HasTraits, Bool, Unicode, default
 from .server import JupyterHandler, FileFindHandler, url_path_join as ujoin
 from .workspaces_handler import WorkspacesHandler
 from .settings_handler import SettingsHandler
+from .listings_handler import ListingsHandler
 from .themes_handler import ThemesHandler
 
 # -----------------------------------------------------------------------------
@@ -151,6 +152,11 @@ class LabConfig(HasTraits):
                                 'schemas directory. If given, a handler will '
                                 'be added for settings.'))
 
+    listings_dir = Unicode('',
+                          help=('The optional location of the settings '
+                                'listings directory. If given, a handler will '
+                                'be added for listings.'))
+
     workspaces_api_url = Unicode(help='The url path of the workspaces API.')
 
     workspaces_dir = Unicode('',
@@ -159,6 +165,8 @@ class LabConfig(HasTraits):
                                    'will be added for workspaces.'))
 
     workspaces_url = Unicode(help='The url path of the workspaces handler.')
+
+    listings_url = Unicode(help='The theme url.')
 
     themes_url = Unicode(help='The theme url.')
 
@@ -188,6 +196,10 @@ class LabConfig(HasTraits):
     @default('settings_url')
     def _default_settings_url(self):
         return ujoin(self.app_url, 'api', 'settings/')
+
+    @default('listings_url')
+    def _default_listings_url(self):
+        return ujoin(self.app_url, 'api', 'listings/')
 
     @default('themes_url')
     def _default_themes_url(self):
@@ -288,6 +300,20 @@ def add_handlers(web_app, config):
             base_url, config.workspaces_api_url, '(?P<space_name>.+)')
         handlers.append((
             workspace_api_path, WorkspacesHandler, workspaces_config))
+
+    # Handle local listings.
+    if config.listings_dir:
+        listings_url = ujoin(base_url, config.listings_url)
+        listings_path = ujoin(listings_url, '(.*)')
+        handlers.append((
+            listings_path,
+            ListingsHandler,
+            {
+                'listings_url': listings_url,
+                'path': config.listings_dir,
+                'no_cache_paths': no_cache_paths
+            }
+        ))
 
     # Handle local themes.
     if config.themes_dir:
