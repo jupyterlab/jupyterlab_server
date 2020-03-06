@@ -19,7 +19,8 @@ __all__ = [
 
 def _jupyter_server_extension_paths():
     return [
-        {'module': 'lab'}
+        {
+            'module': 'jupyterlab_server',
+            'app': LabServerApp
+        }
     ]
-
-load_jupyter_server_extension = LabServerApp.load_jupyter_server_extension
