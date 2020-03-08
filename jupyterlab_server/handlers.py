@@ -91,7 +91,10 @@ class LabHandler(JupyterHandler):
             if not name.endswith('_url'):
                 continue
             full_name = _camelCase('full_' + name)
-            full_url = ujoin(base_url, getattr(config, name))
+            full_url = getattr(config, name)
+            if not is_url(full_url):
+                # Relative URL will be prefixed with base_url
+                full_url = ujoin(base_url, full_url)
             page_config[full_name] = full_url
 
         # Load the current page config file if available.
