@@ -40,6 +40,7 @@ if 'setuptools' in sys.modules:
     setup_args['python_requires'] = '>=3.5'
     setup_args['extras_require'] = {'test': ['pytest', 'requests']}
     setup_args['install_requires'] = [
+        'requests',
         'json5',
         'jsonschema>=3.0.1',
         'notebook>=4.2.0',
