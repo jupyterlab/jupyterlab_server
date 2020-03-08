@@ -49,7 +49,6 @@ class ListingsHandler(FileFindHandler):
                 'whitelist': list(ListingsHandler.whitelist)
             }
             ListingsHandler.listings = json.dumps(j)
-            print(ListingsHandler.listings)
 
             ListingsHandler.initialized = True
 
