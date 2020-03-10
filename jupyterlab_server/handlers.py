@@ -93,7 +93,7 @@ class LabHandler(ExtensionHandlerJinjaMixin, ExtensionHandlerMixin, JupyterHandl
             if not name.endswith('_url'):
                 continue
             full_name = _camelCase('full_' + name)
-            full_url = getattr(config, name)
+            full_url = getattr(app, name)
             if not is_url(full_url):
                 # Relative URL will be prefixed with base_url
                 full_url = ujoin(base_url, full_url)
@@ -109,11 +109,9 @@ class LabHandler(ExtensionHandlerJinjaMixin, ExtensionHandlerMixin, JupyterHandl
                     print(e)
 
         # Write the template with the config.
-        # from jinja2.utils import htmlsafe_json_dumps
-
-        # x = htmlsafe_json_dumps(page_config)
         tpl = self.render_template('index.html', page_config=page_config)
         self.write(tpl)
+
 
 class LabConfig(HasTraits):
     """The lab application configuration object.
