@@ -10,7 +10,7 @@ from urllib.parse import urlparse
 from tornado import web, template
 from jinja2 import FileSystemLoader, TemplateError
 
-from traitlets import HasTraits, Bool, Unicode, default
+from traitlets import HasTraits, Bool, Unicode, default, List
 
 from jupyter_server.extension.handler import ExtensionHandlerMixin, ExtensionHandlerJinjaMixin
 
@@ -23,6 +23,7 @@ from .themes_handler import ThemesHandler
 # Module globals
 # -----------------------------------------------------------------------------
 
+DEFAULT_TEMPLATE_PATH = os.path.join(os.path.dirname(__file__), 'templates')
 
 DEFAULT_TEMPLATE = template.Template("""
 <!DOCTYPE html>
@@ -51,13 +52,8 @@ def is_url(url):
     return False
 
 
-class LabHandler(ExtensionHandlerMixin, ExtensionHandlerJinjaMixin, JupyterHandler):
+class LabHandler(ExtensionHandlerJinjaMixin, ExtensionHandlerMixin, JupyterHandler):
     """Render the JupyterLab View."""
-
-    # def initialize(self, lab_config, extension_name='jupyterlab_server', **kwargs):
-    #     super().initialize(extension_name)
-    #     # self.lab_config = lab_config
-    #     # self.file_loader = FileSystemLoader(lab_config.templates_dir)
 
     @web.authenticated
     @web.removeslash
@@ -113,8 +109,11 @@ class LabHandler(ExtensionHandlerMixin, ExtensionHandlerJinjaMixin, JupyterHandl
                     print(e)
 
         # Write the template with the config.
-        self.write(self.render_template('index.html', page_config=page_config))
+        # from jinja2.utils import htmlsafe_json_dumps
 
+        # x = htmlsafe_json_dumps(page_config)
+        tpl = self.render_template('index.html', page_config=page_config)
+        self.write(tpl)
 
 class LabConfig(HasTraits):
     """The lab application configuration object.
@@ -172,11 +171,13 @@ class LabConfig(HasTraits):
                        help=('Whether to cache files on the server. '
                              'This should be `True` except in dev mode.'))
 
-    extension_name = Unicode()
+    @default('template_dir')
+    def _default_template_dir(self):
+        return DEFAULT_TEMPLATE_PATH
 
     @default('static_url')
     def _default_static_url(self):
-        return ujoin('static/', self.extension_name)
+        return ujoin('static/', self.app_namespace)
 
     @default('workspaces_url')
     def _default_workspaces_url(self):

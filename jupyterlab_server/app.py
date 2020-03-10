@@ -10,49 +10,30 @@ from jinja2 import Environment, FileSystemLoader
 from traitlets import Bool, Unicode, default
 from jupyter_server.extension.application import ExtensionApp, ExtensionAppJinjaMixin
 
+from ._version import __version__
 from .server import url_path_join as ujoin
-
-
 from .handlers import add_handlers, LabConfig
 
 
 class LabServerApp(ExtensionAppJinjaMixin, LabConfig, ExtensionApp):
+    """A Lab Server Application that runs out-of-the-box"""
+    extension_name = "jupyterlab_server"
+    app_name = "JupyterLab Server Application"
+    app_version = __version__
+
+    @property
+    def app_namespace(self):
+        return self.extension_name
 
     default_url = Unicode('/lab',
                           help='The default URL to redirect to from `/`')
 
-    # The name of the extension
-    extension_name = "jupyterlab_server"
-
-    # Te url that your extension will serve its homepage.
-    default_url = '/lab'
-
     # Should your extension expose other server extensions when launched directly?
     load_other_extensions = True
 
-    @default('static_url')
-    def _default_static_url(self):
-        return ujoin('static/', self.extension_name)
-
-    @default('workspaces_url')
-    def _default_workspaces_url(self):
-        return ujoin(self.app_url, 'workspaces/')
-
-    @default('workspaces_api_url')
-    def _default_workspaces_api_url(self):
-        return ujoin(self.app_url, 'api', 'workspaces/')
-
-    @default('settings_url')
-    def _default_settings_url(self):
-        return ujoin(self.app_url, 'api', 'settings/')
-
-    @default('themes_url')
-    def _default_themes_url(self):
-        return ujoin(self.app_url, 'api', 'themes/')
-
-    @default('tree_url')
-    def _default_tree_url(self):
-        return ujoin(self.app_url, 'tree/')
+    def initialize_templates(self):
+        self.static_paths = [self.static_dir]
+        self.template_paths = [self.templates_dir]
 
     def initialize_settings(self):
         settings = self.serverapp.web_app.settings

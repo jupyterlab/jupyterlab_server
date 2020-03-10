@@ -19,24 +19,26 @@ schemas_dir = pytest.fixture(lambda tmp_path: mkdir(tmp_path, 'schemas'))
 workspaces_dir = pytest.fixture(lambda tmp_path: mkdir(tmp_path, 'workspaces'))
 
 @pytest.fixture
-def make_labserver_extension_app(root_dir, template_dir, app_settings_dir, user_settings_dir, schemas_dir, workspaces_dir):
+def make_labserver_extension_app(
+    root_dir,
+    template_dir,
+    app_settings_dir,
+    user_settings_dir,
+    schemas_dir,
+    workspaces_dir
+    ):
+
     def _make_labserver_extension_app(**kwargs):
-        class TestLabServerApp(LabServerApp):
-            base_url = '/lab'
-            default_url = Unicode('/',
-                                help='The default URL to redirect to from `/`')
-            lab_config = LabConfig(
-                app_name = 'JupyterLab Test App',
-                static_dir = str(root_dir),
-                templates_dir = str(template_dir),
-                app_url = '/lab',
-                app_settings_dir = str(app_settings_dir),
-                user_settings_dir = str(user_settings_dir),
-                schemas_dir = str(schemas_dir),
-                workspaces_dir = str(workspaces_dir),
-            )
-        app = TestLabServerApp()
-        return app
+
+        return LabServerApp(
+            static_dir = str(root_dir),
+            templates_dir = str(template_dir),
+            app_url = '/lab',
+            app_settings_dir = str(app_settings_dir),
+            user_settings_dir = str(user_settings_dir),
+            schemas_dir = str(schemas_dir),
+            workspaces_dir = str(workspaces_dir)
+        )
 
     # Create the index files.
     index = template_dir.joinpath('index.html')
@@ -49,10 +51,10 @@ def make_labserver_extension_app(root_dir, template_dir, app_settings_dir, user_
 <body>
     {# Copy so we do not modify the page_config with updates. #}
     {% set page_config_full = page_config.copy() %}
-    
+
     {# Set a dummy variable - we just want the side effect of the update. #}
     {% set _ = page_config_full.update(baseUrl=base_url, wsUrl=ws_url) %}
-    
+
       <script id="jupyter-config-data" type="application/json">
         {{ page_config_full | tojson }}
       </script>
