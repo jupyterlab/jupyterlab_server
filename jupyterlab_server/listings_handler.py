@@ -4,13 +4,14 @@
 # Distributed under the terms of the Modified BSD License.
 
 import os
+import time
 import json
 import re
 
 from .server import FileFindHandler
 
 import requests
-
+from tornado import gen, ioloop
 
 LISTINGS_URL_SUFFIX='@jupyterlab/extensionmanager-extension/listings.json'
 
@@ -22,11 +23,16 @@ class ListingsHandler(FileFindHandler):
     whitelist_uris = set()
     blacklist = []
     whitelist = []
-    listings = ""
+    listings = ''
     initialized = False
 
     def initialize(self, path, default_filename=None,
                    no_cache_paths=None, listings_url=None):
+
+        if type(self.config['LabServerApp']['listings_refresh_ms']) == int:
+            self.listings_refresh_ms = self.config['LabServerApp']['listings_refresh_ms']
+        else:
+            self.listings_refresh_ms = 1000 * 60
 
         FileFindHandler.initialize(self, path,
                                    default_filename=default_filename,
@@ -40,17 +46,13 @@ class ListingsHandler(FileFindHandler):
                 ListingsHandler.whitelist_uris = set(self.config['LabServerApp']['whitelist_uris'].split(','))
 
             self.init_listings_uris(os.path.join(path, LISTINGS_URL_SUFFIX))
+
             self.fetch_listings_uris()
 
-            j = {
-                'blacklist_uris': list(ListingsHandler.blacklist_uris),
-                'whitelist_uris': list(ListingsHandler.whitelist_uris),
-                'blacklist': ListingsHandler.blacklist,
-                'whitelist': ListingsHandler.whitelist,
-            }
-            ListingsHandler.listings = json.dumps(j)
-
             ListingsHandler.initialized = True
+
+            self.pc = ioloop.PeriodicCallback(self.fetch_listings_uris, callback_time=self.listings_refresh_ms)
+            self.pc.start()
 
 
     def init_listings_uris(self, abs_path):
@@ -66,16 +68,26 @@ class ListingsHandler(FileFindHandler):
 
 
     def fetch_listings_uris(self):
+        self.log.info('Fetching Blacklist from {}'.format(ListingsHandler.blacklist_uris))
         for ListingsHandler.blacklist_uri in ListingsHandler.blacklist_uris:
             r = requests.get(ListingsHandler.blacklist_uri)
             j = json.loads(r.text)
             for b in j['blacklist']:
                 ListingsHandler.blacklist.append(b)            
+        self.log.info('Fetching Whitelist from {}'.format(ListingsHandler.whitelist_uris))
         for ListingsHandler.whitelist_uri in ListingsHandler.whitelist_uris:
             r = requests.get(ListingsHandler.whitelist_uri)
             j = json.loads(r.text)
             for w in j['whitelist']:
                 ListingsHandler.whitelist.append(w)
+        j = {
+            'blacklist_uris': list(ListingsHandler.blacklist_uris),
+            'whitelist_uris': list(ListingsHandler.whitelist_uris),
+            'blacklist': ListingsHandler.blacklist,
+            'whitelist': ListingsHandler.whitelist,
+        }
+        ListingsHandler.listings = json.dumps(j)
+
 
     def get_content(self, abspath, start=None, end=None):
         """Retrieve the content of the requested resource which is located

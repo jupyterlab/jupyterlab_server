@@ -4,7 +4,7 @@
 # Copyright (c) Jupyter Development Team.
 # Distributed under the terms of the Modified BSD License.
 
-from traitlets import Unicode
+from traitlets import Unicode, Integer
 
 from .server import ServerApp
 from .handlers import add_handlers, LabConfig
@@ -20,6 +20,9 @@ class LabServerApp(ServerApp):
 
     whitelist_uri = Unicode('', config=True,
         help="The default URI to get the white list")
+
+    listings_refresh_ms = Integer(1000 * 60, config=True,
+        help="The interval time in milliseconds to refresh the lisings")
 
     lab_config = LabConfig()
 
