@@ -20,8 +20,8 @@ class ListingsHandler(FileFindHandler):
 
     blacklist_uris = set()
     whitelist_uris = set()
-    blacklist = set()
-    whitelist = set()
+    blacklist = []
+    whitelist = []
     listings = ""
     initialized = False
 
@@ -45,8 +45,8 @@ class ListingsHandler(FileFindHandler):
             j = {
                 'blacklist_uris': list(ListingsHandler.blacklist_uris),
                 'whitelist_uris': list(ListingsHandler.whitelist_uris),
-                'blacklist': list(ListingsHandler.blacklist),
-                'whitelist': list(ListingsHandler.whitelist)
+                'blacklist': ListingsHandler.blacklist,
+                'whitelist': ListingsHandler.whitelist,
             }
             ListingsHandler.listings = json.dumps(j)
 
@@ -70,13 +70,12 @@ class ListingsHandler(FileFindHandler):
             r = requests.get(ListingsHandler.blacklist_uri)
             j = json.loads(r.text)
             for b in j['blacklist']:
-                ListingsHandler.blacklist.add(b)
+                ListingsHandler.blacklist.append(b)            
         for ListingsHandler.whitelist_uri in ListingsHandler.whitelist_uris:
             r = requests.get(ListingsHandler.whitelist_uri)
             j = json.loads(r.text)
             for w in j['whitelist']:
-                ListingsHandler.whitelist.add(w)
-
+                ListingsHandler.whitelist.append(w)
 
     def get_content(self, abspath, start=None, end=None):
         """Retrieve the content of the requested resource which is located
