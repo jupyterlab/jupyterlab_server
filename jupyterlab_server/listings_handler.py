@@ -69,17 +69,21 @@ class ListingsHandler(FileFindHandler):
 
     def fetch_listings_uris(self):
         self.log.info('Fetching Blacklist from {}'.format(ListingsHandler.blacklist_uris))
+        blacklist = []
         for ListingsHandler.blacklist_uri in ListingsHandler.blacklist_uris:
             r = requests.get(ListingsHandler.blacklist_uri)
             j = json.loads(r.text)
             for b in j['blacklist']:
-                ListingsHandler.blacklist.append(b)            
+                blacklist.append(b)
+        ListingsHandler.blacklist = blacklist
         self.log.info('Fetching Whitelist from {}'.format(ListingsHandler.whitelist_uris))
+        whitelist = []
         for ListingsHandler.whitelist_uri in ListingsHandler.whitelist_uris:
             r = requests.get(ListingsHandler.whitelist_uri)
             j = json.loads(r.text)
             for w in j['whitelist']:
-                ListingsHandler.whitelist.append(w)
+                whitelist.append(w)
+        ListingsHandler.whitelist = whitelist
         j = {
             'blacklist_uris': list(ListingsHandler.blacklist_uris),
             'whitelist_uris': list(ListingsHandler.whitelist_uris),
