@@ -15,16 +15,16 @@ class LabServerApp(ServerApp):
     default_url = Unicode('/lab',
                           help='The default URL to redirect to from `/`')
 
-    blacklist_uri = Unicode('', config=True,
+    lab_config = LabConfig()
+
+    blacklist_uris = Unicode('', config=True,
         help="A list of comma-separated URIs to get the blacklist")
 
-    whitelist_uri = Unicode('', config=True,
+    whitelist_uris = Unicode('', config=True,
         help="A list of comma-separated URIs to get the whitelist")
 
     listings_refresh_ms = Integer(1000 * 60, config=True,
         help="The interval delay in milliseconds to refresh the lists")
-
-    lab_config = LabConfig()
 
     def start(self):
         add_handlers(self.web_app, self.lab_config)

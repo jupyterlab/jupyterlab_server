@@ -306,13 +306,29 @@ def add_handlers(web_app, config):
 
     # Handle local listings.
     if config.listings_dir:
+
+        settings_config = web_app.settings.get('config', {}).get('LabServerApp', {})
+        blacklist_uris = settings_config.get('blacklist_uris', None)
+        whitelist_uris = settings_config.get('whitelist_uris', None)
+        ListingsHandler.listings_refresh_ms = settings_config.get('listings_refresh_ms', 1000 * 60 * 5)
+
         listings_url = ujoin(base_url, config.listings_url)
         listings_path = ujoin(listings_url, '(.*)')
+
+        if blacklist_uris:
+            ListingsHandler.blacklist_uris = set(blacklist_uris.split(','))
+        if whitelist_uris:
+            ListingsHandler.whitelist_uris = set(whitelist_uris.split(','))
+
+        from .listings_handler import LISTINGS_URL_SUFFIX, init_listings_uris, fetch_listings_uris
+        init_listings_uris(os.path.join(config.listings_dir, LISTINGS_URL_SUFFIX))
+
+        fetch_listings_uris()
+
         handlers.append((
             listings_path,
             ListingsHandler,
             {
-                'listings_url': listings_url,
                 'path': config.listings_dir,
                 'no_cache_paths': no_cache_paths
             }
