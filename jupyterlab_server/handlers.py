@@ -310,6 +310,14 @@ def add_handlers(web_app, config):
         settings_config = web_app.settings.get('config', {}).get('LabServerApp', {})
         blacklist_uris = settings_config.get('blacklist_uris', None)
         whitelist_uris = settings_config.get('whitelist_uris', None)
+
+        if (blacklist_uris != '') and (whitelist_uris != ''):
+            raise Exception('Simultaneous blacklist_uris and whitelist_uris is not supported. Please define only one of those.')
+            # TODO(@echarles) Force exit here.
+            import sys
+            sys.exit(-1)
+
+
         ListingsHandler.listings_refresh_ms = settings_config.get('listings_refresh_ms', 1000 * 60 * 5)
         ListingsHandler.listings_request_opts = settings_config.get('listings_request_options', {})
 
@@ -323,7 +331,6 @@ def add_handlers(web_app, config):
 
         from .listings_handler import LISTINGS_URL_SUFFIX, init_listings_uris, fetch_listings
         init_listings_uris(os.path.join(config.listings_dir, LISTINGS_URL_SUFFIX))
-
         fetch_listings()
 
         handlers.append((
