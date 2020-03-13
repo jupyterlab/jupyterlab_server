@@ -311,6 +311,7 @@ def add_handlers(web_app, config):
         blacklist_uris = settings_config.get('blacklist_uris', None)
         whitelist_uris = settings_config.get('whitelist_uris', None)
         ListingsHandler.listings_refresh_ms = settings_config.get('listings_refresh_ms', 1000 * 60 * 5)
+        ListingsHandler.listings_request_opts = settings_config.get('listings_request_options', {})
 
         listings_url = ujoin(base_url, config.listings_url)
         listings_path = ujoin(listings_url, '(.*)')
@@ -320,10 +321,10 @@ def add_handlers(web_app, config):
         if whitelist_uris:
             ListingsHandler.whitelist_uris = set(whitelist_uris.split(','))
 
-        from .listings_handler import LISTINGS_URL_SUFFIX, init_listings_uris, fetch_listings_uris
+        from .listings_handler import LISTINGS_URL_SUFFIX, init_listings_uris, fetch_listings
         init_listings_uris(os.path.join(config.listings_dir, LISTINGS_URL_SUFFIX))
 
-        fetch_listings_uris()
+        fetch_listings()
 
         handlers.append((
             listings_path,

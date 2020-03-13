@@ -4,7 +4,7 @@
 # Copyright (c) Jupyter Development Team.
 # Distributed under the terms of the Modified BSD License.
 
-from traitlets import Unicode, Integer
+from traitlets import Unicode, Integer, Dict
 
 from .server import ServerApp
 from .handlers import add_handlers, LabConfig
@@ -25,6 +25,10 @@ class LabServerApp(ServerApp):
 
     listings_refresh_ms = Integer(1000 * 60, config=True,
         help="The interval delay in milliseconds to refresh the lists")
+
+    listings_request_options = Dict({}, config=True,
+        help="The optional kwargs to use for the listings HTTP requests \
+            as described on https://2.python-requests.org/en/v2.7.0/api/#requests.request")
 
     def start(self):
         add_handlers(self.web_app, self.lab_config)

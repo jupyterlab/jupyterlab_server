@@ -28,11 +28,11 @@ def init_listings_uris(abs_path):
             ListingsHandler.whitelist_uris.add(w)
 
 
-def fetch_listings_uris():
+def fetch_listings():
     print('Fetching Blacklist from {}'.format(ListingsHandler.blacklist_uris))
     blacklist = []
     for blacklist_uri in ListingsHandler.blacklist_uris:
-        r = requests.get(blacklist_uri)
+        r = requests.request('GET', blacklist_uri, **ListingsHandler.listings_request_opts)
         j = json.loads(r.text)
         for b in j['blacklist']:
             blacklist.append(b)
@@ -40,7 +40,7 @@ def fetch_listings_uris():
     print('Fetching Whitelist from {}'.format(ListingsHandler.whitelist_uris))
     whitelist = []
     for whitelist_uri in ListingsHandler.whitelist_uris:
-        r = requests.get(whitelist_uri)
+        r = requests.request('GET', whitelist_uri, **ListingsHandler.listings_request_opts)
         j = json.loads(r.text)
         for w in j['whitelist']:
             whitelist.append(w)
@@ -62,6 +62,7 @@ class ListingsHandler(FileFindHandler):
     blacklist = []
     whitelist = []
     listings = ''
+    listings_request_opts = {}
     pc = None
 
     def initialize(self, path, default_filename=None,
@@ -73,7 +74,7 @@ class ListingsHandler(FileFindHandler):
         if len(ListingsHandler.blacklist_uris) > 0 or len(ListingsHandler.whitelist_uris) > 0:
             from tornado import ioloop
             ListingsHandler.pc = ioloop.PeriodicCallback(
-                fetch_listings_uris, 
+                fetch_listings,
                 callback_time=ListingsHandler.listings_refresh_ms,
                 jitter=0.1
                 )
