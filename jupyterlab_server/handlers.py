@@ -311,7 +311,7 @@ def add_handlers(web_app, config):
         blacklist_uris = settings_config.get('blacklist_uris', None)
         whitelist_uris = settings_config.get('whitelist_uris', None)
 
-        if (blacklist_uris != '') and (whitelist_uris != ''):
+        if (blacklist_uris != None) and (whitelist_uris != None):
             raise Exception('Simultaneous blacklist_uris and whitelist_uris is not supported. Please define only one of those.')
             # TODO(@echarles) Force exit here.
             import sys
