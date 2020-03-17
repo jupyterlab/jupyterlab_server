@@ -8,25 +8,12 @@ import time
 import json
 import re
 
-from .server import FileFindHandler
+from .server import APIHandler
 
 import requests
 
 
 LISTINGS_URL_SUFFIX='@jupyterlab/extensionmanager-extension/listings.json'
-
-
-def init_listings_uris(abs_path):
-    with open(abs_path, 'rb') as fid:
-        data = fid.read().decode('utf-8')
-    listings = json.loads(data)
-    # TODO(@echarles) Review this, as we have exclusive modes now.
-#    if len(ListingsHandler.blacklist_uris) == 0:
-#        for b in listings['listings']['blacklist_uris']:
-#            ListingsHandler.blacklist_uris.add(b)
-#    if len(ListingsHandler.whitelist_uris) == 0:
-#        for w in listings['listings']['whitelist_uris']:
-#            ListingsHandler.whitelist_uris.add(w)
 
 
 def fetch_listings():
@@ -56,8 +43,8 @@ def fetch_listings():
     })
 
 
-class ListingsHandler(FileFindHandler):
-    """A file handler that returns file content from the listings directory."""
+class ListingsHandler(APIHandler):
+    """An handler that returns the listings specs."""
 
     blacklist_uris = set()
     whitelist_uris = set()
@@ -67,12 +54,8 @@ class ListingsHandler(FileFindHandler):
     listings_request_opts = {}
     pc = None
 
-    def initialize(self, path, default_filename=None,
-                   no_cache_paths=None):
+    def initialize(self):
 
-        FileFindHandler.initialize(self, path,
-                                   default_filename=default_filename,
-                                   no_cache_paths=no_cache_paths)
         if len(ListingsHandler.blacklist_uris) > 0 or len(ListingsHandler.whitelist_uris) > 0:
             from tornado import ioloop
             ListingsHandler.pc = ioloop.PeriodicCallback(
@@ -82,27 +65,9 @@ class ListingsHandler(FileFindHandler):
                 )
             ListingsHandler.pc.start()
 
-    def get_content(self, abspath, start=None, end=None):
-        """Retrieve the content of the requested resource which is located
-        at the given absolute path.
-
-        This method should either return a byte string or an iterator
-        of byte strings.
-        """
-        if not abspath.endswith(LISTINGS_URL_SUFFIX):
-            return FileFindHandler.get_content(abspath, start, end)
-
+    def get(self, path):
         self.set_header('Content-Type', 'application/json')
-        return self._get_listings()
-
-
-    def get_content_size(self):
-        """Retrieve the total size of the resource at the given path."""
-        if not self.absolute_path.endswith(LISTINGS_URL_SUFFIX):
-            return FileFindHandler.get_content_size(self)
-
-        return len(self._get_listings())
-
-
-    def _get_listings(self):
-        return ListingsHandler.listings
+        if path == LISTINGS_URL_SUFFIX:
+            self.write(ListingsHandler.listings)
+        else:
+            self.write({})

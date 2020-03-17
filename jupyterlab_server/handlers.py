@@ -15,7 +15,7 @@ from traitlets import HasTraits, Bool, Unicode, default
 from .server import JupyterHandler, FileFindHandler, url_path_join as ujoin
 from .workspaces_handler import WorkspacesHandler
 from .settings_handler import SettingsHandler
-from .listings_handler import ListingsHandler
+from .listings_handler import ListingsHandler, fetch_listings
 from .themes_handler import ThemesHandler
 
 # -----------------------------------------------------------------------------
@@ -308,15 +308,14 @@ def add_handlers(web_app, config):
     if config.listings_dir:
 
         settings_config = web_app.settings.get('config', {}).get('LabServerApp', {})
-        blacklist_uris = settings_config.get('blacklist_uris', None)
-        whitelist_uris = settings_config.get('whitelist_uris', None)
+        blacklist_uris = settings_config.get('blacklist_uris', '')
+        whitelist_uris = settings_config.get('whitelist_uris', '')
 
-        if (blacklist_uris != None) and (whitelist_uris != None):
+        if (blacklist_uris != '') and (whitelist_uris != ''):
             raise Exception('Simultaneous blacklist_uris and whitelist_uris is not supported. Please define only one of those.')
             # TODO(@echarles) Force exit here.
             import sys
             sys.exit(-1)
-
 
         ListingsHandler.listings_refresh_ms = settings_config.get('listings_refresh_ms', 1000 * 60 * 5)
         ListingsHandler.listings_request_opts = settings_config.get('listings_request_options', {})
@@ -329,18 +328,9 @@ def add_handlers(web_app, config):
         if whitelist_uris:
             ListingsHandler.whitelist_uris = set(whitelist_uris.split(','))
 
-        from .listings_handler import LISTINGS_URL_SUFFIX, init_listings_uris, fetch_listings
-        init_listings_uris(os.path.join(config.listings_dir, LISTINGS_URL_SUFFIX))
         fetch_listings()
 
-        handlers.append((
-            listings_path,
-            ListingsHandler,
-            {
-                'path': config.listings_dir,
-                'no_cache_paths': no_cache_paths
-            }
-        ))
+        handlers.append((listings_path, ListingsHandler, {}))
 
     # Handle local themes.
     if config.themes_dir:
