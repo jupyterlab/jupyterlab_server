@@ -23,7 +23,7 @@ class LabServerApp(ServerApp):
     whitelist_uris = Unicode('', config=True,
         help="A list of comma-separated URIs to get the whitelist")
 
-    listings_refresh_ms = Integer(1000 * 60, config=True,
+    listings_refresh_ms = Integer(1000 * 60 * 5, config=True,
         help="The interval delay in milliseconds to refresh the lists")
 
     listings_request_options = Dict({}, config=True,

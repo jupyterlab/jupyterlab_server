@@ -155,11 +155,6 @@ class LabConfig(HasTraits):
                                 'schemas directory. If given, a handler will '
                                 'be added for settings.'))
 
-    listings_dir = Unicode('',
-                          help=('The optional location of the settings '
-                                'listings directory. If given, a handler will '
-                                'be added for listings.'))
-
     workspaces_api_url = Unicode(help='The url path of the workspaces API.')
 
     workspaces_dir = Unicode('',
@@ -169,7 +164,7 @@ class LabConfig(HasTraits):
 
     workspaces_url = Unicode(help='The url path of the workspaces handler.')
 
-    listings_url = Unicode(help='The theme url.')
+    listings_url = Unicode(help='The listings url.')
 
     themes_url = Unicode(help='The theme url.')
 
@@ -305,32 +300,32 @@ def add_handlers(web_app, config):
             workspace_api_path, WorkspacesHandler, workspaces_config))
 
     # Handle local listings.
-    if config.listings_dir:
 
-        settings_config = web_app.settings.get('config', {}).get('LabServerApp', {})
-        blacklist_uris = settings_config.get('blacklist_uris', '')
-        whitelist_uris = settings_config.get('whitelist_uris', '')
+    settings_config = web_app.settings.get('config', {}).get('LabServerApp', {})
+    blacklist_uris = settings_config.get('blacklist_uris', '')
+    whitelist_uris = settings_config.get('whitelist_uris', '')
 
-        if (blacklist_uris != '') and (whitelist_uris != ''):
-            raise Exception('Simultaneous blacklist_uris and whitelist_uris is not supported. Please define only one of those.')
-            # TODO(@echarles) Force exit here.
-            import sys
-            sys.exit(-1)
+    if (blacklist_uris) and (whitelist_uris):
+        raise Exception('Simultaneous blacklist_uris and whitelist_uris is not supported. Please define only one of those.')
+        # TODO(@echarles) Force exit here.
+        import sys
+        sys.exit(-1)
 
-        ListingsHandler.listings_refresh_ms = settings_config.get('listings_refresh_ms', 1000 * 60 * 5)
-        ListingsHandler.listings_request_opts = settings_config.get('listings_request_options', {})
+    ListingsHandler.listings_refresh_ms = settings_config.get('listings_refresh_ms', 1000 * 60 * 5)
+    ListingsHandler.listings_request_opts = settings_config.get('listings_request_options', {})
 
-        listings_url = ujoin(base_url, config.listings_url)
-        listings_path = ujoin(listings_url, '(.*)')
+    listings_url = ujoin(base_url, config.listings_url)
+    listings_path = ujoin(listings_url, '(.*)')
 
-        if blacklist_uris:
-            ListingsHandler.blacklist_uris = set(blacklist_uris.split(','))
-        if whitelist_uris:
-            ListingsHandler.whitelist_uris = set(whitelist_uris.split(','))
+    if blacklist_uris:
+        ListingsHandler.blacklist_uris = set(blacklist_uris.split(','))
+    if whitelist_uris:
+        ListingsHandler.whitelist_uris = set(whitelist_uris.split(','))
+    
+    # TODO(@echarles) Get the log function and pass it to fetch_listings
+    fetch_listings(None)
 
-        fetch_listings()
-
-        handlers.append((listings_path, ListingsHandler, {}))
+    handlers.append((listings_path, ListingsHandler, {}))
 
     # Handle local themes.
     if config.themes_dir:
