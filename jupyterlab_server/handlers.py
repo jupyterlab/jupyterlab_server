@@ -306,8 +306,7 @@ def add_handlers(web_app, config):
     whitelist_uris = settings_config.get('whitelist_uris', '')
 
     if (blacklist_uris) and (whitelist_uris):
-        raise Exception('Simultaneous blacklist_uris and whitelist_uris is not supported. Please define only one of those.')
-        # TODO(@echarles) Force exit here.
+        print('Simultaneous blacklist_uris and whitelist_uris is not supported. Please define only one of those.')
         import sys
         sys.exit(-1)
 
