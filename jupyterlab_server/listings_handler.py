@@ -69,9 +69,6 @@ class ListingsHandler(APIHandler):
     blacklist = []
     # The whitelisted extensions.
     whitelist = []
-    # The computed listing to be returned
-    # It will contain the uris and the listings.
-    listings = ''
     # The provider request options to be used for the request library.
     listings_request_opts = {}
     # The PeriodicCallback that schedule the call to fetch_listings method.
