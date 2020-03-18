@@ -11,21 +11,23 @@ import tornado
 
 from .server import APIHandler
 
+from traitlets import Instance
+
+
 import requests
 
 
 LISTINGS_URL_SUFFIX='@jupyterlab/extensionmanager-extension/listings.json'
 
 
-def fetch_listings(log):
-    def log_info(message):
-        if log:
-            return log.info(message)
-        return print(message)
+def fetch_listings(logger):
+    if not logger:
+        from traitlets import log
+        logger = log.get_logger()
     if len(ListingsHandler.blacklist_uris) > 0:
         blacklist = []
         for blacklist_uri in ListingsHandler.blacklist_uris:
-            log_info('Fetching blacklist from {}'.format(ListingsHandler.blacklist_uris))
+            logger.info('Fetching blacklist from {}'.format(ListingsHandler.blacklist_uris))
             r = requests.request('GET', blacklist_uri, **ListingsHandler.listings_request_opts)
             j = json.loads(r.text)
             for b in j['blacklist']:
@@ -34,7 +36,8 @@ def fetch_listings(log):
     if len(ListingsHandler.whitelist_uris) > 0:
         whitelist = []
         for whitelist_uri in ListingsHandler.whitelist_uris:
-            log_info('Fetching whitelist from {}'.format(ListingsHandler.whitelist_uris))
+            print('adsf')
+            logger.info('Fetching whitelist from {}'.format(ListingsHandler.whitelist_uris))
             r = requests.request('GET', whitelist_uri, **ListingsHandler.listings_request_opts)
             j = json.loads(r.text)
             for w in j['whitelist']:

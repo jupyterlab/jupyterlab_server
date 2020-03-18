@@ -322,7 +322,6 @@ def add_handlers(web_app, config):
     if whitelist_uris:
         ListingsHandler.whitelist_uris = set(whitelist_uris.split(','))
     
-    # TODO(@echarles) Get the log function and pass it to fetch_listings
     fetch_listings(None)
 
     handlers.append((listings_path, ListingsHandler, {}))
