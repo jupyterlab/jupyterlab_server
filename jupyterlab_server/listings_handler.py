@@ -36,7 +36,6 @@ def fetch_listings(logger):
     if len(ListingsHandler.whitelist_uris) > 0:
         whitelist = []
         for whitelist_uri in ListingsHandler.whitelist_uris:
-            print('adsf')
             logger.info('Fetching whitelist from {}'.format(ListingsHandler.whitelist_uris))
             r = requests.request('GET', whitelist_uri, **ListingsHandler.listings_request_opts)
             j = json.loads(r.text)
