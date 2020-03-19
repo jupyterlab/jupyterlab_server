@@ -26,7 +26,7 @@ class ProcessApp(ServerApp):
     def start(self):
         """Start the application.
         """
-        add_handlers(self.web_app, self.lab_config)
+        add_handlers(self.handlers, self.lab_config)
         IOLoop.current().add_callback(self._run_command)
         ServerApp.start(self)
 
