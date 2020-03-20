@@ -9,13 +9,17 @@ from .server import ServerApp
 from .handlers import add_handlers, LabConfig
 from .process import Process
 
+from traitlets import Unicode
 
-class ProcessApp(ServerApp):
+from jupyter_server.extension.application import ExtensionApp, ExtensionAppJinjaMixin
+
+
+class ProcessApp(ExtensionAppJinjaMixin, LabConfig, ExtensionApp):
     """A notebook app that runs a separate process and exits on completion."""
 
-    open_browser = Bool(False)
+    load_other_extensions = True
 
-    lab_config = LabConfig()
+    open_browser = Bool(False)
 
     def get_command(self):
         """Get the command and kwargs to run with `Process`.
@@ -23,12 +27,13 @@ class ProcessApp(ServerApp):
         """
         return ['python', '--version'], dict()
 
-    def start(self):
+    def initialize_handlers(self):
+        add_handlers(self.handlers, self)
+
+    def initialize_settings(self):
         """Start the application.
         """
-        add_handlers(self.handlers, self.lab_config)
         IOLoop.current().add_callback(self._run_command)
-        ServerApp.start(self)
 
     def _run_command(self):
         command, kwargs = self.get_command()
