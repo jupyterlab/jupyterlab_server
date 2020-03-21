@@ -15,7 +15,7 @@ from jupyter_server.extension.application import ExtensionApp, ExtensionAppJinja
 
 
 class ProcessApp(ExtensionAppJinjaMixin, LabConfig, ExtensionApp):
-    """A notebook app that runs a separate process and exits on completion."""
+    """A jupyterlab app that runs a separate process and exits on completion."""
 
     load_other_extensions = True
 
