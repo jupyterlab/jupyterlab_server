@@ -27,13 +27,13 @@ class ProcessApp(ExtensionAppJinjaMixin, LabConfig, ExtensionApp):
         """
         return ['python', '--version'], dict()
 
-    def initialize_handlers(self):
-        add_handlers(self.handlers, self)
-
     def initialize_settings(self):
         """Start the application.
         """
         IOLoop.current().add_callback(self._run_command)
+
+    def initialize_handlers(self):
+        add_handlers(self.handlers, self)
 
     def _run_command(self):
         command, kwargs = self.get_command()
