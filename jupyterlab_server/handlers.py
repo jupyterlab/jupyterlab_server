@@ -312,7 +312,6 @@ def add_handlers(web_app, config):
 
     ListingsHandler.listings_refresh_seconds = settings_config.get('listings_refresh_seconds', 60 * 60)
     ListingsHandler.listings_request_opts = settings_config.get('listings_request_options', {})
-
     listings_url = ujoin(base_url, config.listings_url)
     listings_path = ujoin(listings_url, '(.*)')
 
@@ -322,6 +321,15 @@ def add_handlers(web_app, config):
         ListingsHandler.whitelist_uris = set(whitelist_uris.split(','))
     
     fetch_listings(None)
+
+    if len(ListingsHandler.blacklist_uris) > 0 or len(ListingsHandler.whitelist_uris) > 0:
+        from tornado import ioloop
+        ListingsHandler.pc = ioloop.PeriodicCallback(
+            lambda: fetch_listings(None),
+            callback_time=ListingsHandler.listings_refresh_seconds * 1000,
+            jitter=0.1
+            )
+        ListingsHandler.pc.start()
 
     handlers.append((listings_path, ListingsHandler, {}))
 

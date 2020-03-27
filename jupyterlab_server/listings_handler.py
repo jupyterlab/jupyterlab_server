@@ -74,17 +74,6 @@ class ListingsHandler(APIHandler):
     pc = None
 
 
-    def initialize(self):
-
-        if len(ListingsHandler.blacklist_uris) > 0 or len(ListingsHandler.whitelist_uris) > 0:
-            from tornado import ioloop
-            ListingsHandler.pc = ioloop.PeriodicCallback(
-                lambda: fetch_listings(self.log),
-                callback_time=ListingsHandler.listings_refresh_seconds * 1000,
-                jitter=0.1
-                )
-            ListingsHandler.pc.start()
-
     def get(self, path):
         self.set_header('Content-Type', 'application/json')
         if path == LISTINGS_URL_SUFFIX:
