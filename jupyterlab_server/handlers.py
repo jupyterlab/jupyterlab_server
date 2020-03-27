@@ -310,7 +310,7 @@ def add_handlers(web_app, config):
         import sys
         sys.exit(-1)
 
-    ListingsHandler.listings_refresh_ms = settings_config.get('listings_refresh_ms', 1000 * 60 * 5)
+    ListingsHandler.listings_refresh_seconds = settings_config.get('listings_refresh_seconds', 60 * 60)
     ListingsHandler.listings_request_opts = settings_config.get('listings_request_options', {})
 
     listings_url = ujoin(base_url, config.listings_url)
