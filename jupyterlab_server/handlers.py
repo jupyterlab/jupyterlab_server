@@ -15,6 +15,7 @@ from traitlets import HasTraits, Bool, Unicode, default
 from .server import JupyterHandler, FileFindHandler, url_path_join as ujoin
 from .workspaces_handler import WorkspacesHandler
 from .settings_handler import SettingsHandler
+from .listings_handler import ListingsHandler, fetch_listings
 from .themes_handler import ThemesHandler
 
 # -----------------------------------------------------------------------------
@@ -163,6 +164,8 @@ class LabConfig(HasTraits):
 
     workspaces_url = Unicode(help='The url path of the workspaces handler.')
 
+    listings_url = Unicode(help='The listings url.')
+
     themes_url = Unicode(help='The theme url.')
 
     themes_dir = Unicode('',
@@ -191,6 +194,10 @@ class LabConfig(HasTraits):
     @default('settings_url')
     def _default_settings_url(self):
         return ujoin(self.app_url, 'api', 'settings/')
+
+    @default('listings_url')
+    def _default_listings_url(self):
+        return ujoin(self.app_url, 'api', 'listings/')
 
     @default('themes_url')
     def _default_themes_url(self):
@@ -291,6 +298,40 @@ def add_handlers(web_app, config):
             base_url, config.workspaces_api_url, '(?P<space_name>.+)')
         handlers.append((
             workspace_api_path, WorkspacesHandler, workspaces_config))
+
+    # Handle local listings.
+
+    settings_config = web_app.settings.get('config', {}).get('LabServerApp', {})
+    blacklist_uris = settings_config.get('blacklist_uris', '')
+    whitelist_uris = settings_config.get('whitelist_uris', '')
+
+    if (blacklist_uris) and (whitelist_uris):
+        print('Simultaneous blacklist_uris and whitelist_uris is not supported. Please define only one of those.')
+        import sys
+        sys.exit(-1)
+
+    ListingsHandler.listings_refresh_seconds = settings_config.get('listings_refresh_seconds', 60 * 60)
+    ListingsHandler.listings_request_opts = settings_config.get('listings_request_options', {})
+    listings_url = ujoin(base_url, config.listings_url)
+    listings_path = ujoin(listings_url, '(.*)')
+
+    if blacklist_uris:
+        ListingsHandler.blacklist_uris = set(blacklist_uris.split(','))
+    if whitelist_uris:
+        ListingsHandler.whitelist_uris = set(whitelist_uris.split(','))
+    
+    fetch_listings(None)
+
+    if len(ListingsHandler.blacklist_uris) > 0 or len(ListingsHandler.whitelist_uris) > 0:
+        from tornado import ioloop
+        ListingsHandler.pc = ioloop.PeriodicCallback(
+            lambda: fetch_listings(None),
+            callback_time=ListingsHandler.listings_refresh_seconds * 1000,
+            jitter=0.1
+            )
+        ListingsHandler.pc.start()
+
+    handlers.append((listings_path, ListingsHandler, {}))
 
     # Handle local themes.
     if config.themes_dir:
