@@ -28,6 +28,8 @@ class LabServerApp(ExtensionAppJinjaMixin, LabConfig, ExtensionApp):
     default_url = Unicode('/lab',
                           help='The default URL to redirect to from `/`')
 
+    extension_url = '/lab'
+
     # Should your extension expose other server extensions when launched directly?
     load_other_extensions = True
 
