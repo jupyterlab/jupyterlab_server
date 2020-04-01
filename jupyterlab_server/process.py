@@ -55,7 +55,7 @@ def which(command, env=None):
 
     if not command_with_path:
         if command in ['nodejs', 'node', 'npm']:
-            msg = 'Please install nodejs 5+ and npm before continuing installation. nodejs may be installed using conda or directly from the nodejs website.'
+            msg = 'Please install Node.js and npm before continuing installation. You may be able to install Node.js from your package manager, from conda, or directly from the Node.js website (https://nodejs.org).'
             raise ValueError(msg)
         raise ValueError('The command was not found or was not ' +
                 'executable: %s.' % command)
