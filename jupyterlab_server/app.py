@@ -19,6 +19,7 @@ from .handlers import add_handlers, LabConfig
 class LabServerApp(ExtensionAppJinjaMixin, LabConfig, ExtensionApp):
     """A Lab Server Application that runs out-of-the-box"""
     extension_name = "jupyterlab_server"
+    extension_url = "/lab"
     app_name = "JupyterLab Server Application"
     app_version = __version__
 

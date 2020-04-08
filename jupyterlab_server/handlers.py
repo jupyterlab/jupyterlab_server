@@ -287,7 +287,7 @@ def add_handlers(handlers, app):
 
     # Handle local listings.
 
-    settings_config = web_app.settings.get('config', {}).get('LabServerApp', {})
+    settings_config = app.settings.get('config', {}).get('LabServerApp', {})
     blacklist_uris = settings_config.get('blacklist_uris', '')
     whitelist_uris = settings_config.get('whitelist_uris', '')
 
@@ -298,14 +298,15 @@ def add_handlers(handlers, app):
 
     ListingsHandler.listings_refresh_seconds = settings_config.get('listings_refresh_seconds', 60 * 60)
     ListingsHandler.listings_request_opts = settings_config.get('listings_request_options', {})
-    listings_url = ujoin(base_url, config.listings_url)
+    base_url = app.settings.get('base_url')
+    listings_url = ujoin(base_url, settings_config.get('listings_url', '/api/listings'))
     listings_path = ujoin(listings_url, '(.*)')
 
     if blacklist_uris:
         ListingsHandler.blacklist_uris = set(blacklist_uris.split(','))
     if whitelist_uris:
         ListingsHandler.whitelist_uris = set(whitelist_uris.split(','))
-    
+
     fetch_listings(None)
 
     if len(ListingsHandler.blacklist_uris) > 0 or len(ListingsHandler.whitelist_uris) > 0:
