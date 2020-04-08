@@ -47,6 +47,7 @@ if 'setuptools' in sys.modules:
     }
     # TODO(@echarles) Pin to a released jupyter_server once available.
     setup_args['install_requires'] = [
+        'requests',
         'json5',
         'jsonschema>=3.0.1',
         'jinja2>=2.10',
