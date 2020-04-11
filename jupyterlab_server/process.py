@@ -230,12 +230,6 @@ class WatchHelper(Process):
             else:
                 os.kill(proc.pid, signal.SIGTERM)
 
-        # Close stdout.
-        try:
-            self._stdout.close()
-        except Exception as e:
-            pass
-
         # Wait for the process to close.
         try:
             proc.wait()
