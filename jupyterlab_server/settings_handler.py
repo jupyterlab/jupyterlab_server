@@ -16,6 +16,9 @@ from .server import APIHandler, json_errors
 
 # The JupyterLab settings file extension.
 SETTINGS_EXTENSION = '.jupyterlab-settings'
+# Used for when JSON5 payload is wrapped in a JSON payload in the form:
+# {'raw': '...'}, where '...' is the JSON5 string.
+RAW_KEY = 'raw'
 
 
 def _get_schema(schemas_dir, schema_name, overrides):
@@ -243,7 +246,7 @@ class SettingsHandler(APIHandler):
             raise web.HTTPError(500, settings_error)
 
         raw_payload = self.request.body.strip().decode(u'utf-8')
-        raw_settings = json.loads(raw_payload)['json5']
+        raw_settings = json.loads(raw_payload)[RAW_KEY]
         payload = json5.loads(raw_settings)
 
         # Validate the data against the schema.
