@@ -46,6 +46,7 @@ def _get_schema(schemas_dir, schema_name, overrides, labextensions_path):
         path = _path(schemas_dir, schema_name)
 
     if not os.path.exists(path):
+        import pdb; pdb.set_trace()
         raise web.HTTPError(404, notfound_error % path)
 
     with open(path, encoding='utf-8') as fid:
@@ -243,6 +244,7 @@ def _path(root_dir, schema_name, make_dirs=False, extension='.json'):
         parent_dir = os.path.join(root_dir, package_dir)
         path = os.path.join(parent_dir, plugin + extension)
     except Exception:
+        import pdb; pdb.set_trace()
         raise web.HTTPError(404, notfound_error % schema_name)
 
     if make_dirs and not os.path.exists(parent_dir):
@@ -356,24 +358,33 @@ class SettingsHandler(ExtensionHandlerMixin, ExtensionHandlerJinjaMixin, APIHand
         schemas_dir = self.schemas_dir
         settings_dir = self.settings_dir
         settings_error = 'No current settings directory'
+        invalid_json_error = 'Failed parsing JSON payload: %s'
+        invalid_payload_format_error = 'Invalid format for JSON payload. Must be in the form {\'raw\': ...}'
         validation_error = 'Failed validating input: %s'
 
         if not settings_dir:
             raise web.HTTPError(500, settings_error)
 
-        raw = self.request.body.strip().decode('utf-8')
+        raw_payload = self.request.body.strip().decode('utf-8')
+        try:
+            raw_settings = json.loads(raw_payload)['raw']
+            payload = json5.loads(raw_settings)
+        except json.decoder.JSONDecodeError as e:
+            raise web.HTTPError(400, invalid_json_error % str(e))
+        except (KeyError, TypeError) as e:
+            raise web.HTTPError(400, invalid_payload_format_error)
 
         # Validate the data against the schema.
         schema, _ = _get_schema(schemas_dir, schema_name, overrides, labextensions_path=self.labextensions_path)
         validator = Validator(schema)
         try:
-            validator.validate(json5.loads(raw))
+            validator.validate(payload)
         except ValidationError as e:
             raise web.HTTPError(400, validation_error % str(e))
 
         # Write the raw data (comments included) to a file.
         path = _path(settings_dir, schema_name, True, SETTINGS_EXTENSION)
         with open(path, 'w', encoding='utf-8') as fid:
-            fid.write(raw)
+            fid.write(raw_settings)
 
         self.set_status(204)

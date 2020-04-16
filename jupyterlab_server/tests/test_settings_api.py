@@ -3,6 +3,7 @@
 
 import pytest
 import json
+import json5
 import tornado
 
 from strict_rfc3339 import rfc3339_to_timestamp
@@ -65,8 +66,7 @@ async def test_patch(fetch, labserverapp):
 
     r = await fetch('lab', 'api', 'settings', id, 
         method='PUT',
-        body=json.dumps({})
-        )
+        body=json.dumps(dict(raw=json5.dumps(dict()))))
     assert r.code == 204
 
     r = await fetch('lab', 'api', 'settings', id, 
@@ -78,7 +78,7 @@ async def test_patch(fetch, labserverapp):
     
     r = await fetch('lab', 'api', 'settings', id, 
         method='PUT',
-        body=json.dumps({})
+        body=json.dumps(dict(raw=json5.dumps(dict())))
         )
     assert r.code == 204
 
@@ -105,10 +105,12 @@ async def test_patch(fetch, labserverapp):
 
 async def test_patch_unicode(fetch, labserverapp):
     id = '@jupyterlab/unicode-extension:plugin'
+    settings = dict(comment=big_unicode_string[::-1])
+    payload = dict(raw=json5.dumps(settings))
 
     r = await fetch('lab', 'api', 'settings', id, 
         method='PUT',
-        body=json.dumps(dict(comment=big_unicode_string[::-1]))
+        body=json.dumps(payload)
         )
     assert r.code == 204
 
@@ -122,14 +124,39 @@ async def test_patch_wrong_id(fetch, labserverapp):
     with pytest.raises(tornado.httpclient.HTTPClientError) as e:
         await fetch('foo',
             method='PUT',
-            body=json.dumps({})
+            body=json.dumps(dict(raw=json5.dumps(dict())))
         )
     assert expected_http_error(e, 404)
 
 async def test_patch_bad_data(fetch, labserverapp):
     with pytest.raises(tornado.httpclient.HTTPClientError) as e:
+        settings = dict(keyMap=10)
+        payload = dict(raw=json5.dumps(settings))
         await fetch('foo',
             method='PUT',
-            body=json.dumps({'keyMap': 10})
+            body=json.dumps(payload)
         )
     assert expected_http_error(e, 404)
+
+async def test_patch_invalid_payload_format(fetch, labserverapp):
+    id = '@jupyterlab/apputils-extension:themes'
+
+    with pytest.raises(tornado.httpclient.HTTPClientError) as e:
+        settings = dict(keyMap=10)
+        payload = dict(foo=json5.dumps(settings))
+        await fetch('lab', 'api', 'settings', id,
+            method='PUT',
+            body=json.dumps(payload)
+        )
+    assert expected_http_error(e, 400)
+
+async def test_patch_invalid_json(fetch, labserverapp):
+    id = '@jupyterlab/apputils-extension:themes'
+
+    with pytest.raises(tornado.httpclient.HTTPClientError) as e:
+        payload_str = 'eh'
+        await fetch('lab', 'api', 'settings', id,
+            method='PUT',
+            body=json.dumps(payload_str)
+        )
+    assert expected_http_error(e, 400)
