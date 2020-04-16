@@ -237,14 +237,21 @@ class SettingsHandler(APIHandler):
         schemas_dir = self.schemas_dir
         settings_dir = self.settings_dir
         settings_error = 'No current settings directory'
+        invalid_json_error = 'Failed parsing JSON payload: %s'
+        invalid_payload_format_error = 'Invalid format for JSON payload. Must be in the form {\'raw\': ...}'
         validation_error = 'Failed validating input: %s'
 
         if not settings_dir:
             raise web.HTTPError(500, settings_error)
 
         raw_payload = self.request.body.strip().decode(u'utf-8')
-        raw_settings = json.loads(raw_payload)['raw']
-        payload = json5.loads(raw_settings)
+        try:
+            raw_settings = json.loads(raw_payload)['raw']
+            payload = json5.loads(raw_settings)
+        except json.decoder.JSONDecodeError as e:
+            raise web.HTTPError(400, invalid_json_error % str(e))
+        except KeyError as e:
+            raise web.HTTPError(400, invalid_payload_format_error)
 
         # Validate the data against the schema.
         schema = _get_schema(schemas_dir, schema_name, overrides)
