@@ -1,5 +1,6 @@
 """Test the kernels service API."""
 import json
+import json5
 import os
 import shutil
 
@@ -76,15 +77,15 @@ class SettingsAPITest(LabTestBase):
     def test_patch(self):
         id = '@jupyterlab/shortcuts-extension:plugin'
 
-        assert self.settings_api.put(id, dict(raw='')).status_code == 204
+        assert self.settings_api.put(id, dict(raw=json5.dumps(dict()))).status_code == 204
 
     def test_patch_wrong_id(self):
         with assert_http_error(404):
-            self.settings_api.put('foo', dict(raw=''))
+            self.settings_api.put('foo', dict(raw=json5.dumps(dict())))
 
     def test_patch_bad_data(self):
         id = '@jupyterlab/codemirror-extension:commands'
         settings = dict(keyMap=10)
-        payload = dict(raw=json.dumps(settings))
+        payload = dict(raw=json5.dumps(settings))
         with assert_http_error(400):
             self.settings_api.put(id, payload)
