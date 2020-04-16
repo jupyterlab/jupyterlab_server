@@ -46,7 +46,6 @@ def _get_schema(schemas_dir, schema_name, overrides, labextensions_path):
         path = _path(schemas_dir, schema_name)
 
     if not os.path.exists(path):
-        import pdb; pdb.set_trace()
         raise web.HTTPError(404, notfound_error % path)
 
     with open(path, encoding='utf-8') as fid:
@@ -244,7 +243,6 @@ def _path(root_dir, schema_name, make_dirs=False, extension='.json'):
         parent_dir = os.path.join(root_dir, package_dir)
         path = os.path.join(parent_dir, plugin + extension)
     except Exception:
-        import pdb; pdb.set_trace()
         raise web.HTTPError(404, notfound_error % schema_name)
 
     if make_dirs and not os.path.exists(parent_dir):
