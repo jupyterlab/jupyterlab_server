@@ -242,19 +242,21 @@ class SettingsHandler(APIHandler):
         if not settings_dir:
             raise web.HTTPError(500, settings_error)
 
-        raw = self.request.body.strip().decode(u'utf-8')
+        raw_payload = self.request.body.strip().decode(u'utf-8')
+        raw_settings = json.loads(raw_payload)['json5']
+        payload = json5.loads(raw_settings)
 
         # Validate the data against the schema.
         schema = _get_schema(schemas_dir, schema_name, overrides)
         validator = Validator(schema)
         try:
-            validator.validate(json5.loads(raw))
+            validator.validate(payload)
         except ValidationError as e:
             raise web.HTTPError(400, validation_error % str(e))
 
         # Write the raw data (comments included) to a file.
         path = _path(settings_dir, schema_name, True, SETTINGS_EXTENSION)
         with open(path, 'w') as fid:
-            fid.write(raw)
+            fid.write(raw_settings)
 
         self.set_status(204)
