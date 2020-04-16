@@ -76,14 +76,15 @@ class SettingsAPITest(LabTestBase):
     def test_patch(self):
         id = '@jupyterlab/shortcuts-extension:plugin'
 
-        assert self.settings_api.put(id, dict()).status_code == 204
+        assert self.settings_api.put(id, dict(raw='')).status_code == 204
 
     def test_patch_wrong_id(self):
         with assert_http_error(404):
-            self.settings_api.put('foo', dict())
+            self.settings_api.put('foo', dict(raw=''))
 
     def test_patch_bad_data(self):
         id = '@jupyterlab/codemirror-extension:commands'
-
+        settings = dict(keyMap=10)
+        payload = dict(raw=json.dumps(settings))
         with assert_http_error(400):
-            self.settings_api.put(id, dict(keyMap=10))
+            self.settings_api.put(id, payload)
