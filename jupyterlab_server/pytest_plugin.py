@@ -114,5 +114,6 @@ def make_labserver_extension_app(
 @pytest.fixture
 def labserverapp(serverapp, make_labserver_extension_app):
     app = make_labserver_extension_app()
-    app.initialize(serverapp)
+    app.link_to_serverapp(serverapp)
+    app.initialize()
     return app
