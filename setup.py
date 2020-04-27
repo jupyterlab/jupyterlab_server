@@ -51,7 +51,7 @@ if 'setuptools' in sys.modules:
         'json5',
         'jsonschema>=3.0.1',
         'jinja2>=2.10',
-        'jupyter_server@ git+https://github.com/jupyter/jupyter_server.git@master',
+        'jupyter_server@ git+https://github.com/datalayer-contrib/jupyter-server.git@py35',
     ],
     setup_args['entry_points'] = {
         'pytest11': [
