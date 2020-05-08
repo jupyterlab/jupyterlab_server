@@ -119,7 +119,12 @@ class Process(object):
 
         # Wait for the process to close.
         try:
-            proc.wait()
+            proc.wait(timeout=1.)
+        except TimeoutError:
+            if os.name == 'nt':
+                os.kill(proc.pid, signal.SIGBREAK)
+            else:
+                os.kill(proc.pid, signal.SIGKILL)
         finally:
             Process._procs.remove(self)
 
