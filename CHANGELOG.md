@@ -1,6 +1,7 @@
 # Change Log
 
 # 1.1.x
+- Clean up terminate logic. [#91](https://github.com/jupyterlab/jupyterlab_server/pull/91)
 - Kill the subprocess if it does not stop. [#86](https://github.com/jupyterlab/jupyterlab_server/pull/86)
 - Do not try to close the watch process file handle. [#85](https://github.com/jupyterlab/jupyterlab_server/pull/85)
 - Update nodejs error message to not give an outdated version. [#84](https://github.com/jupyterlab/jupyterlab_server/pull/84)
