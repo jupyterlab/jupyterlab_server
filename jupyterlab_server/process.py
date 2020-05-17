@@ -120,11 +120,15 @@ class Process(object):
         # Wait for the process to close.
         try:
             proc.wait(timeout=1.)
-        except TimeoutError:
+        except subprocess.TimeoutExpired:
             if os.name == 'nt':
-                os.kill(proc.pid, signal.SIGBREAK)
+                sig = signal.SIGBREAK
             else:
-                os.kill(proc.pid, signal.SIGKILL)
+                sig = signal.SIGKILL
+
+            if proc.poll() is None:
+               os.kill(proc.pid, sig) 
+
         finally:
             Process._procs.remove(self)
 
