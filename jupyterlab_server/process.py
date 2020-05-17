@@ -119,7 +119,7 @@ class Process(object):
 
         # Wait for the process to close.
         try:
-            proc.wait(timeout=1.)
+            proc.wait(timeout=2.)
         except subprocess.TimeoutExpired:
             if os.name == 'nt':
                 sig = signal.SIGBREAK
