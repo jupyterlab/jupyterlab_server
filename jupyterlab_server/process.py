@@ -59,7 +59,7 @@ def which(command, env=None):
             raise ValueError(msg)
         raise ValueError('The command was not found or was not ' +
                 'executable: %s.' % command)
-    return command_with_path
+    return os.path.abspath(command_with_path)
 
 
 class Process(object):
