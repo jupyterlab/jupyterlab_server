@@ -59,7 +59,7 @@ def which(command, env=None):
             raise ValueError(msg)
         raise ValueError('The command was not found or was not ' +
                 'executable: %s.' % command)
-    return command_with_path
+    return os.path.abspath(command_with_path)
 
 
 class Process(object):
@@ -119,7 +119,16 @@ class Process(object):
 
         # Wait for the process to close.
         try:
-            proc.wait()
+            proc.wait(timeout=2.)
+        except subprocess.TimeoutExpired:
+            if os.name == 'nt':
+                sig = signal.SIGBREAK
+            else:
+                sig = signal.SIGKILL
+
+            if proc.poll() is None:
+               os.kill(proc.pid, sig) 
+
         finally:
             Process._procs.remove(self)
 
