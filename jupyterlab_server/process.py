@@ -127,12 +127,12 @@ class Process(object):
                 sig = signal.SIGKILL
 
             if proc.poll() is None:
-               os.kill(proc.pid, sig) 
+               os.kill(proc.pid, sig)
 
         finally:
             Process._procs.remove(self)
 
-        return proc.returncode
+        return proc.wait()
 
     def wait(self):
         """Wait for the process to finish.
