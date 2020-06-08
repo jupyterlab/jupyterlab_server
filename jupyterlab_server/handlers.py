@@ -299,7 +299,7 @@ def add_handlers(handlers, app):
     ListingsHandler.listings_refresh_seconds = settings_config.get('listings_refresh_seconds', 60 * 60)
     ListingsHandler.listings_request_opts = settings_config.get('listings_request_options', {})
     base_url = app.settings.get('base_url')
-    listings_url = ujoin(base_url, settings_config.get('listings_url', '/api/listings'))
+    listings_url = ujoin(base_url, app.listings_url)
     listings_path = ujoin(listings_url, '(.*)')
 
     if blacklist_uris:
