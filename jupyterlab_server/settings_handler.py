@@ -54,10 +54,9 @@ def _get_settings(settings_dir, schema_name, schema):
     Returns a tuple containing the raw user settings, the parsed user
     settings, and a validation warning for a schema.
     """
-
     path = _path(settings_dir, schema_name, False, SETTINGS_EXTENSION)
     raw = '{}'
-    settings = dict()
+    settings = {}
     warning = ''
     validation_warning = 'Failed validating settings (%s): %s'
     parse_error = 'Failed loading settings (%s): %s'
@@ -185,51 +184,99 @@ def _path(root_dir, schema_name, make_dirs=False, extension='.json'):
     return path
 
 
+def _get_overrides(app_settings_dir):
+    """Get overrides settings from `app_settings_dir`."""
+    overrides_path = os.path.join(app_settings_dir, 'overrides.json')
+    if os.path.exists(overrides_path):
+        with open(overrides_path) as fid:
+            try:
+                overrides = json.load(fid)
+                error = ""
+            except Exception as e:
+                overrides = {}
+                error = e
+
+    return overrides, error
+
+
+def get_settings(app_settings_dir, schemas_dir, settings_dir, schema_name="", overrides=None):
+    """
+    Get setttings.
+
+    Parameters
+    ----------
+    app_settings_dir:
+        Path to applications settings.
+    schemas_dir: str
+        Path to schemas.
+    settings_dir:
+        Path to settings.
+    schema_name str, optional
+        Schema name. Default is "".
+    overrides: dict, optional
+        Settings overrides. If not provided, the overrides will be loaded
+        from the `app_settings_dir`. Default is None.
+
+    Returns
+    -------
+    tuple
+        The first item is a dictionary with a list of setting if no `schema_name`
+        was provided, otherwise it is a dictionary with id, raw, scheme, settings
+        and version keys. The second item is a list of warnings.
+    """
+    result = {}
+    warnings = []
+
+    if overrides is None:
+        overrides, _error = _get_overrides(app_settings_dir)
+
+    if schema_name:
+        schema = _get_schema(schemas_dir, schema_name, overrides)
+        raw, settings, _warning = _get_settings(settings_dir, schema_name, schema)
+        version = _get_version(schemas_dir, schema_name)
+        result = {
+            "id": schema_name,
+            "raw": raw,
+            "schema": schema,
+            "settings": settings,
+            "version": version,
+        }
+        warnings = [_warning]
+    else:
+        settings_list, warnings = _list_settings(schemas_dir, settings_dir, overrides)
+        result = {
+            "settings": settings_list,
+        }
+
+    return result, warnings
+
+
 class SettingsHandler(APIHandler):
 
     def initialize(self, app_settings_dir, schemas_dir, settings_dir):
-        self.overrides = dict()
+        self.overrides, error = _get_overrides(app_settings_dir)
+        self.app_settings_dir = app_settings_dir
         self.schemas_dir = schemas_dir
         self.settings_dir = settings_dir
 
-        overrides_path = os.path.join(app_settings_dir, 'overrides.json')
-        overrides_warning = 'Failed loading overrides: %s'
-
-        if os.path.exists(overrides_path):
-            with open(overrides_path) as fid:
-                try:
-                    self.overrides = json.load(fid)
-                except Exception as e:
-                    self.log.warn(overrides_warning % str(e))
+        if error:
+            overrides_warning = 'Failed loading overrides: %s'
+            self.log.warn(overrides_warning % str(error))
 
     @web.authenticated
-    def get(self, schema_name=''):
-        overrides = self.overrides
-        schemas_dir = self.schemas_dir
-        settings_dir = self.settings_dir
+    def get(self, schema_name=""):
+        result, warnings = get_settings(
+            self.app_settings_dir,
+            self.schemas_dir,
+            self.settings_dir,
+            schema_name=schema_name,
+            overrides=self.overrides,
+        )
 
-        if not schema_name:
-            settings_list, warnings = _list_settings(
-                schemas_dir, settings_dir, overrides)
-            if warnings:
-                self.log.warn('\n'.join(warnings))
-            return self.finish(json.dumps(dict(settings=settings_list)))
+        if warnings:
+            self.log.warn('\n'.join(warnings))
 
-        schema = _get_schema(schemas_dir, schema_name, overrides)
-        raw, settings, warning = _get_settings(
-            settings_dir, schema_name, schema)
-        version = _get_version(schemas_dir, schema_name)
-
-        if warning:
-            self.log.warn(warning)
-
-        self.finish(json.dumps(dict(
-            id=schema_name,
-            raw=raw,
-            schema=schema,
-            settings=settings,
-            version=version
-        )))
+        return self.finish(json.dumps(result))
 
     @web.authenticated
     def put(self, schema_name):
