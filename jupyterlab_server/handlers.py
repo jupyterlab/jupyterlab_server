@@ -1,5 +1,5 @@
 # coding: utf-8
-"""JupyterLab Server handlers"""
+"""JupyterLab Server handlers."""
 
 # Copyright (c) Jupyter Development Team.
 # Distributed under the terms of the Modified BSD License.
@@ -7,16 +7,17 @@ import json
 import os
 from urllib.parse import urlparse
 
-from tornado import web, template
 from jinja2 import FileSystemLoader, TemplateError
+from tornado import template, web
+from traitlets import Bool, HasTraits, Unicode, default
 
-from traitlets import HasTraits, Bool, Unicode, default
-
-from .server import JupyterHandler, FileFindHandler, url_path_join as ujoin
-from .workspaces_handler import WorkspacesHandler
-from .settings_handler import SettingsHandler
 from .listings_handler import ListingsHandler, fetch_listings
+from .server import FileFindHandler, JupyterHandler
+from .server import url_path_join as ujoin
+from .settings_handler import SettingsHandler
 from .themes_handler import ThemesHandler
+from .translations_handler import TranslationsHandler
+from .workspaces_handler import WorkspacesHandler
 
 # -----------------------------------------------------------------------------
 # Module globals
@@ -173,6 +174,8 @@ class LabConfig(HasTraits):
                                'directory. If given, a handler will be added '
                                'for themes.'))
 
+    translations_api_url = Unicode(help='The url path of the translations handler.')
+
     tree_url = Unicode(help='The url path of the tree handler.')
 
     cache_files = Bool(True,
@@ -202,6 +205,10 @@ class LabConfig(HasTraits):
     @default('themes_url')
     def _default_themes_url(self):
         return ujoin(self.app_url, 'api', 'themes/')
+
+    @default('translations_api_url')
+    def _default_translations_api_url(self):
+        return ujoin(self.app_url, 'api', 'translations/')
 
     @default('tree_url')
     def _default_tree_url(self):
@@ -300,7 +307,6 @@ def add_handlers(web_app, config):
             workspace_api_path, WorkspacesHandler, workspaces_config))
 
     # Handle local listings.
-
     settings_config = web_app.settings.get('config', {}).get('LabServerApp', {})
     blacklist_uris = settings_config.get('blacklist_uris', '')
     whitelist_uris = settings_config.get('whitelist_uris', '')
@@ -346,6 +352,18 @@ def add_handlers(web_app, config):
                 'no_cache_paths': no_cache_paths
             }
         ))
+
+    # Handle translations.
+    if config.translations_api_url:
+        # Handle requests for the list of language packs available.
+        # Make slash optional.
+        translations_path = ujoin(base_url, config.translations_api_url, '?')
+        handlers.append((translations_path, TranslationsHandler, {'lab_config': config}))
+
+        # Handle requests for an individual language pack.
+        translations_lang_path = ujoin(
+            base_url, config.translations_api_url, '(?P<locale>.*)')
+        handlers.append((translations_lang_path, TranslationsHandler, {'lab_config': config}))
 
     # Let the lab handler act as the fallthrough option instead of a 404.
     fallthrough_url = ujoin(base_url, config.app_url, r'.*')

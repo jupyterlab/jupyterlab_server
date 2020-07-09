@@ -40,11 +40,13 @@ if 'setuptools' in sys.modules:
     setup_args['python_requires'] = '>=3.5'
     setup_args['extras_require'] = {'test': ['pytest', 'requests', 'strict-rfc3339']}
     setup_args['install_requires'] = [
-        'requests',
+        'babel',
+        'jinja2>=2.10',
         'json5',
         'jsonschema>=3.0.1',
         'notebook>=4.2.0',
-        'jinja2>=2.10'
+        'packaging',
+        'requests',
     ]
 
 if __name__ == '__main__':
