@@ -2,6 +2,7 @@
 import json
 import os
 import shutil
+from strict_rfc3339 import rfc3339_to_timestamp
 
 from jupyterlab_server.tests.utils import LabTestBase, APITester
 from notebook.tests.launchnotebook import assert_http_error
@@ -47,13 +48,36 @@ class WorkspacesAPITest(LabTestBase):
 
     def test_get(self):
         id = 'foo'
-        assert self.workspaces_api.get(id).json()['metadata']['id'] == id
+        metadata = self.workspaces_api.get(id).json()['metadata']
+        assert metadata['id'] == id
+        assert (
+            rfc3339_to_timestamp(metadata['created']) <=
+            rfc3339_to_timestamp(metadata['last_modified'])
+        )
+
+    def test_get_non_existant(self):
+        id = 'baz'
+        ws = self.workspaces_api.get(id).json()
+        assert 'created' not in ws['metadata']
+        assert 'last_modified' not in ws['metadata']
 
     def test_listing(self):
         # ID fields are from workspaces/*.jupyterlab-workspace
         listing = set(['foo', 'f/o/o/'])
         output = set(self.workspaces_api.get().json()['workspaces']['ids'])
         assert output == listing
+
+    def test_listing_dates(self):
+        values = self.workspaces_api.get().json()['workspaces']['values']
+        times = sum(
+            [
+                [ws['metadata'].get('last_modified'), ws['metadata'].get('created')]
+                for ws in values
+            ],
+            []
+        )
+        assert None not in times
+        [rfc3339_to_timestamp(t) for t in times]
 
     def test_put(self):
         id = 'foo'
