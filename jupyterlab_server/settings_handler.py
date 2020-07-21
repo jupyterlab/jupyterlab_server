@@ -11,7 +11,7 @@ from jsonschema import ValidationError
 from jsonschema import Draft4Validator as Validator
 from tornado import web
 
-from .server import APIHandler, json_errors
+from .server import APIHandler, json_errors, tz
 
 
 # The JupyterLab settings file extension.
@@ -49,10 +49,10 @@ def _get_schema(schemas_dir, schema_name, overrides):
     return schema
 
 
-def _get_settings(settings_dir, schema_name, schema):
+def _get_user_settings(settings_dir, schema_name, schema):
     """
-    Returns a tuple containing the raw user settings, the parsed user
-    settings, and a validation warning for a schema.
+    Returns a dictionary containing the raw user settings, the parsed user
+    settings, a validation warning for a schema, and file times.
     """
     path = _path(settings_dir, schema_name, False, SETTINGS_EXTENSION)
     raw = '{}'
@@ -60,8 +60,13 @@ def _get_settings(settings_dir, schema_name, schema):
     warning = ''
     validation_warning = 'Failed validating settings (%s): %s'
     parse_error = 'Failed loading settings (%s): %s'
+    last_modified = None
+    created = None
 
     if os.path.exists(path):
+        stat = os.stat(path)
+        last_modified = tz.utcfromtimestamp(stat.st_ctime).isoformat()
+        created = tz.utcfromtimestamp(stat.st_mtime).isoformat()
         with open(path) as fid:
             try:  # to load and parse the settings file.
                 raw = fid.read() or raw
@@ -78,7 +83,13 @@ def _get_settings(settings_dir, schema_name, schema):
             warning = validation_warning % (schema_name, str(e))
             raw = '{}'
 
-    return (raw, settings, warning)
+    return dict(
+        raw=raw,
+        settings=settings,
+        warning=warning,
+        last_modified=last_modified,
+        created=created
+    )
 
 
 def _get_version(schemas_dir, schema_name):
@@ -123,20 +134,17 @@ def _list_settings(schemas_dir, settings_dir, overrides, extension='.json'):
             schema_base[:-len(extension)]  # Remove file extension.
         ]).replace('\\', '/')               # Normalize slashes.
         schema = _get_schema(schemas_dir, schema_name, overrides)
-        raw, settings, warning = _get_settings(
-            settings_dir, schema_name, schema)
+        user_settings = _get_user_settings(settings_dir, schema_name, schema)
         version = _get_version(schemas_dir, schema_name)
 
-        if warning:
-            warnings.append(warning)
+        if 'warning' in user_settings:
+            warnings.append(user_settings.pop('warning'))
 
         # Add the plugin to the list of settings.
         settings_list.append(dict(
             id=id,
-            raw=raw,
-            schema=schema,
-            settings=settings,
-            version=version
+            version=version,
+            **user_settings
         ))
 
     return (settings_list, warnings)
@@ -232,16 +240,15 @@ def get_settings(app_settings_dir, schemas_dir, settings_dir, schema_name="", ov
 
     if schema_name:
         schema = _get_schema(schemas_dir, schema_name, overrides)
-        raw, settings, _warning = _get_settings(settings_dir, schema_name, schema)
+        user_settings = _get_user_settings(settings_dir, schema_name, schema)
         version = _get_version(schemas_dir, schema_name)
+        warnings = [user_settings.pop('warning', None)]
         result = {
             "id": schema_name,
-            "raw": raw,
             "schema": schema,
-            "settings": settings,
             "version": version,
+            **user_settings
         }
-        warnings = [_warning]
     else:
         settings_list, warnings = _list_settings(schemas_dir, settings_dir, overrides)
         result = {

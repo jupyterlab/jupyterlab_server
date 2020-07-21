@@ -2,6 +2,7 @@
 import json
 import os
 import shutil
+from datetime import datetime
 
 from jupyterlab_server.tests.utils import LabTestBase, APITester
 from ..servertest import assert_http_error
@@ -72,11 +73,25 @@ class SettingsAPITest(LabTestBase):
 
         assert set(response_ids) == set(ids)
         assert set(response_versions) == set(versions)
+        last_modifieds = [item['last_modified'] for item in response['settings']]
+        createds = [item['created'] for item in response['settings']]
+        assert {None} == set(last_modifieds + createds)
 
     def test_patch(self):
         id = '@jupyterlab/shortcuts-extension:plugin'
 
         assert self.settings_api.put(id, dict()).status_code == 204
+        data = self.settings_api.get(id).json()
+        assert (
+            datetime.fromisoformat(data['created']) <=
+            datetime.fromisoformat(data['last_modified'])
+        ), data
+
+        listing = self.settings_api.get('').json()['settings']
+        list_data = [item for item in listing if item['id'] == id][0]
+        assert list_data['created'] == data['created']
+        assert list_data['last_modified'] == data['last_modified']
+
 
     def test_patch_wrong_id(self):
         with assert_http_error(404):
