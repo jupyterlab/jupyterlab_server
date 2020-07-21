@@ -2,7 +2,7 @@
 import json
 import os
 import shutil
-from datetime import datetime
+from strict_rfc3339 import rfc3339_to_timestamp
 
 from jupyterlab_server.tests.utils import LabTestBase, APITester
 from notebook.tests.launchnotebook import assert_http_error
@@ -51,8 +51,8 @@ class WorkspacesAPITest(LabTestBase):
         metadata = self.workspaces_api.get(id).json()['metadata']
         assert metadata['id'] == id
         assert (
-            datetime.fromisoformat(metadata['created']) <=
-            datetime.fromisoformat(metadata['last_modified'])
+            rfc3339_to_timestamp(metadata['created']) <=
+            rfc3339_to_timestamp(metadata['last_modified'])
         )
 
     def test_get_non_existant(self):
@@ -77,7 +77,7 @@ class WorkspacesAPITest(LabTestBase):
             []
         )
         assert None not in times
-        [datetime.fromisoformat(t) for t in times]
+        [rfc3339_to_timestamp(t) for t in times]
 
     def test_put(self):
         id = 'foo'

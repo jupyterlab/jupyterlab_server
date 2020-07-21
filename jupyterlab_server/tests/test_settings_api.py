@@ -2,7 +2,7 @@
 import json
 import os
 import shutil
-from datetime import datetime
+from strict_rfc3339 import rfc3339_to_timestamp
 
 from jupyterlab_server.tests.utils import LabTestBase, APITester
 from ..servertest import assert_http_error
@@ -83,8 +83,8 @@ class SettingsAPITest(LabTestBase):
         assert self.settings_api.put(id, dict()).status_code == 204
         data = self.settings_api.get(id).json()
         assert (
-            datetime.fromisoformat(data['created']) <=
-            datetime.fromisoformat(data['last_modified'])
+            rfc3339_to_timestamp(data['created']) <=
+            rfc3339_to_timestamp(data['last_modified'])
         ), data
 
         listing = self.settings_api.get('').json()['settings']
