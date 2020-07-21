@@ -22,6 +22,7 @@ try:
         GREEN_ENABLED, GREEN_OK, RED_DISABLED, RED_X
     )
     from notebook.utils import url_escape, url_path_join
+    from notebook import _tz as tz
 except ImportError:
     from jupyter_server.base.handlers import (                          # noqa
         APIHandler, FileFindHandler, json_errors, JupyterHandler
@@ -31,3 +32,4 @@ except ImportError:
     )
     from jupyter_server.serverapp import ServerApp, aliases, flags      # noqa
     from jupyter_server.utils import url_escape, url_path_join          # noqa
+    from jupyter_server import _tz as tz
