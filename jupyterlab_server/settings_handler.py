@@ -194,14 +194,13 @@ def _path(root_dir, schema_name, make_dirs=False, extension='.json'):
 
 def _get_overrides(app_settings_dir):
     """Get overrides settings from `app_settings_dir`."""
+    overrides, error = {}, ""
     overrides_path = os.path.join(app_settings_dir, 'overrides.json')
     if os.path.exists(overrides_path):
         with open(overrides_path) as fid:
             try:
                 overrides = json.load(fid)
-                error = ""
             except Exception as e:
-                overrides = {}
                 error = e
 
     return overrides, error

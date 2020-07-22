@@ -63,7 +63,8 @@ class SettingsAPITest(LabTestBase):
         ids = [
             '@jupyterlab/apputils-extension:themes',
             '@jupyterlab/codemirror-extension:commands',
-            '@jupyterlab/shortcuts-extension:plugin'
+            '@jupyterlab/shortcuts-extension:plugin',
+            '@jupyterlab/translation-extension:plugin',
         ]
         versions = ['N/A', 'N/A', 'test-version']
 
