@@ -288,7 +288,6 @@ def add_handlers(web_app, config):
     if config.workspaces_dir:
 
         workspaces_config = {
-            'workspaces_url': config.workspaces_url,
             'path': config.workspaces_dir
         }
 
