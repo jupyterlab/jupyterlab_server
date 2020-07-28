@@ -20,7 +20,7 @@ from tornado.ioloop import IOLoop
 
 here = os.path.dirname(__file__)
 
-with open(os.path.join(here, "app-settings", "overrides.json"), encoding="utf-8") as fp:
+with open(os.path.join(here, "app-settings", "overrides.json"), encoding='utf-8') as fp:
     BIG_UNICODE_STRING = json.load(fp)["@jupyterlab/unicode-extension:plugin"]["comment"]
 
 

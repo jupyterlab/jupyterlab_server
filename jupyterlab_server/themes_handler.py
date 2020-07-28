@@ -44,7 +44,7 @@ class ThemesHandler(FileFindHandler):
 
     def _get_css(self):
         """Get the mangled css file contents."""
-        with open(self.absolute_path, 'rb', encoding="utf-8") as fid:
+        with open(self.absolute_path, 'rb', encoding='utf-8') as fid:
             data = fid.read().decode('utf-8')
 
         basedir = osp.dirname(self.path).replace(os.sep, '/')
