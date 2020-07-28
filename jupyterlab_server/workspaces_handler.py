@@ -53,8 +53,8 @@ def _load_with_file_times(workspace_path):
     with open(workspace_path, encoding='utf-8') as fid:
         workspace = json.load(fid)
         workspace["metadata"].update(
-            last_modified=tz.utcfromtimestamp(stat.st_ctime).isoformat(),
-            created=tz.utcfromtimestamp(stat.st_mtime).isoformat()
+            last_modified=tz.utcfromtimestamp(stat.st_mtime).isoformat(),
+            created=tz.utcfromtimestamp(stat.st_ctime).isoformat()
         )
     return workspace
 
