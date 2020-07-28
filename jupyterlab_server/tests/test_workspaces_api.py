@@ -8,6 +8,8 @@ from strict_rfc3339 import rfc3339_to_timestamp
 from jupyterlab_server.tests.utils import LabTestBase, APITester
 from notebook.tests.launchnotebook import assert_http_error
 
+from .utils import BIG_UNICODE_STRING
+
 
 class WorkspacesAPI(APITester):
     """Wrapper for workspaces REST API requests"""
@@ -83,6 +85,7 @@ class WorkspacesAPITest(LabTestBase):
         metadata = self.workspaces_api.get(id).json()['metadata']
         first_modified = rfc3339_to_timestamp(metadata['last_modified'])
         time.sleep(0.1)
+        data["metadata"]["foo"] = BIG_UNICODE_STRING
         assert self.workspaces_api.put(id, data).status_code == 204
         metadata = self.workspaces_api.get(id).json()['metadata']
         assert first_modified < rfc3339_to_timestamp(metadata['last_modified'])
