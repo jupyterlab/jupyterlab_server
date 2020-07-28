@@ -101,7 +101,7 @@ class LabHandler(JupyterHandler):
         # Load the current page config file if available.
         page_config_file = os.path.join(settings_dir, 'page_config.json')
         if os.path.exists(page_config_file):
-            with open(page_config_file) as fid:
+            with open(page_config_file, encoding='utf-8') as fid:
                 try:
                     page_config.update(json.load(fid))
                 except Exception as e:
@@ -325,7 +325,7 @@ def add_handlers(web_app, config):
         ListingsHandler.blacklist_uris = set(blacklist_uris.split(','))
     if whitelist_uris:
         ListingsHandler.whitelist_uris = set(whitelist_uris.split(','))
-    
+
     fetch_listings(None)
 
     if len(ListingsHandler.blacklist_uris) > 0 or len(ListingsHandler.whitelist_uris) > 0:

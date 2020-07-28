@@ -1,5 +1,6 @@
 from binascii import hexlify
 import errno
+import json
 import os
 import sys
 from os.path import join as pjoin
@@ -18,6 +19,13 @@ from tornado.ioloop import IOLoop
 
 
 here = os.path.dirname(__file__)
+
+
+with open(
+    os.path.join(here, 'app-settings', 'overrides.json'),
+    encoding='utf-8'
+) as fpt:
+    big_unicode_string = json.load(fpt)["@jupyterlab/unicode-extension:plugin"]["comment"]
 
 
 def maybe_patch_ioloop():

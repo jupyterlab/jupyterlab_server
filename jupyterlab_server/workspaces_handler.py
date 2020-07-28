@@ -50,7 +50,7 @@ def _load_with_file_times(workspace_path):
     metadata with current file stat information
     """
     stat = os.stat(workspace_path)
-    with open(workspace_path) as fid:
+    with open(workspace_path, encoding='utf-8') as fid:
         workspace = json.load(fid)
         workspace["metadata"].update(
             last_modified=tz.utcfromtimestamp(stat.st_mtime).isoformat(),
@@ -161,7 +161,7 @@ class WorkspacesHandler(APIHandler):
             except Exception as e:
                 raise web.HTTPError(500, str(e))
 
-        raw = self.request.body.strip().decode(u'utf-8')
+        raw = self.request.body.strip().decode('utf-8')
         workspace = dict()
 
         # Make sure the data is valid JSON.
@@ -186,7 +186,7 @@ class WorkspacesHandler(APIHandler):
         workspace_path = os.path.join(directory, slug + WORKSPACE_EXTENSION)
 
         # Write the workspace data to a file.
-        with open(workspace_path, 'w') as fid:
+        with open(workspace_path, 'w', encoding='utf-8') as fid:
             fid.write(raw)
 
         self.set_status(204)
