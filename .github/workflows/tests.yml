@@ -1,4 +1,4 @@
-name: Linux tests
+name: Tests
 
 on:
   push:
@@ -11,8 +11,8 @@ on:
 
 jobs:
   linux:
-    name: Linux py${{ matrix.PYTHON_VERSION }} tests
-    runs-on: ubuntu-latest
+    name: ${{ matrix.PLATFORM }} py${{ matrix.PYTHON_VERSION }}
+    runs-on: ${{ matrix.PLATFORM }}
     env:
       CI: True
       PYTHON_VERSION: ${{ matrix.PYTHON_VERSION }}
@@ -20,6 +20,12 @@ jobs:
       fail-fast: false
       matrix:
         PYTHON_VERSION: ['3.5', '3.6', '3.8']
+        PLATFORM: ['ubuntu-latest', 'macos-latest',  'windows-latest']
+        exclude:
+          - PYTHON_VERSION: '3.6'
+            PLATFORM: 'macos-latest'
+          - PYTHON_VERSION: '3.6'
+            PLATFORM: 'windows-latest'
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -36,10 +42,11 @@ jobs:
         run: |
           pip install setuptools pip --upgrade
           pip install -v -e ".[test]"
+          pip install pytest-cov
       - name: Show python environment
         run: |
           python --version
           python -m pip list
       - name: Run python tests
         run: |
-          pytest . --tb=long -svv
+          pytest . --tb=long -svv --cov=jupyterlab_server

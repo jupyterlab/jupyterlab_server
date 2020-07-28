@@ -1,5 +1,7 @@
 # jupyterlab server
 
+[![Tests](https://github.com/jupyterlab/jupyterlab_server/workflows/Tests/badge.svg)](https://github.com/jupyterlab/jupyterlab_server/actions?query=workflow%3ATests)
+
 https://github.com/jupyterlab/jupyterlab_server
 
 ## Install
