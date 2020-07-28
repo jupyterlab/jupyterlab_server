@@ -38,7 +38,14 @@ setup_args = dict(
 
 if 'setuptools' in sys.modules:
     setup_args['python_requires'] = '>=3.5'
-    setup_args['extras_require'] = {'test': ['pytest', 'requests', 'strict-rfc3339']}
+    setup_args['extras_require'] = {
+        'test': [
+            'pytest',
+            'requests',
+            'strict-rfc3339',
+            'wheel',
+        ]
+    }
     setup_args['install_requires'] = [
         'babel',
         'jinja2>=2.10',
