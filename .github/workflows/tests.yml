@@ -49,7 +49,7 @@ jobs:
           python -m pip list
       - name: Run python tests
         run: |
-          pytest . --tb=long -svv --cov=jupyterlab_server --cov-report term:skip-covered --cov-fail-under 71
+          pytest --cov-fail-under 71
       - name: Upload coverage
         run: |
           codecov
