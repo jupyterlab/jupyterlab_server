@@ -65,8 +65,8 @@ def _get_user_settings(settings_dir, schema_name, schema):
 
     if os.path.exists(path):
         stat = os.stat(path)
-        last_modified = tz.utcfromtimestamp(stat.st_ctime).isoformat()
-        created = tz.utcfromtimestamp(stat.st_mtime).isoformat()
+        last_modified = tz.utcfromtimestamp(stat.st_mtime).isoformat()
+        created = tz.utcfromtimestamp(stat.st_ctime).isoformat()
         with open(path) as fid:
             try:  # to load and parse the settings file.
                 raw = fid.read() or raw
@@ -267,7 +267,7 @@ class SettingsHandler(APIHandler):
 
         if error:
             overrides_warning = 'Failed loading overrides: %s'
-            self.log.warn(overrides_warning % str(error))
+            self.log.warning(overrides_warning % str(error))
 
     @web.authenticated
     def get(self, schema_name=""):
@@ -280,7 +280,7 @@ class SettingsHandler(APIHandler):
         )
 
         if warnings:
-            self.log.warn('\n'.join(warnings))
+            self.log.warning('\n'.join(warnings))
 
         return self.finish(json.dumps(result))
 

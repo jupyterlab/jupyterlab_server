@@ -4,11 +4,14 @@ import json
 import os
 import shutil
 
-import pytest
 from strict_rfc3339 import rfc3339_to_timestamp
 
 from jupyterlab_server.tests.utils import LabTestBase, APITester
 from notebook.tests.launchnotebook import assert_http_error
+
+from .utils import maybe_patch_ioloop
+
+maybe_patch_ioloop()
 
 
 class WorkspacesAPI(APITester):
@@ -49,15 +52,12 @@ class WorkspacesAPITest(LabTestBase):
         assert self.workspaces_api.put(copy, data).status_code == 204
         assert self.workspaces_api.delete(copy).status_code == 204
 
-    @pytest.mark.skipif(os.name == "nt", reason="Temporal failure on windows")
     def test_get(self):
         id = 'foo'
         metadata = self.workspaces_api.get(id).json()['metadata']
         assert metadata['id'] == id
-        assert (
-            rfc3339_to_timestamp(metadata['created']) <=
-            rfc3339_to_timestamp(metadata['last_modified'])
-        )
+        assert rfc3339_to_timestamp(metadata['created'])
+        assert rfc3339_to_timestamp(metadata['last_modified'])
 
     def test_get_non_existant(self):
         id = 'baz'
@@ -87,6 +87,17 @@ class WorkspacesAPITest(LabTestBase):
         id = 'foo'
         data = self.workspaces_api.get(id).json()
         assert self.workspaces_api.put(id, data).status_code == 204
+        first_metadata = self.workspaces_api.get(id).json()["metadata"]
+        first_created = rfc3339_to_timestamp(first_metadata['created'])
+        first_modified = rfc3339_to_timestamp(first_metadata['last_modified'])
+
+        assert self.workspaces_api.put(id, data).status_code == 204
+        second_metadata = self.workspaces_api.get(id).json()["metadata"]
+        second_created = rfc3339_to_timestamp(second_metadata['created'])
+        second_modified = rfc3339_to_timestamp(second_metadata['last_modified'])
+
+        assert first_created <= second_created
+        assert first_modified < second_modified
 
     def test_bad_put(self):
         orig = 'foo'

@@ -27,8 +27,6 @@ jobs:
             PLATFORM: 'macos-latest'
           - PYTHON_VERSION: '3.6'
             PLATFORM: 'windows-latest'
-          - PYTHON_VERSION: '3.8'
-            PLATFORM: 'windows-latest'
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -50,8 +48,9 @@ jobs:
           python --version
           python -m pip list
       - name: Run python tests
+        # See `setup.cfg` for full test options
         run: |
-          pytest . --tb=long -svv --cov=jupyterlab_server --cov-report term:skip-covered --cov-fail-under 71
+          pytest --cov-fail-under 71
       - name: Upload coverage
         run: |
           codecov
