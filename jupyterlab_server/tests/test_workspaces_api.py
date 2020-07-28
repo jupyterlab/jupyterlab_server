@@ -50,10 +50,6 @@ class WorkspacesAPITest(LabTestBase):
         id = 'foo'
         metadata = self.workspaces_api.get(id).json()['metadata']
         assert metadata['id'] == id
-        assert (
-            rfc3339_to_timestamp(metadata['created']) <=
-            rfc3339_to_timestamp(metadata['last_modified'])
-        )
 
     def test_get_non_existant(self):
         id = 'baz'
@@ -83,6 +79,14 @@ class WorkspacesAPITest(LabTestBase):
         id = 'foo'
         data = self.workspaces_api.get(id).json()
         assert self.workspaces_api.put(id, data).status_code == 204
+        # put again so timestamps update reliably on win/py35
+        assert self.workspaces_api.put(id, data).status_code == 204
+        metadata = self.workspaces_api.get(id).json()['metadata']
+        assert (
+            rfc3339_to_timestamp(metadata['created']) <=
+            rfc3339_to_timestamp(metadata['last_modified'])
+        )
+
 
     def test_bad_put(self):
         orig = 'foo'
