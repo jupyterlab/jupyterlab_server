@@ -6,6 +6,7 @@ from strict_rfc3339 import rfc3339_to_timestamp
 
 from jupyterlab_server.tests.utils import LabTestBase, APITester
 from ..servertest import assert_http_error
+from .utils import BIG_UNICODE_STRING
 
 
 class SettingsAPI(APITester):
@@ -65,6 +66,7 @@ class SettingsAPITest(LabTestBase):
             '@jupyterlab/codemirror-extension:commands',
             '@jupyterlab/shortcuts-extension:plugin',
             '@jupyterlab/translation-extension:plugin',
+            '@jupyterlab/unicode-extension:plugin',
         ]
         versions = ['N/A', 'N/A', 'test-version']
 
@@ -93,6 +95,11 @@ class SettingsAPITest(LabTestBase):
         assert list_data['created'] == data['created']
         assert list_data['last_modified'] == data['last_modified']
 
+    def test_patch_unicode(self):
+        id = '@jupyterlab/unicode-extension:plugin'
+        assert self.settings_api.put(id, dict(comment=BIG_UNICODE_STRING)).status_code == 204
+        data = self.settings_api.get(id).json()
+        assert data["settings"]["comment"] == BIG_UNICODE_STRING
 
     def test_patch_wrong_id(self):
         with assert_http_error(404):

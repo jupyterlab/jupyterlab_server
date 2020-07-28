@@ -2,6 +2,7 @@ from binascii import hexlify
 import errno
 import os
 import sys
+import json
 from os.path import join as pjoin
 from tempfile import TemporaryDirectory
 from threading import Thread, Event
@@ -18,6 +19,9 @@ from tornado.ioloop import IOLoop
 
 
 here = os.path.dirname(__file__)
+
+with open(os.path.join(here, "app-settings", "overrides.json")) as fp:
+    BIG_UNICODE_STRING = json.load(fp)["@jupyterlab/unicode-extension:plugin"]["comment"]
 
 
 class LabTestBase(ServerTestBase):

@@ -267,7 +267,7 @@ class SettingsHandler(APIHandler):
 
         if error:
             overrides_warning = 'Failed loading overrides: %s'
-            self.log.warn(overrides_warning % str(error))
+            self.log.warning(overrides_warning % str(error))
 
     @web.authenticated
     def get(self, schema_name=""):
@@ -280,7 +280,7 @@ class SettingsHandler(APIHandler):
         )
 
         if warnings:
-            self.log.warn('\n'.join(warnings))
+            self.log.warning('\n'.join(warnings))
 
         return self.finish(json.dumps(result))
 

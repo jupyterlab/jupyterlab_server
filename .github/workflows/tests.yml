@@ -49,4 +49,4 @@ jobs:
           python -m pip list
       - name: Run python tests
         run: |
-          pytest . --tb=long -svv --cov=jupyterlab_server
+          pytest
