@@ -48,6 +48,7 @@ jobs:
           python --version
           python -m pip list
       - name: Run python tests
+        # See `setup.cfg` for full test options
         run: |
           pytest --cov-fail-under 71
       - name: Upload coverage
