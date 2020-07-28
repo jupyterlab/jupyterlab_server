@@ -79,14 +79,11 @@ class WorkspacesAPITest(LabTestBase):
         id = 'foo'
         data = self.workspaces_api.get(id).json()
         assert self.workspaces_api.put(id, data).status_code == 204
-        # put again so timestamps update reliably on win/py35
+        metadata = self.workspaces_api.get(id).json()['metadata']
+        first_modified = rfc3339_to_timestamp(metadata['last_modified'])
         assert self.workspaces_api.put(id, data).status_code == 204
         metadata = self.workspaces_api.get(id).json()['metadata']
-        assert (
-            rfc3339_to_timestamp(metadata['created']) <=
-            rfc3339_to_timestamp(metadata['last_modified'])
-        )
-
+        assert first_modified < rfc3339_to_timestamp(metadata['last_modified'])
 
     def test_bad_put(self):
         orig = 'foo'
