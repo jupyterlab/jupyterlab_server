@@ -2,6 +2,7 @@
 import json
 import os
 import shutil
+import time
 from strict_rfc3339 import rfc3339_to_timestamp
 
 from jupyterlab_server.tests.utils import LabTestBase, APITester
@@ -81,6 +82,7 @@ class WorkspacesAPITest(LabTestBase):
         assert self.workspaces_api.put(id, data).status_code == 204
         metadata = self.workspaces_api.get(id).json()['metadata']
         first_modified = rfc3339_to_timestamp(metadata['last_modified'])
+        time.sleep(0.1)
         assert self.workspaces_api.put(id, data).status_code == 204
         metadata = self.workspaces_api.get(id).json()['metadata']
         assert first_modified < rfc3339_to_timestamp(metadata['last_modified'])
