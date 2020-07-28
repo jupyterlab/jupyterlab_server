@@ -41,6 +41,7 @@ if 'setuptools' in sys.modules:
     setup_args['extras_require'] = {
         'test': [
             'pytest',
+            'pytest-cov',
             'requests',
             'strict-rfc3339',
             'wheel',

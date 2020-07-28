@@ -40,9 +40,8 @@ jobs:
           python-version: ${{ matrix.PYTHON_VERSION }}
       - name: Install python dependencies
         run: |
-          pip install setuptools pip --upgrade
+          pip install setuptools pip wheel --upgrade
           pip install -v -e ".[test]"
-          pip install pytest-cov
       - name: Show python environment
         run: |
           python --version
