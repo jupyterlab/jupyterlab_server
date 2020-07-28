@@ -1,4 +1,4 @@
-name: Linux tests
+name: Tests
 
 on:
   push:
@@ -11,15 +11,24 @@ on:
 
 jobs:
   linux:
-    name: Linux py${{ matrix.PYTHON_VERSION }} tests
-    runs-on: ubuntu-latest
+    name: ${{ matrix.PLATFORM }} py${{ matrix.PYTHON_VERSION }}
+    runs-on: ${{ matrix.PLATFORM }}
     env:
       CI: True
       PYTHON_VERSION: ${{ matrix.PYTHON_VERSION }}
+      CODECOV_TOKEN: e025254a-fe54-4914-8890-0c26e7aa0d07
     strategy:
       fail-fast: false
       matrix:
         PYTHON_VERSION: ['3.5', '3.6', '3.8']
+        PLATFORM: ['ubuntu-latest', 'macos-latest',  'windows-latest']
+        exclude:
+          - PYTHON_VERSION: '3.6'
+            PLATFORM: 'macos-latest'
+          - PYTHON_VERSION: '3.6'
+            PLATFORM: 'windows-latest'
+          - PYTHON_VERSION: '3.8'
+            PLATFORM: 'windows-latest'
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -42,4 +51,7 @@ jobs:
           python -m pip list
       - name: Run python tests
         run: |
-          pytest . --tb=long -svv
+          pytest . --tb=long -svv --cov=jupyterlab_server --cov-report term:skip-covered --cov-fail-under 71
+      - name: Upload coverage
+        run: |
+          codecov
