@@ -7,6 +7,9 @@ from strict_rfc3339 import rfc3339_to_timestamp
 from jupyterlab_server.tests.utils import LabTestBase, APITester
 from ..servertest import assert_http_error
 
+from .utils import maybe_patch_ioloop
+
+maybe_patch_ioloop()
 
 class SettingsAPI(APITester):
     """Wrapper for settings REST API requests"""

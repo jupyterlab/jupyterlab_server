@@ -27,8 +27,6 @@ jobs:
             PLATFORM: 'macos-latest'
           - PYTHON_VERSION: '3.6'
             PLATFORM: 'windows-latest'
-          - PYTHON_VERSION: '3.8'
-            PLATFORM: 'windows-latest'
     steps:
       - name: Checkout
         uses: actions/checkout@v2

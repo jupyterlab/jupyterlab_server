@@ -17,6 +17,10 @@ from ..translation_utils import (_get_installed_language_pack_locales,
                                  is_valid_locale, merge_locale_data,
                                  run_process_and_parse)
 
+from .utils import maybe_patch_ioloop
+
+maybe_patch_ioloop()
+
 # Constants
 HERE = os.path.abspath(os.path.dirname(__file__))
 

@@ -20,6 +20,27 @@ from tornado.ioloop import IOLoop
 here = os.path.dirname(__file__)
 
 
+def maybe_patch_ioloop():
+    """ a windows 3.8+ patch for the asyncio loop
+    """
+    if sys.platform.startswith("win"):
+        if sys.version_info >= (3, 8):
+            import asyncio
+            try:
+                from asyncio import (
+                    WindowsProactorEventLoopPolicy,
+                    WindowsSelectorEventLoopPolicy,
+                )
+            except ImportError:
+                pass
+                # not affected
+            else:
+                if type(asyncio.get_event_loop_policy()) is WindowsProactorEventLoopPolicy:
+                    # WindowsProactorEventLoopPolicy is not compatible with tornado 6
+                    # fallback to the pre-3.8 default of Selector
+                    asyncio.set_event_loop_policy(WindowsSelectorEventLoopPolicy())
+
+
 class LabTestBase(ServerTestBase):
     Application = LabServerApp
     """The application being tested. Sub-classes should change this."""
