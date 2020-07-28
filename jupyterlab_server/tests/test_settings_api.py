@@ -86,13 +86,13 @@ class SettingsAPITest(LabTestBase):
 
         assert self.settings_api.put(id, dict()).status_code == 204
         data = self.settings_api.get(id).json()
-        first_created = rfc3339_to_timestamp(data['created']), data
-        first_modified = rfc3339_to_timestamp(data['last_modified']), data
+        first_created = rfc3339_to_timestamp(data['created'])
+        first_modified = rfc3339_to_timestamp(data['last_modified'])
 
         assert self.settings_api.put(id, dict()).status_code == 204
         data = self.settings_api.get(id).json()
-        second_created = rfc3339_to_timestamp(data['created']), data
-        second_modified = rfc3339_to_timestamp(data['last_modified']), data
+        second_created = rfc3339_to_timestamp(data['created'])
+        second_modified = rfc3339_to_timestamp(data['last_modified'])
 
         assert first_created <= second_created
         assert first_modified < second_modified
