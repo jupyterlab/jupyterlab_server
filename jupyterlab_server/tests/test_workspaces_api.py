@@ -1,8 +1,10 @@
 """Test the kernels service API."""
+
 import json
 import os
 import shutil
 import time
+import pytest
 from strict_rfc3339 import rfc3339_to_timestamp
 
 from jupyterlab_server.tests.utils import LabTestBase, APITester

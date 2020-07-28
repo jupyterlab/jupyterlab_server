@@ -16,6 +16,7 @@ jobs:
     env:
       CI: True
       PYTHON_VERSION: ${{ matrix.PYTHON_VERSION }}
+      CODECOV_TOKEN: e025254a-fe54-4914-8890-0c26e7aa0d07
     strategy:
       fail-fast: false
       matrix:
@@ -25,6 +26,8 @@ jobs:
           - PYTHON_VERSION: '3.6'
             PLATFORM: 'macos-latest'
           - PYTHON_VERSION: '3.6'
+            PLATFORM: 'windows-latest'
+          - PYTHON_VERSION: '3.8'
             PLATFORM: 'windows-latest'
     steps:
       - name: Checkout
@@ -48,4 +51,7 @@ jobs:
           python -m pip list
       - name: Run python tests
         run: |
-          pytest
+          pytest --cov-fail-under 71
+      - name: Upload coverage
+        run: |
+          codecov

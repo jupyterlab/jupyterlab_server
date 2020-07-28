@@ -40,12 +40,13 @@ if 'setuptools' in sys.modules:
     setup_args['python_requires'] = '>=3.5'
     setup_args['extras_require'] = {
         'test': [
+            'codecov',
             'pytest',
             'pytest-cov',
             'requests',
             'strict-rfc3339',
             'wheel',
-        ]
+        ],
     }
     setup_args['install_requires'] = [
         'babel',
