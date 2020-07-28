@@ -92,7 +92,7 @@ def _main():
         func_name = sys.argv[-1]
         func = globals().get(func_name, None)
 
-        if func:            
+        if func:
             try:
                 data, message = func()
             except Exception:
@@ -100,7 +100,7 @@ def _main():
     else:
         message = "Invalid number of arguments!"
 
-    sys.stdout.write(json.dumps({"data": data, "message": message})) 
+    sys.stdout.write(json.dumps({"data": data, "message": message}))
 
 
 # --- Helpers
@@ -146,13 +146,13 @@ def is_valid_locale(locale: str) -> bool:
     -----
     A valid locale is in the form language (See ISO-639 standard) and an
     optional territory (See ISO-3166 standard).
-    
+
     Examples of valid locales:
     - English: DEFAULT_LOCALE
     - Australian English: "en_AU"
     - Portuguese: "pt"
     - Brazilian Portuguese: "pt_BR"
-    
+
     Examples of invalid locales:
     - Australian Spanish: "es_AU"
     - Brazilian German: "de_BR"
@@ -270,7 +270,7 @@ def get_installed_packages_locale(locale: str) -> dict:
                 )
                 if os.path.isfile(locale_json_path):
                     try:
-                        with open(locale_json_path, "r") as fh:
+                        with open(locale_json_path, "r", encoding="utf-8") as fh:
                             packages_locale_data[package_name] = json.load(fh)
                     except Exception:
                         messages.append(traceback.format_exc())
@@ -366,7 +366,7 @@ def get_language_pack(locale: str) -> tuple:
                         pkg_name = name.replace(".json", "")
                         json_path = os.path.join(root, name)
                         try:
-                            with open(json_path, "r") as fh:
+                            with open(json_path, "r", encoding="utf-8") as fh:
                                 merged_data = json.load(fh)
                         except Exception:
                             messages.append(traceback.format_exc())
