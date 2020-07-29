@@ -11,7 +11,6 @@ from .utils import maybe_patch_ioloop, big_unicode_string
 
 maybe_patch_ioloop()
 
-
 class SettingsAPI(APITester):
     """Wrapper for settings REST API requests"""
 
