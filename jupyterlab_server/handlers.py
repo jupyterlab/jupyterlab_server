@@ -24,6 +24,8 @@ from .workspaces_handler import WorkspacesHandler
 # -----------------------------------------------------------------------------
 
 
+MASTER_URL_PATTERN = '/(?P<mode>lab|doc)(?P<workspace>/workspaces/[a-zA-Z0-9\-\_]+)?(?P<tree>/tree/.*)?'
+
 DEFAULT_TEMPLATE = template.Template("""
 <!DOCTYPE html>
 <html>
@@ -60,7 +62,10 @@ class LabHandler(JupyterHandler):
 
     @web.authenticated
     @web.removeslash
-    def get(self):
+    def get(self, mode, workspace, tree):
+        workspace = 'default' if workspace is None else workspace.replace('/workspaces/','')
+        tree_path = '' if tree is None else tree.replace('/tree/','')
+
         self.application.store_id = getattr(self.application, 'store_id', 0)
         config = self.lab_config
         settings_dir = config.app_settings_dir
@@ -82,6 +87,14 @@ class LabHandler(JupyterHandler):
                                            'TeX-AMS_HTML-full,Safe')
         page_config.setdefault('mathjaxConfig', mathjax_config)
         page_config.setdefault('fullMathjaxUrl', self.mathjax_url)
+
+        # Add parameters parsed from the URL
+        if mode == 'doc':
+            page_config['mode'] = 'single-document'
+        else:
+            page_config['mode'] = 'multiple-document'
+        page_config['workspace'] = workspace
+        page_config['treePath'] = tree_path
 
         # Put all our config in page_config
         for name in config.trait_names():
@@ -133,6 +146,7 @@ class LabConfig(HasTraits):
 
     app_url = Unicode('/lab', help='The url path for the application.')
 
+
     app_settings_dir = Unicode('', help='The application settings directory.')
 
     templates_dir = Unicode('', help='The application templates directory.')
@@ -163,8 +177,6 @@ class LabConfig(HasTraits):
                                    'workspaces directory. If given, a handler '
                                    'will be added for workspaces.'))
 
-    workspaces_url = Unicode(help='The url path of the workspaces handler.')
-
     listings_url = Unicode(help='The listings url.')
 
     themes_url = Unicode(help='The theme url.')
@@ -176,8 +188,6 @@ class LabConfig(HasTraits):
 
     translations_api_url = Unicode(help='The url path of the translations handler.')
 
-    tree_url = Unicode(help='The url path of the tree handler.')
-
     cache_files = Bool(True,
                        help=('Whether to cache files on the server. '
                              'This should be `True` except in dev mode.'))
@@ -185,10 +195,6 @@ class LabConfig(HasTraits):
     @default('static_url')
     def _default_static_url(self):
         return ujoin('static/', self.app_url)
-
-    @default('workspaces_url')
-    def _default_workspaces_url(self):
-        return ujoin(self.app_url, 'workspaces/')
 
     @default('workspaces_api_url')
     def _default_workspaces_api_url(self):
@@ -209,10 +215,6 @@ class LabConfig(HasTraits):
     @default('translations_api_url')
     def _default_translations_api_url(self):
         return ujoin(self.app_url, 'api', 'translations/')
-
-    @default('tree_url')
-    def _default_tree_url(self):
-        return ujoin(self.app_url, 'tree/')
 
 
 class NotFoundHandler(LabHandler):
@@ -249,11 +251,9 @@ def add_handlers(web_app, config):
 
     # Set up the main page handler and tree handler.
     base_url = web_app.settings['base_url']
-    lab_path = ujoin(base_url, config.app_url)
-    tree_path = ujoin(base_url, config.tree_url, r'.+')
+    lab_path = ujoin(base_url, MASTER_URL_PATTERN)
     handlers = [
-        (lab_path, LabHandler, {'lab_config': config}),
-        (tree_path, LabHandler, {'lab_config': config})
+        (lab_path, LabHandler, {'lab_config': config})
     ]
 
     # Cache all or none of the files depending on the `cache_files` setting.
@@ -286,12 +286,8 @@ def add_handlers(web_app, config):
 
     # Handle saved workspaces.
     if config.workspaces_dir:
-        # Handle JupyterLab client URLs that include workspaces.
-        workspaces_path = ujoin(base_url, config.workspaces_url, r'.+')
-        handlers.append((workspaces_path, LabHandler, {'lab_config': config}))
 
         workspaces_config = {
-            'workspaces_url': config.workspaces_url,
             'path': config.workspaces_dir
         }
 
