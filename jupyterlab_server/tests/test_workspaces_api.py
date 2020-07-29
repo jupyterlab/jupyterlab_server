@@ -9,7 +9,7 @@ from strict_rfc3339 import rfc3339_to_timestamp
 from jupyterlab_server.tests.utils import LabTestBase, APITester
 from notebook.tests.launchnotebook import assert_http_error
 
-from .utils import maybe_patch_ioloop
+from .utils import maybe_patch_ioloop, big_unicode_string
 
 maybe_patch_ioloop()
 
@@ -86,6 +86,7 @@ class WorkspacesAPITest(LabTestBase):
     def test_put(self):
         id = 'foo'
         data = self.workspaces_api.get(id).json()
+        data["metadata"]["big-unicode-string"] = big_unicode_string[::-1]
         assert self.workspaces_api.put(id, data).status_code == 204
         first_metadata = self.workspaces_api.get(id).json()["metadata"]
         first_created = rfc3339_to_timestamp(first_metadata['created'])
