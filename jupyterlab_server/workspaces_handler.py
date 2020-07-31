@@ -8,9 +8,10 @@ import os
 import re
 import unicodedata
 import urllib
+from datetime import datetime
 from tornado import web
 
-from .server import APIHandler, json_errors, url_path_join as ujoin
+from .server import APIHandler, json_errors, url_path_join as ujoin, tz
 
 from jupyter_server.extension.handler import ExtensionHandlerMixin, ExtensionHandlerJinjaMixin
 
@@ -35,14 +36,29 @@ def _list_workspaces(directory, prefix):
     for slug in items:
         workspace_path = os.path.join(directory, slug)
         if os.path.exists(workspace_path):
-            with open(workspace_path) as fid:
-                try:  # to load and parse the workspace file.
-                    workspace = json.load(fid)
-                    workspaces.get('ids').append(workspace['metadata']['id'])
-                    workspaces.get('values').append(workspace)
-                except Exception as e:
-                    raise web.HTTPError(500, str(e))
+            try:
+                workspace = _load_with_file_times(workspace_path)
+                workspaces.get('ids').append(workspace['metadata']['id'])
+                workspaces.get('values').append(workspace)
+            except Exception as e:
+                raise web.HTTPError(500, str(e))
+
     return workspaces
+
+
+def _load_with_file_times(workspace_path):
+    """
+    Load workspace JSON from disk, overwriting the `created` and `last_modified`
+    metadata with current file stat information
+    """
+    stat = os.stat(workspace_path)
+    with open(workspace_path, encoding='utf-8') as fid:
+        workspace = json.load(fid)
+        workspace["metadata"].update(
+            last_modified=tz.utcfromtimestamp(stat.st_mtime).isoformat(),
+            created=tz.utcfromtimestamp(stat.st_ctime).isoformat()
+        )
+    return workspace
 
 
 def slugify(raw, base='', sign=True, max_length=128 - len(WORKSPACE_EXTENSION)):
@@ -124,16 +140,16 @@ class WorkspacesHandler(ExtensionHandlerMixin, ExtensionHandlerJinjaMixin, APIHa
         workspace_path = os.path.join(directory, slug + WORKSPACE_EXTENSION)
 
         if os.path.exists(workspace_path):
-            with open(workspace_path) as fid:
-                try:  # to load and parse the workspace file.
-                    return self.finish(json.dumps(json.load(fid)))
-                except Exception as e:
-                    raise web.HTTPError(500, str(e))
+            try:  # to load and parse the workspace file.
+                workspace = _load_with_file_times(workspace_path)
+            except Exception as e:
+                raise web.HTTPError(500, str(e))
         else:
             id = (space_name if space_name.startswith('/')
                              else '/' + space_name)
             workspace = dict(data=dict(), metadata=dict(id=id))
-            return self.finish(json.dumps(workspace))
+
+        return self.finish(json.dumps(workspace))
 
     @web.authenticated
     def put(self, space_name=''):
@@ -148,7 +164,7 @@ class WorkspacesHandler(ExtensionHandlerMixin, ExtensionHandlerJinjaMixin, APIHa
             except Exception as e:
                 raise web.HTTPError(500, str(e))
 
-        raw = self.request.body.strip().decode(u'utf-8')
+        raw = self.request.body.strip().decode('utf-8')
         workspace = dict()
 
         # Make sure the data is valid JSON.
@@ -173,7 +189,7 @@ class WorkspacesHandler(ExtensionHandlerMixin, ExtensionHandlerJinjaMixin, APIHa
         workspace_path = os.path.join(directory, slug + WORKSPACE_EXTENSION)
 
         # Write the workspace data to a file.
-        with open(workspace_path, 'w') as fid:
+        with open(workspace_path, 'w', encoding='utf-8') as fid:
             fid.write(raw)
 
         self.set_status(204)

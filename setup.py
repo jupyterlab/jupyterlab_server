@@ -41,16 +41,24 @@ setup_args = dict(
 if 'setuptools' in sys.modules:
     setup_args['python_requires'] = '>=3.5'
     setup_args['extras_require'] = {
-        'test': ['nose', 'coverage', 'requests', 'nose_warnings_filters', 'requests',
-                 'pytest==5.3.2', 'pytest-cov', 'pytest-tornasync', 'pytest-console-scripts'],
-        'test:sys_platform == "win32"': ['nose-exclude'],
+        'test': [
+            'codecov',
+            'pytest==5.3.2',
+            'pytest-cov',
+            'pytest-tornasync', 
+            'pytest-console-scripts',
+            'strict-rfc3339',
+            'wheel',
+        ],
     }
     # TODO(@echarles) Pin to a released jupyter_server once available.
     setup_args['install_requires'] = [
-        'requests',
+        'babel',
+        'jinja2>=2.10',
         'json5',
         'jsonschema>=3.0.1',
-        'jinja2>=2.10',
+        'packaging',
+        'requests',
         'jupyter_server@ git+https://github.com/Zsailer/jupyter_server.git@extension-loading',
     ],
     setup_args['entry_points'] = {

@@ -11,9 +11,10 @@ from jsonschema import ValidationError
 from jsonschema import Draft4Validator as Validator
 from tornado import web
 
-from .server import APIHandler, json_errors
-
 from jupyter_server.extension.handler import ExtensionHandlerMixin, ExtensionHandlerJinjaMixin
+
+from .server import APIHandler, json_errors, tz
+
 
 # The JupyterLab settings file extension.
 SETTINGS_EXTENSION = '.jupyterlab-settings'
@@ -30,7 +31,7 @@ def _get_schema(schemas_dir, schema_name, overrides):
     if not os.path.exists(path):
         raise web.HTTPError(404, notfound_error % path)
 
-    with open(path) as fid:
+    with open(path, encoding='utf-8') as fid:
         # Attempt to load the schema file.
         try:
             schema = json.load(fid)
@@ -50,21 +51,25 @@ def _get_schema(schemas_dir, schema_name, overrides):
     return schema
 
 
-def _get_settings(settings_dir, schema_name, schema):
+def _get_user_settings(settings_dir, schema_name, schema):
     """
-    Returns a tuple containing the raw user settings, the parsed user
-    settings, and a validation warning for a schema.
+    Returns a dictionary containing the raw user settings, the parsed user
+    settings, a validation warning for a schema, and file times.
     """
-
     path = _path(settings_dir, schema_name, False, SETTINGS_EXTENSION)
     raw = '{}'
-    settings = dict()
+    settings = {}
     warning = ''
     validation_warning = 'Failed validating settings (%s): %s'
     parse_error = 'Failed loading settings (%s): %s'
+    last_modified = None
+    created = None
 
     if os.path.exists(path):
-        with open(path) as fid:
+        stat = os.stat(path)
+        last_modified = tz.utcfromtimestamp(stat.st_mtime).isoformat()
+        created = tz.utcfromtimestamp(stat.st_ctime).isoformat()
+        with open(path, encoding='utf-8') as fid:
             try:  # to load and parse the settings file.
                 raw = fid.read() or raw
                 settings = json5.loads(raw)
@@ -80,7 +85,13 @@ def _get_settings(settings_dir, schema_name, schema):
             warning = validation_warning % (schema_name, str(e))
             raw = '{}'
 
-    return (raw, settings, warning)
+    return dict(
+        raw=raw,
+        settings=settings,
+        warning=warning,
+        last_modified=last_modified,
+        created=created
+    )
 
 
 def _get_version(schemas_dir, schema_name):
@@ -90,7 +101,7 @@ def _get_version(schemas_dir, schema_name):
     package_path = os.path.join(os.path.split(path)[0], 'package.json.orig')
 
     try:  # to load and parse the package.json.orig file.
-        with open(package_path) as fid:
+        with open(package_path, encoding='utf-8') as fid:
             package = json.load(fid)
             return package['version']
     except Exception:
@@ -125,20 +136,17 @@ def _list_settings(schemas_dir, settings_dir, overrides, extension='.json'):
             schema_base[:-len(extension)]  # Remove file extension.
         ]).replace('\\', '/')               # Normalize slashes.
         schema = _get_schema(schemas_dir, schema_name, overrides)
-        raw, settings, warning = _get_settings(
-            settings_dir, schema_name, schema)
+        user_settings = _get_user_settings(settings_dir, schema_name, schema)
         version = _get_version(schemas_dir, schema_name)
 
-        if warning:
-            warnings.append(warning)
+        if 'warning' in user_settings:
+            warnings.append(user_settings.pop('warning'))
 
         # Add the plugin to the list of settings.
         settings_list.append(dict(
             id=id,
-            raw=raw,
-            schema=schema,
-            settings=settings,
-            version=version
+            version=version,
+            **user_settings
         ))
 
     return (settings_list, warnings)
@@ -186,52 +194,98 @@ def _path(root_dir, schema_name, make_dirs=False, extension='.json'):
     return path
 
 
+def _get_overrides(app_settings_dir):
+    """Get overrides settings from `app_settings_dir`."""
+    overrides, error = {}, ""
+    overrides_path = os.path.join(app_settings_dir, 'overrides.json')
+    if os.path.exists(overrides_path):
+        with open(overrides_path, encoding='utf-8') as fid:
+            try:
+                overrides = json.load(fid)
+            except Exception as e:
+                error = e
+
+    return overrides, error
+
+
+def get_settings(app_settings_dir, schemas_dir, settings_dir, schema_name="", overrides=None):
+    """
+    Get setttings.
+
+    Parameters
+    ----------
+    app_settings_dir:
+        Path to applications settings.
+    schemas_dir: str
+        Path to schemas.
+    settings_dir:
+        Path to settings.
+    schema_name str, optional
+        Schema name. Default is "".
+    overrides: dict, optional
+        Settings overrides. If not provided, the overrides will be loaded
+        from the `app_settings_dir`. Default is None.
+
+    Returns
+    -------
+    tuple
+        The first item is a dictionary with a list of setting if no `schema_name`
+        was provided, otherwise it is a dictionary with id, raw, scheme, settings
+        and version keys. The second item is a list of warnings.
+    """
+    result = {}
+    warnings = []
+
+    if overrides is None:
+        overrides, _error = _get_overrides(app_settings_dir)
+
+    if schema_name:
+        schema = _get_schema(schemas_dir, schema_name, overrides)
+        user_settings = _get_user_settings(settings_dir, schema_name, schema)
+        version = _get_version(schemas_dir, schema_name)
+        warnings = [user_settings.pop('warning', None)]
+        result = {
+            "id": schema_name,
+            "schema": schema,
+            "version": version,
+            **user_settings
+        }
+    else:
+        settings_list, warnings = _list_settings(schemas_dir, settings_dir, overrides)
+        result = {
+            "settings": settings_list,
+        }
+
+    return result, warnings
+
+
 class SettingsHandler(ExtensionHandlerMixin, ExtensionHandlerJinjaMixin, APIHandler):
 
     def initialize(self, app_settings_dir, schemas_dir, settings_dir, **kwargs):
         super().initialize('lab')
-        self.overrides = dict()
+        self.overrides, error = _get_overrides(app_settings_dir)
+        self.app_settings_dir = app_settings_dir
         self.schemas_dir = schemas_dir
         self.settings_dir = settings_dir
 
-        overrides_path = os.path.join(app_settings_dir, 'overrides.json')
-        overrides_warning = 'Failed loading overrides: %s'
-
-        if os.path.exists(overrides_path):
-            with open(overrides_path) as fid:
-                try:
-                    self.overrides = json.load(fid)
-                except Exception as e:
-                    self.log.warn(overrides_warning % str(e))
+        if error:
+            overrides_warning = 'Failed loading overrides: %s'
+            self.log.warning(overrides_warning % str(error))
 
     @web.authenticated
-    def get(self, schema_name=''):        
-        overrides = self.overrides
-        schemas_dir = self.schemas_dir
-        settings_dir = self.settings_dir
+    def get(self, schema_name=""):
+        result, warnings = get_settings(
+            self.app_settings_dir,
+            self.schemas_dir,
+            self.settings_dir,
+            schema_name=schema_name,
+            overrides=self.overrides,
+        )
 
-        if not schema_name:
-            settings_list, warnings = _list_settings(
-                schemas_dir, settings_dir, overrides)
-            if warnings:
-                self.log.warn('\n'.join(warnings))
-            return self.finish(json.dumps(dict(settings=settings_list)))
+        if warnings:
+            self.log.warning('\n'.join(warnings))
 
-        schema = _get_schema(schemas_dir, schema_name, overrides)
-        raw, settings, warning = _get_settings(
-            settings_dir, schema_name, schema)
-        version = _get_version(schemas_dir, schema_name)
-
-        if warning:
-            self.log.warn(warning)
-
-        self.finish(json.dumps(dict(
-            id=schema_name,
-            raw=raw,
-            schema=schema,
-            settings=settings,
-            version=version
-        )))
+        return self.finish(json.dumps(result))
 
     @web.authenticated
     def put(self, schema_name):
@@ -244,7 +298,7 @@ class SettingsHandler(ExtensionHandlerMixin, ExtensionHandlerJinjaMixin, APIHand
         if not settings_dir:
             raise web.HTTPError(500, settings_error)
 
-        raw = self.request.body.strip().decode(u'utf-8')
+        raw = self.request.body.strip().decode('utf-8')
 
         # Validate the data against the schema.
         schema = _get_schema(schemas_dir, schema_name, overrides)
@@ -256,7 +310,7 @@ class SettingsHandler(ExtensionHandlerMixin, ExtensionHandlerJinjaMixin, APIHand
 
         # Write the raw data (comments included) to a file.
         path = _path(settings_dir, schema_name, True, SETTINGS_EXTENSION)
-        with open(path, 'w') as fid:
+        with open(path, 'w', encoding='utf-8') as fid:
             fid.write(raw)
 
         self.set_status(204)

@@ -1,4 +1,5 @@
 import errno
+import json
 import os
 import sys
 import requests
@@ -8,6 +9,33 @@ import tornado
 
 
 here = os.path.dirname(__file__)
+
+with open(
+    os.path.join(here, 'app-settings', 'overrides.json'),
+    encoding='utf-8'
+) as fpt:
+    big_unicode_string = json.load(fpt)["@jupyterlab/unicode-extension:plugin"]["comment"]
+
+
+def maybe_patch_ioloop():
+    """ a windows 3.8+ patch for the asyncio loop
+    """
+    if sys.platform.startswith("win"):
+        if sys.version_info >= (3, 8):
+            import asyncio
+            try:
+                from asyncio import (
+                    WindowsProactorEventLoopPolicy,
+                    WindowsSelectorEventLoopPolicy,
+                )
+            except ImportError:
+                pass
+                # not affected
+            else:
+                if type(asyncio.get_event_loop_policy()) is WindowsProactorEventLoopPolicy:
+                    # WindowsProactorEventLoopPolicy is not compatible with tornado 6
+                    # fallback to the pre-3.8 default of Selector
+                    asyncio.set_event_loop_policy(WindowsSelectorEventLoopPolicy())
 
 
 def expected_http_error(error, expected_code, expected_message=None):

@@ -1,0 +1,56 @@
+name: Tests
+
+on:
+  push:
+    branches:
+      - master
+
+  pull_request:
+    branches:
+      - "*"
+
+jobs:
+  linux:
+    name: ${{ matrix.PLATFORM }} py${{ matrix.PYTHON_VERSION }}
+    runs-on: ${{ matrix.PLATFORM }}
+    env:
+      CI: True
+      PYTHON_VERSION: ${{ matrix.PYTHON_VERSION }}
+      CODECOV_TOKEN: e025254a-fe54-4914-8890-0c26e7aa0d07
+    strategy:
+      fail-fast: false
+      matrix:
+        PYTHON_VERSION: ['3.5', '3.6', '3.8']
+        PLATFORM: ['ubuntu-latest', 'macos-latest',  'windows-latest']
+        exclude:
+          - PYTHON_VERSION: '3.6'
+            PLATFORM: 'macos-latest'
+          - PYTHON_VERSION: '3.6'
+            PLATFORM: 'windows-latest'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Cache pip
+        uses: actions/cache@v1
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-py-${{ matrix.PYTHON_VERSION }}-pip-${{ hashFiles('**/setup.py') }}
+      - name: Setup python
+        uses: actions/setup-python@v1
+        with:
+          python-version: ${{ matrix.PYTHON_VERSION }}
+      - name: Install python dependencies
+        run: |
+          pip install setuptools pip --upgrade
+          pip install -v -e ".[test]"
+      - name: Show python environment
+        run: |
+          python --version
+          python -m pip list
+      - name: Run python tests
+        # See `setup.cfg` for full test options
+        run: |
+          pytest --cov-fail-under 71
+      - name: Upload coverage
+        run: |
+          codecov

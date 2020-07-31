@@ -1,0 +1,11 @@
+{
+    "": {
+        "domain": "jupyterlab_some_package",
+        "language": "es_CO",
+        "plural_forms": "nplurals=2; plural=(n != 1);",
+        "version": "0.1.0"
+    },
+    "BOOM": [
+        "SHAKA LAKA"
+    ]
+}

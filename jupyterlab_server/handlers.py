@@ -7,24 +7,27 @@ import json
 import os
 from urllib.parse import urlparse
 
-from tornado import web, template
 from jinja2 import FileSystemLoader, TemplateError
-
-from traitlets import HasTraits, Bool, Unicode, default, List
+from tornado import template, web
+from traitlets import Bool, HasTraits, Unicode, default
 
 from jupyter_server.extension.handler import ExtensionHandlerMixin, ExtensionHandlerJinjaMixin
 
-from .server import JupyterHandler, FileFindHandler, url_path_join as ujoin
-from .workspaces_handler import WorkspacesHandler
-from .settings_handler import SettingsHandler
 from .listings_handler import ListingsHandler, fetch_listings
+from .server import FileFindHandler, JupyterHandler
+from .server import url_path_join as ujoin
+from .settings_handler import SettingsHandler
 from .themes_handler import ThemesHandler
+from .translations_handler import TranslationsHandler
+from .workspaces_handler import WorkspacesHandler
 
 # -----------------------------------------------------------------------------
 # Module globals
 # -----------------------------------------------------------------------------
 
 DEFAULT_TEMPLATE_PATH = os.path.join(os.path.dirname(__file__), 'templates')
+
+MASTER_URL_PATTERN = '/(?P<mode>lab|doc)(?P<workspace>/workspaces/[a-zA-Z0-9\-\_]+)?(?P<tree>/tree/.*)?'
 
 DEFAULT_TEMPLATE = template.Template("""
 <!DOCTYPE html>
@@ -58,7 +61,10 @@ class LabHandler(ExtensionHandlerJinjaMixin, ExtensionHandlerMixin, JupyterHandl
 
     @web.authenticated
     @web.removeslash
-    def get(self):
+    def get(self, mode, workspace, tree):
+        workspace = 'default' if workspace is None else workspace.replace('/workspaces/','')
+        tree_path = '' if tree is None else tree.replace('/tree/','')
+
         self.application.store_id = getattr(self.application, 'store_id', 0)
         config = LabConfig()
         app = self.extensionapp
@@ -72,7 +78,7 @@ class LabHandler(ExtensionHandlerJinjaMixin, ExtensionHandlerMixin, JupyterHandl
         base_url = self.settings.get('base_url')
 
         page_config.setdefault('terminalsAvailable', terminals)
-        page_config.setdefault('ignorePlugins', [])
+        page_config.setdefault('ignorePlugins', []) 
         page_config.setdefault('serverRoot', server_root)
         page_config['store_id'] = self.application.store_id
         self.application.store_id += 1
@@ -85,6 +91,14 @@ class LabHandler(ExtensionHandlerJinjaMixin, ExtensionHandlerMixin, JupyterHandl
         page_config.setdefault('mathjaxConfig', mathjax_config)
         page_config.setdefault('fullMathjaxUrl', mathjax_url)
 
+        # Add parameters parsed from the URL
+        if mode == 'doc':
+            page_config['mode'] = 'single-document'
+        else:
+            page_config['mode'] = 'multiple-document'
+        page_config['workspace'] = workspace
+        page_config['treePath'] = tree_path
+        
         # Put all our config in page_config
         for name in config.trait_names():
             page_config[_camelCase(name)] = getattr(app, name)
@@ -103,7 +117,7 @@ class LabHandler(ExtensionHandlerJinjaMixin, ExtensionHandlerMixin, JupyterHandl
         # Load the current page config file if available.
         page_config_file = os.path.join(settings_dir, 'page_config.json')
         if os.path.exists(page_config_file):
-            with open(page_config_file) as fid:
+            with open(page_config_file, encoding='utf-8') as fid:
                 try:
                     page_config.update(json.load(fid))
                 except Exception as e:
@@ -155,8 +169,6 @@ class LabConfig(HasTraits):
                                    'workspaces directory. If given, a handler '
                                    'will be added for workspaces.'))
 
-    workspaces_url = Unicode(help='The url path of the workspaces handler.')
-
     listings_url = Unicode(help='The listings url.')
 
     themes_url = Unicode(help='The theme url.')
@@ -166,8 +178,8 @@ class LabConfig(HasTraits):
                                'directory. If given, a handler will be added '
                                'for themes.'))
 
-    tree_url = Unicode(help='The url path of the tree handler.')
-
+    translations_api_url = Unicode(help='The url path of the translations handler.')
+ 
     cache_files = Bool(True,
                        help=('Whether to cache files on the server. '
                              'This should be `True` except in dev mode.'))
@@ -199,6 +211,10 @@ class LabConfig(HasTraits):
     @default('themes_url')
     def _default_themes_url(self):
         return ujoin(self.app_url, 'api', 'themes/')
+
+    @default('translations_api_url')
+    def _default_translations_api_url(self):
+        return ujoin(self.app_url, 'api', 'translations/')
 
     @default('tree_url')
     def _default_tree_url(self):
@@ -238,11 +254,10 @@ def add_handlers(handlers, app):
         setattr(app, name, value)
 
     # Set up the main page handler and tree handler.
-    lab_path = app.app_url
-    tree_path = ujoin(app.tree_url, r'.+')
+    # TODO(ECH) Does this break https://github.com/jupyterlab/jupyterlab_server/commit/8ee6a45512d0b52934e2e68ea20feee1d9e18654#diff-ca89d3839f112d41f8c770b568fa9937R253
+    lab_path = ujoin(app.app_url, MASTER_URL_PATTERN)    
     handlers.extend([
         (lab_path, LabHandler),
-        (tree_path, LabHandler)
     ])
 
     # Cache all or none of the files depending on the `cache_files` setting.
@@ -266,12 +281,8 @@ def add_handlers(handlers, app):
 
     # Handle saved workspaces.
     if app.workspaces_dir:
-        # Handle JupyterLab client URLs that include workspaces.
-        workspaces_path = ujoin(app.workspaces_url, r'.+')
-        handlers.append((workspaces_path, LabHandler))
 
         workspaces_config = {
-            'workspaces_url': app.workspaces_url,
             'path': app.workspaces_dir
         }
 
@@ -333,6 +344,18 @@ def add_handlers(handlers, app):
                 'no_cache_paths': no_cache_paths
             }
         ))
+
+    # Handle translations.
+    if config.translations_api_url:
+        # Handle requests for the list of language packs available.
+        # Make slash optional.
+        translations_path = ujoin(base_url, config.translations_api_url, '?')
+        handlers.append((translations_path, TranslationsHandler, {'lab_config': config}))
+
+        # Handle requests for an individual language pack.
+        translations_lang_path = ujoin(
+            base_url, config.translations_api_url, '(?P<locale>.*)')
+        handlers.append((translations_lang_path, TranslationsHandler, {'lab_config': config}))
 
     # Let the lab handler act as the fallthrough option instead of a 404.
     fallthrough_url = ujoin(app.app_url, r'.*')
