@@ -63,7 +63,6 @@ class LabHandler(ExtensionHandlerJinjaMixin, ExtensionHandlerMixin, JupyterHandl
         super().initialize(name)
         self.lab_config = lab_config
         
-    # TODO(@echarles) Check this... https://github.com/jupyterlab/jupyterlab_server/commit/8ee6a45512d0b52934e2e68ea20feee1d9e18654#diff-ca89d3839f112d41f8c770b568fa9937R65
     @web.authenticated
     @web.removeslash
     def get(self, mode = None, workspace = None, tree = None):
@@ -185,6 +184,8 @@ class LabConfig(HasTraits):
 
     translations_api_url = Unicode(help='The url path of the translations handler.')
  
+    tree_url = Unicode(help='The url path of the tree handler.')
+
     cache_files = Bool(True,
                        help=('Whether to cache files on the server. '
                              'This should be `True` except in dev mode.'))
@@ -217,6 +218,10 @@ class LabConfig(HasTraits):
     def _default_themes_url(self):
         return ujoin(self.app_url, 'api', 'themes/')
 
+    @default('tree_url')
+    def _default_tree_url(self):
+        return ujoin(self.app_url, 'tree/')
+        
     @default('translations_api_url')
     def _default_translations_api_url(self):
         return ujoin(self.app_url, 'api', 'translations/')
@@ -264,6 +269,7 @@ def add_handlers(handlers, app):
     # lab_path = ujoin(app.app_url, MASTER_URL_PATTERN)
     lab_path = app.app_url
     handlers.append((lab_path, LabHandler, {'lab_config': app}))
+
     # Cache all or none of the files depending on the `cache_files` setting.
     no_cache_paths = [] if app.cache_files else ['/']
 
