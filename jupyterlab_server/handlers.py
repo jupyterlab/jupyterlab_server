@@ -59,6 +59,11 @@ def is_url(url):
 class LabHandler(ExtensionHandlerJinjaMixin, ExtensionHandlerMixin, JupyterHandler):
     """Render the JupyterLab View."""
 
+    def initialize(self, name, lab_config={}):
+        super().initialize(name)
+        self.lab_config = lab_config
+        
+    # TODO(@echarles) Check this... https://github.com/jupyterlab/jupyterlab_server/commit/8ee6a45512d0b52934e2e68ea20feee1d9e18654#diff-ca89d3839f112d41f8c770b568fa9937R65
     @web.authenticated
     @web.removeslash
     def get(self, mode = None, workspace = None, tree = None):
@@ -254,12 +259,11 @@ def add_handlers(handlers, app):
         setattr(app, name, value)
 
     # Set up the main page handler and tree handler.
-    # TODO(ECH) Does this break https://github.com/jupyterlab/jupyterlab_server/commit/8ee6a45512d0b52934e2e68ea20feee1d9e18654#diff-ca89d3839f112d41f8c770b568fa9937R253
-    lab_path = ujoin(app.app_url, MASTER_URL_PATTERN)    
-    handlers.extend([
-        (lab_path, LabHandler),
-    ])
-
+    # TODO(@echarles) Check this... https://github.com/jupyterlab/jupyterlab_server/commit/8ee6a45512d0b52934e2e68ea20feee1d9e18654#diff-ca89d3839f112d41f8c770b568fa9937R254
+    # @see https://github.com/datalayer-contrib/jupyterlab-server/blob/425bc3c88855318d2975495041de5f50d4d58d99/jupyterlab_server/handlers.py#L241-L246
+    # lab_path = ujoin(app.app_url, MASTER_URL_PATTERN)
+    lab_path = app.app_url
+    handlers.append((lab_path, LabHandler, {'lab_config': app}))
     # Cache all or none of the files depending on the `cache_files` setting.
     no_cache_paths = [] if app.cache_files else ['/']
 

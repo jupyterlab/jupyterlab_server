@@ -261,8 +261,8 @@ def get_settings(app_settings_dir, schemas_dir, settings_dir, schema_name="", ov
 
 class SettingsHandler(ExtensionHandlerMixin, ExtensionHandlerJinjaMixin, APIHandler):
 
-    def initialize(self, app_settings_dir, schemas_dir, settings_dir, **kwargs):
-        super().initialize('lab')
+    def initialize(self, name, app_settings_dir, schemas_dir, settings_dir, **kwargs):
+        super().initialize(name)
         self.overrides, error = _get_overrides(app_settings_dir)
         self.app_settings_dir = app_settings_dir
         self.schemas_dir = schemas_dir

@@ -87,7 +87,7 @@ async def test_patch(fetch, labserverapp):
     data = json.loads(r.body.decode())
     listing = data['settings']
     list_data = [item for item in listing if item['id'] == id][0]
-    # TODO(ECH)
+    # TODO(@echarles) Check this...
 #    assert list_data['created'] == data['created']
 #    assert list_data['last_modified'] == data['last_modified']
 
