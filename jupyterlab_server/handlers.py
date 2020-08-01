@@ -96,7 +96,7 @@ class LabHandler(ExtensionHandlerJinjaMixin, ExtensionHandlerMixin, JupyterHandl
         page_config.setdefault('fullMathjaxUrl', mathjax_url)
 
         # Add parameters parsed from the URL
-        if mode == 'doc':
+        if mode == 'doc':   
             page_config['mode'] = 'single-document'
         else:
             page_config['mode'] = 'multiple-document'
