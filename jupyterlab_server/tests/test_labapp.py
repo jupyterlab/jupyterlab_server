@@ -8,8 +8,7 @@ from .utils import expected_http_error
 
 
 @pytest.fixture
-def notebooks(create_notebook, make_labserver_extension_app):
-    make_labserver_extension_app()
+def notebooks(create_notebook, labserverapp):
     nbpaths = (
         'notebook1.ipynb',
         'jlab_test_notebooks/notebook2.ipynb',
@@ -20,7 +19,7 @@ def notebooks(create_notebook, make_labserver_extension_app):
     return nbpaths
 
 
-async def test_lab_handler(notebooks, fetch, labserverapp):
+async def test_lab_handler(notebooks, fetch):
     r = await fetch('lab', 'jlab_test_notebooks')
     assert r.code == 200
     # Check that the lab template is loaded
@@ -28,7 +27,7 @@ async def test_lab_handler(notebooks, fetch, labserverapp):
     assert "Files" in html
     assert "JupyterLab Server Application" in html
 
-async def test_notebook_handler(notebooks, fetch, labserverapp):
+async def test_notebook_handler(notebooks, fetch):
     for nbpath in notebooks:
         r = await fetch('lab', nbpath)
         assert r.code == 200
@@ -36,7 +35,7 @@ async def test_notebook_handler(notebooks, fetch, labserverapp):
         html = r.body.decode()
         assert "JupyterLab Server Application" in html
 
-async def test_404(notebooks, fetch, labserverapp):
+async def test_404(notebooks, fetch):
     with pytest.raises(tornado.httpclient.HTTPClientError) as e:
         await fetch('foo')
     assert expected_http_error(e, 404)

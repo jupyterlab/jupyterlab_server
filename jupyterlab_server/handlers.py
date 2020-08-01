@@ -61,7 +61,7 @@ class LabHandler(ExtensionHandlerJinjaMixin, ExtensionHandlerMixin, JupyterHandl
 
     @web.authenticated
     @web.removeslash
-    def get(self, mode, workspace, tree):
+    def get(self, mode = None, workspace = None, tree = None):
         workspace = 'default' if workspace is None else workspace.replace('/workspaces/','')
         tree_path = '' if tree is None else tree.replace('/tree/','')
 
@@ -346,16 +346,16 @@ def add_handlers(handlers, app):
         ))
 
     # Handle translations.
-    if config.translations_api_url:
+    if app.translations_api_url:
         # Handle requests for the list of language packs available.
         # Make slash optional.
-        translations_path = ujoin(base_url, config.translations_api_url, '?')
-        handlers.append((translations_path, TranslationsHandler, {'lab_config': config}))
+        translations_path = ujoin(base_url, app.translations_api_url, '?')
+        handlers.append((translations_path, TranslationsHandler, {'lab_config': app}))
 
         # Handle requests for an individual language pack.
         translations_lang_path = ujoin(
-            base_url, config.translations_api_url, '(?P<locale>.*)')
-        handlers.append((translations_lang_path, TranslationsHandler, {'lab_config': config}))
+            base_url, app.translations_api_url, '(?P<locale>.*)')
+        handlers.append((translations_lang_path, TranslationsHandler, {'lab_config': app}))
 
     # Let the lab handler act as the fallthrough option instead of a 404.
     fallthrough_url = ujoin(app.app_url, r'.*')

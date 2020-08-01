@@ -31,16 +31,31 @@ async def test_delete(fetch, labserverapp):
     assert r3.code == 204
 
 
-async def test_get_non_existant(self):
+async def test_get_non_existant(fetch, labserverapp):
     id = 'foo'
-    data = self.workspaces_api.get(id).json()
-    assert self.workspaces_api.put(id, data).status_code == 204
-    first_metadata = self.workspaces_api.get(id).json()["metadata"]
+
+    r = await fetch('lab', 'api', 'workspaces', id)
+    data = json.loads(r.body.decode())
+
+    r2 = await fetch('lab', 'api', 'workspaces', id, 
+        method='PUT',
+        body=json.dumps(data))
+    assert r2.code == 204
+
+    r3 = await fetch('lab', 'api', 'workspaces', id)
+    data = json.loads(r3.body.decode())
+    first_metadata = data["metadata"]
     first_created = rfc3339_to_timestamp(first_metadata['created'])
     first_modified = rfc3339_to_timestamp(first_metadata['last_modified'])
 
-    assert self.workspaces_api.put(id, data).status_code == 204
-    second_metadata = self.workspaces_api.get(id).json()["metadata"]
+    r4 = await fetch('lab', 'api', 'workspaces', id, 
+        method='PUT',
+        body=json.dumps(data))
+    assert r4.code == 204
+
+    r5 = await fetch('lab', 'api', 'workspaces', id)
+    data = json.loads(r5.body.decode())
+    second_metadata = data["metadata"]
     second_created = rfc3339_to_timestamp(second_metadata['created'])
     second_modified = rfc3339_to_timestamp(second_metadata['last_modified'])
 
@@ -51,14 +66,16 @@ async def test_get_non_existant(self):
 @pytest.mark.skipif(os.name == "nt", reason="Temporal failure on windows")
 async def test_get(fetch, labserverapp):
     id = 'foo'
-    metadata = self.workspaces_api.get(id).json()['metadata']
+    r = await fetch('lab', 'api', 'workspaces', id)
+    data = json.loads(r.body.decode())
+    metadata = data['metadata']
     assert metadata['id'] == id
     assert rfc3339_to_timestamp(metadata['created'])
-    assert rfc3339_to_timestamp(metadata['last_modified'])  
-    r = await fetch('lab', 'api', 'workspaces', id)
-    assert r.code == 200
-    res = r.body.decode()
-    data = json.loads(res)
+    assert rfc3339_to_timestamp(metadata['last_modified'])
+
+    r2 = await fetch('lab', 'api', 'workspaces', id)
+    assert r2.code == 200
+    data = json.loads(r.body.decode())
     assert data['metadata']['id'] == id
 
 async def test_listing(fetch, labserverapp):
@@ -72,8 +89,10 @@ async def test_listing(fetch, labserverapp):
     assert output == listing
 
 
-async def test_listing_dates(self):
-    values = self.workspaces_api.get().json()['workspaces']['values']
+async def test_listing_dates(fetch, labserverapp):
+    r = await fetch('lab', 'api', 'workspaces')
+    data = json.loads(r.body.decode())
+    values = data['workspaces']['values']
     times = sum(
         [
             [ws['metadata'].get('last_modified'), ws['metadata'].get('created')]
