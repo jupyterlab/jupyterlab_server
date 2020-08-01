@@ -114,6 +114,6 @@ def make_labserver_extension_app(
 @pytest.fixture
 def labserverapp(serverapp, make_labserver_extension_app):
     app = make_labserver_extension_app()
-    app.link_to_serverapp(serverapp)
+    app._link_jupyter_server_extension(serverapp)
     app.initialize()
     return app
