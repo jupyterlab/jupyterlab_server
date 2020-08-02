@@ -42,8 +42,9 @@ jobs:
       - name: Install python dependencies
         run: |
           pip install setuptools pip --upgrade
-          pip install git+https://github.com/jupyter/jupyter_server.git@master
           pip install -v -e ".[test]"
+          pip uninstall -y jupyter_serverpip uninstall -y jupyter_server
+          pip install git+https://github.com/jupyter/jupyter_server.git@master
       - name: Show python environment
         run: |
           python --version

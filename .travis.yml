@@ -8,5 +8,7 @@ sudo: false
 install:
     - pip install setuptools pip --upgrade
     - pip install -v -e ".[test]"
+    - pip uninstall -y jupyter_server
+    - pip install git+https://github.com/jupyter/jupyter_server.git@master
 script:
     - py.test
