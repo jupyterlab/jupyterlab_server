@@ -1,17 +1,13 @@
-"""Test the kernels service API."""
+"""Test the translations service API."""
 
 import json
 import os
+import pytest
 import shutil
 import subprocess
 import sys
 
-"""
-
-TODO(@echarles)
-from jupyterlab_server.tests.utils import APITester, LabTestBase
-
-from ..servertest import assert_http_error
+from .utils import expected_http_error
 from ..translation_utils import (_get_installed_language_pack_locales,
                                  _get_installed_package_locales,
                                  get_display_name,
@@ -27,133 +23,138 @@ maybe_patch_ioloop()
 # Constants
 HERE = os.path.abspath(os.path.dirname(__file__))
 
-"""
-#class TranslationsAPI(APITester):
-"""Wrapper for translations REST API requests"""
 
-#    url = 'lab/api/translations'
-
-#    def get(self, locale=''):
-#        return self._req('GET', locale)
+def setup_module(module):
+    """ setup any state specific to the execution of this module."""
+    for pkg in ['jupyterlab-some-package', 'jupyterlab-language-pack-es_CO']:
+        src = os.path.join(HERE, 'translations', pkg)
+        subprocess.Popen([sys.executable, '-m', 'pip', 'install', src]).communicate()
 
 
-#class TranslationsAPITest(LabTestBase):
-"""Test the translations web service API"""
-"""
-    @classmethod
-    def setUpClass(cls):
-        for pkg in ['jupyterlab-some-package', 'jupyterlab-language-pack-es_CO']:
-            src = os.path.join(HERE, 'translations', pkg)
-            subprocess.Popen([sys.executable, '-m', 'pip', 'install', src]).communicate()
+def teardown_module(module):
+    """ teardown any state that was previously setup."""
+    for pkg in ['jupyterlab-some-package', 'jupyterlab-language-pack-es_CO']:
+        subprocess.Popen([sys.executable, '-m', 'pip', 'uninstall', pkg, '-y']).communicate()
 
-    def setUp(self):
-        # Copy the schema files.
-        src = os.path.join(HERE, 'schemas', '@jupyterlab')
-        dst = os.path.join(self.lab_config.schemas_dir, '@jupyterlab')
-        if os.path.exists(dst):
-            shutil.rmtree(dst)
 
-        shutil.copytree(src, dst)
+@pytest.fixture(autouse=True)
+def before_after_test(schemas_dir, user_settings_dir, labserverapp):
 
-        # Copy the overrides file.
-        src = os.path.join(HERE, 'app-settings', 'overrides.json')
-        dst = os.path.join(self.lab_config.app_settings_dir, 'overrides.json')
+    # Code that will run before any test.
 
-        if os.path.exists(dst):
-            os.remove(dst)
+    # Copy the schema files.
+    src = os.path.join(HERE, 'schemas', '@jupyterlab')
+    dst = os.path.join(str(schemas_dir), '@jupyterlab')
+    if os.path.exists(dst):
+        shutil.rmtree(dst)
 
-        shutil.copyfile(src, dst)
+    shutil.copytree(src, dst)
 
-        self.translations_api = TranslationsAPI(self.request)
+    # Copy the overrides file.
+    src = os.path.join(HERE, 'app-settings', 'overrides.json')
+    dst = os.path.join(str(user_settings_dir), 'overrides.json')
 
-    @classmethod
-    def tearDownClass(cls):
-        for pkg in ['jupyterlab-some-package', 'jupyterlab-language-pack-es_CO']:
-            subprocess.Popen([sys.executable, '-m', 'pip', 'uninstall', pkg, '-y']).communicate()
+    if os.path.exists(dst):
+        os.remove(dst)
 
-    def test_get(self):
-        data = self.translations_api.get("").json()["data"]
-        assert "en" in data
+    shutil.copyfile(src, dst)
 
-    def test_get_locale(self):
-        locale = "es_CO"
-        data = self.translations_api.get(locale).json()["data"]
-        assert "jupyterlab" in data
-        assert data["jupyterlab"][""]["language"] == locale
+    # A test function will be run at this point.
 
-        assert "jupyterlab_some_package" in data
-        assert data["jupyterlab_some_package"][""]["version"] == "0.1.0"
-        assert data["jupyterlab_some_package"][""]["language"] == locale
+    yield
 
-    def test_get_locale_bad(self):
-        data = self.translations_api.get("foo_BAR").json()["data"]
-        assert data == {}
+    # Code that will run after your test.
+    # N/A
+    
 
-    def test_get_locale_not_installed(self):
-        result = self.translations_api.get("es_AR").json()
-        assert "not installed" in result["message"]
-        assert result["data"] == {}
+async def test_get(fetch):
+    r = await fetch("lab", "api", "translations", "")
+    data = json.loads(r.body.decode())["data"]
+    assert "en" in data
 
-    def test_get_locale_not_valid(self):
-        result = self.translations_api.get("foo_BAR").json()
-        assert "not valid" in result["message"]
-        assert result["data"] == {}
+async def test_get_locale(fetch):
+    locale = "es_CO"
+    r = await fetch("lab", "api", "translations", locale)
+    data = json.loads(r.body.decode())["data"]
+    assert "jupyterlab" in data
+    assert data["jupyterlab"][""]["language"] == locale
 
-    # --- Utils testing
-    # ------------------------------------------------------------------------
-    def test_get_installed_language_pack_locales_fails(self):
-        # This should not be able to find entry points, since it needs to be
-        # ran in a subprocess
-        data, message = _get_installed_language_pack_locales()
-        assert "es_CO" not in data
-        assert message == ""
+    assert "jupyterlab_some_package" in data
+    assert data["jupyterlab_some_package"][""]["version"] == "0.1.0"
+    assert data["jupyterlab_some_package"][""]["language"] == locale
 
-    def test_get_installed_language_pack_locales_passes(self):
-        utils_file = os.path.join(os.path.dirname(HERE), "translation_utils.py")
-        cmd = [sys.executable, utils_file, "_get_installed_language_pack_locales"]
-        data, message = run_process_and_parse(cmd)
-        assert "es_CO" in data
-        assert message == ""
+async def test_get_locale_bad(fetch):
+    r = await fetch("lab", "api", "translations", "foo_BAR")
+    data = json.loads(r.body.decode())["data"]
+    assert data == {}
 
-    def test_get_installed_package_locales_fails(self):
-        # This should not be able to find entry points, since it needs to be
-        # ran in a subprocess
-        data, message = _get_installed_package_locales()
-        assert "jupyterlab_some_package" not in data
-        assert message == ""
+async def test_get_locale_not_installed(fetch):
+    r = await fetch("lab", "api", "translations", "es_AR")
+    result = json.loads(r.body.decode())
+    assert "not installed" in result["message"]
+    assert result["data"] == {}
 
-    def test_get_installed_package_locales(self):
-        utils_file = os.path.join(os.path.dirname(HERE), "translation_utils.py")
-        cmd = [sys.executable, utils_file, "_get_installed_package_locales"]
-        data, message = run_process_and_parse(cmd)
-        assert "jupyterlab_some_package" in data
-        assert os.path.isdir(data["jupyterlab_some_package"])
-        assert message == ""
+async def test_get_locale_not_valid(fetch):
+    r = await fetch("lab", "api", "translations", "foo_BAR")
+    result = json.loads(r.body.decode())
+    assert "not valid" in result["message"]
+    assert result["data"] == {}
 
-    def test_get_installed_packages_locale(self):
-        data, message = get_installed_packages_locale("es_CO")
-        assert "jupyterlab_some_package" in data
-        assert "" in data["jupyterlab_some_package"]
-        assert message == ""
 
-    def test_get_language_packs(self):
-        data, message = get_language_packs("en")
-        assert "en" in data
-        assert "es_CO" in data
-        assert message == ""
+# --- Utils testing
+# ------------------------------------------------------------------------
+def test_get_installed_language_pack_locales_fails():
+    # This should not be able to find entry points, since it needs to be
+    # ran in a subprocess
+    data, message = _get_installed_language_pack_locales()
+    assert "es_CO" not in data
+    assert message == ""
 
-    def test_get_language_pack(self):
-        data, message = get_language_pack("es_CO")
-        assert "jupyterlab" in data
-        assert "jupyterlab_some_package" in data
-        assert "" in data["jupyterlab"]
-        assert "" in data["jupyterlab_some_package"]
-        assert message == ""
-"""
+def test_get_installed_language_pack_locales_passes():
+    utils_file = os.path.join(os.path.dirname(HERE), "translation_utils.py")
+    cmd = [sys.executable, utils_file, "_get_installed_language_pack_locales"]
+    data, message = run_process_and_parse(cmd)
+    assert "es_CO" in data
+    assert message == ""
+
+def test_get_installed_package_locales_fails():
+    # This should not be able to find entry points, since it needs to be
+    # ran in a subprocess
+    data, message = _get_installed_package_locales()
+    assert "jupyterlab_some_package" not in data
+    assert message == ""
+
+def test_get_installed_package_locales():
+    utils_file = os.path.join(os.path.dirname(HERE), "translation_utils.py")
+    cmd = [sys.executable, utils_file, "_get_installed_package_locales"]
+    data, message = run_process_and_parse(cmd)
+    assert "jupyterlab_some_package" in data
+    assert os.path.isdir(data["jupyterlab_some_package"])
+    assert message == ""
+
+def test_get_installed_packages_locale():
+    data, message = get_installed_packages_locale("es_CO")
+    assert "jupyterlab_some_package" in data
+    assert "" in data["jupyterlab_some_package"]
+    assert message == ""
+
+def test_get_language_packs():
+    data, message = get_language_packs("en")
+    assert "en" in data
+    assert "es_CO" in data
+    assert message == ""
+
+def test_get_language_pack():
+    data, message = get_language_pack("es_CO")
+    assert "jupyterlab" in data
+    assert "jupyterlab_some_package" in data
+    assert "" in data["jupyterlab"]
+    assert "" in data["jupyterlab_some_package"]
+    assert message == ""
+
 
 # --- Utils
 # ------------------------------------------------------------------------
-"""
 def test_merge_locale_data():
     some_package_data_1 = {
         "": {
@@ -215,4 +216,3 @@ def test_get_display_name_invalid():
     assert get_display_name("en", "foo") == "English"
     assert get_display_name("foo", "en") == "English"
     assert get_display_name("foo", "bar") == "English"
-"""
