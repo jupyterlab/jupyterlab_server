@@ -23,6 +23,10 @@ jobs:
         architecture: 'x64'
     - name: Install the Python dependencies
       run: |
+        git checkout https://github.com/jupyter/jupyter_server.git
+        cd jupyter_server
+        pip install -e .[test]
+        cd ..
         pip install -e .[test]
     - name: Run the tests
       run: |
