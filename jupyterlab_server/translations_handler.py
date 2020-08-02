@@ -10,13 +10,12 @@ import os
 import traceback
 
 import tornado
-from notebook.base.handlers import APIHandler
-from notebook.utils import url_path_join
 from tornado import gen, web
 
 from .settings_handler import get_settings
 from .translation_utils import get_language_pack, get_language_packs, is_valid_locale
 
+from .server import APIHandler, url_path_join
 
 SCHEMA_NAME = '@jupyterlab/translation-extension:plugin'
 
