@@ -42,9 +42,7 @@ jobs:
       - name: Install python dependencies
         run: |
           pip install setuptools pip --upgrade
-          pip install git+https://github.com/Zsailer/nbclassic@master
           pip install git+https://github.com/jupyter/jupyter_server.git@master
-          pip install git+https://github.com/datalayer-contrib/jupyterlab-server@jupyter_server
           pip install -v -e ".[test]"
       - name: Show python environment
         run: |
