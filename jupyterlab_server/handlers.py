@@ -263,11 +263,7 @@ def add_handlers(handlers, app):
             value = value[:-1]
         setattr(app, name, value)
 
-    # Set up the main page handler and tree handler.
-    # TODO(@echarles) Check this... https://github.com/jupyterlab/jupyterlab_server/commit/8ee6a45512d0b52934e2e68ea20feee1d9e18654#diff-ca89d3839f112d41f8c770b568fa9937R254
-    # @see https://github.com/datalayer-contrib/jupyterlab-server/blob/425bc3c88855318d2975495041de5f50d4d58d99/jupyterlab_server/handlers.py#L241-L246
-    # lab_path = ujoin(app.app_url, MASTER_URL_PATTERN)
-    lab_path = app.app_url
+    lab_path = ujoin(app.settings.get('base_url'), MASTER_URL_PATTERN)
     handlers.append((lab_path, LabHandler, {'lab_config': app}))
 
     # Cache all or none of the files depending on the `cache_files` setting.
