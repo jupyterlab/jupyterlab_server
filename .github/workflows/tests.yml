@@ -43,6 +43,10 @@ jobs:
         run: |
           pip install setuptools pip --upgrade
           pip install -v -e ".[test]"
+          git clone https://github.com/jupyter/jupyter_server.git
+          cd jupyter_server
+          pip install -e .[test]
+          cd ..
       - name: Show python environment
         run: |
           python --version
