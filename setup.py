@@ -51,7 +51,6 @@ if 'setuptools' in sys.modules:
             'wheel',
         ],
     }
-    # TODO(@echarles) Pin to a released jupyter_server once available.
     setup_args['install_requires'] = [
         'babel',
         'jinja2>=2.10',
@@ -59,7 +58,7 @@ if 'setuptools' in sys.modules:
         'jsonschema>=3.0.1',
         'packaging',
         'requests',
-        'jupyter_server@ git+https://github.com/jupyter/jupyter_server.git@master',
+        'jupyter_server>=1.0.0rc1',
     ],
     setup_args['entry_points'] = {
         'pytest11': [
