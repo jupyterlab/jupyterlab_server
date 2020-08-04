@@ -11,6 +11,8 @@ from jsonschema import ValidationError
 from jsonschema import Draft4Validator as Validator
 from tornado import web
 
+from jupyter_server.extension.handler import ExtensionHandlerMixin, ExtensionHandlerJinjaMixin
+
 from .server import APIHandler, json_errors, tz
 
 
@@ -257,9 +259,10 @@ def get_settings(app_settings_dir, schemas_dir, settings_dir, schema_name="", ov
     return result, warnings
 
 
-class SettingsHandler(APIHandler):
+class SettingsHandler(ExtensionHandlerMixin, ExtensionHandlerJinjaMixin, APIHandler):
 
-    def initialize(self, app_settings_dir, schemas_dir, settings_dir):
+    def initialize(self, name, app_settings_dir, schemas_dir, settings_dir, **kwargs):
+        super().initialize(name)
         self.overrides, error = _get_overrides(app_settings_dir)
         self.app_settings_dir = app_settings_dir
         self.schemas_dir = schemas_dir

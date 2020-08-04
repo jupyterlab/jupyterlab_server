@@ -29,19 +29,20 @@ jobs:
             PLATFORM: 'windows-latest'
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v1
       - name: Cache pip
         uses: actions/cache@v1
         with:
           path: ~/.cache/pip
           key: ${{ runner.os }}-py-${{ matrix.PYTHON_VERSION }}-pip-${{ hashFiles('**/setup.py') }}
-      - name: Setup python
+      - name: Setup python ${{ matrix.PYTHON_VERSION }}
         uses: actions/setup-python@v1
         with:
           python-version: ${{ matrix.PYTHON_VERSION }}
+          architecture: 'x64'
       - name: Install python dependencies
         run: |
-          pip install setuptools pip --upgrade
+          pip install setuptools pip --upgrade --user
           pip install -v -e ".[test]"
       - name: Show python environment
         run: |
@@ -50,7 +51,7 @@ jobs:
       - name: Run python tests
         # See `setup.cfg` for full test options
         run: |
-          pytest --cov-fail-under 71
+          pytest
       - name: Upload coverage
         run: |
           codecov

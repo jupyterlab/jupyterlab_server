@@ -30,8 +30,10 @@ setup_args = dict(
         'License :: OSI Approved :: BSD License',
         'Programming Language :: Python',
         'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.4',
         'Programming Language :: Python :: 3.5',
+        'Programming Language :: Python :: 3.6',
+        'Programming Language :: Python :: 3.7',
+        'Programming Language :: Python :: 3.8',
     ],
     include_package_data=True
 )
@@ -41,9 +43,11 @@ if 'setuptools' in sys.modules:
     setup_args['extras_require'] = {
         'test': [
             'codecov',
-            'pytest',
+            'ipykernel',
+            'pytest==5.3.2',
             'pytest-cov',
-            'requests',
+            'pytest-tornasync', 
+            'pytest-console-scripts',
             'strict-rfc3339',
             'wheel',
         ],
@@ -53,10 +57,15 @@ if 'setuptools' in sys.modules:
         'jinja2>=2.10',
         'json5',
         'jsonschema>=3.0.1',
-        'notebook>=4.2.0',
         'packaging',
         'requests',
-    ]
+        'jupyter_server>=1.0.0rc3',
+    ],
+    setup_args['entry_points'] = {
+        'pytest11': [
+            'pytest_jupyterlab_server = jupyterlab_server.pytest_plugin'
+        ],
+    }
 
 if __name__ == '__main__':
     setup(**setup_args)
