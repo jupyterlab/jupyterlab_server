@@ -27,7 +27,7 @@ from .workspaces_handler import WorkspacesHandler
 
 DEFAULT_TEMPLATE_PATH = os.path.join(os.path.dirname(__file__), 'templates')
 
-MASTER_URL_PATTERN = '/(?P<mode>lab|doc)(?P<workspace>/workspaces/[a-zA-Z0-9\-\_]+)?(?P<tree>/tree/.*)?'
+MASTER_URL_PATTERN = '/(?P<mode>{}|doc)(?P<workspace>/workspaces/[a-zA-Z0-9\-\_]+)?(?P<tree>/tree/.*)?'
 
 DEFAULT_TEMPLATE = template.Template("""
 <!DOCTYPE html>
@@ -263,7 +263,8 @@ def add_handlers(handlers, app):
             value = value[:-1]
         setattr(app, name, value)
 
-    lab_path = ujoin(app.settings.get('base_url'), MASTER_URL_PATTERN)
+    url_pattern = MASTER_URL_PATTERN.format(app.app_url.replace('/', ''))
+    lab_path = ujoin(app.settings.get('base_url'), url_pattern)
     handlers.append((lab_path, LabHandler, {'lab_config': app}))
 
     # Cache all or none of the files depending on the `cache_files` setting.
