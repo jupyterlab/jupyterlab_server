@@ -43,11 +43,11 @@ jobs:
       - name: Install python dependencies
         run: |
           pip install -v -e ".[test]"
-#          pip install setuptools pip --upgrade
-#          git clone https://github.com/jupyter/jupyter_server.git
-#          cd jupyter_server
-#          pip install -e .[test]
-#          cd ..
+          pip install setuptools pip --upgrade
+          git clone https://github.com/jupyter/jupyter_server.git
+          cd jupyter_server
+          pip install -e .[test]
+          cd ..
       - name: Show python environment
         run: |
           python --version
