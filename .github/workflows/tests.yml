@@ -29,24 +29,25 @@ jobs:
             PLATFORM: 'windows-latest'
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
-      - name: Cache pip
-        uses: actions/cache@v1
-        with:
-          path: ~/.cache/pip
-          key: ${{ runner.os }}-py-${{ matrix.PYTHON_VERSION }}-pip-${{ hashFiles('**/setup.py') }}
-      - name: Setup python
+        uses: actions/checkout@v1
+#      - name: Cache pip
+#        uses: actions/cache@v1
+#        with:
+#          path: ~/.cache/pip
+#          key: ${{ runner.os }}-py-${{ matrix.PYTHON_VERSION }}-pip-${{ hashFiles('**/setup.py') }}
+      - name: Setup python ${{ matrix.PYTHON_VERSION }}
         uses: actions/setup-python@v1
         with:
           python-version: ${{ matrix.PYTHON_VERSION }}
+          architecture: 'x64'
       - name: Install python dependencies
         run: |
-          pip install setuptools pip --upgrade
           pip install -v -e ".[test]"
-          git clone https://github.com/jupyter/jupyter_server.git
-          cd jupyter_server
-          pip install -e .[test]
-          cd ..
+#          pip install setuptools pip --upgrade
+#          git clone https://github.com/jupyter/jupyter_server.git
+#          cd jupyter_server
+#          pip install -e .[test]
+#          cd ..
       - name: Show python environment
         run: |
           python --version
