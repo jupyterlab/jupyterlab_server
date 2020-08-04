@@ -43,6 +43,7 @@ if 'setuptools' in sys.modules:
     setup_args['extras_require'] = {
         'test': [
             'codecov',
+            'ipykernel',
             'pytest==5.3.2',
             'pytest-cov',
             'pytest-tornasync', 
@@ -58,7 +59,7 @@ if 'setuptools' in sys.modules:
         'jsonschema>=3.0.1',
         'packaging',
         'requests',
-        'jupyter_server>=1.0.0rc1',
+        'jupyter_server>=1.0.0rc2',
     ],
     setup_args['entry_points'] = {
         'pytest11': [

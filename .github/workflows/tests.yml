@@ -54,6 +54,4 @@ jobs:
           pytest
       - name: Upload coverage
         run: |
-#        TOOD(@echarles) reenable cov-fail-under
-#          codecov --cov-fail-under 71
           codecov
