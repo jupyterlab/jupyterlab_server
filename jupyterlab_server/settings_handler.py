@@ -48,7 +48,7 @@ def _get_schema(schemas_dir, schema_name, overrides, labextensions_path):
     if not os.path.exists(path):
         raise web.HTTPError(404, notfound_error % path)
 
-    with open(path) as fid:
+    with open(path, encoding='utf-8') as fid:
         # Attempt to load the schema file.
         try:
             schema = json.load(fid)
@@ -86,7 +86,9 @@ def _get_user_settings(settings_dir, schema_name, schema):
 
     if os.path.exists(path):
         stat = os.stat(path)
-        with open(path) as fid:
+        last_modified = tz.utcfromtimestamp(stat.st_mtime).isoformat()
+        created = tz.utcfromtimestamp(stat.st_ctime).isoformat()
+        with open(path, encoding='utf-8') as fid:
             try:  # to load and parse the settings file.
                 raw = fid.read() or raw
                 settings = json5.loads(raw)
@@ -105,7 +107,9 @@ def _get_user_settings(settings_dir, schema_name, schema):
     return dict(
         raw=raw,
         settings=settings,
-        warning=warning
+        warning=warning,
+        last_modified=last_modified,
+        created=created
     )
 
 
@@ -116,7 +120,7 @@ def _get_version(schemas_dir, schema_name):
     package_path = os.path.join(os.path.split(path)[0], 'package.json.orig')
 
     try:  # to load and parse the package.json.orig file.
-        with open(package_path) as fid:
+        with open(package_path, encoding='utf-8') as fid:
             package = json.load(fid)
             return package['version']
     except Exception:
@@ -255,7 +259,7 @@ def _get_overrides(app_settings_dir):
     overrides, error = {}, ""
     overrides_path = os.path.join(app_settings_dir, 'overrides.json')
     if os.path.exists(overrides_path):
-        with open(overrides_path) as fid:
+        with open(overrides_path, encoding='utf-8') as fid:
             try:
                 overrides = json.load(fid)
             except Exception as e:
@@ -357,7 +361,7 @@ class SettingsHandler(ExtensionHandlerMixin, ExtensionHandlerJinjaMixin, APIHand
         if not settings_dir:
             raise web.HTTPError(500, settings_error)
 
-        raw = self.request.body.strip().decode(u'utf-8')
+        raw = self.request.body.strip().decode('utf-8')
 
         # Validate the data against the schema.
         schema, _ = _get_schema(schemas_dir, schema_name, overrides, labextensions_path=self.labextensions_path)
@@ -369,7 +373,7 @@ class SettingsHandler(ExtensionHandlerMixin, ExtensionHandlerJinjaMixin, APIHand
 
         # Write the raw data (comments included) to a file.
         path = _path(settings_dir, schema_name, True, SETTINGS_EXTENSION)
-        with open(path, 'w') as fid:
+        with open(path, 'w', encoding='utf-8') as fid:
             fid.write(raw)
 
         self.set_status(204)
