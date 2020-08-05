@@ -249,6 +249,8 @@ def add_handlers(handlers, app):
         value = getattr(app, name)
         setattr(app, name, value.replace(os.sep, '/'))
 
+    labextensions_path = []
+
     # Normalize urls
     # Local urls should have a leading slash but no trailing slash
     for name in LabConfig.class_trait_names():
@@ -275,7 +277,8 @@ def add_handlers(handlers, app):
         settings_config = {
             'app_settings_dir': app.app_settings_dir,
             'schemas_dir': app.schemas_dir,
-            'settings_dir': app.user_settings_dir
+            'settings_dir': app.user_settings_dir,
+            'labextensions_path': labextensions_path
         }
 
         # Handle requests for the list of settings. Make slash optional.
@@ -348,6 +351,7 @@ def add_handlers(handlers, app):
             {
                 'themes_url': themes_url,
                 'path': app.themes_dir,
+                'labextensions_path': labextensions_path,
                 'no_cache_paths': no_cache_paths
             }
         ))
