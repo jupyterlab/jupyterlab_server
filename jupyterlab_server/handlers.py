@@ -150,9 +150,7 @@ class LabConfig(HasTraits):
         help="""Extra paths to look for dynamic JupyterLab extensions"""
     )
 
-    labextensions_url = Unicode('', help='The url for dynamic JupyterLab extensions')
-
-    labexensions_path = List(Unicode(), help='The standard paths to look in for dynamic JupyterLab extensions')
+    labextensions_path = List(Unicode(), help='The standard paths to look in for dynamic JupyterLab extensions')
 
     templates_dir = Unicode('', help='The application templates directory.')
 
@@ -163,6 +161,9 @@ class LabConfig(HasTraits):
 
     static_url = Unicode(help=('The url path for static application '
                                'assets. This can be a CDN if desired.'))
+
+
+    labextensions_url = Unicode('', help='The url for dynamic JupyterLab extensions')
 
     settings_url = Unicode(help='The url path of the settings handler.')
 
@@ -288,8 +289,8 @@ def add_handlers(handlers, app):
     no_cache_paths = [] if app.cache_files else ['/']
 
     # Handle dynamic lab extensions.
-    labextensions_path = self.extra_labextensions_path + self.labextensions_path
-    labextensions_url = ujoin(self.labextensions_url, "(.*)")
+    labextensions_path = app.extra_labextensions_path + app.labextensions_path
+    labextensions_url = ujoin(app.labextensions_url, "(.*)")
     handlers.append(
         (labextensions_url, FileFindHandler, {
             'path': labextensions_path,
