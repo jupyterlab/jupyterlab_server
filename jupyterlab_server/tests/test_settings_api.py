@@ -22,6 +22,15 @@ async def test_get(fetch, labserverapp):
     assert schema['properties']['theme']['default'] == 'JupyterLab Dark'
     assert 'raw' in res
 
+
+async def test_get_dynamic(fetch, labserverapp):
+    id = '@jupyterlab/apputils-extension-dynamic:themes'
+    r = await fetch('lab', 'api', 'settings', id)
+    assert r.code == 200
+    res = r.body.decode()
+    assert 'raw' in res
+    
+
 async def test_get_bad(fetch, labserverapp):
     with pytest.raises(tornado.httpclient.HTTPClientError) as e:
         await fetch('foo')
@@ -30,10 +39,12 @@ async def test_get_bad(fetch, labserverapp):
 async def test_listing(fetch, labserverapp):
     ids = [
         '@jupyterlab/apputils-extension:themes',
+        '@jupyterlab/apputils-extension-dynamic:themes',
         '@jupyterlab/codemirror-extension:commands',
+        '@jupyterlab/codemirror-extension-dynamic:commands',
         '@jupyterlab/shortcuts-extension:plugin',
         '@jupyterlab/translation-extension:plugin',
-        '@jupyterlab/unicode-extension:plugin',
+        '@jupyterlab/unicode-extension:plugin'
     ]
     versions = ['N/A', 'N/A', 'test-version']
     r = await fetch('lab', 'api', 'settings')

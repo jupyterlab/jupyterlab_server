@@ -9,8 +9,9 @@ from urllib.parse import urlparse
 
 from jinja2 import FileSystemLoader, TemplateError
 from tornado import template, web
-from traitlets import Bool, HasTraits, Unicode, default
+from traitlets import Bool, HasTraits, List, Unicode, default
 
+from jupyter_core.paths import jupyter_path
 from jupyter_server.extension.handler import ExtensionHandlerMixin, ExtensionHandlerJinjaMixin
 
 from .listings_handler import ListingsHandler, fetch_listings
@@ -145,6 +146,12 @@ class LabConfig(HasTraits):
 
     app_settings_dir = Unicode('', help='The application settings directory.')
 
+    extra_labextensions_path = List(Unicode(),
+        help="""Extra paths to look for dynamic JupyterLab extensions"""
+    )
+
+    labextensions_path = List(Unicode(), help='The standard paths to look in for dynamic JupyterLab extensions')
+
     templates_dir = Unicode('', help='The application templates directory.')
 
     static_dir = Unicode('',
@@ -154,6 +161,9 @@ class LabConfig(HasTraits):
 
     static_url = Unicode(help=('The url path for static application '
                                'assets. This can be a CDN if desired.'))
+
+
+    labextensions_url = Unicode('', help='The url for dynamic JupyterLab extensions')
 
     settings_url = Unicode(help='The url path of the settings handler.')
 
@@ -197,6 +207,14 @@ class LabConfig(HasTraits):
     @default('static_url')
     def _default_static_url(self):
         return ujoin('static/', self.app_namespace)
+
+    @default('labextensions_url')
+    def _default_labextensions_url(self):
+        return ujoin(self.app_url, "extensions/")
+
+    @default('labextensions_path')
+    def _default_labextensions_path(self):
+        return jupyter_path('labextensions')
 
     @default('workspaces_url')
     def _default_workspaces_url(self):
@@ -270,12 +288,22 @@ def add_handlers(handlers, app):
     # Cache all or none of the files depending on the `cache_files` setting.
     no_cache_paths = [] if app.cache_files else ['/']
 
+    # Handle dynamic lab extensions.
+    labextensions_path = app.extra_labextensions_path + app.labextensions_path
+    labextensions_url = ujoin(app.labextensions_url, "(.*)")
+    handlers.append(
+        (labextensions_url, FileFindHandler, {
+            'path': labextensions_path,
+            'no_cache_paths': ['/'], # don't cache anything in labextensions
+        }))
+
     # Handle local settings.
     if app.schemas_dir:
         settings_config = {
             'app_settings_dir': app.app_settings_dir,
             'schemas_dir': app.schemas_dir,
-            'settings_dir': app.user_settings_dir
+            'settings_dir': app.user_settings_dir,
+            'labextensions_path': labextensions_path
         }
 
         # Handle requests for the list of settings. Make slash optional.
@@ -348,6 +376,7 @@ def add_handlers(handlers, app):
             {
                 'themes_url': themes_url,
                 'path': app.themes_dir,
+                'labextensions_path': labextensions_path,
                 'no_cache_paths': no_cache_paths
             }
         ))

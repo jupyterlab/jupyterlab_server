@@ -3,6 +3,7 @@
 # Copyright (c) Jupyter Development Team.
 # Distributed under the terms of the Modified BSD License.
 
+from glob import glob
 from os import path as osp
 import os
 import re
@@ -15,7 +16,20 @@ class ThemesHandler(FileFindHandler):
     """A file handler that mangles local urls in CSS files."""
 
     def initialize(self, path, default_filename=None,
-                   no_cache_paths=None, themes_url=None, **kwargs):
+                   no_cache_paths=None, themes_url=None, labextensions_path=None, **kwargs):
+
+        # Get all of the available theme paths in order
+        labextensions_path = labextensions_path or []
+        ext_paths = []
+        for ext_dir in labextensions_path:
+            theme_pattern = ext_dir + '/**/themes'
+            ext_paths.extend([path for path in glob(theme_pattern, recursive=True)])
+        
+        # Add the core theme path last
+        if not isinstance(path, list):
+            path = [path]
+        path = ext_paths + path
+
         FileFindHandler.initialize(self, path,
                                    default_filename=default_filename,
                                    no_cache_paths=no_cache_paths)

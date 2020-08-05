@@ -1,4 +1,7 @@
 import pytest, shutil, os
+import json
+import os.path as osp
+from os.path import join as pjoin
 
 from jupyterlab_server import LabServerApp, LabConfig
 
@@ -17,6 +20,7 @@ app_settings_dir = pytest.fixture(lambda tmp_path: mkdir(tmp_path, 'app_settings
 user_settings_dir = pytest.fixture(lambda tmp_path: mkdir(tmp_path, 'user_settings'))
 schemas_dir = pytest.fixture(lambda tmp_path: mkdir(tmp_path, 'schemas'))
 workspaces_dir = pytest.fixture(lambda tmp_path: mkdir(tmp_path, 'workspaces'))
+labextensions_dir = pytest.fixture(lambda tmp_path: mkdir(tmp_path, 'labextensions_dir'))
 
 @pytest.fixture
 def make_labserver_extension_app(
@@ -25,7 +29,8 @@ def make_labserver_extension_app(
     app_settings_dir,
     user_settings_dir,
     schemas_dir,
-    workspaces_dir
+    workspaces_dir,
+    labextensions_dir
     ):
 
     def _make_labserver_extension_app(**kwargs):
@@ -37,7 +42,8 @@ def make_labserver_extension_app(
             app_settings_dir = str(app_settings_dir),
             user_settings_dir = str(user_settings_dir),
             schemas_dir = str(schemas_dir),
-            workspaces_dir = str(workspaces_dir)
+            workspaces_dir = str(workspaces_dir),
+            extra_labextensions_path=[str(labextensions_dir)]
         )
 
     # Create the index files.
@@ -75,35 +81,53 @@ def make_labserver_extension_app(
 """)
 
     # Copy the schema files.
-    src = os.path.join(
+    src = pjoin(
         os.path.abspath(os.path.dirname(__file__)),
         'tests',
         'schemas',
         '@jupyterlab')
-    dst = os.path.join(str(schemas_dir), '@jupyterlab')
+    dst = pjoin(str(schemas_dir), '@jupyterlab')
     if os.path.exists(dst):
         shutil.rmtree(dst)
     shutil.copytree(src, dst)
 
+    # Create the dynamic extensions
+    for name in ['apputils-extension', 'codemirror-extension']:
+        target_name = name + '-dynamic'
+        target = pjoin(str(labextensions_dir), '@jupyterlab', target_name)
+        src = pjoin(
+            os.path.abspath(os.path.dirname(__file__)),
+            'tests',
+            'schemas',
+            '@jupyterlab',
+            name)
+        dst = pjoin(target, 'schemas', '@jupyterlab', target_name)
+        if osp.exists(dst):
+            shutil.rmtree(dst)
+        shutil.copytree(src, dst)
+        with open(pjoin(target, 'package.orig.json'), 'w') as fid:
+            data = dict(name=target_name, jupyterlab=dict(extension=True))
+            json.dump(data, fid)
+
     # Copy the overrides file.
-    src = os.path.join(
+    src = pjoin(
         os.path.abspath(os.path.dirname(__file__)),
         'tests',
         'app-settings',
         'overrides.json')
-    dst = os.path.join(str(app_settings_dir), 'overrides.json')
+    dst = pjoin(str(app_settings_dir), 'overrides.json')
     if os.path.exists(dst):
         os.remove(dst)
     shutil.copyfile(src, dst)
 
     # Copy workspaces.
-    data = os.path.join(
+    data = pjoin(
         os.path.abspath(os.path.dirname(__file__)),
         'tests',
         'workspaces')
     for item in os.listdir(data):
-        src = os.path.join(data, item)
-        dst = os.path.join(str(workspaces_dir), item)
+        src = pjoin(data, item)
+        dst = pjoin(str(workspaces_dir), item)
         if os.path.exists(dst):
             os.remove(dst)
         shutil.copy(src, str(workspaces_dir))
