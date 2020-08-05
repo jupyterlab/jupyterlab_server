@@ -94,7 +94,7 @@ def make_labserver_extension_app(
     # Create the dynamic extensions
     for name in ['apputils-extension', 'codemirror-extension']:
         target_name = name + '-dynamic'
-        target = pjoin(labextensions_dir, '@jupyterlab', target_name)
+        target = pjoin(str(labextensions_dir), '@jupyterlab', target_name)
         src = pjoin(
             os.path.abspath(os.path.dirname(__file__)),
             'tests',
