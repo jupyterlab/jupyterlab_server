@@ -9,8 +9,9 @@ from urllib.parse import urlparse
 
 from jinja2 import FileSystemLoader, TemplateError
 from tornado import template, web
-from traitlets import Bool, HasTraits, Unicode, default
+from traitlets import Bool, HasTraits, List, Unicode, default
 
+from jupyter_core.paths import jupyter_path
 from jupyter_server.extension.handler import ExtensionHandlerMixin, ExtensionHandlerJinjaMixin
 
 from .listings_handler import ListingsHandler, fetch_listings
@@ -145,6 +146,14 @@ class LabConfig(HasTraits):
 
     app_settings_dir = Unicode('', help='The application settings directory.')
 
+    extra_labextensions_path = List(Unicode(),
+        help="""Extra paths to look for dynamic JupyterLab extensions"""
+    )
+
+    labextensions_url = Unicode('', help='The url for dynamic JupyterLab extensions')
+
+    labexensions_path = List(Unicode(), help='The standard paths to look in for dynamic JupyterLab extensions')
+
     templates_dir = Unicode('', help='The application templates directory.')
 
     static_dir = Unicode('',
@@ -198,6 +207,14 @@ class LabConfig(HasTraits):
     def _default_static_url(self):
         return ujoin('static/', self.app_namespace)
 
+    @default('labextensions_url')
+    def _default_labextensions_url(self):
+        return ujoin(self.app_url, "extensions/")
+
+    @default('labextensions_path')
+    def _default_labextensions_path(self):
+        return jupyter_path('labextensions')
+
     @default('workspaces_url')
     def _default_workspaces_url(self):
         return ujoin(self.app_url, 'workspaces/')
@@ -249,8 +266,6 @@ def add_handlers(handlers, app):
         value = getattr(app, name)
         setattr(app, name, value.replace(os.sep, '/'))
 
-    labextensions_path = []
-
     # Normalize urls
     # Local urls should have a leading slash but no trailing slash
     for name in LabConfig.class_trait_names():
@@ -271,6 +286,15 @@ def add_handlers(handlers, app):
 
     # Cache all or none of the files depending on the `cache_files` setting.
     no_cache_paths = [] if app.cache_files else ['/']
+
+    # Handle dynamic lab extensions.
+    labextensions_path = self.extra_labextensions_path + self.labextensions_path
+    labextensions_url = ujoin(self.labextensions_url, "(.*)")
+    handlers.append(
+        (labextensions_url, FileFindHandler, {
+            'path': labextensions_path,
+            'no_cache_paths': ['/'], # don't cache anything in labextensions
+        }))
 
     # Handle local settings.
     if app.schemas_dir:
