@@ -64,9 +64,9 @@ class ListingsHandler(APIHandler):
     blocked_extensions_uris = set()
     # The list of allowed_extensions URIS.
     allowed_extensions_uris = set()
-    # The blocked_extensionsed extensions.
+    # The blocked_ extensions extensions.
     blocked_extensions = []
-    # The allowed_extensionsed extensions.
+    # The allowed_ extensions extensions.
     allowed_extensions = []
     # The provider request options to be used for the request library.
     listings_request_opts = {}
