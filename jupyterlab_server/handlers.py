@@ -28,6 +28,8 @@ from .workspaces_handler import WorkspacesHandler
 
 DEFAULT_TEMPLATE_PATH = os.path.join(os.path.dirname(__file__), 'templates')
 
+DEFAULT_WORKSPACE = chr(0)
+
 MASTER_URL_PATTERN = '/(?P<mode>{}|doc)(?P<workspace>/workspaces/[a-zA-Z0-9\-\_]+)?(?P<tree>/tree/.*)?'
 
 DEFAULT_TEMPLATE = template.Template("""
@@ -67,7 +69,7 @@ class LabHandler(ExtensionHandlerJinjaMixin, ExtensionHandlerMixin, JupyterHandl
     @web.authenticated
     @web.removeslash
     def get(self, mode = None, workspace = None, tree = None):
-        workspace = 'default' if workspace is None else workspace.replace('/workspaces/','')
+        workspace = DEFAULT_WORKSPACE if workspace is None else workspace.replace('/workspaces/','')
         tree_path = '' if tree is None else tree.replace('/tree/','')
 
         self.application.store_id = getattr(self.application, 'store_id', 0)
