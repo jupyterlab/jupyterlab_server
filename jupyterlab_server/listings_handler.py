@@ -24,29 +24,29 @@ def fetch_listings(logger):
     if not logger:
         from traitlets import log
         logger = log.get_logger()
-    if len(ListingsHandler.blacklist_uris) > 0:
-        blacklist = []
-        for blacklist_uri in ListingsHandler.blacklist_uris:
-            logger.info('Fetching blacklist from {}'.format(ListingsHandler.blacklist_uris))
-            r = requests.request('GET', blacklist_uri, **ListingsHandler.listings_request_opts)
+    if len(ListingsHandler.blocked_extensions_uris) > 0:
+        blocked_extensions = []
+        for blocked_extensions_uri in ListingsHandler.blocked_extensions_uris:
+            logger.info('Fetching blocked_extensions from {}'.format(ListingsHandler.blocked_extensions_uris))
+            r = requests.request('GET', blocked_extensions_uri, **ListingsHandler.listings_request_opts)
             j = json.loads(r.text)
-            for b in j['blacklist']:
-                blacklist.append(b)
-            ListingsHandler.blacklist = blacklist
-    if len(ListingsHandler.whitelist_uris) > 0:
-        whitelist = []
-        for whitelist_uri in ListingsHandler.whitelist_uris:
-            logger.info('Fetching whitelist from {}'.format(ListingsHandler.whitelist_uris))
-            r = requests.request('GET', whitelist_uri, **ListingsHandler.listings_request_opts)
+            for b in j['blocked_extensions']:
+                blocked_extensions.append(b)
+            ListingsHandler.blocked_extensions = blocked_extensions
+    if len(ListingsHandler.allowed_extensions_uris) > 0:
+        allowed_extensions = []
+        for allowed_extensions_uri in ListingsHandler.allowed_extensions_uris:
+            logger.info('Fetching allowed_extensions from {}'.format(ListingsHandler.allowed_extensions_uris))
+            r = requests.request('GET', allowed_extensions_uri, **ListingsHandler.listings_request_opts)
             j = json.loads(r.text)
-            for w in j['whitelist']:
-                whitelist.append(w)
-        ListingsHandler.whitelist = whitelist
+            for w in j['allowed_extensions']:
+                allowed_extensions.append(w)
+        ListingsHandler.allowed_extensions = allowed_extensions
     ListingsHandler.listings = json.dumps({
-        'blacklist_uris': list(ListingsHandler.blacklist_uris),
-        'whitelist_uris': list(ListingsHandler.whitelist_uris),
-        'blacklist': ListingsHandler.blacklist,
-        'whitelist': ListingsHandler.whitelist,
+        'blocked_extensions_uris': list(ListingsHandler.blocked_extensions_uris),
+        'allowed_extensions_uris': list(ListingsHandler.allowed_extensions_uris),
+        'blocked_extensions': ListingsHandler.blocked_extensions,
+        'allowed_extensions': ListingsHandler.allowed_extensions,
     })
 
 
@@ -60,14 +60,14 @@ class ListingsHandler(APIHandler):
     Having those fields predefined reduces the guards in the methods using
     them.
     """
-    # The list of blacklist URIS.
-    blacklist_uris = set()
-    # The list of whitelist URIS.
-    whitelist_uris = set()
-    # The blacklisted extensions.
-    blacklist = []
-    # The whitelisted extensions.
-    whitelist = []
+    # The list of blocked_extensions URIS.
+    blocked_extensions_uris = set()
+    # The list of allowed_extensions URIS.
+    allowed_extensions_uris = set()
+    # The blocked_extensionsed extensions.
+    blocked_extensions = []
+    # The allowed_extensionsed extensions.
+    allowed_extensions = []
     # The provider request options to be used for the request library.
     listings_request_opts = {}
     # The PeriodicCallback that schedule the call to fetch_listings method.
