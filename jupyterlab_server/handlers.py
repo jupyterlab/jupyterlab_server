@@ -334,11 +334,11 @@ def add_handlers(handlers, app):
     # Handle local listings.
 
     settings_config = app.settings.get('config', {}).get('LabServerApp', {})
-    blacklist_uris = settings_config.get('blacklist_uris', '')
-    whitelist_uris = settings_config.get('whitelist_uris', '')
+    blocked_extensions_uris = settings_config.get('blocked_extensions_uris', '')
+    allowed_extensions_uris = settings_config.get('allowed_extensions_uris', '')
 
-    if (blacklist_uris) and (whitelist_uris):
-        print('Simultaneous blacklist_uris and whitelist_uris is not supported. Please define only one of those.')
+    if (blocked_extensions_uris) and (allowed_extensions_uris):
+        print('Simultaneous blocked_extensions_uris and allowed_extensions_uris is not supported. Please define only one of those.')
         import sys
         sys.exit(-1)
 
@@ -348,14 +348,14 @@ def add_handlers(handlers, app):
     listings_url = ujoin(base_url, app.listings_url)
     listings_path = ujoin(listings_url, '(.*)')
 
-    if blacklist_uris:
-        ListingsHandler.blacklist_uris = set(blacklist_uris.split(','))
-    if whitelist_uris:
-        ListingsHandler.whitelist_uris = set(whitelist_uris.split(','))
+    if blocked_extensions_uris:
+        ListingsHandler.blocked_extensions_uris = set(blocked_extensions_uris.split(','))
+    if allowed_extensions_uris:
+        ListingsHandler.allowed_extensions_uris = set(allowed_extensions_uris.split(','))
 
     fetch_listings(None)
 
-    if len(ListingsHandler.blacklist_uris) > 0 or len(ListingsHandler.whitelist_uris) > 0:
+    if len(ListingsHandler.blocked_extensions_uris) > 0 or len(ListingsHandler.allowed_extensions_uris) > 0:
         from tornado import ioloop
         ListingsHandler.pc = ioloop.PeriodicCallback(
             lambda: fetch_listings(None),
