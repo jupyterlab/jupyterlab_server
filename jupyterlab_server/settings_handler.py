@@ -196,7 +196,7 @@ def _list_settings(schemas_dir, settings_dir, overrides, extension='.json', labe
             schema, version = _get_schema(schemas_dir, schema_name, overrides, labextensions_path=labextensions_path)
             user_settings = _get_user_settings(settings_dir, schema_name, schema)
 
-            if 'warning' in user_settings:
+            if user_settings["warning"]:
                 warnings.append(user_settings.pop('warning'))
 
             # Add the plugin to the list of settings.
@@ -293,7 +293,8 @@ def get_settings(app_settings_dir, schemas_dir, settings_dir, schema_name="", ov
     tuple
         The first item is a dictionary with a list of setting if no `schema_name`
         was provided, otherwise it is a dictionary with id, raw, scheme, settings
-        and version keys. The second item is a list of warnings.
+        and version keys. The second item is a list of warnings. Warnings will
+        either be a list of i) strings with the warning messages or ii) `None`s.
     """
     result = {}
     warnings = []
@@ -304,7 +305,7 @@ def get_settings(app_settings_dir, schemas_dir, settings_dir, schema_name="", ov
     if schema_name:
         schema, version = _get_schema(schemas_dir, schema_name, overrides, labextensions_path)
         user_settings = _get_user_settings(settings_dir, schema_name, schema)
-        warnings = user_settings.pop('warning')
+        warnings = [user_settings.pop('warning')]
         result = {
             "id": schema_name,
             "schema": schema,
@@ -345,8 +346,10 @@ class SettingsHandler(ExtensionHandlerMixin, ExtensionHandlerJinjaMixin, APIHand
             overrides=self.overrides,
         )
 
-        if warnings:
-            self.log.warn('\n'.join(warnings))
+        # Print all warnings.
+        for w in warnings:
+            if w:
+                self.log.warn(w)
 
         return self.finish(json.dumps(result))
 
