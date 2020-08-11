@@ -23,7 +23,7 @@ SETTINGS_EXTENSION = '.jupyterlab-settings'
 def _get_schema(schemas_dir, schema_name, overrides, labextensions_path):
     """Returns a dict containing a parsed and validated JSON schema."""
 
-    
+
     notfound_error = 'Schema not found: %s'
     parse_error = 'Failed parsing schema (%s): %s'
     validation_error = 'Failed validating schema (%s): %s'
@@ -78,7 +78,7 @@ def _get_user_settings(settings_dir, schema_name, schema):
     path = _path(settings_dir, schema_name, False, SETTINGS_EXTENSION)
     raw = '{}'
     settings = {}
-    warning = ''
+    warning = None
     validation_warning = 'Failed validating settings (%s): %s'
     parse_error = 'Failed loading settings (%s): %s'
     last_modified = None
@@ -159,7 +159,7 @@ def _list_settings(schemas_dir, settings_dir, overrides, extension='.json', labe
         schema, version = _get_schema(schemas_dir, schema_name, overrides, None)
         user_settings = _get_user_settings(settings_dir, schema_name, schema)
 
-        if 'warning' in user_settings:
+        if user_settings["warning"]:
             warnings.append(user_settings.pop('warning'))
 
         # Add the plugin to the list of settings.
@@ -168,13 +168,13 @@ def _list_settings(schemas_dir, settings_dir, overrides, extension='.json', labe
             version=version,
             **user_settings
         )
- 
+
     if labextensions_path is not None:
         schema_paths = []
         for ext_dir in labextensions_path:
             schema_pattern = ext_dir + '/**/schemas/**/*' + extension
             schema_paths.extend([path for path in glob(schema_pattern, recursive=True)])
-        
+
         schema_paths.sort()
 
         for schema_path in schema_paths:
@@ -304,7 +304,7 @@ def get_settings(app_settings_dir, schemas_dir, settings_dir, schema_name="", ov
     if schema_name:
         schema, version = _get_schema(schemas_dir, schema_name, overrides, labextensions_path)
         user_settings = _get_user_settings(settings_dir, schema_name, schema)
-        warnings = [user_settings.pop('warning', None)]
+        warnings = user_settings.pop('warning')
         result = {
             "id": schema_name,
             "schema": schema,
