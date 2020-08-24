@@ -21,17 +21,19 @@ class LabServerApp(ExtensionAppJinjaMixin, LabConfig, ExtensionApp):
     name = "jupyterlab_server"
     extension_url = "/lab"
     app_name = "JupyterLab Server Application"
-    app_version = __version__
 
     @property
     def app_namespace(self):
         return self.name
 
     default_url = Unicode('/lab',
-                          help='The default URL to redirect to from `/`')
+        help='The default URL to redirect to from `/`')
 
     # Should your extension expose other server extensions when launched directly?
     load_other_extensions = True
+
+    app_version = Unicode('', help='The version of the application.',
+        default = __version__)
 
     blacklist_uris = Unicode('', config=True,
         help="Deprecated, use `LabServerApp.blocked_extensions_uris`")
