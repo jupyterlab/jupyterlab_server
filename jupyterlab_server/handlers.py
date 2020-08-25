@@ -282,8 +282,7 @@ def add_handlers(handlers, app):
         setattr(app, name, value)
 
     url_pattern = MASTER_URL_PATTERN.format(app.app_url.replace('/', ''))
-    lab_path = ujoin(app.settings.get('base_url'), url_pattern)
-    handlers.append((lab_path, LabHandler, {'lab_config': app}))
+    handlers.append((url_pattern, LabHandler, {'lab_config': app}))
 
     # Cache all or none of the files depending on the `cache_files` setting.
     no_cache_paths = [] if app.cache_files else ['/']
