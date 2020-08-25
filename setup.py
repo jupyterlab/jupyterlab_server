@@ -59,7 +59,7 @@ if 'setuptools' in sys.modules:
         'jsonschema>=3.0.1',
         'packaging',
         'requests',
-        'jupyter_server~=1.0.0rc5',
+        'jupyter_server~=1.0.0rc7',
     ],
     setup_args['entry_points'] = {
         'pytest11': [
