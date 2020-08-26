@@ -45,7 +45,7 @@ if 'setuptools' in sys.modules:
             'ipykernel',
             'pytest==5.3.2',
             'pytest-cov',
-            'pytest-tornasync', 
+            'pytest-tornasync',
             'pytest-console-scripts',
             'strict-rfc3339',
             'wheel',
@@ -58,7 +58,7 @@ if 'setuptools' in sys.modules:
         'jsonschema>=3.0.1',
         'packaging',
         'requests',
-        'jupyter_server~=1.0.0rc5',
+        'jupyter_server~=1.0.0rc8',
     ],
     setup_args['entry_points'] = {
         'pytest11': [
