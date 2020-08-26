@@ -63,7 +63,7 @@ class LabHandler(ExtensionHandlerJinjaMixin, ExtensionHandlerMixin, JupyterHandl
     def initialize(self, name, lab_config={}):
         super().initialize(name)
         self.lab_config = lab_config
-        
+
     @web.authenticated
     @web.removeslash
     def get(self, mode = None, workspace = None, tree = None):
@@ -82,8 +82,12 @@ class LabHandler(ExtensionHandlerJinjaMixin, ExtensionHandlerMixin, JupyterHandl
         server_root = server_root.replace(os.sep, '/')
         base_url = self.settings.get('base_url')
 
+        # Remove the trailing slash for compatibiity with html-webpack-plugin.
+        full_static_url = self.static_url_prefix.rstrip('/')
+        page_config.setdefault('fullStaticUrl', full_static_url)
+
         page_config.setdefault('terminalsAvailable', terminals)
-        page_config.setdefault('ignorePlugins', []) 
+        page_config.setdefault('ignorePlugins', [])
         page_config.setdefault('serverRoot', server_root)
         page_config['store_id'] = self.application.store_id
         self.application.store_id += 1
@@ -97,13 +101,13 @@ class LabHandler(ExtensionHandlerJinjaMixin, ExtensionHandlerMixin, JupyterHandl
         page_config.setdefault('fullMathjaxUrl', mathjax_url)
 
         # Add parameters parsed from the URL
-        if mode == 'doc':   
+        if mode == 'doc':
             page_config['mode'] = 'single-document'
         else:
             page_config['mode'] = 'multiple-document'
         page_config['workspace'] = workspace
         page_config['treePath'] = tree_path
-        
+
         # Put all our config in page_config
         for name in config.trait_names():
             page_config[_camelCase(name)] = getattr(app, name)
@@ -159,9 +163,6 @@ class LabConfig(HasTraits):
                                'If given, a static file handler will be '
                                'added.'))
 
-    static_url = Unicode(help=('The url path for static application '
-                               'assets. This can be a CDN if desired.'))
-
 
     labextensions_url = Unicode('', help='The url for dynamic JupyterLab extensions')
 
@@ -193,7 +194,7 @@ class LabConfig(HasTraits):
                                'for themes.'))
 
     translations_api_url = Unicode(help='The url path of the translations handler.')
- 
+
     tree_url = Unicode(help='The url path of the tree handler.')
 
     cache_files = Bool(True,
@@ -203,10 +204,6 @@ class LabConfig(HasTraits):
     @default('template_dir')
     def _default_template_dir(self):
         return DEFAULT_TEMPLATE_PATH
-
-    @default('static_url')
-    def _default_static_url(self):
-        return ujoin('static/', self.app_namespace)
 
     @default('labextensions_url')
     def _default_labextensions_url(self):
@@ -239,7 +236,7 @@ class LabConfig(HasTraits):
     @default('tree_url')
     def _default_tree_url(self):
         return ujoin(self.app_url, 'tree/')
-        
+
     @default('translations_api_url')
     def _default_translations_api_url(self):
         return ujoin(self.app_url, 'api', 'translations/')
@@ -257,40 +254,40 @@ class NotFoundHandler(LabHandler):
         return super().render_template(name, **ns)
 
 
-def add_handlers(handlers, app):
+def add_handlers(handlers, extension_app):
     """Add the appropriate handlers to the web app.
     """
     # Normalize directories.
     for name in LabConfig.class_trait_names():
         if not name.endswith('_dir'):
             continue
-        value = getattr(app, name)
-        setattr(app, name, value.replace(os.sep, '/'))
+        value = getattr(extension_app, name)
+        setattr(extension_app, name, value.replace(os.sep, '/'))
 
     # Normalize urls
     # Local urls should have a leading slash but no trailing slash
     for name in LabConfig.class_trait_names():
         if not name.endswith('_url'):
             continue
-        value = getattr(app, name)
+        value = getattr(extension_app, name)
         if is_url(value):
             continue
         if not value.startswith('/'):
             value = '/' + value
         if value.endswith('/'):
             value = value[:-1]
-        setattr(app, name, value)
+        setattr(extension_app, name, value)
 
-    url_pattern = MASTER_URL_PATTERN.format(app.app_url.replace('/', ''))
-    lab_path = ujoin(app.settings.get('base_url'), url_pattern)
-    handlers.append((lab_path, LabHandler, {'lab_config': app}))
+    url_pattern = MASTER_URL_PATTERN.format(extension_app.app_url.replace('/', ''))
+    lab_path = ujoin(url_pattern)
+    handlers.append((lab_path, LabHandler, {'lab_config': extension_app}))
 
     # Cache all or none of the files depending on the `cache_files` setting.
-    no_cache_paths = [] if app.cache_files else ['/']
+    no_cache_paths = [] if extension_app.cache_files else ['/']
 
     # Handle dynamic lab extensions.
-    labextensions_path = app.extra_labextensions_path + app.labextensions_path
-    labextensions_url = ujoin(app.labextensions_url, "(.*)")
+    labextensions_path = extension_app.extra_labextensions_path + extension_app.labextensions_path
+    labextensions_url = ujoin(extension_app.labextensions_url, "(.*)")
     handlers.append(
         (labextensions_url, FileFindHandler, {
             'path': labextensions_path,
@@ -298,42 +295,42 @@ def add_handlers(handlers, app):
         }))
 
     # Handle local settings.
-    if app.schemas_dir:
+    if extension_app.schemas_dir:
         settings_config = {
-            'app_settings_dir': app.app_settings_dir,
-            'schemas_dir': app.schemas_dir,
-            'settings_dir': app.user_settings_dir,
+            'app_settings_dir': extension_app.app_settings_dir,
+            'schemas_dir': extension_app.schemas_dir,
+            'settings_dir': extension_app.user_settings_dir,
             'labextensions_path': labextensions_path
         }
 
         # Handle requests for the list of settings. Make slash optional.
-        settings_path = ujoin(app.settings_url, '?')
+        settings_path = ujoin(extension_app.settings_url, '?')
         handlers.append((settings_path, SettingsHandler, settings_config))
 
         # Handle requests for an individual set of settings.
-        setting_path = ujoin(app.settings_url, '(?P<schema_name>.+)')
+        setting_path = ujoin(extension_app.settings_url, '(?P<schema_name>.+)')
         handlers.append((setting_path, SettingsHandler, settings_config))
 
     # Handle saved workspaces.
-    if app.workspaces_dir:
+    if extension_app.workspaces_dir:
 
         workspaces_config = {
-            'path': app.workspaces_dir
+            'path': extension_app.workspaces_dir
         }
 
         # Handle requests for the list of workspaces. Make slash optional.
-        workspaces_api_path = ujoin(app.workspaces_api_url, '?')
+        workspaces_api_path = ujoin(extension_app.workspaces_api_url, '?')
         handlers.append((
             workspaces_api_path, WorkspacesHandler, workspaces_config))
 
         # Handle requests for an individually named workspace.
-        workspace_api_path = ujoin(app.workspaces_api_url, '(?P<space_name>.+)')
+        workspace_api_path = ujoin(extension_app.workspaces_api_url, '(?P<space_name>.+)')
         handlers.append((
             workspace_api_path, WorkspacesHandler, workspaces_config))
 
     # Handle local listings.
 
-    settings_config = app.settings.get('config', {}).get('LabServerApp', {})
+    settings_config = extension_app.settings.get('config', {}).get('LabServerApp', {})
     blocked_extensions_uris = settings_config.get('blocked_extensions_uris', '')
     allowed_extensions_uris = settings_config.get('allowed_extensions_uris', '')
 
@@ -344,8 +341,7 @@ def add_handlers(handlers, app):
 
     ListingsHandler.listings_refresh_seconds = settings_config.get('listings_refresh_seconds', 60 * 60)
     ListingsHandler.listings_request_opts = settings_config.get('listings_request_options', {})
-    base_url = app.settings.get('base_url')
-    listings_url = ujoin(base_url, app.listings_url)
+    listings_url = ujoin(extension_app.listings_url)
     listings_path = ujoin(listings_url, '(.*)')
 
     if blocked_extensions_uris:
@@ -367,34 +363,34 @@ def add_handlers(handlers, app):
     handlers.append((listings_path, ListingsHandler, {}))
 
     # Handle local themes.
-    if app.themes_dir:
-        themes_url = app.themes_url
+    if extension_app.themes_dir:
+        themes_url = extension_app.themes_url
         themes_path = ujoin(themes_url, '(.*)')
         handlers.append((
             themes_path,
             ThemesHandler,
             {
                 'themes_url': themes_url,
-                'path': app.themes_dir,
+                'path': extension_app.themes_dir,
                 'labextensions_path': labextensions_path,
                 'no_cache_paths': no_cache_paths
             }
         ))
 
     # Handle translations.
-    if app.translations_api_url:
+    if extension_app.translations_api_url:
         # Handle requests for the list of language packs available.
         # Make slash optional.
-        translations_path = ujoin(base_url, app.translations_api_url, '?')
-        handlers.append((translations_path, TranslationsHandler, {'lab_config': app}))
+        translations_path = ujoin(extension_app.translations_api_url, '?')
+        handlers.append((translations_path, TranslationsHandler, {'lab_config': extension_app}))
 
         # Handle requests for an individual language pack.
         translations_lang_path = ujoin(
-            base_url, app.translations_api_url, '(?P<locale>.*)')
-        handlers.append((translations_lang_path, TranslationsHandler, {'lab_config': app}))
+            extension_app.translations_api_url, '(?P<locale>.*)')
+        handlers.append((translations_lang_path, TranslationsHandler, {'lab_config': extension_app}))
 
     # Let the lab handler act as the fallthrough option instead of a 404.
-    fallthrough_url = ujoin(app.app_url, r'.*')
+    fallthrough_url = ujoin(extension_app.app_url, r'.*')
     handlers.append((fallthrough_url, NotFoundHandler))
 
 
