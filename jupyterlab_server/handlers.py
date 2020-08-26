@@ -279,8 +279,7 @@ def add_handlers(handlers, extension_app):
         setattr(extension_app, name, value)
 
     url_pattern = MASTER_URL_PATTERN.format(extension_app.app_url.replace('/', ''))
-    lab_path = ujoin(url_pattern)
-    handlers.append((lab_path, LabHandler, {'lab_config': extension_app}))
+    handlers.append((url_pattern, LabHandler, {'lab_config': extension_app}))
 
     # Cache all or none of the files depending on the `cache_files` setting.
     no_cache_paths = [] if extension_app.cache_files else ['/']
