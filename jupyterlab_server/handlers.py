@@ -290,7 +290,7 @@ def add_handlers(handlers, extension_app):
     handlers.append(
         (labextensions_url, FileFindHandler, {
             'path': labextensions_path,
-            'no_cache_paths': ['/'], # don't cache anything in labextensions
+            'no_cache_paths': no_cache_paths
         }))
 
     # Handle local settings.
