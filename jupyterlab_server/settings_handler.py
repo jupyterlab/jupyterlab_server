@@ -268,7 +268,7 @@ def _get_overrides(app_settings_dir):
     # Allow `default_settings_overrides.json` files in <jupyter_config>/labconfig dirs
     # to allow layering of defaults
     cm = ConfigManager(config_dir_name="labconfig")
-    recursive_update(overrides, cm.get('default_setting_overrides', {}))
+    recursive_update(overrides, cm.get('default_setting_overrides'))
 
     return overrides, error
 
