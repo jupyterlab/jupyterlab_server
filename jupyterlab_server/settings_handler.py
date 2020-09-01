@@ -12,6 +12,7 @@ from jsonschema import Draft4Validator as Validator
 from tornado import web
 
 from jupyter_server.extension.handler import ExtensionHandlerMixin, ExtensionHandlerJinjaMixin
+from jupyter_server.services.config.manager import ConfigManager, recursive_update
 
 from .server import APIHandler, json_errors, tz
 
@@ -264,6 +265,10 @@ def _get_overrides(app_settings_dir):
                 overrides = json.load(fid)
             except Exception as e:
                 error = e
+    # Allow `default_settings_overrides.json` files in <jupyter_config>/labconfig dirs
+    # to allow layering of defaults
+    cm = ConfigManager(config_dir_name="labconfig")
+    recursive_update(overrides, cm.get('default_setting_overrides', {}))
 
     return overrides, error
 
