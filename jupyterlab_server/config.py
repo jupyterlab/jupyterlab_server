@@ -47,7 +47,7 @@ def get_static_page_config(app_settings_dir=None, logger=None):
     cm = ConfigManager(config_dir_name="labconfig")
     page_config = cm.get('page_config')
 
-    # TODO: remove in 4.0
+    # TODO: remove in JupyterLab 4.0
     if app_settings_dir:
         keyname = 'disabled_labextensions'
         old_page_config = pjoin(app_settings_dir, 'page_config.json')
