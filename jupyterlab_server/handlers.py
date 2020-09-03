@@ -3,17 +3,19 @@
 
 # Copyright (c) Jupyter Development Team.
 # Distributed under the terms of the Modified BSD License.
+from glob import glob
 import json
 import os
+import os.path as osp
 from urllib.parse import urlparse
 
 from jinja2 import FileSystemLoader, TemplateError
 from tornado import template, web
 from traitlets import Bool, HasTraits, List, Unicode, default
 
-from jupyter_core.paths import jupyter_path
 from jupyter_server.extension.handler import ExtensionHandlerMixin, ExtensionHandlerJinjaMixin
 
+from .config import LabConfig, get_page_config, recursive_update
 from .listings_handler import ListingsHandler, fetch_listings
 from .server import FileFindHandler, JupyterHandler
 from .server import url_path_join as ujoin
@@ -25,8 +27,6 @@ from .workspaces_handler import WorkspacesHandler
 # -----------------------------------------------------------------------------
 # Module globals
 # -----------------------------------------------------------------------------
-
-DEFAULT_TEMPLATE_PATH = os.path.join(os.path.dirname(__file__), 'templates')
 
 MASTER_URL_PATTERN = '/(?P<mode>{}|doc)(?P<workspace>/workspaces/[a-zA-Z0-9\-\_]+)?(?P<tree>/tree/.*)?'
 
@@ -57,12 +57,9 @@ def is_url(url):
     return False
 
 
+
 class LabHandler(ExtensionHandlerJinjaMixin, ExtensionHandlerMixin, JupyterHandler):
     """Render the JupyterLab View."""
-
-    def initialize(self, name, lab_config={}):
-        super().initialize(name)
-        self.lab_config = lab_config
 
     @web.authenticated
     @web.removeslash
@@ -123,127 +120,13 @@ class LabHandler(ExtensionHandlerJinjaMixin, ExtensionHandlerMixin, JupyterHandl
                 full_url = ujoin(base_url, full_url)
             page_config[full_name] = full_url
 
-        # Load the current page config file if available.
-        page_config_file = os.path.join(settings_dir, 'page_config.json')
-        if os.path.exists(page_config_file):
-            with open(page_config_file, encoding='utf-8') as fid:
-                try:
-                    page_config.update(json.load(fid))
-                except Exception as e:
-                    print(e)
+        # Update the page config with the data from disk
+        labextensions_path = app.extra_labextensions_path + app.labextensions_path
+        recursive_update(page_config, get_page_config(labextensions_path, settings_dir, logger=self.log))
 
         # Write the template with the config.
         tpl = self.render_template('index.html', page_config=page_config)
         self.write(tpl)
-
-
-class LabConfig(HasTraits):
-    """The lab application configuration object.
-    """
-    app_name = Unicode('', help='The name of the application.')
-
-    app_version = Unicode('', help='The version of the application.')
-
-    app_namespace = Unicode('', help='The namespace of the application.')
-
-    app_url = Unicode('/lab', help='The url path for the application.')
-
-    app_settings_dir = Unicode('', help='The application settings directory.')
-
-    extra_labextensions_path = List(Unicode(),
-        help="""Extra paths to look for dynamic JupyterLab extensions"""
-    )
-
-    labextensions_path = List(Unicode(), help='The standard paths to look in for dynamic JupyterLab extensions')
-
-    templates_dir = Unicode('', help='The application templates directory.')
-
-    static_dir = Unicode('',
-                         help=('The optional location of local static files. '
-                               'If given, a static file handler will be '
-                               'added.'))
-
-
-    labextensions_url = Unicode('', help='The url for dynamic JupyterLab extensions')
-
-    settings_url = Unicode(help='The url path of the settings handler.')
-
-    user_settings_dir = Unicode('',
-                                help=('The optional location of the user '
-                                      'settings directory.'))
-
-    schemas_dir = Unicode('',
-                          help=('The optional location of the settings '
-                                'schemas directory. If given, a handler will '
-                                'be added for settings.'))
-
-    workspaces_api_url = Unicode(help='The url path of the workspaces API.')
-
-    workspaces_dir = Unicode('',
-                             help=('The optional location of the saved '
-                                   'workspaces directory. If given, a handler '
-                                   'will be added for workspaces.'))
-
-    listings_url = Unicode(help='The listings url.')
-
-    themes_url = Unicode(help='The theme url.')
-
-    themes_dir = Unicode('',
-                         help=('The optional location of the themes '
-                               'directory. If given, a handler will be added '
-                               'for themes.'))
-
-    translations_api_url = Unicode(help='The url path of the translations handler.')
-
-    tree_url = Unicode(help='The url path of the tree handler.')
-
-    cache_files = Bool(True,
-                       help=('Whether to cache files on the server. '
-                             'This should be `True` except in dev mode.'))
-
-    @default('template_dir')
-    def _default_template_dir(self):
-        return DEFAULT_TEMPLATE_PATH
-
-    @default('labextensions_url')
-    def _default_labextensions_url(self):
-        return ujoin(self.app_url, "extensions/")
-
-    @default('labextensions_path')
-    def _default_labextensions_path(self):
-        return jupyter_path('labextensions')
-
-    @default('workspaces_url')
-    def _default_workspaces_url(self):
-        return ujoin(self.app_url, 'workspaces/')
-
-    @default('workspaces_api_url')
-    def _default_workspaces_api_url(self):
-        return ujoin(self.app_url, 'api', 'workspaces/')
-
-    @default('settings_url')
-    def _default_settings_url(self):
-        return ujoin(self.app_url, 'api', 'settings/')
-
-    @default('listings_url')
-    def _default_listings_url(self):
-        return ujoin(self.app_url, 'api', 'listings/')
-
-    @default('themes_url')
-    def _default_themes_url(self):
-        return ujoin(self.app_url, 'api', 'themes/')
-
-    @default('tree_url')
-    def _default_tree_url(self):
-        return ujoin(self.app_url, 'tree/')
-
-    @default('translations_api_url')
-    def _default_translations_api_url(self):
-        return ujoin(self.app_url, 'api', 'translations/')
-
-    @default('tree_url')
-    def _default_tree_url(self):
-        return ujoin(self.app_url, 'tree/')
 
 
 class NotFoundHandler(LabHandler):
@@ -279,7 +162,7 @@ def add_handlers(handlers, extension_app):
         setattr(extension_app, name, value)
 
     url_pattern = MASTER_URL_PATTERN.format(extension_app.app_url.replace('/', ''))
-    handlers.append((url_pattern, LabHandler, {'lab_config': extension_app}))
+    handlers.append((url_pattern, LabHandler))
 
     # Cache all or none of the files depending on the `cache_files` setting.
     no_cache_paths = [] if extension_app.cache_files else ['/']
