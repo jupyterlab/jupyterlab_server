@@ -82,6 +82,9 @@ def get_page_config(labextensions_path, app_settings_dir=None, logger=None):
     dynamic_exts = get_dynamic_extensions(labextensions_path)
 
     for (ext, ext_data) in dynamic_exts.items():
+        if not 'jupyterlab' in ext_data or not '_build' in ext_data['jupyterlab']:
+            logger.warn('%s is not a valid extension' % ext_data['name'])
+            continue
         extbuild = ext_data['jupyterlab']['_build']
         extension = {
             'name': ext_data['name'],
