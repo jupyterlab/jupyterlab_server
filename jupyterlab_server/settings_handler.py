@@ -166,6 +166,7 @@ def _list_settings(schemas_dir, settings_dir, overrides, extension='.json', labe
         # Add the plugin to the list of settings.
         settings[id] = dict(
             id=id,
+            schema=schema,
             version=version,
             **user_settings
         )
@@ -203,6 +204,7 @@ def _list_settings(schemas_dir, settings_dir, overrides, extension='.json', labe
             # Add the plugin to the list of settings.
             dynamic_settings[id] = dict(
                 id=id,
+                schema=schema,
                 version=version,
                 **user_settings
             )
