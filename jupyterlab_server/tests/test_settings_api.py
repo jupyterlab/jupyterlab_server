@@ -53,8 +53,10 @@ async def test_listing(fetch, labserverapp):
     res = r.body.decode()
     response = json.loads(res)
     response_ids = [item['id'] for item in response['settings']]
+    response_schemas = [item['schema'] for item in response['settings']]
     response_versions = [item['version'] for item in response['settings']]
     assert set(response_ids) == set(ids)
+    assert all(response_schemas)
     assert set(response_versions) == set(versions)
     last_modifieds = [item['last_modified'] for item in response['settings']]
     createds = [item['created'] for item in response['settings']]
