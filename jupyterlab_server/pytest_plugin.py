@@ -91,9 +91,9 @@ def make_labserver_extension_app(
         shutil.rmtree(dst)
     shutil.copytree(src, dst)
 
-    # Create the dynamic extensions
+    # Create the federated extensions
     for name in ['apputils-extension', 'codemirror-extension']:
-        target_name = name + '-dynamic'
+        target_name = name + '-federated'
         target = pjoin(str(labextensions_dir), '@jupyterlab', target_name)
         src = pjoin(
             os.path.abspath(os.path.dirname(__file__)),

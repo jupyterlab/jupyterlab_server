@@ -24,8 +24,8 @@ async def test_get(fetch, labserverapp):
     assert 'raw' in res
 
 
-async def test_get_dynamic(fetch, labserverapp):
-    id = '@jupyterlab/apputils-extension-dynamic:themes'
+async def test_get_federated(fetch, labserverapp):
+    id = '@jupyterlab/apputils-extension-federated:themes'
     r = await fetch('lab', 'api', 'settings', id)
     assert r.code == 200
     res = r.body.decode()
@@ -40,9 +40,9 @@ async def test_get_bad(fetch, labserverapp):
 async def test_listing(fetch, labserverapp):
     ids = [
         '@jupyterlab/apputils-extension:themes',
-        '@jupyterlab/apputils-extension-dynamic:themes',
+        '@jupyterlab/apputils-extension-federated:themes',
         '@jupyterlab/codemirror-extension:commands',
-        '@jupyterlab/codemirror-extension-dynamic:commands',
+        '@jupyterlab/codemirror-extension-federated:commands',
         '@jupyterlab/shortcuts-extension:plugin',
         '@jupyterlab/translation-extension:plugin',
         '@jupyterlab/unicode-extension:plugin'
