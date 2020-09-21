@@ -138,7 +138,7 @@ def _list_settings(schemas_dir, settings_dir, overrides, extension='.json', labe
     """
 
     settings = {}
-    dynamic_settings = {}
+    federated_settings = {}
     warnings = []
 
     if not os.path.exists(schemas_dir):
@@ -191,8 +191,8 @@ def _list_settings(schemas_dir, settings_dir, overrides, extension='.json', labe
                 schema_base[:-len(extension)]  # Remove file extension.
             ]).replace('\\', '/')               # Normalize slashes.
 
-            # bail if we've already handled the highest dynamic setting
-            if id in dynamic_settings:
+            # bail if we've already handled the highest federated setting
+            if id in federated_settings:
                 continue
 
             schema, version = _get_schema(schemas_dir, schema_name, overrides, labextensions_path=labextensions_path)
@@ -202,14 +202,14 @@ def _list_settings(schemas_dir, settings_dir, overrides, extension='.json', labe
                 warnings.append(user_settings.pop('warning'))
 
             # Add the plugin to the list of settings.
-            dynamic_settings[id] = dict(
+            federated_settings[id] = dict(
                 id=id,
                 schema=schema,
                 version=version,
                 **user_settings
             )
 
-    settings.update(dynamic_settings)
+    settings.update(federated_settings)
     settings_list = [settings[key] for key in sorted(settings.keys(), reverse=True)]
 
     return (settings_list, warnings)
@@ -293,7 +293,7 @@ def get_settings(app_settings_dir, schemas_dir, settings_dir, schema_name="", ov
         Settings overrides. If not provided, the overrides will be loaded
         from the `app_settings_dir`. Default is None.
     labextensions_path: list, optional
-        List of paths to dynamic labextensions containing their own schema files.
+        List of paths to federated labextensions containing their own schema files.
 
     Returns
     -------

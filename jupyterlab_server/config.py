@@ -24,21 +24,21 @@ from .server import url_path_join as ujoin
 DEFAULT_TEMPLATE_PATH = osp.join(osp.dirname(__file__), 'templates')
 
 
-def get_dynamic_extensions(labextensions_path):
-    """Get the metadata about dynamic extensions
+def get_federated_extensions(labextensions_path):
+    """Get the metadata about federated extensions
     """
-    dynamic_exts = dict()
+    federated_exts = dict()
     for ext_dir in labextensions_path:
         ext_pattern = ext_dir + '/**/package.json'
         for ext_path in [path for path in glob(ext_pattern, recursive=True)]:
             with open(ext_path) as fid:
                 data = json.load(fid)
-            if data['name'] not in dynamic_exts:
+            if data['name'] not in federated_exts:
                 data['ext_dir'] = ext_dir
                 data['ext_path'] = osp.dirname(ext_path)
                 data['is_local'] = False
-                dynamic_exts[data['name']] = data
-    return dynamic_exts
+                federated_exts[data['name']] = data
+    return federated_exts
 
 
 def get_static_page_config(app_settings_dir=None, logger=None):
@@ -75,13 +75,13 @@ def get_page_config(labextensions_path, app_settings_dir=None, logger=None):
     """Get the page config for the application"""
     page_config = get_static_page_config(app_settings_dir=app_settings_dir, logger=logger)
 
-    # Handle dynamic extensions
-    extensions = page_config['dynamic_extensions'] = []
+    # Handle federated extensions
+    extensions = page_config['federated_extensions'] = []
     disabled_by_extensions_all = dict()
 
-    dynamic_exts = get_dynamic_extensions(labextensions_path)
+    federated_exts = get_federated_extensions(labextensions_path)
 
-    for (ext, ext_data) in dynamic_exts.items():
+    for (ext, ext_data) in federated_exts.items():
         if not 'jupyterlab' in ext_data or not '_build' in ext_data['jupyterlab']:
             logger.warn('%s is not a valid extension' % ext_data['name'])
             continue
@@ -136,10 +136,10 @@ class LabConfig(HasTraits):
     app_settings_dir = Unicode('', help='The application settings directory.')
 
     extra_labextensions_path = List(Unicode(),
-        help="""Extra paths to look for dynamic JupyterLab extensions"""
+        help="""Extra paths to look for federated JupyterLab extensions"""
     )
 
-    labextensions_path = List(Unicode(), help='The standard paths to look in for dynamic JupyterLab extensions')
+    labextensions_path = List(Unicode(), help='The standard paths to look in for federated JupyterLab extensions')
 
     templates_dir = Unicode('', help='The application templates directory.')
 
@@ -149,7 +149,7 @@ class LabConfig(HasTraits):
                                'added.'))
 
 
-    labextensions_url = Unicode('', help='The url for dynamic JupyterLab extensions')
+    labextensions_url = Unicode('', help='The url for federated JupyterLab extensions')
 
     settings_url = Unicode(help='The url path of the settings handler.')
 

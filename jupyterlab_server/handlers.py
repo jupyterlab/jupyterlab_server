@@ -167,7 +167,7 @@ def add_handlers(handlers, extension_app):
     # Cache all or none of the files depending on the `cache_files` setting.
     no_cache_paths = [] if extension_app.cache_files else ['/']
 
-    # Handle dynamic lab extensions.
+    # Handle federated lab extensions.
     labextensions_path = extension_app.extra_labextensions_path + extension_app.labextensions_path
     labextensions_url = ujoin(extension_app.labextensions_url, "(.*)")
     handlers.append(
