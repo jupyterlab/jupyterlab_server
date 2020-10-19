@@ -30,7 +30,7 @@ To create a local test setup run the following commands:
 
 ``` shell
 git clone https://github.com/jupyterlab/jupyterlab_server.git
-pushd jupyterlab_server
+cd jupyterlab_server
 python3 -m venv venv
 source venv/bin/activate
 pip install -e .[test]
@@ -41,7 +41,7 @@ If you do not wish to create a virtual environment, you can run the following co
 
 ``` shell
 git clone https://github.com/jupyterlab/jupyterlab_server.git
-pushd jupyterlab_server
+cd jupyterlab_server
 pip install -e .[test]
 pytest
 ```
