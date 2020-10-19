@@ -10,38 +10,13 @@ https://github.com/jupyterlab/jupyterlab_server
 `pip install jupyterlab_server`
 
 ## Usage
+
 The application author creates a JupyterLab build on their machine
 using the core JupyterLab application.  They can then serve their
 files by subclassing the `LabServerApp` with the appropriate
 configuration and creating a Python entry point that launches the app.
 
 
-## Development Install
+## Contribution
 
-``` shell
-git clone https://github.com/jupyterlab/jupyterlab_server.git
-cd jupyterlab_server
-pip install -e .
-```
-
-## Testing
-
-To create a local test setup run the following commands:
-
-``` shell
-git clone https://github.com/jupyterlab/jupyterlab_server.git
-cd jupyterlab_server
-python3 -m venv venv
-source venv/bin/activate
-pip install -e .[test]
-pytest
-```
-
-If you do not wish to create a virtual environment, you can run the following commands instead:
-
-``` shell
-git clone https://github.com/jupyterlab/jupyterlab_server.git
-cd jupyterlab_server
-pip install -e .[test]
-pytest
-```
+Please see `CONTRIBUTING.md` for details.
