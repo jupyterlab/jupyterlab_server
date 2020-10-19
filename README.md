@@ -18,8 +18,30 @@ configuration and creating a Python entry point that launches the app.
 
 ## Development Install
 
-```
+``` shell
 git clone https://github.com/jupyterlab/jupyterlab_server.git
 cd jupyterlab_server
 pip install -e .
+```
+
+## Testing
+
+To create a local test setup run the following commands:
+
+``` shell
+git clone https://github.com/jupyterlab/jupyterlab_server.git
+pushd jupyterlab_server
+python3 -m venv venv
+source venv/bin/activate
+pip install -e .[test]
+pytest
+```
+
+If you do not wish to create a virtual environment, you can run the following commands instead:
+
+``` shell
+git clone https://github.com/jupyterlab/jupyterlab_server.git
+pushd jupyterlab_server
+pip install -e .[test]
+pytest
 ```
