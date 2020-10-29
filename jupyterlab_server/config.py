@@ -112,7 +112,8 @@ def get_page_config(labextensions_path, app_settings_dir=None, logger=None):
     keyname = 'disabled_labextensions'
     disabled_extensions.update(page_config.get(keyname, []))
     page_config[keyname] = disabled_extensions
-    
+    page_config['disabledExtensions'] = [name for name in disabled_extensions if disabled_extensions[name]]
+
     return page_config
 
 
@@ -229,4 +230,3 @@ class LabConfig(HasTraits):
     @default('tree_url')
     def _default_tree_url(self):
         return ujoin(self.app_url, 'tree/')
-        
