@@ -45,10 +45,10 @@ def get_federated_extensions(labextensions_path):
                     dependencies=pkgdata.get('dependencies', dict()),
                     jupyterlab=pkgdata.get('jupyterlab', dict())
                 )
-                metadata_path = osp.join(osp.dirname(ext_path), 'metadata.json')
-                if osp.exists(metadata_path):
-                    with open(metadata_path) as fid:
-                        data['metadata'] = json.load(fid)
+                install_path = osp.join(osp.dirname(ext_path), 'install.json')
+                if osp.exists(install_path):
+                    with open(install_path) as fid:
+                        data['install'] = json.load(fid)
                 federated_extensions[data['name']] = data
     return federated_extensions
 
