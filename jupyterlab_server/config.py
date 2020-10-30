@@ -4,7 +4,8 @@
 # Copyright (c) Jupyter Development Team.
 # Distributed under the terms of the Modified BSD License.
 
-from glob import glob
+from glob import iglob
+from itertools import chain
 import json
 from os.path import join as pjoin
 import os.path as osp
@@ -27,18 +28,29 @@ DEFAULT_TEMPLATE_PATH = osp.join(osp.dirname(__file__), 'templates')
 def get_federated_extensions(labextensions_path):
     """Get the metadata about federated extensions
     """
-    federated_exts = dict()
+    federated_extensions = dict()
     for ext_dir in labextensions_path:
-        ext_pattern = ext_dir + '/**/package.json'
-        for ext_path in [path for path in glob(ext_pattern, recursive=True)]:
+        # extensions are either top-level directories, or two-deep in @org directories
+        for ext_path in chain(iglob(pjoin(ext_dir, '[!@]*', 'package.json')),
+                              iglob(pjoin(ext_dir, '@*', '*', 'package.json'))):
             with open(ext_path) as fid:
-                data = json.load(fid)
-            if data['name'] not in federated_exts:
-                data['ext_dir'] = ext_dir
-                data['ext_path'] = osp.dirname(ext_path)
-                data['is_local'] = False
-                federated_exts[data['name']] = data
-    return federated_exts
+                pkgdata = json.load(fid)
+            if pkgdata['name'] not in federated_extensions:
+                data = dict(
+                    name=pkgdata['name'],
+                    version=pkgdata['version'],
+                    ext_dir=ext_dir,
+                    ext_path=osp.dirname(ext_path),
+                    is_local=False,
+                    dependencies=pkgdata.get('dependencies', dict()),
+                    jupyterlab=pkgdata.get('jupyterlab', dict())
+                )
+                install_path = osp.join(osp.dirname(ext_path), 'install.json')
+                if osp.exists(install_path):
+                    with open(install_path) as fid:
+                        data['install'] = json.load(fid)
+                federated_extensions[data['name']] = data
+    return federated_extensions
 
 
 def get_static_page_config(app_settings_dir=None, logger=None):
@@ -82,7 +94,7 @@ def get_page_config(labextensions_path, app_settings_dir=None, logger=None):
     federated_exts = get_federated_extensions(labextensions_path)
 
     for (ext, ext_data) in federated_exts.items():
-        if not 'jupyterlab' in ext_data or not '_build' in ext_data['jupyterlab']:
+        if not '_build' in ext_data['jupyterlab']:
             logger.warn('%s is not a valid extension' % ext_data['name'])
             continue
         extbuild = ext_data['jupyterlab']['_build']
