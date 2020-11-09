@@ -53,15 +53,33 @@ def get_federated_extensions(labextensions_path):
     return federated_extensions
 
 
-def get_static_page_config(app_settings_dir=None, logger=None, all_levels=False, user=False, sys_prefix=False):
+def get_static_page_config(app_settings_dir=None, logger=None, level='all'):
+    """Get the static page config for JupyterLab
+
+    Params
+    ------
+    app_settings_dir: path, optional
+        The path of the JupyterLab application settings directory
+    logger: logger, optional
+        An optional logging object
+    level: string, optional ['all']
+        The level at which to get config: can be 'all', 'user', 'sys_prefix', or 'system'
+    """
     # Start with the deprecated `share/jupyter/lab/settings/page_config.json` data
+    allowed = ['all', 'user', 'sys_prefix', 'system']
+    if level not in allowed:
+        raise ValueError(f'Page config level must be one of: {allowed}')
 
-    if all_levels:
+    if level == 'all':
         cm = ConfigManager(config_dir_name="labconfig")
-    else:
-        config_dir = _get_config_dir(user=user, sys_prefix=sys_prefix)
 
-        cm = ConfigManager(config_dir_name="labconfig", read_config_path=[config_dir],
+    else:
+        user = level == 'user'
+        sys_prefix = level == 'sys_prefix'
+
+        config_dir = _get_config_dir(level)
+
+        cm = ConfigManager(config_dir_name="labconfig", read_config_path=[config_dir], 
                         write_config_dir=os.path.join(config_dir, "labconfig"))
 
     page_config = cm.get('page_config')
@@ -92,7 +110,7 @@ def get_static_page_config(app_settings_dir=None, logger=None, all_levels=False,
 
 def get_page_config(labextensions_path, app_settings_dir=None, logger=None):
     """Get the page config for the application"""
-    page_config = get_static_page_config(app_settings_dir=app_settings_dir, logger=logger, all_levels=True)
+    page_config = get_static_page_config(app_settings_dir=app_settings_dir, logger=logger, level='all')
 
     # Handle federated extensions
     extensions = page_config['federated_extensions'] = []
@@ -251,21 +269,13 @@ class LabConfig(HasTraits):
         return ujoin(self.app_url, 'tree/')
 
 
-def _get_config_dir(user=False, sys_prefix=False):
+def _get_config_dir(level):
     """Get the location of config files for the current context
     Returns the string to the environment
-    Parameters
-    ----------
-    user : bool [default: False]
-        Get the user's .jupyter config directory
-    sys_prefix : bool [default: False]
-        Get sys.prefix, i.e. ~/.envs/my-env/etc/jupyter
     """
-    if user and sys_prefix:
-        sys_prefix = False
-    if user:
+    if level == 'user':
         extdir = jupyter_config_dir()
-    elif sys_prefix:
+    elif level == 'sys_prefix':
         extdir = ENV_CONFIG_PATH[0]
     else:
         extdir = SYSTEM_CONFIG_PATH[0]
