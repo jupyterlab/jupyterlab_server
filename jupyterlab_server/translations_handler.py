@@ -13,7 +13,7 @@ import tornado
 from tornado import gen, web
 
 from .settings_handler import get_settings
-from .translation_utils import get_language_pack, get_language_packs, is_valid_locale
+from .translation_utils import get_language_pack, get_language_packs, is_valid_locale, translator
 
 from .server import APIHandler, url_path_join
 
@@ -74,6 +74,7 @@ class TranslationsHandler(APIHandler):
                 data, message = get_language_packs(
                     display_locale=get_current_locale(self.lab_config))
             else:
+                translator.set_locale(locale)
                 data, message = get_language_pack(locale)
                 if data == {} and message == "":
                     if is_valid_locale(locale):

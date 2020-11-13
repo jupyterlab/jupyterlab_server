@@ -1,0 +1,17 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: jupyterlab\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Language-Team: Spanish\n"
+"Language: es_CO\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: \n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 2.4.1\n"
+
+#: /example
+msgid "MORE ABOUT PROJECT JUPYTER"
+msgstr "Más sobre el proyecto jupyter"
