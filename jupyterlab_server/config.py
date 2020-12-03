@@ -98,6 +98,9 @@ def get_page_config(labextensions_path, app_settings_dir=None, logger=None):
 
     federated_exts = get_federated_extensions(labextensions_path)
 
+    # Ensure there is a disabled key
+    page_config.setdefault(disabled_key, {})
+
     for (ext, ext_data) in federated_exts.items():
         if not '_build' in ext_data['jupyterlab']:
             logger.warn('%s is not a valid extension' % ext_data['name'])
