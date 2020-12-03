@@ -11,7 +11,7 @@ from os.path import join as pjoin
 import os.path as osp
 import os
 
-from jupyter_core.paths import jupyter_path, jupyter_config_dir, ENV_CONFIG_PATH, SYSTEM_CONFIG_PATH
+from jupyter_core.paths import jupyter_path, jupyter_config_dir, SYSTEM_CONFIG_PATH
 from jupyter_server.services.config.manager import ConfigManager, recursive_update
 from traitlets import Bool, HasTraits, List, Unicode, default
 
@@ -58,63 +58,43 @@ def get_static_page_config(app_settings_dir=None, logger=None, level='all'):
 
     Params
     ------
-    app_settings_dir: path, optional
-        The path of the JupyterLab application settings directory
     logger: logger, optional
         An optional logging object
     level: string, optional ['all']
         The level at which to get config: can be 'all', 'user', 'sys_prefix', or 'system'
     """
-    # Start with the deprecated `share/jupyter/lab/settings/page_config.json` data
-    allowed = ['all', 'user', 'sys_prefix', 'system']
-    if level not in allowed:
-        raise ValueError(f'Page config level must be one of: {allowed}')
-
-    if level == 'all':
-        cm = ConfigManager(config_dir_name="labconfig")
-
-    else:
-        user = level == 'user'
-        sys_prefix = level == 'sys_prefix'
-
-        config_dir = _get_config_dir(level)
-
-        cm = ConfigManager(config_dir_name="labconfig", read_config_path=[config_dir], 
-                        write_config_dir=os.path.join(config_dir, "labconfig"))
-
-    page_config = cm.get('page_config')
-
-    # TODO: remove in JupyterLab 4.0
-    if app_settings_dir:
-        keyname = 'disabled_labextensions'
-        old_page_config = pjoin(app_settings_dir, 'page_config.json')
-        if osp.exists(old_page_config):
-            if logger:
-                logger.warn('** Upgrading deprecated page_config in %s' % old_page_config)
-                logger.warn('** This will no longer have an effect in JupyterLab 4.0')
-                logger.warn('')
-            with open(old_page_config) as fid:
-                data = json.load(fid)
-            os.remove(old_page_config)
-            # Convert disabled_labextensions list to a dict
-            oldKey = "disabledExtensions"
-            if oldKey in data:
-                data[keyname] = dict((key, True) for key in data[oldKey])
-            del data[oldKey]
-
-            recursive_update(page_config, data)
-            cm.set('page_config', page_config)
-
-    return page_config
+    cm = _get_config_manager(level)
+    return cm.get('page_config')
 
 
 def get_page_config(labextensions_path, app_settings_dir=None, logger=None):
-    """Get the page config for the application"""
-    page_config = get_static_page_config(app_settings_dir=app_settings_dir, logger=logger, level='all')
+    """Get the page config for the application handler"""
+    # Build up the full page config
+    page_config = {}
 
-    # Handle federated extensions
-    extensions = page_config['federated_extensions'] = []
+    disabled_key = "disabledExtensions"
+
+    # Start with the app_settings_dir as lowest priority
+    if app_settings_dir:
+        app_page_config = pjoin(app_settings_dir, 'page_config.json')
+        if osp.exists(app_page_config):
+            with open(old_page_config) as fid:
+                data = json.load(fid)
+
+            # Convert lists to dicts
+            for key in [disabled_key, "deferredExtensions"]:
+                if key in data:
+                    data[key] = dict((key, True) for key in data[key])
+
+            recursive_update(page_config, data)
+
+    # Get the traitlets config
+    static_page_config = get_static_page_config(logger=logger, level='all')
+    recursive_update(page_config, static_page_config)
+
+    # Handle federated extensions that disable other extensions
     disabled_by_extensions_all = dict()
+    extensions = page_config['federated_extensions'] = []
 
     federated_exts = get_federated_extensions(labextensions_path)
 
@@ -127,6 +107,7 @@ def get_page_config(labextensions_path, app_settings_dir=None, logger=None):
             'name': ext_data['name'],
             'load': extbuild['load']
         }
+
         if 'extension' in extbuild:
             extension['extension'] = extbuild['extension']
         if 'mimeExtension' in extbuild:
@@ -136,8 +117,29 @@ def get_page_config(labextensions_path, app_settings_dir=None, logger=None):
         extensions.append(extension)
 
         # If there is disabledExtensions metadata, consume it.
-        if ext_data['jupyterlab'].get('disabledExtensions'):
-            disabled_by_extensions_all[ext_data['name']] = ext_data['jupyterlab']['disabledExtensions']
+        name = ext_data['name']
+
+        # skip if the extension itself is disabled by other config
+        if page_config[disabled_key].get(name) == True:
+            continue
+
+        if ext_data['jupyterlab'].get(disabled_key):
+            disabled_by_extensions_all[ext_data['name']] = ext_data['jupyterlab'][disabled_key]
+
+    # Handle source extensions that disable other extensions
+    # Check for `jupyterlab`:`extensionMetadata` in the built application directory's package.json
+    if app_settings_dir:
+        app_dir = osp.dirname(app_settings_dir)
+        package_data_file = pjoin(app_dir, 'static', 'package.json')
+        if osp.exists(package_data_file):
+            with open(package_data_file) as fid:
+                app_data = json.load(fid)
+            all_ext_data = app_data['jupyterlab'].get('extensionMetadata', {})
+            for (ext, ext_data) in all_ext_data.items():
+                if ext in disabled_by_extensions_all:
+                    continue
+                if ext_data.get(disabled_key):
+                    disabled_by_extensions_all[ext] = ext_data[disabled_key]
 
     disabled_by_extensions = dict()
     for name in sorted(disabled_by_extensions_all):
@@ -145,18 +147,28 @@ def get_page_config(labextensions_path, app_settings_dir=None, logger=None):
         for item in disabled_list:
             disabled_by_extensions[item] = True
 
-    disabled_extensions = disabled_by_extensions
-    keyname = 'disabled_labextensions'
-    disabled_extensions.update(page_config.get(keyname, []))
-    page_config[keyname] = disabled_extensions
-    page_config['disabledExtensions'] = [name for name in disabled_extensions if disabled_extensions[name]]
+    rollup_disabled = disabled_by_extensions
+    rollup_disabled.update(page_config.get(disabled_key, []))
+    page_config[disabled_key] = rollup_disabled
+
+    # Needed for compatibility with JupyterLab 3.0rc11
+    page_config['disabled_labextensions'] = page_config[disabled_key]
+
+    # Convert dictionaries to lists to give to the front end
+    for (key, value) in page_config.items():
+        # Needed for compatibility with JupyterLab 3.0rc11
+        if key == 'disabled_labextensions':
+            continue
+
+        if isinstance(value, dict):
+            page_config[key] = [subkey for subkey in value if value[subkey]]
 
     return page_config
 
 
-def write_page_config(page_config):
+def write_page_config(page_config, level='all'):
     """Write page config to disk"""
-    cm = ConfigManager(config_dir_name='labconfig')
+    cm = _get_config_manager(level)
     cm.set('page_config', page_config)
 
 
@@ -269,14 +281,29 @@ class LabConfig(HasTraits):
         return ujoin(self.app_url, 'tree/')
 
 
-def _get_config_dir(level):
+def _get_config_manager(level):
     """Get the location of config files for the current context
     Returns the string to the environment
     """
+    allowed = ['all', 'user', 'sys_prefix', 'system', 'app', 'extension']
+    if level not in allowed:
+        raise ValueError(f'Page config level must be one of: {allowed}')
+
+    config_name = "labconfig"
+
+    if level == 'all':
+        return ConfigManager(config_dir_name=config_name)
+
     if level == 'user':
-        extdir = jupyter_config_dir()
+        config_dir = jupyter_config_dir()
     elif level == 'sys_prefix':
-        extdir = ENV_CONFIG_PATH[0]
+        # Delayed import since this gets monkey-patched in tests
+        from jupyter_core.paths import ENV_CONFIG_PATH
+        config_dir = ENV_CONFIG_PATH[0]
     else:
-        extdir = SYSTEM_CONFIG_PATH[0]
-    return extdir
+        config_dir = SYSTEM_CONFIG_PATH[0]
+
+    full_config_path = osp.join(config_dir, config_name)
+
+    return ConfigManager(read_config_path=[full_config_path],
+                         write_config_dir=full_config_path)
