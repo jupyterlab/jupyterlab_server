@@ -122,10 +122,6 @@ def get_page_config(labextensions_path, app_settings_dir=None, logger=None):
         # If there is disabledExtensions metadata, consume it.
         name = ext_data['name']
 
-        # skip if the extension itself is disabled by other config
-        if page_config[disabled_key].get(name) == True:
-            continue
-
         if ext_data['jupyterlab'].get(disabled_key):
             disabled_by_extensions_all[ext_data['name']] = ext_data['jupyterlab'][disabled_key]
 
@@ -146,6 +142,10 @@ def get_page_config(labextensions_path, app_settings_dir=None, logger=None):
 
     disabled_by_extensions = dict()
     for name in sorted(disabled_by_extensions_all):
+        # skip if the extension itself is disabled by other config
+        if page_config[disabled_key].get(name) == True:
+            continue
+
         disabled_list = disabled_by_extensions_all[name]
         for item in disabled_list:
             disabled_by_extensions[item] = True
@@ -154,14 +154,8 @@ def get_page_config(labextensions_path, app_settings_dir=None, logger=None):
     rollup_disabled.update(page_config.get(disabled_key, []))
     page_config[disabled_key] = rollup_disabled
 
-    # Needed for compatibility with JupyterLab 3.0rc11
-    page_config['disabled_labextensions'] = page_config[disabled_key]
-
     # Convert dictionaries to lists to give to the front end
     for (key, value) in page_config.items():
-        # Needed for compatibility with JupyterLab 3.0rc11
-        if key == 'disabled_labextensions':
-            continue
 
         if isinstance(value, dict):
             page_config[key] = [subkey for subkey in value if value[subkey]]
