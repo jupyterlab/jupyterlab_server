@@ -43,7 +43,7 @@ if 'setuptools' in sys.modules:
         'test': [
             'codecov',
             'ipykernel',
-            'pytest==5.3.2',
+            'pytest>=5.3.2',
             'pytest-cov',
             'jupyter_server[test]',
             'pytest-console-scripts',
