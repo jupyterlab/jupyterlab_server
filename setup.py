@@ -45,7 +45,7 @@ if 'setuptools' in sys.modules:
             'ipykernel',
             'pytest==5.3.2',
             'pytest-cov',
-            'pytest-tornasync',
+            'jupyter_server[test]',
             'pytest-console-scripts',
             'strict-rfc3339',
             'wheel',
@@ -58,13 +58,8 @@ if 'setuptools' in sys.modules:
         'jsonschema>=3.0.1',
         'packaging',
         'requests',
-        'jupyter_server~=1.0.1',
-    ],
-    setup_args['entry_points'] = {
-        'pytest11': [
-            'pytest_jupyterlab_server = jupyterlab_server.pytest_plugin'
-        ],
-    }
+        'jupyter_server~=1.1.0',
+    ]
 
 if __name__ == '__main__':
     setup(**setup_args)
