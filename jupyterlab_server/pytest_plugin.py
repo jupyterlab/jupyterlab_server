@@ -10,6 +10,11 @@ from traitlets import Unicode
 from jupyterlab_server.tests.utils import here
 from jupyterlab_server.app import LabServerApp
 
+
+pytest_plugins = [
+    "jupyter_server.pytest_plugin"
+]
+
 def mkdir(tmp_path, *parts):
     path = tmp_path.joinpath(*parts)
     if not path.exists():
@@ -24,8 +29,8 @@ labextensions_dir = pytest.fixture(lambda tmp_path: mkdir(tmp_path, 'labextensio
 
 @pytest.fixture
 def make_labserver_extension_app(
-    root_dir,
-    template_dir,
+    jp_root_dir,
+    jp_template_dir,
     app_settings_dir,
     user_settings_dir,
     schemas_dir,
@@ -36,8 +41,8 @@ def make_labserver_extension_app(
     def _make_labserver_extension_app(**kwargs):
 
         return LabServerApp(
-            static_dir = str(root_dir),
-            templates_dir = str(template_dir),
+            static_dir = str(jp_root_dir),
+            templates_dir = str(jp_template_dir),
             app_url = '/lab',
             app_settings_dir = str(app_settings_dir),
             user_settings_dir = str(user_settings_dir),
@@ -47,7 +52,7 @@ def make_labserver_extension_app(
         )
 
     # Create the index files.
-    index = template_dir.joinpath('index.html')
+    index = jp_template_dir.joinpath('index.html')
     index.write_text("""
 <!DOCTYPE html>
 <html>
@@ -136,8 +141,8 @@ def make_labserver_extension_app(
 
 
 @pytest.fixture
-def labserverapp(serverapp, make_labserver_extension_app):
+def labserverapp(jp_serverapp, make_labserver_extension_app):
     app = make_labserver_extension_app()
-    app._link_jupyter_server_extension(serverapp)
+    app._link_jupyter_server_extension(jp_serverapp)
     app.initialize()
     return app
