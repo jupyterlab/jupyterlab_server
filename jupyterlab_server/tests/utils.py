@@ -20,7 +20,7 @@ with open(
 def maybe_patch_ioloop():
     """ a windows 3.8+ patch for the asyncio loop
     """
-    if sys.platform.startswith("win"):
+    if sys.platform.startswith("win") and tornado.version_info < (6, 1):
         if sys.version_info >= (3, 8):
             import asyncio
             try:
