@@ -40,7 +40,7 @@ jobs:
           architecture: 'x64'
       - name: Install python dependencies
         run: |
-          pip install setuptools pip --upgrade --user
+          pip install setuptools pip wheel --upgrade --user
       - name: Install project dependencies
         run: |
           pip install -v -e ".[test]"
