@@ -14,7 +14,7 @@ from ..translation_utils import (_get_installed_language_pack_locales,
                                  get_installed_packages_locale,
                                  get_language_pack, get_language_packs,
                                  is_valid_locale, merge_locale_data,
-                                 run_process_and_parse)
+                                 run_process_and_parse, translator)
 
 from .utils import maybe_patch_ioloop
 
@@ -99,6 +99,24 @@ async def test_get_locale_not_valid(jp_fetch):
     result = json.loads(r.body.decode())
     assert "not valid" in result["message"]
     assert result["data"] == {}
+
+
+# --- Backend locale
+# ------------------------------------------------------------------------
+async def test_backend_locale(jp_fetch):
+    locale = "es_CO"
+    r = await jp_fetch("lab", "api", "translations", locale)
+    trans = translator.load("jupyterlab")
+    result = trans.__("MORE ABOUT PROJECT JUPYTER")
+    assert result == "Más sobre el proyecto jupyter"
+
+
+async def test_backend_locale_extension(jp_fetch):
+    locale = "es_CO"
+    r = await jp_fetch("lab", "api", "translations", locale)
+    trans = translator.load("jupyterlab_some_package")
+    result = trans.__("BOOM")
+    assert result == "Foo bar 2"
 
 
 # --- Utils testing

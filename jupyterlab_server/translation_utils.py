@@ -3,7 +3,9 @@ Localization utilities to find available language packs and packages with
 localization data.
 """
 
+import gettext
 import json
+import importlib
 import os
 import subprocess
 import sys
@@ -124,11 +126,8 @@ def run_process_and_parse(cmd: list):
         p = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         stdout, stderr = p.communicate()
         result = json.loads(stdout.decode('utf-8'))
-
-        # FIXME: Use case?
-        result["message"] = stderr.decode('utf-8')
     except Exception:
-        result["message"] = traceback.format_exc()
+        result["message"] = traceback.format_exc() + "\n" + repr(stderr.decode('utf-8'))
 
     return result["data"], result["message"]
 
@@ -384,6 +383,257 @@ def get_language_pack(locale: str) -> tuple:
                     locale_data[pkg_name] = data
 
     return locale_data, "\n".join(messages)
+
+
+# --- Translators
+# ----------------------------------------------------------------------------
+class TranslationBundle:
+    """
+    Translation bundle providing gettext translation functionality.
+    """
+
+    def __init__(self, domain: str, locale: str):
+        self._domain = domain
+        self._locale = locale
+
+        self.update_locale(locale)
+
+    def update_locale(self, locale: str):
+        """
+        Update the locale environment variables.
+
+        Parameters
+        ----------
+        locale: str
+            The language name to use.
+        """
+        # TODO: Need to handle packages that provide their own .mo files
+        self._locale = locale
+        localedir = None
+        if locale != DEFAULT_LOCALE:
+            language_pack_module = f"jupyterlab_language_pack_{locale}"
+            try:
+                mod = importlib.import_module(language_pack_module)
+                localedir = os.path.join(os.path.dirname(mod.__file__), LOCALE_DIR)
+            except Exception:
+                pass
+
+        gettext.bindtextdomain(self._domain, localedir=localedir)
+
+    def gettext(self, msgid: str) -> str:
+        """
+        Translate a singular string.
+
+        Parameters
+        ----------
+        msgid: str
+            The singular string to translate.
+
+        Returns
+        -------
+        str
+            The translated string.
+        """
+        return gettext.dgettext(self._domain, msgid)
+
+    def ngettext(self, msgid: str, msgid_plural: str, n: int) -> str:
+        """
+        Translate a singular string with pluralization.
+
+        Parameters
+        ----------
+        msgid: str
+            The singular string to translate.
+        msgid_plural: str
+            The plural string to translate.
+        n: int
+            The number for pluralization.
+
+        Returns
+        -------
+        str
+            The translated string.
+        """
+        return gettext.dngettext(self._domain, msgid, msgid_plural, n)
+
+    def pgettext(self, msgctxt: str, singular: str) -> str:
+        """
+        Translate a singular string with context.
+
+        Parameters
+        ----------
+        msgctxt: str
+            The message context.
+        msgid: str
+            The singular string to translate.
+
+        Returns
+        -------
+        str
+            The translated string.
+        """
+        return gettext.dpgettext(self._domain, msgctxt, msgid)
+
+    def npgettext(self, msgctxt: str, msgid: str, msgid_plural: str, n: int) -> str:
+        """
+        Translate a singular string with context and pluralization.
+
+        Parameters
+        ----------
+        msgctxt: str
+            The message context.
+        msgid: str
+            The singular string to translate.
+        msgid_plural: str
+            The plural string to translate.
+        n: int
+            The number for pluralization.
+
+        Returns
+        -------
+        str
+            The translated string.
+        """
+        return gettext.dnpgettext(self._domain, msgctxt, msgid, msgid_plural, n)
+
+    # Shorthands
+    def __(self, msgid: str) -> str:
+        """
+        Shorthand for gettext.
+
+        Parameters
+        ----------
+        msgid: str
+            The singular string to translate.
+
+        Returns
+        -------
+        str
+            The translated string.
+        """
+        return self.gettext(msgid)
+
+    def _n(self, msgid: str, msgid_plural: str, n: int) -> str:
+        """
+        Shorthand for ngettext.
+
+        Parameters
+        ----------
+        msgid: str
+            The singular string to translate.
+        msgid_plural: str
+            The plural string to translate.
+        n: int
+            The number for pluralization.
+
+        Returns
+        -------
+        str
+            The translated string.
+        """
+        return self.ngettext(msgid, plural, n)
+
+    def _p(self, msgctxt: str, msgid: str) -> str:
+        """
+        Shorthand for pgettext.
+
+        Parameters
+        ----------
+        msgctxt: str
+            The message context.
+        msgid: str
+            The singular string to translate.
+
+        Returns
+        -------
+        str
+            The translated string.
+        """
+        return self.pgettext(msgctxt, msgid)
+
+    def _np(self, msgctxt: str, msgid: str, msgid_plular: str, n: str) -> str:
+        """
+        Shorthand for npgettext.
+
+        Parameters
+        ----------
+        msgctxt: str
+            The message context.
+        msgid: str
+            The singular string to translate.
+        msgid_plural: str
+            The plural string to translate.
+        n: int
+            The number for pluralization.
+
+        Returns
+        -------
+        str
+            The translated string.
+        """
+        return self.npgettext(msgctxt, msgid, msgid_plular, n)
+
+
+class translator:
+    """
+    Translations manager.
+    """
+    _TRANSLATORS = {}
+    _LOCALE = DEFAULT_LOCALE
+
+    @staticmethod
+    def _update_env(locale: str):
+        """
+        Update the locale environment variables based on the settings.
+
+        Parameters
+        ----------
+        locale: str
+            The language name to use.
+        """
+        for key in ["LANGUAGE", "LANG"]:
+            os.environ[key] = f"{locale}.UTF-8"
+
+    @classmethod
+    def set_locale(cls, locale: str):
+        """
+        Set locale for the translation bundles based on the settings.
+
+        Parameters
+        ----------
+        locale: str
+            The language name to use.
+        """
+        if is_valid_locale(locale):
+            cls._LOCALE = locale
+            translator._update_env(locale)
+            for domain, bundle in cls._TRANSLATORS.items():
+                bundle.update_locale(locale)
+
+    @classmethod
+    def load(cls, domain: str) -> TranslationBundle:
+        """
+        Load translation domain.
+
+        The domain is usually the normalized ``package_name``.
+
+        Parameters
+        ----------
+        domain: str
+            The translations domain. The normalized python package name.
+        
+        Returns
+        -------
+        Translator
+            A translator instance bound to the domain.
+        """
+        if domain in cls._TRANSLATORS:
+            trans = cls._TRANSLATORS[domain]
+        else:
+            trans = TranslationBundle(domain, cls._LOCALE)
+            cls._TRANSLATORS[domain] = trans
+
+        return trans
 
 
 if __name__ == "__main__":
