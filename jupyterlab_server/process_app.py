@@ -19,10 +19,8 @@ class ProcessApp(ExtensionAppJinjaMixin, LabConfig, ExtensionApp):
 
     load_other_extensions = True
 
-    # Do not open a browser by default for server apps
-    serverapp_config = {
-        "open_browser": False
-    }
+    # Do not open a browser for process apps
+    open_browser = False
 
     def get_command(self):
         """Get the command and kwargs to run with `Process`.
