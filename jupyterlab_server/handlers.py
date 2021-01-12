@@ -92,8 +92,12 @@ class LabHandler(ExtensionHandlerJinjaMixin, ExtensionHandlerMixin, JupyterHandl
         mathjax_config = self.settings.get('mathjax_config',
                                            'TeX-AMS_HTML-full,Safe')
         # TODO Remove CDN usage.
-        mathjax_url = self.settings.get('mathjax_url',
-                                           'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js')
+        mathjax_url = self.settings.get('mathjax_url', '')
+        if not mathjax_url:
+            mathjax_url = 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js'
+        elif not urlparse(mathjax_url).scheme:
+            mathjax_url = ujoin(self.base_url, mathjax_url)
+
         page_config.setdefault('mathjaxConfig', mathjax_config)
         page_config.setdefault('fullMathjaxUrl', mathjax_url)
 
