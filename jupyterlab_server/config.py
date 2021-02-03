@@ -78,7 +78,7 @@ def get_page_config(labextensions_path, app_settings_dir=None, logger=None):
     if app_settings_dir:
         app_page_config = pjoin(app_settings_dir, 'page_config.json')
         if osp.exists(app_page_config):
-            with open(app_page_config) as fid:
+            with open(app_page_config, encoding="utf-8") as fid:
                 data = json.load(fid)
 
             # Convert lists to dicts
