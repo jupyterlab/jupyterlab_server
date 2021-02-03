@@ -1,13 +1,6 @@
 name: Tests
 
-on:
-  push:
-    branches:
-      - master
-
-  pull_request:
-    branches:
-      - "*"
+on: [push, pull_request]
 
 jobs:
   linux:
@@ -40,10 +33,10 @@ jobs:
           architecture: 'x64'
       - name: Install python dependencies
         run: |
-          pip install setuptools pip wheel --upgrade --user
+          pip install setuptools pip wheel --upgrade --user --cache-dir ~/.cache/pip
       - name: Install project dependencies
         run: |
-          pip install -v -e ".[test]"
+          pip install -v -e ".[test]" --cache-dir ~/.cache/pip
       - name: Show python environment
         run: |
           python --version
@@ -56,3 +49,11 @@ jobs:
       - name: Upload coverage
         run: |
           codecov
+      - name: Install and Test SDist
+        if: ${{ runner.os != 'Windows' }}
+        run: |
+          pip uninstall -y jupyterlab_server
+          python setup.py sdist
+          cd dist
+          pip install *.tar.gz
+          pytest --pyargs jupyterlab_server

@@ -4,6 +4,9 @@ include setupbase.py
 include jupyterlab_server/templates/*.html
 recursive-include jupyterlab_server/tests *.json *.json.orig *.jupyterlab-workspace
 
+# prune translation test data to avoid long path limits on Windows
+prune jupyterlab_server/tests/translations
+
 # Patterns to exclude from any directory
 global-exclude *~
 global-exclude *.pyc

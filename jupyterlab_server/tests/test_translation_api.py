@@ -23,6 +23,9 @@ maybe_patch_ioloop()
 # Constants
 HERE = os.path.abspath(os.path.dirname(__file__))
 
+if not os.path.exists(os.path.join(HERE, 'translations')):
+    pytest.skip("skipping translation tests", allow_module_level=True)
+
 
 def setup_module(module):
     """ setup any state specific to the execution of this module."""
