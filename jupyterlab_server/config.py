@@ -33,7 +33,7 @@ def get_federated_extensions(labextensions_path):
         # extensions are either top-level directories, or two-deep in @org directories
         for ext_path in chain(iglob(pjoin(ext_dir, '[!@]*', 'package.json')),
                               iglob(pjoin(ext_dir, '@*', '*', 'package.json'))):
-            with open(ext_path) as fid:
+            with open(ext_path, encoding='utf-8') as fid:
                 pkgdata = json.load(fid)
             if pkgdata['name'] not in federated_extensions:
                 data = dict(
@@ -47,7 +47,7 @@ def get_federated_extensions(labextensions_path):
                 )
                 install_path = osp.join(osp.dirname(ext_path), 'install.json')
                 if osp.exists(install_path):
-                    with open(install_path) as fid:
+                    with open(install_path, encoding='utf-8') as fid:
                         data['install'] = json.load(fid)
                 federated_extensions[data['name']] = data
     return federated_extensions
@@ -78,7 +78,7 @@ def get_page_config(labextensions_path, app_settings_dir=None, logger=None):
     if app_settings_dir:
         app_page_config = pjoin(app_settings_dir, 'page_config.json')
         if osp.exists(app_page_config):
-            with open(app_page_config) as fid:
+            with open(app_page_config, encoding='utf-8') as fid:
                 data = json.load(fid)
 
             # Convert lists to dicts
@@ -131,7 +131,7 @@ def get_page_config(labextensions_path, app_settings_dir=None, logger=None):
         app_dir = osp.dirname(app_settings_dir)
         package_data_file = pjoin(app_dir, 'static', 'package.json')
         if osp.exists(package_data_file):
-            with open(package_data_file) as fid:
+            with open(package_data_file, encoding='utf-8') as fid:
                 app_data = json.load(fid)
             all_ext_data = app_data['jupyterlab'].get('extensionMetadata', {})
             for (ext, ext_data) in all_ext_data.items():
