@@ -25,7 +25,7 @@ from .server import url_path_join as ujoin
 DEFAULT_TEMPLATE_PATH = osp.join(osp.dirname(__file__), 'templates')
 
 
-def _get_url(data):
+def get_package_url(data):
     """Get the url from the extension data
     """
     # homepage, repository  are optional
@@ -53,7 +53,7 @@ def get_federated_extensions(labextensions_path):
                     name=pkgdata['name'],
                     version=pkgdata['version'],
                     description=pkgdata.get('description', ''),
-                    url=_get_url(pkgdata),
+                    url=get_package_url(pkgdata),
                     ext_dir=ext_dir,
                     ext_path=osp.dirname(ext_path),
                     is_local=False,
