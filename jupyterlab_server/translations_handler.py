@@ -74,13 +74,15 @@ class TranslationsHandler(APIHandler):
                 data, message = get_language_packs(
                     display_locale=get_current_locale(self.lab_config))
             else:
-                translator.set_locale(locale)
                 data, message = get_language_pack(locale)
                 if data == {} and message == "":
                     if is_valid_locale(locale):
                         message = "Language pack '{}' not installed!".format(locale)
                     else:
                         message = "Language pack '{}' not valid!".format(locale)
+                else:
+                    # only change locale if the language pack is installed and valid
+                    translator.set_locale(locale)
         except Exception:
             message = traceback.format_exc()
 
