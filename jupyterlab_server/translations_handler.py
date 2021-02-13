@@ -82,7 +82,8 @@ class TranslationsHandler(APIHandler):
                         message = "Language pack '{}' not valid!".format(locale)
                 else:
                     # only change locale if the language pack is installed and valid
-                    translator.set_locale(locale)
+                    if is_valid_locale(locale):
+                        translator.set_locale(locale)
         except Exception:
             message = traceback.format_exc()
 
