@@ -21,6 +21,7 @@ class LabServerApp(ExtensionAppJinjaMixin, LabConfig, ExtensionApp):
     name = "jupyterlab_server"
     extension_url = "/lab"
     app_name = "JupyterLab Server Application"
+    file_url_prefix = "/lab/tree"
 
     @property
     def app_namespace(self):
@@ -69,9 +70,9 @@ class LabServerApp(ExtensionAppJinjaMixin, LabConfig, ExtensionApp):
         "whitelist_uris": ("allowed_extensions_uris", "1.2"),
     }
 
-    # Method copied from 
+    # Method copied from
     # https://github.com/jupyterhub/jupyterhub/blob/d1a85e53dccfc7b1dd81b0c1985d158cc6b61820/jupyterhub/auth.py#L143-L161
-    @observe(*list(_deprecated_aliases))    
+    @observe(*list(_deprecated_aliases))
     def _deprecated_trait(self, change):
         """observer for deprecated traits"""
         old_attr = change.name

@@ -58,7 +58,7 @@ if 'setuptools' in sys.modules:
         'jsonschema>=3.0.1',
         'packaging',
         'requests',
-        'jupyter_server~=1.1',
+        'jupyter_server~=1.4',
     ]
 
 if __name__ == '__main__':
