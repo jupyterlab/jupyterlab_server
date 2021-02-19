@@ -23,6 +23,7 @@ from .settings_handler import SettingsHandler
 from .themes_handler import ThemesHandler
 from .translations_handler import TranslationsHandler
 from .workspaces_handler import WorkspacesHandler
+from .licenses_handler import LicensesHandler, LicensesManager
 
 # -----------------------------------------------------------------------------
 # Module globals
@@ -258,6 +259,18 @@ def add_handlers(handlers, extension_app):
                 'path': extension_app.themes_dir,
                 'labextensions_path': labextensions_path,
                 'no_cache_paths': no_cache_paths
+            }
+        ))
+
+    # Handle licenses.
+    if extension_app.licenses_url:
+        licenses_url = extension_app.licenses_url
+        licenses_path = ujoin(licenses_url, '(.*)')
+        handlers.append((
+            licenses_path,
+            LicensesHandler,
+            {
+                'manager': LicensesManager(parent=extension_app)
             }
         ))
 
