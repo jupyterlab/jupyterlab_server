@@ -6,20 +6,18 @@
 import json
 import re
 import csv
-import textwrap
 import io
 from pathlib import Path
 
 from concurrent.futures import ThreadPoolExecutor
 
-from tornado.platform.asyncio import to_tornado_future
 from tornado import web, gen
 
-from traitlets import default, Dict, Unicode, Instance, List
+from traitlets import default, Dict, Unicode, List
 from traitlets.config import LoggingConfigurable
 
 from .server import APIHandler
-from .config import get_federated_extensions, LabConfig
+from .config import get_federated_extensions
 
 
 class LicensesManager(LoggingConfigurable):
@@ -204,7 +202,7 @@ class LicensesManager(LoggingConfigurable):
         for ext_name, ext_info in self.federated_extensions.items():
             if not re.match(bundles_pattern, ext_name):
                 continue
-            licenses[fed_ext] = self.license_bundle(
+            licenses[ext_name] = self.license_bundle(
                 Path(ext_info["ext_path"]), ext_name
             )
 
