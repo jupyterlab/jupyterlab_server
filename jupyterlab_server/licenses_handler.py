@@ -15,7 +15,7 @@ from concurrent.futures import ThreadPoolExecutor
 from tornado.platform.asyncio import to_tornado_future
 from tornado import web, gen
 
-from traitlets import default, Dict, Unicode, Instance
+from traitlets import default, Dict, Unicode, Instance, List
 from traitlets.config import LoggingConfigurable
 
 from .server import APIHandler
@@ -31,8 +31,9 @@ class LicensesManager(LoggingConfigurable):
 
     federated_extensions = Dict()
 
-    third_party_licenses_file = Unicode(
-        "third-party-licenses.json",
+    third_party_licenses_files = List(
+        Unicode(),
+        default_value=["third-party-licenses.json"],
         help="the license report data in built app and federated extensions",
     )
 
@@ -79,88 +80,105 @@ class LicensesManager(LoggingConfigurable):
     def report_csv(self, licenses):
         """create a CSV report"""
         outfile = io.StringIO()
-        writer = csv.DictWriter(
-            outfile,
-            fieldnames=["bundle", "library", "version", "licenseId", "licenseText"],
-        )
+        fieldnames = ["name", "versionInfo", "licenseId", "extractedText"]
+        writer = csv.DictWriter(outfile, fieldnames=["bundle"] + fieldnames)
         writer.writeheader()
         for bundle_name, bundle in licenses.items():
-            if not bundle or "licenses" not in bundle:
-                continue
-            for library, spec in bundle.get("licenses", {}).items():
-                writer.writerow({"bundle": bundle_name, "library": library, **spec})
+            for package in bundle["packages"]:
+                writer.writerow(
+                    {
+                        "bundle": bundle_name,
+                        **{field: package.get(field, "") for field in fieldnames},
+                    }
+                )
         return outfile.getvalue()
 
     def report_markdown(self, licenses, full_text=True):
         """create a markdown report"""
         lines = []
         library_names = [
-            len(library_name)
+            len(package["name"])
             for bundle_name, bundle in licenses.items()
-            if bundle and "licenses" in bundle
-            for library_name in bundle["licenses"]
+            for package in bundle.get("packages", [])
         ]
         longest_name = max(library_names) if library_names else 1
+
         for bundle_name, bundle in licenses.items():
             # TODO: parametrize template
             lines += [f"# {bundle_name}", ""]
 
-            if bundle is None or "licenses" not in bundle:
+            packages = bundle.get("packages", [])
+            if not packages:
                 lines += ["> No licenses found", ""]
                 continue
 
-            for library, spec in bundle.get("licenses", {}).items():
+            for package in packages:
                 lines += [
-                    "- "
+                    "## "
                     + (
                         "\t".join(
                             [
-                                f"**{library.strip()}**".ljust(longest_name),
-                                f"""`{spec["version"] or ""}`""".ljust(20),
-                                (spec["licenseId"] or ""),
+                                f"""**{package["name"].strip()}**""".ljust(
+                                    longest_name
+                                ),
+                                f"""`{package["versionInfo"] or ""}`""".ljust(20),
+                                (package["licenseId"] or ""),
                             ]
                         )
                     )
                 ]
                 if full_text:
-                    lines += [""]
-                    if spec["licenseText"]:
-                        lines += [
-                            textwrap.indent(spec["licenseText"], " " * 6),
-                            "",
-                        ]
+                    text = package["extractedText"]
+                    if not text.strip():
+                        lines += ["", "> No license text available", ""]
+                    else:
+                        lines += ["", "", "```", text, "```", ""]
         return "\n".join(lines)
 
     def license_bundle(self, path, bundle):
-        """Return the content of a path's license bundle, or None if it doesn't exist"""
-        licenses_path = path / self.third_party_licenses_file
-        if not licenses_path.exists():
-            self.log.warn(
-                "Third-party licenses not found for %s: %s", bundle, licenses_path
-            )
-            return None
+        """Return the content of a packages's license bundles"""
+        bundle_json = {"packages": []}
 
-        try:
-            bundle_text = licenses_path.read_text(encoding="utf-8")
-        except Exception as err:
-            self.log.warn(
-                "Failed to open third-party licenses for %s: %s\n%s",
-                bundle,
-                licenses_path,
-                err,
-            )
-            return None
+        for license_file in self.third_party_licenses_files:
+            licenses_path = path / license_file
+            if not licenses_path.exists():
+                self.log.warn(
+                    "Third-party licenses not found for %s: %s", bundle, licenses_path
+                )
+                continue
 
-        try:
-            bundle_json = json.loads(bundle_text)
-        except Exception as err:
-            self.log.warn(
-                "Failed to parse third-party licenses for %s: %s\n%s",
-                bundle,
-                licenses_path,
-                err,
-            )
-            return None
+            try:
+                file_text = licenses_path.read_text(encoding="utf-8")
+            except Exception as err:
+                self.log.warn(
+                    "Failed to open third-party licenses for %s: %s\n%s",
+                    bundle,
+                    licenses_path,
+                    err,
+                )
+                continue
+
+            try:
+                file_json = json.loads(file_text)
+            except Exception as err:
+                self.log.warn(
+                    "Failed to parse third-party licenses for %s: %s\n%s",
+                    bundle,
+                    licenses_path,
+                    err,
+                )
+                continue
+
+            try:
+                bundle_json["packages"].extend(file_json["packages"])
+            except Exception as err:
+                self.log.warn(
+                    "Failed to find packages for %s: %s\n%s",
+                    bundle,
+                    licenses_path,
+                    err,
+                )
+                continue
 
         return bundle_json
 
@@ -169,7 +187,7 @@ class LicensesManager(LoggingConfigurable):
         path = Path(self.parent.app_dir) / "static"
         package_json = path / "package.json"
         if self.parent.dev_mode:
-            path = path.parent / "package.json"
+            package_json = path.parent / "package.json"
         name = json.loads(package_json.read_text(encoding="utf-8"))["name"]
         return path, name
 
