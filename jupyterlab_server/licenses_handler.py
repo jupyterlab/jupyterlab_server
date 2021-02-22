@@ -13,7 +13,7 @@ from concurrent.futures import ThreadPoolExecutor
 
 from tornado import web, gen
 
-from traitlets import default, Dict, Unicode, List
+from traitlets import Unicode, List
 from traitlets.config import LoggingConfigurable
 
 from .server import APIHandler
@@ -27,20 +27,19 @@ class LicensesManager(LoggingConfigurable):
 
     executor = ThreadPoolExecutor(max_workers=1)
 
-    federated_extensions = Dict()
-
     third_party_licenses_files = List(
         Unicode(),
         default_value=["third-party-licenses.json"],
         help="the license report data in built app and federated extensions",
     )
 
-    @default("federated_extensions")
-    def _default_federated_extensions(self):
-        """Lazily load the app info. This is expensive, but probably the only
-        way to be sure.
+    @property
+    def federated_extensions(self):
+        """Lazily load the currrently-available federated extensions.
+
+        This is expensive, but probably the only way to be sure to get
+        up-to-date interactively-installed extensions.
         """
-        # TODO: this is expensive, probably calculated already for parent
         labextensions_path = sum(
             [
                 self.parent.labextensions_path,
