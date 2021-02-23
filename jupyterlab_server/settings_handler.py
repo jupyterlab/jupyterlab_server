@@ -4,18 +4,16 @@
 # Distributed under the terms of the Modified BSD License.
 import json
 import os
-
 from glob import glob
+
 import json5
-from jsonschema import ValidationError
 from jsonschema import Draft4Validator as Validator
+from jsonschema import ValidationError
+from jupyter_server.extension.handler import ExtensionHandlerJinjaMixin, ExtensionHandlerMixin
+from jupyter_server.services.config.manager import ConfigManager, recursive_update
 from tornado import web
 
-from jupyter_server.extension.handler import ExtensionHandlerMixin, ExtensionHandlerJinjaMixin
-from jupyter_server.services.config.manager import ConfigManager, recursive_update
-
-from .server import APIHandler, json_errors, tz
-
+from .server import APIHandler, tz
 
 # The JupyterLab settings file extension.
 SETTINGS_EXTENSION = '.jupyterlab-settings'

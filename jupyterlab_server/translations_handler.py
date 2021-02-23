@@ -6,16 +6,15 @@ Translation handler.
 """
 
 import json
-import os
 import traceback
 
 import tornado
-from tornado import gen, web
+from tornado import gen
 
+from .server import APIHandler
 from .settings_handler import get_settings
 from .translation_utils import get_language_pack, get_language_packs, is_valid_locale, translator
 
-from .server import APIHandler, url_path_join
 
 SCHEMA_NAME = '@jupyterlab/translation-extension:plugin'
 

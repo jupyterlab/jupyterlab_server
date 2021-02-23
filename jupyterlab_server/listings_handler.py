@@ -3,19 +3,12 @@
 # Copyright (c) Jupyter Development Team.
 # Distributed under the terms of the Modified BSD License.
 
-import os
-import time
 import json
-import re
+
+import requests
 import tornado
 
 from .server import APIHandler
-
-from traitlets import Instance
-
-
-import requests
-
 
 LISTINGS_URL_SUFFIX='@jupyterlab/extensionmanager-extension/listings.json'
 
@@ -55,7 +48,7 @@ class ListingsHandler(APIHandler):
 
     """Below fields are class level fields that are accessed and populated
     by the initialization and the fetch_listings methods.
-    Some fields are initialized before the handler creation in the 
+    Some fields are initialized before the handler creation in the
     handlers.py#add_handlers method.
     Having those fields predefined reduces the guards in the methods using
     them.

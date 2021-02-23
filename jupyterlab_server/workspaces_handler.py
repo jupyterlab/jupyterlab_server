@@ -8,12 +8,12 @@ import os
 import re
 import unicodedata
 import urllib
-from datetime import datetime
+
+from jupyter_server.extension.handler import ExtensionHandlerJinjaMixin, ExtensionHandlerMixin
 from tornado import web
 
-from .server import APIHandler, json_errors, url_path_join as ujoin, tz
-
-from jupyter_server.extension.handler import ExtensionHandlerMixin, ExtensionHandlerJinjaMixin
+from .server import APIHandler, tz
+from .server import url_path_join as ujoin
 
 # The JupyterLab workspace file extension.
 WORKSPACE_EXTENSION = '.jupyterlab-workspace'
