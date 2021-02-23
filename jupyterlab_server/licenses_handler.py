@@ -3,6 +3,7 @@
 # Copyright (c) Jupyter Development Team.
 # Distributed under the terms of the Modified BSD License.
 
+import mimetypes
 import json
 import re
 import csv
@@ -72,7 +73,10 @@ class LicensesManager(LoggingConfigurable):
         elif report_format == "csv":
             return self.report_csv(licenses), "text/csv"
         elif report_format == "markdown":
-            return (self.report_markdown(licenses, full_text=full_text), "text/plain")
+            return (
+                self.report_markdown(licenses, full_text=full_text),
+                "text/markdown",
+            )
 
     def report_csv(self, licenses):
         """create a CSV report"""
@@ -223,5 +227,11 @@ class LicensesHandler(APIHandler):
             bundles_pattern=self.get_argument("bundles", ".*"),
             full_text=bool(json.loads(self.get_argument("full_text", "true"))),
         )
+        download = bool(json.loads(self.get_argument("download", "0")))
+        if download:
+            filename = "{}-licenses.{}".format(
+                self.manager.parent.app_name.lower(), mimetypes.guess_extension(mime)
+            )
+            self.set_attachment_header(filename)
         self.write(report)
         self.set_header("Content-Type", mime)
