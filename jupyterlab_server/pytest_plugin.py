@@ -1,15 +1,13 @@
-import pytest, shutil, os
 import json
+import os
 import os.path as osp
+import shutil
 from os.path import join as pjoin
 
-from jupyterlab_server import LabServerApp, LabConfig
+import pytest
 
-from traitlets import Unicode
-
-from jupyterlab_server.tests.utils import here
+from jupyterlab_server import LabServerApp
 from jupyterlab_server.app import LabServerApp
-
 
 pytest_plugins = [
     "jupyter_server.pytest_plugin"

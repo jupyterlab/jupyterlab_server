@@ -4,16 +4,11 @@
 # Copyright (c) Jupyter Development Team.
 # Distributed under the terms of the Modified BSD License.
 
-import os, jinja2
-from traitlets import Unicode
-from jinja2 import Environment, FileSystemLoader
-from traitlets import Bool, Unicode, default, observe
 from jupyter_server.extension.application import ExtensionApp, ExtensionAppJinjaMixin
-from traitlets import Unicode, Integer, Dict
+from traitlets import Dict, Integer, Unicode, observe
 
 from ._version import __version__
-from .server import url_path_join as ujoin
-from .handlers import add_handlers, LabConfig
+from .handlers import LabConfig, add_handlers
 
 
 class LabServerApp(ExtensionAppJinjaMixin, LabConfig, ExtensionApp):
