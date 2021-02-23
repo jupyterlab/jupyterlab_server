@@ -229,7 +229,7 @@ class LicensesHandler(APIHandler):
         )
         download = bool(json.loads(self.get_argument("download", "0")))
         if download:
-            filename = "{}-licenses.{}".format(
+            filename = "{}-licenses{}".format(
                 self.manager.parent.app_name.lower(), mimetypes.guess_extension(mime)
             )
             self.set_attachment_header(filename)
