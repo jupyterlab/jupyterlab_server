@@ -24,6 +24,10 @@ from .config import get_federated_extensions
 DEFAULT_THIRD_PARTY_LICENSE_FILE = "third-party-licenses.json"
 UNKNOWN_PACKAGE_NAME = "UNKNOWN"
 
+if mimetypes.guess_extension("text/markdown") is None:
+    # for python <3.8 https://bugs.python.org/issue39324
+    mimetypes.add_type("text/markdown", ".md")
+
 
 class LicensesManager(LoggingConfigurable):
     """A manager for listing the licenses for all frontend end code distributed
@@ -151,7 +155,7 @@ class LicensesManager(LoggingConfigurable):
             licenses_path = path / license_file
             self.log.debug("Loading licenses from %s", licenses_path)
             if not licenses_path.exists():
-                self.log.warn(
+                self.log.warning(
                     "Third-party licenses not found for %s: %s", bundle, licenses_path
                 )
                 continue
@@ -159,7 +163,7 @@ class LicensesManager(LoggingConfigurable):
             try:
                 file_json = json.loads(licenses_path.read_text(encoding="utf-8"))
             except Exception as err:
-                self.log.warn(
+                self.log.warning(
                     "Failed to open third-party licenses for %s: %s\n%s",
                     bundle,
                     licenses_path,
@@ -170,7 +174,7 @@ class LicensesManager(LoggingConfigurable):
             try:
                 bundle_json["packages"].extend(file_json["packages"])
             except Exception as err:
-                self.log.warn(
+                self.log.warning(
                     "Failed to find packages for %s: %s\n%s",
                     bundle,
                     licenses_path,

@@ -103,7 +103,8 @@ async def test_download_license_report(
     assert r.code == 200
     assert r.headers["Content-type"] == mime
     extension = mimetypes.guess_extension(mime)
-    assert extension in r.headers["Content-Disposition"], r.headers.__dict__
+    assert extension, f"no extension guessed for {mime}"
+    assert extension in r.headers["Content-Disposition"], f"{r.headers}"
 
 
 @pytest.mark.parametrize(
