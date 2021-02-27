@@ -20,6 +20,10 @@ from traitlets.config import LoggingConfigurable
 from .server import APIHandler
 from .config import get_federated_extensions
 
+# this is duplicated in @juptyerlab/builder
+DEFAULT_THIRD_PARTY_LICENSE_FILE = "third-party-licenses.json"
+UNKNOWN_PACKAGE_NAME = "UNKNOWN"
+
 
 class LicensesManager(LoggingConfigurable):
     """A manager for listing the licenses for all frontend end code distributed
@@ -30,7 +34,7 @@ class LicensesManager(LoggingConfigurable):
 
     third_party_licenses_files = List(
         Unicode(),
-        default_value=["third-party-licenses.json"],
+        default_value=[DEFAULT_THIRD_PARTY_LICENSE_FILE],
         help="the license report data in built app and federated extensions",
     )
 
@@ -98,7 +102,7 @@ class LicensesManager(LoggingConfigurable):
         """create a markdown report"""
         lines = []
         library_names = [
-            len(package["name"])
+            len(package.get("name", UNKNOWN_PACKAGE_NAME))
             for bundle_name, bundle in licenses.items()
             for package in bundle.get("packages", [])
         ]
@@ -114,26 +118,29 @@ class LicensesManager(LoggingConfigurable):
                 continue
 
             for package in packages:
+                name = package.get("name", UNKNOWN_PACKAGE_NAME).strip()
+                version_info = package.get("versionInfo", UNKNOWN_PACKAGE_NAME).strip()
+                license_id = package.get("licenseId", UNKNOWN_PACKAGE_NAME).strip()
+                extracted_text = package.get("extractedText", "")
+
                 lines += [
                     "## "
                     + (
                         "\t".join(
                             [
-                                f"""**{package["name"].strip()}**""".ljust(
-                                    longest_name
-                                ),
-                                f"""`{package["versionInfo"] or ""}`""".ljust(20),
-                                (package["licenseId"] or ""),
+                                f"""**{name}**""".ljust(longest_name),
+                                f"""`{version_info}`""".ljust(20),
+                                license_id,
                             ]
                         )
                     )
                 ]
+
                 if full_text:
-                    text = package["extractedText"]
-                    if not text.strip():
+                    if not extracted_text:
                         lines += ["", "> No license text available", ""]
                     else:
-                        lines += ["", "", "```", text, "```", ""]
+                        lines += ["", "", "<pre/>", extracted_text, "</pre>", ""]
         return "\n".join(lines)
 
     def license_bundle(self, path, bundle):
@@ -142,6 +149,7 @@ class LicensesManager(LoggingConfigurable):
 
         for license_file in self.third_party_licenses_files:
             licenses_path = path / license_file
+            self.log.debug("Loading licenses from %s", licenses_path)
             if not licenses_path.exists():
                 self.log.warn(
                     "Third-party licenses not found for %s: %s", bundle, licenses_path
@@ -149,21 +157,10 @@ class LicensesManager(LoggingConfigurable):
                 continue
 
             try:
-                file_text = licenses_path.read_text(encoding="utf-8")
+                file_json = json.loads(licenses_path.read_text(encoding="utf-8"))
             except Exception as err:
                 self.log.warn(
                     "Failed to open third-party licenses for %s: %s\n%s",
-                    bundle,
-                    licenses_path,
-                    err,
-                )
-                continue
-
-            try:
-                file_json = json.loads(file_text)
-            except Exception as err:
-                self.log.warn(
-                    "Failed to parse third-party licenses for %s: %s\n%s",
                     bundle,
                     licenses_path,
                     err,
@@ -187,7 +184,8 @@ class LicensesManager(LoggingConfigurable):
         """get the static directory for this app"""
         path = Path(self.parent.app_dir) / "static"
         package_json = path / "package.json"
-        if self.parent.dev_mode:
+        # TODO: should this be hoisted?
+        if getattr(self.parent, "dev_mode", False):  # pragma: no cover
             package_json = path.parent / "package.json"
         name = json.loads(package_json.read_text(encoding="utf-8"))["name"]
         return path, name
@@ -196,18 +194,17 @@ class LicensesManager(LoggingConfigurable):
         """Read all of the licenses
         TODO: schema
         """
-        licenses = {}
+        licenses = {
+            name: self.license_bundle(Path(ext["ext_path"]), name)
+            for name, ext in self.federated_extensions.items()
+            if re.match(bundles_pattern, name)
+        }
 
-        app_path, app_name = self.app_static_info()
-        if re.match(bundles_pattern, app_name):
-            licenses[app_name] = self.license_bundle(app_path, app_name)
-
-        for ext_name, ext_info in self.federated_extensions.items():
-            if not re.match(bundles_pattern, ext_name):
-                continue
-            licenses[ext_name] = self.license_bundle(
-                Path(ext_info["ext_path"]), ext_name
-            )
+        # TODO: there has to be _some_ canonical way to access static?
+        if hasattr(self.parent, "app_dir"):
+            app_path, app_name = self.app_static_info()
+            if re.match(bundles_pattern, app_name):
+                licenses[app_name] = self.license_bundle(app_path, app_name)
 
         return licenses
 
@@ -221,17 +218,28 @@ class LicensesHandler(APIHandler):
 
     @web.authenticated
     async def get(self, _args):
-        """Return all the frontend licenses as JSON"""
-        report, mime = await self.manager.report_async(
-            report_format=self.get_argument("format", "json"),
-            bundles_pattern=self.get_argument("bundles", ".*"),
-            full_text=bool(json.loads(self.get_argument("full_text", "true"))),
-        )
+        """Return all the frontend licenses"""
+        full_text = bool(json.loads(self.get_argument("full_text", "true")))
+        report_format = self.get_argument("format", "json")
+        bundles_pattern = self.get_argument("bundles", ".*")
         download = bool(json.loads(self.get_argument("download", "0")))
+
+        report, mime = await self.manager.report_async(
+            report_format=report_format,
+            bundles_pattern=bundles_pattern,
+            full_text=full_text,
+        )
+
         if download:
             filename = "{}-licenses{}".format(
                 self.manager.parent.app_name.lower(), mimetypes.guess_extension(mime)
             )
             self.set_attachment_header(filename)
         self.write(report)
-        self.set_header("Content-Type", mime)
+        await self.finish(_mime_type=mime)
+
+    def finish(self, _mime_type, *args, **kwargs):
+        """Overload the regular finish, which (sensibly) always sets JSON"""
+        self.update_api_activity()
+        self.set_header("Content-Type", _mime_type)
+        return super(APIHandler, self).finish(*args, **kwargs)
