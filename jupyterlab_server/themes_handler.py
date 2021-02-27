@@ -3,13 +3,14 @@
 # Copyright (c) Jupyter Development Team.
 # Distributed under the terms of the Modified BSD License.
 
-from glob import glob
-from os import path as osp
 import os
 import re
+from glob import glob
+from os import path as osp
 from urllib.parse import urlparse
 
-from .server import FileFindHandler, url_path_join as ujoin
+from .server import FileFindHandler
+from .server import url_path_join as ujoin
 
 
 class ThemesHandler(FileFindHandler):
@@ -24,7 +25,7 @@ class ThemesHandler(FileFindHandler):
         for ext_dir in labextensions_path:
             theme_pattern = ext_dir + '/**/themes'
             ext_paths.extend([path for path in glob(theme_pattern, recursive=True)])
-        
+
         # Add the core theme path last
         if not isinstance(path, list):
             path = [path]

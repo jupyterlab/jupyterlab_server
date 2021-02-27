@@ -4,19 +4,17 @@
 # Copyright (c) Jupyter Development Team.
 # Distributed under the terms of the Modified BSD License.
 
+import json
+import os.path as osp
 from glob import iglob
 from itertools import chain
-import json
 from os.path import join as pjoin
-import os.path as osp
-import os
 
-from jupyter_core.paths import jupyter_path, jupyter_config_dir, SYSTEM_CONFIG_PATH
+from jupyter_core.paths import SYSTEM_CONFIG_PATH, jupyter_config_dir, jupyter_path
 from jupyter_server.services.config.manager import ConfigManager, recursive_update
 from traitlets import Bool, HasTraits, List, Unicode, default
 
 from .server import url_path_join as ujoin
-
 
 # -----------------------------------------------------------------------------
 # Module globals

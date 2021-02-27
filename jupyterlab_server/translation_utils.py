@@ -4,8 +4,8 @@ localization data.
 """
 
 import gettext
-import json
 import importlib
+import json
 import os
 import subprocess
 import sys
@@ -621,7 +621,7 @@ class translator:
         ----------
         domain: str
             The translations domain. The normalized python package name.
-        
+
         Returns
         -------
         Translator

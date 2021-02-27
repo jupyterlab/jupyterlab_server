@@ -2,16 +2,11 @@
 """A lab app that runs a sub process for a demo or a test."""
 import sys
 
-from tornado.ioloop import IOLoop
-from traitlets import Bool
-
-from .server import ServerApp
-from .handlers import add_handlers, LabConfig
-from .process import Process
-
-from traitlets import Unicode
-
 from jupyter_server.extension.application import ExtensionApp, ExtensionAppJinjaMixin
+from tornado.ioloop import IOLoop
+
+from .handlers import LabConfig, add_handlers
+from .process import Process
 
 
 class ProcessApp(ExtensionAppJinjaMixin, LabConfig, ExtensionApp):

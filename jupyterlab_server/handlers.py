@@ -3,15 +3,10 @@
 
 # Copyright (c) Jupyter Development Team.
 # Distributed under the terms of the Modified BSD License.
-from glob import glob
-import json
 import os
-import os.path as osp
 from urllib.parse import urlparse
 
-from jinja2 import FileSystemLoader, TemplateError
 from tornado import template, web
-from traitlets import Bool, HasTraits, List, Unicode, default
 
 from jupyter_server.extension.handler import ExtensionHandlerMixin, ExtensionHandlerJinjaMixin
 
