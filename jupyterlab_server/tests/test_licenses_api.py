@@ -70,14 +70,9 @@ def has_licenses(request):
     return request.param
 
 
-class NoExitLicensesApp(LicensesApp):
-    def exit(self, exit_code=0):
-        pass
-
-
 @pytest.fixture
 def licenses_app(tmp_path, has_licenses):
-    app = NoExitLicensesApp()
+    app = LicensesApp()
     _make_static_dir(app, tmp_path, has_licenses)
     return app
 
@@ -162,6 +157,12 @@ async def test_licenses_cli(licenses_app, capsys, mime_format_parser):
     if fmt != "markdown":
         args += [f"--{fmt}"]
     licenses_app.initialize(args)
-    licenses_app.start()
+
+    with pytest.raises(SystemExit) as exited:
+        licenses_app.start()
+
+    assert exited.type == SystemExit
+    assert exited.value.code == 0
+
     captured = capsys.readouterr()
     assert parse(captured.out) is not None
