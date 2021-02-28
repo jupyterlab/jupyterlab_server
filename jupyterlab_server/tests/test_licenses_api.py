@@ -8,6 +8,7 @@ import mimetypes
 import pytest
 import mistune
 
+from .. import LicensesApp
 from ..licenses_handler import DEFAULT_THIRD_PARTY_LICENSE_FILE
 
 # utilities
@@ -28,7 +29,7 @@ def _read_csv(csv_text):
 
 
 def _make_static_dir(
-    labserverapp, tmp_path, has_licenses=True, license_json=None, package_in_app=False
+    app, tmp_path, has_licenses=True, license_json=None, package_in_app=False
 ):
     app_dir = tmp_path / "app"
     static_dir = app_dir / "static"
@@ -44,7 +45,7 @@ def _make_static_dir(
             encoding="utf-8",
         )
 
-    setattr(labserverapp, "static_dir", str(static_dir))
+    setattr(app, "static_dir", str(static_dir))
 
 
 def _good_license_json():
@@ -64,11 +65,27 @@ def mime_format_parser(request):
     return request.param
 
 
+@pytest.fixture(params=[True, False])
+def has_licenses(request):
+    return request.param
+
+
+class NoExitLicensesApp(LicensesApp):
+    def exit(self, exit_code=0):
+        pass
+
+
+@pytest.fixture
+def licenses_app(tmp_path, has_licenses):
+    app = NoExitLicensesApp()
+    _make_static_dir(app, tmp_path, has_licenses)
+    return app
+
+
 # the actual tests
 
 
 @pytest.mark.parametrize("has_static_dir", [True, False])
-@pytest.mark.parametrize("has_licenses", [True, False])
 @pytest.mark.parametrize("full_text", ["true", "false"])
 @pytest.mark.parametrize("bundles_pattern", ["", "@jupyterlab/.*", "nothing"])
 async def test_get_license_report(
@@ -137,3 +154,14 @@ async def test_malformed_license_report(
     mime, fmt, parse = mime_format_parser
     r = await jp_fetch("lab", "api", "licenses/")
     assert r.code == 200
+
+
+async def test_licenses_cli(licenses_app, capsys, mime_format_parser):
+    mime, fmt, parse = mime_format_parser
+    args = []
+    if fmt != "markdown":
+        args += [f"--{fmt}"]
+    licenses_app.initialize(args)
+    licenses_app.start()
+    captured = capsys.readouterr()
+    assert parse(captured.out) is not None
