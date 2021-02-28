@@ -27,22 +27,24 @@ def _read_csv(csv_text):
         return [*csv.DictReader(csvfile)]
 
 
-def _make_app_dir(labserverapp, tmp_path, has_licenses=True, license_json=None):
+def _make_static_dir(
+    labserverapp, tmp_path, has_licenses=True, license_json=None, package_in_app=False
+):
     app_dir = tmp_path / "app"
-    static = app_dir / "static"
-    static.mkdir(parents=True)
+    static_dir = app_dir / "static"
+    static_dir.mkdir(parents=True)
 
-    (static / "package.json").write_text(
-        json.dumps({"name": "@jupyterlab/top", "version": "0.0.1"}), encoding="utf-8"
-    )
+    package_text = json.dumps({"name": "@jupyterlab/top", "version": "0.0.1"})
+    package_json = (app_dir if package_in_app else static_dir) / "package.json"
+    package_json.write_text(package_text, encoding="utf-8")
 
     if has_licenses:
-        (static / DEFAULT_THIRD_PARTY_LICENSE_FILE).write_text(
+        (static_dir / DEFAULT_THIRD_PARTY_LICENSE_FILE).write_text(
             license_json or _good_license_json(),
             encoding="utf-8",
         )
 
-    setattr(labserverapp, "app_dir", str(app_dir))
+    setattr(labserverapp, "static_dir", str(static_dir))
 
 
 def _good_license_json():
@@ -65,13 +67,13 @@ def mime_format_parser(request):
 # the actual tests
 
 
-@pytest.mark.parametrize("has_app_dir", [True, False])
+@pytest.mark.parametrize("has_static_dir", [True, False])
 @pytest.mark.parametrize("has_licenses", [True, False])
 @pytest.mark.parametrize("full_text", ["true", "false"])
 @pytest.mark.parametrize("bundles_pattern", ["", "@jupyterlab/.*", "nothing"])
 async def test_get_license_report(
     mime_format_parser,
-    has_app_dir,
+    has_static_dir,
     has_licenses,
     full_text,
     bundles_pattern,
@@ -79,8 +81,8 @@ async def test_get_license_report(
     labserverapp,
     tmp_path,
 ):
-    if has_app_dir:
-        _make_app_dir(labserverapp, tmp_path, has_licenses)
+    if has_static_dir:
+        _make_static_dir(labserverapp, tmp_path, has_licenses)
     mime, fmt, parse = mime_format_parser
     params = {"format": fmt, "full_text": full_text}
     if bundles_pattern:
@@ -107,6 +109,16 @@ async def test_download_license_report(
     assert extension in r.headers["Content-Disposition"], f"{r.headers}"
 
 
+async def test_dev_mode_license_report(
+    jp_fetch,
+    labserverapp,
+    tmp_path,
+):
+    _make_static_dir(labserverapp, tmp_path, package_in_app=True)
+    r = await jp_fetch("lab", "api", "licenses/")
+    assert r.code == 200
+
+
 @pytest.mark.parametrize(
     "license_json",
     [
@@ -121,7 +133,7 @@ async def test_malformed_license_report(
     labserverapp,
     tmp_path,
 ):
-    _make_app_dir(labserverapp, tmp_path, license_json=license_json)
+    _make_static_dir(labserverapp, tmp_path, license_json=license_json)
     mime, fmt, parse = mime_format_parser
     r = await jp_fetch("lab", "api", "licenses/")
     assert r.code == 200

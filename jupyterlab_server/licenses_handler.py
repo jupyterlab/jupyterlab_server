@@ -1,4 +1,4 @@
-"""Tornado handlers for license reporting."""
+"""Manager and Tornado handlers for license reporting."""
 
 # Copyright (c) Jupyter Development Team.
 # Distributed under the terms of the Modified BSD License.
@@ -24,7 +24,7 @@ from .config import get_federated_extensions
 DEFAULT_THIRD_PARTY_LICENSE_FILE = "third-party-licenses.json"
 UNKNOWN_PACKAGE_NAME = "UNKNOWN"
 
-if mimetypes.guess_extension("text/markdown") is None:
+if mimetypes.guess_extension("text/markdown") is None:  # pragma: no cover
     # for python <3.8 https://bugs.python.org/issue39324
     mimetypes.add_type("text/markdown", ".md")
 
@@ -47,7 +47,7 @@ class LicensesManager(LoggingConfigurable):
         """Lazily load the currrently-available federated extensions.
 
         This is expensive, but probably the only way to be sure to get
-        up-to-date interactively-installed extensions.
+        up-to-date license information for extensions installed interactively.
         """
         labextensions_path = sum(
             [
@@ -185,16 +185,23 @@ class LicensesManager(LoggingConfigurable):
         return bundle_json
 
     def app_static_info(self):
-        """get the static directory for this app"""
-        path = Path(self.parent.app_dir) / "static"
+        """get the static directory for this app
+
+        This will usually be in `static_dir`, but may also appear in the
+        parent of `static_dir`.
+        """
+        path = Path(self.parent.static_dir)
         package_json = path / "package.json"
-        # TODO: should this be hoisted?
-        if getattr(self.parent, "dev_mode", False):  # pragma: no cover
-            package_json = path.parent / "package.json"
+        if not package_json.exists():
+            parent_package_json = path.parent / "package.json"
+            if parent_package_json.exists():
+                package_json = parent_package_json
+            else:
+                return None, None
         name = json.loads(package_json.read_text(encoding="utf-8"))["name"]
         return path, name
 
-    def licenses(self, bundles_pattern=".*") -> dict:
+    def licenses(self, bundles_pattern=".*"):
         """Read all of the licenses
         TODO: schema
         """
@@ -204,11 +211,12 @@ class LicensesManager(LoggingConfigurable):
             if re.match(bundles_pattern, name)
         }
 
-        # TODO: there has to be _some_ canonical way to access static?
-        if hasattr(self.parent, "app_dir"):
-            app_path, app_name = self.app_static_info()
-            if re.match(bundles_pattern, app_name):
-                licenses[app_name] = self.license_bundle(app_path, app_name)
+        app_path, app_name = self.app_static_info()
+        if app_path is not None and re.match(bundles_pattern, app_name):
+            licenses[app_name] = self.license_bundle(app_path, app_name)
+
+        if not licenses:
+            self.log.warn("No licenses found at all")
 
         return licenses
 
