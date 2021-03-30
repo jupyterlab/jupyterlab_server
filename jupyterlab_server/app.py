@@ -1,5 +1,5 @@
 # coding: utf-8
-"""JupyterLab Server"""
+"""JupyterLab Server Application"""
 
 # Copyright (c) Jupyter Development Team.
 # Distributed under the terms of the Modified BSD License.
@@ -43,7 +43,7 @@ class LabServerApp(ExtensionAppJinjaMixin, LabConfig, ExtensionApp):
         """)
 
     whitelist_uris = Unicode('', config=True,
-        help="A list of comma-separated URIs to get the whitelist")
+        help="Deprecated, use `LabServerApp.allowed_extensions_uris`")
 
     allowed_extensions_uris = Unicode('', config=True,
         help="""
