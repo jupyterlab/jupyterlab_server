@@ -4,6 +4,23 @@ github_url: 'https://github.com/jupyterlab/jupyterlab_server/blob/master/CHANGEL
 
 # Change Log
 
+## 2.4.0
+
+([Full Changelog](https://github.com/jupyterlab/jupyterlab_server/compare/2.3.0...1a9681654e627afdb67ec5fe1d6581617b813743))
+
+### Merged PRs
+
+- Add Sphinx docs [#169](https://github.com/jupyterlab/jupyterlab_server/pull/169) ([@afshin](https://github.com/afshin))
+- Cleanup unused imports [#165](https://github.com/jupyterlab/jupyterlab_server/pull/165) ([@jtpio](https://github.com/jtpio))
+- Fill in missing changelog entries [#164](https://github.com/jupyterlab/jupyterlab_server/pull/164) ([@blink1073](https://github.com/blink1073))
+- Improve documentation: Instructions for development and test setups [#130](https://github.com/jupyterlab/jupyterlab_server/pull/130) ([@ZelphirKaltstahl](https://github.com/ZelphirKaltstahl))
+
+### Contributors to this release
+
+([GitHub contributors page for this release](https://github.com/jupyterlab/jupyterlab_server/graphs/contributors?from=2021-02-19&to=2021-03-30&type=c))
+
+[@afshin](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Aafshin+updated%3A2021-02-19..2021-03-30&type=Issues) | [@blink1073](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Ablink1073+updated%3A2021-02-19..2021-03-30&type=Issues) | [@jtpio](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Ajtpio+updated%3A2021-02-19..2021-03-30&type=Issues) | [@ZelphirKaltstahl](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3AZelphirKaltstahl+updated%3A2021-02-19..2021-03-30&type=Issues)
+
 ## 2.3.0
 
 * Set file_url_prefix trait for opening notebooks directly [#162](https://github.com/jupyterlab/jupyterlab_server/pull/162) ([@afshin](https://github.com/afshin))
