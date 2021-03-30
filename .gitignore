@@ -17,3 +17,6 @@ __pycache__
 .coverage
 .cache
 .pytest_cache
+
+# generated changelog
+docs/source/changelog.md

@@ -2,6 +2,10 @@ name: Tests
 
 on: [push, pull_request]
 
+defaults:
+  run:
+    shell: bash -l {0}
+
 jobs:
   linux:
     name: ${{ matrix.PLATFORM }} py${{ matrix.PYTHON_VERSION }}
@@ -20,28 +24,37 @@ jobs:
           PYTHON_VERSION: pypy3
     steps:
       - name: Checkout
-        uses: actions/checkout@v1
+        uses: actions/checkout@v2
       - name: Cache pip
-        uses: actions/cache@v1
+        uses: actions/cache@v2
         with:
           path: ~/.cache/pip
           key: ${{ runner.os }}-py-${{ matrix.PYTHON_VERSION }}-pip-${{ hashFiles('**/setup.py') }}
-      - name: Setup python ${{ matrix.PYTHON_VERSION }}
-        uses: actions/setup-python@v1
+      - name: Cache conda
+        uses: actions/cache@v2
         with:
-          python-version: ${{ matrix.PYTHON_VERSION }}
-          architecture: 'x64'
+          path: ~/conda_pkgs_dir
+          key:
+            ${{ runner.os }}-conda-${{ env.CACHE_NUMBER }}-${{
+            hashFiles('etc/example-environment.yml') }}
+      - name: Setup conda ${{ matrix.PYTHON_VERSION }}
+        uses: conda-incubator/setup-miniconda@v2
+        with:
+          auto-update-conda: true
+          python-version: ${{ matrix.python-version }}
       - name: Install python dependencies
         run: |
-          pip install setuptools pip wheel --upgrade --user --cache-dir ~/.cache/pip
+          conda install setuptools pip wheel
+      - name: Install pywin32 on Windows
+        if: ${{ runner.os == 'Windows' }}
+        run: conda install pywin32
       - name: Install project dependencies
         run: |
           pip install -v -e ".[test]" --cache-dir ~/.cache/pip
-      - name: Show python environment
-        run: |
-          python --version
-          python -m pip freeze
-          python -m pip check
+      - run: conda info
+      - run: conda list
+      - run: conda config --show
+      - run: pip check
       - name: Run python tests
         # See `setup.cfg` for full test options
         run: |
@@ -52,8 +65,18 @@ jobs:
       - name: Install and Test SDist
         if: ${{ runner.os != 'Windows' }}
         run: |
+          set -eux
           pip uninstall -y jupyterlab_server
           python setup.py sdist
           cd dist
           pip install *.tar.gz
           pytest --pyargs jupyterlab_server
+      - name: Build docs
+        run: |
+          set -eux
+          pushd docs
+          conda env create -f environment.yml
+          conda activate jupyterlab_server_documentation
+          make html
+          conda deactivate
+          popd

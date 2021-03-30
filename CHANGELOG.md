@@ -1,3 +1,7 @@
+---
+github_url: 'https://github.com/jupyterlab/jupyterlab_server/blob/master/CHANGELOG.md'
+---
+
 # Change Log
 
 ## 2.3.0
