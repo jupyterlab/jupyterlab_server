@@ -6,4 +6,4 @@ JupyterLab Server API Reference:
 
 .. toctree::
     app
-
+    config
