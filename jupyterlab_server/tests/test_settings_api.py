@@ -10,12 +10,13 @@ from strict_rfc3339 import rfc3339_to_timestamp
 
 from .utils import expected_http_error
 from .utils import maybe_patch_ioloop, big_unicode_string
+from .utils import validate_request
 
 
-async def test_get(jp_fetch, labserverapp):
+async def test_get_settings(jp_fetch, labserverapp):
     id = '@jupyterlab/apputils-extension:themes'
     r = await jp_fetch('lab', 'api', 'settings', id)
-    assert r.code == 200
+    validate_request(r)
     res = r.body.decode()
     data = json.loads(res)
     assert data['id'] == id
@@ -28,7 +29,7 @@ async def test_get(jp_fetch, labserverapp):
 async def test_get_federated(jp_fetch, labserverapp):
     id = '@jupyterlab/apputils-extension-federated:themes'
     r = await jp_fetch('lab', 'api', 'settings', id)
-    assert r.code == 200
+    validate_request(r)
     res = r.body.decode()
     assert 'raw' in res
 
@@ -49,8 +50,8 @@ async def test_listing(jp_fetch, labserverapp):
         '@jupyterlab/unicode-extension:plugin'
     ]
     versions = ['N/A', 'N/A', 'test-version']
-    r = await jp_fetch('lab', 'api', 'settings')
-    assert r.code == 200
+    r = await jp_fetch('lab', 'api', 'settings/')
+    validate_request(r)
     res = r.body.decode()
     response = json.loads(res)
     response_ids = [item['id'] for item in response['settings']]
@@ -70,11 +71,12 @@ async def test_patch(jp_fetch, labserverapp):
     r = await jp_fetch('lab', 'api', 'settings', id,
         method='PUT',
         body=json.dumps(dict(raw=json5.dumps(dict()))))
-    assert r.code == 204
+    validate_request(r)
 
     r = await jp_fetch('lab', 'api', 'settings', id,
         method='GET',
         )
+    validate_request(r)
     data = json.loads(r.body.decode())
     first_created = rfc3339_to_timestamp(data['created'])
     first_modified = rfc3339_to_timestamp(data['last_modified'])
@@ -83,11 +85,12 @@ async def test_patch(jp_fetch, labserverapp):
         method='PUT',
         body=json.dumps(dict(raw=json5.dumps(dict())))
         )
-    assert r.code == 204
+    validate_request(r)
 
     r = await jp_fetch('lab', 'api', 'settings', id,
         method='GET',
         )
+    validate_request(r)
     data = json.loads(r.body.decode())
     second_created = rfc3339_to_timestamp(data['created'])
     second_modified = rfc3339_to_timestamp(data['last_modified'])
@@ -95,9 +98,10 @@ async def test_patch(jp_fetch, labserverapp):
     assert first_created <= second_created
     assert first_modified < second_modified
 
-    r = await jp_fetch('lab', 'api', 'settings', '',
+    r = await jp_fetch('lab', 'api', 'settings/',
         method='GET',
         )
+    validate_request(r)
     data = json.loads(r.body.decode())
     listing = data['settings']
     list_data = [item for item in listing if item['id'] == id][0]
@@ -115,11 +119,12 @@ async def test_patch_unicode(jp_fetch, labserverapp):
         method='PUT',
         body=json.dumps(payload)
         )
-    assert r.code == 204
+    validate_request(r)
 
     r = await jp_fetch('lab', 'api', 'settings', id,
         method='GET',
         )
+    validate_request(r)
     data = json.loads(r.body.decode())
     assert data["settings"]["comment"] == big_unicode_string[::-1]
 

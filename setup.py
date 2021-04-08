@@ -46,8 +46,10 @@ if 'setuptools' in sys.modules:
             'pytest>=5.3.2',
             'pytest-cov',
             'jupyter_server[test]',
+            'openapi_core',
             'pytest-console-scripts',
             'strict-rfc3339',
+            'ruamel.yaml',
             'wheel',
         ],
     }

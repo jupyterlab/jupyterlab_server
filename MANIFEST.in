@@ -1,6 +1,7 @@
 include README.md
 include LICENSE
 include setupbase.py
+include jupyterlab_server/rest-api.yml
 include jupyterlab_server/templates/*.html
 recursive-include jupyterlab_server/tests *.json *.json.orig *.jupyterlab-workspace
 
