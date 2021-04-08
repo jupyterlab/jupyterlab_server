@@ -47,6 +47,8 @@ extensions = [
     'autodoc_traits',
     'sphinx.ext.autodoc',
     'sphinx.ext.intersphinx',
+    'sphinxcontrib.openapi',
+    'sphinx.ext.napoleon',
     'sphinx.ext.mathjax',
     'sphinx_copybutton'
 ]

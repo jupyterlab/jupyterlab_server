@@ -1,6 +1,6 @@
-=========================
-Application configuration
-=========================
+===========
+Application
+===========
 
 Module: :mod:`jupyterlab_server.app`
 ====================================

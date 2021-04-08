@@ -11,3 +11,5 @@ dependencies:
 - pip:
   - autodoc-traits
   - pydata_sphinx_theme
+  - sphinxcontrib-openapi
+  - numpydoc

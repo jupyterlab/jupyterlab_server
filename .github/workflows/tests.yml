@@ -58,7 +58,7 @@ jobs:
       - name: Run python tests
         # See `setup.cfg` for full test options
         run: |
-          pytest
+          pytest --pyargs jupyterlab_server
       - name: Upload coverage
         run: |
           codecov
@@ -77,6 +77,7 @@ jobs:
           pushd docs
           conda env create -f environment.yml
           conda activate jupyterlab_server_documentation
+          pip install ..
           make html
           conda deactivate
           popd

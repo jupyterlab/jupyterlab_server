@@ -1,6 +1,6 @@
-=========================
-JupyterLab Server Config
-=========================
+======
+Config
+======
 
 Module: :mod:`jupyterlab_server.config`
 =======================================
