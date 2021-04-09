@@ -8,6 +8,7 @@ The `OpenAPI Initiative`_ (fka Swagger™) is a project used to describe
 and document RESTful APIs.
 
 .. openapi:: ../../../jupyterlab_server/rest-api.yml
+    :examples:
 
 
 .. _OpenAPI Initiative: https://www.openapis.org/
