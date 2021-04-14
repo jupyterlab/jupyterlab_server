@@ -35,7 +35,12 @@ enter::
   $ python -m jupyterlab_server --help-all
 
 """
-destination = os.path.join(os.getcwd(), 'source/api/app-config.rst')
+# Handle local and RTD locations
+cwd = os.getcwd()
+if os.path.basename(cwd) == 'source':
+    destination = os.path.join(cwd, 'api/app-config.rst')
+else:
+    destination = os.path.join(cwd, 'source/api/app-config.rst')
 
 with open(destination, 'w') as f:
     f.write(header)
