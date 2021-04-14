@@ -9,5 +9,6 @@ JupyterLab Server API Reference:
     :caption: Contents:
 
     app
+    app-config
     config
     rest

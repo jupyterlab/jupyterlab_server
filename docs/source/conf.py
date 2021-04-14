@@ -36,7 +36,6 @@ version = '%i.%i' % version_ns['version_info'][:2]
 # The full version, including alpha/beta/rc tags.
 release = version_ns['__version__']
 
-
 # -- General configuration ---------------------------------------------------
 
 # Add any Sphinx extension module names here, as strings. They can be
@@ -90,3 +89,5 @@ html_context = {
 def setup(app):
     dest = osp.join(HERE, 'changelog.md')
     shutil.copy(osp.join(HERE, '..', '..', 'CHANGELOG.md'), dest)
+    with open(osp.join(HERE, '../autogen_config.py')) as f:
+        exec(compile(f.read(), '../autogen_config.py', 'exec'), {})
