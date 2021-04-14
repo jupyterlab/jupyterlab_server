@@ -20,3 +20,6 @@ __pycache__
 
 # generated changelog
 docs/source/changelog.md
+
+# generated cli docs
+docs/source/api/app-config.rst
