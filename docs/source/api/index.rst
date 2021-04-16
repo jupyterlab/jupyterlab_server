@@ -8,7 +8,9 @@ JupyterLab Server API Reference:
     :maxdepth: 1
     :caption: Contents:
 
-    app
     app-config
+    app
     config
+    handlers
+    process
     rest

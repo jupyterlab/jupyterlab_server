@@ -299,7 +299,7 @@ def get_settings(app_settings_dir, schemas_dir, settings_dir, schema_name="", ov
         The first item is a dictionary with a list of setting if no `schema_name`
         was provided, otherwise it is a dictionary with id, raw, scheme, settings
         and version keys. The second item is a list of warnings. Warnings will
-        either be a list of i) strings with the warning messages or ii) `None`s.
+        either be a list of i) strings with the warning messages or ii) `None`.
     """
     result = {}
     warnings = []
@@ -342,6 +342,7 @@ class SettingsHandler(ExtensionHandlerMixin, ExtensionHandlerJinjaMixin, APIHand
 
     @web.authenticated
     def get(self, schema_name=""):
+        """Get setting(s)"""
         result, warnings = get_settings(
             self.app_settings_dir,
             self.schemas_dir,
@@ -360,6 +361,7 @@ class SettingsHandler(ExtensionHandlerMixin, ExtensionHandlerJinjaMixin, APIHand
 
     @web.authenticated
     def put(self, schema_name):
+        """Update a setting"""
         overrides = self.overrides
         schemas_dir = self.schemas_dir
         settings_dir = self.settings_dir
