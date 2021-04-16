@@ -43,6 +43,7 @@ release = version_ns['__version__']
 # ones.
 extensions = [
     'myst_parser',
+    'numpydoc',
     'autodoc_traits',
     'sphinx.ext.autodoc',
     'sphinx.ext.intersphinx',
@@ -71,20 +72,22 @@ exclude_patterns = []
 #
 html_theme = "pydata_sphinx_theme"
 
-# Add any paths that contain custom static files (such as style sheets) here,
-# relative to this directory. They are copied after the builtin static files,
-# so a file named "default.css" will overwrite the builtin "default.css".
-html_static_path = ['_static']
+# Add an Edit this Page button
+html_theme_options = {
+    "use_edit_page_button": True,
+}
 
 # Output for github to be used in links
 html_context = {
-    "display_github": True,  # Integrate GitHub
     "github_user": "jupyterlab",  # Username
     "github_repo": "jupyterlab_server",  # Repo name
     "github_version": "master",  # Version
-    "conf_py_path": "/docs/source/",  # Path in the checkout to the docs root
+    "doc_path": "/docs/source/",  # Path in the checkout to the docs root
 }
 
+# This option generates errors when methods do not have docstrings,
+# so disable
+numpydoc_show_class_members = False
 
 def setup(app):
     dest = osp.join(HERE, 'changelog.md')

@@ -69,8 +69,8 @@ def get_federated_extensions(labextensions_path):
 def get_static_page_config(app_settings_dir=None, logger=None, level='all'):
     """Get the static page config for JupyterLab
 
-    Params
-    ------
+    Parameters
+    ----------
     logger: logger, optional
         An optional logging object
     level: string, optional ['all']

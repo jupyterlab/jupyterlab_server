@@ -14,6 +14,7 @@ LISTINGS_URL_SUFFIX='@jupyterlab/extensionmanager-extension/listings.json'
 
 
 def fetch_listings(logger):
+    """Fetch the listings for the extension manager."""
     if not logger:
         from traitlets import log
         logger = log.get_logger()
@@ -68,6 +69,7 @@ class ListingsHandler(APIHandler):
 
 
     def get(self, path):
+        """Get the listings for the extension manager."""
         self.set_header('Content-Type', 'application/json')
         if path == LISTINGS_URL_SUFFIX:
             self.write(ListingsHandler.listings)
