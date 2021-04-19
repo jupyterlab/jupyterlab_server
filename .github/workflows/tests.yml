@@ -7,7 +7,7 @@ defaults:
     shell: bash -l {0}
 
 jobs:
-  linux:
+  test:
     name: ${{ matrix.PLATFORM }} py${{ matrix.PYTHON_VERSION }}
     runs-on: ${{ matrix.PLATFORM }}-latest
     env:
@@ -59,6 +59,12 @@ jobs:
         # See `setup.cfg` for full test options
         run: |
           pytest --pyargs jupyterlab_server
+      - name: Check manifest
+        run: |
+          set -eux
+          pip install check-manifest
+          git clean -dfx
+          check-manifest -v
       - name: Upload coverage
         run: |
           codecov
@@ -67,7 +73,8 @@ jobs:
         run: |
           set -eux
           pip uninstall -y jupyterlab_server
-          python setup.py sdist
+          pip install build
+          python -m build --sdist .
           cd dist
           pip install *.tar.gz
           pytest --pyargs jupyterlab_server
@@ -81,3 +88,9 @@ jobs:
           make html
           conda deactivate
           popd
+      - name: Check Version Bump
+        run: |
+          set -eux
+          pip install tbump
+          tbump --non-interactive --only-patch 100.1.1
+          git checkout .
