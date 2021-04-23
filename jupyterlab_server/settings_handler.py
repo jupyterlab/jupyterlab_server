@@ -259,10 +259,12 @@ def _get_overrides(app_settings_dir):
     """Get overrides settings from `app_settings_dir`."""
     overrides, error = {}, ""
     overrides_path = os.path.join(app_settings_dir, 'overrides.json')
+    if not os.path.exists(overrides_path):
+        overrides_path = os.path.join(app_settings_dir, 'overrides.json5')
     if os.path.exists(overrides_path):
         with open(overrides_path, encoding='utf-8') as fid:
             try:
-                overrides = json.load(fid)
+                overrides = json5.load(fid)
             except Exception as e:
                 error = e
     # Allow `default_settings_overrides.json` files in <jupyter_config>/labconfig dirs
