@@ -4,6 +4,34 @@ github_url: 'https://github.com/jupyterlab/jupyterlab_server/blob/master/CHANGEL
 
 # Change Log
 
+## 2.5.0
+
+
+([Full Changelog](https://github.com/jupyterlab/jupyterlab_server/compare/2.4.0...f5009812e86ec47e36b3d90569d1eaa4771c9939))
+
+### Enhancements made
+
+- Support for overrides.json5 [#179](https://github.com/jupyterlab/jupyterlab_server/pull/179) ([@mlucool](https://github.com/mlucool))
+
+### Documentation improvements
+
+- Make LabConfig configurable and add config API docs [#172](https://github.com/jupyterlab/jupyterlab_server/pull/172) ([@afshin](https://github.com/afshin))
+
+### Other merged PRs
+
+- Upgrade packaging [#178](https://github.com/jupyterlab/jupyterlab_server/pull/178) ([@jtpio](https://github.com/jtpio))
+- Add more API docs [#177](https://github.com/jupyterlab/jupyterlab_server/pull/177) ([@jtpio](https://github.com/jtpio))
+- Add cli config options documentation [#176](https://github.com/jupyterlab/jupyterlab_server/pull/176) ([@jtpio](https://github.com/jtpio))
+- Add example request/responses to REST docs [#174](https://github.com/jupyterlab/jupyterlab_server/pull/174) ([@blink1073](https://github.com/blink1073))
+- Add Swagger Docs [#173](https://github.com/jupyterlab/jupyterlab_server/pull/173) ([@jtpio](https://github.com/jtpio))
+- Update Readme Badges [#171](https://github.com/jupyterlab/jupyterlab_server/pull/171) ([@blink1073](https://github.com/blink1073))
+
+### Contributors to this release
+
+([GitHub contributors page for this release](https://github.com/jupyterlab/jupyterlab_server/graphs/contributors?from=2021-03-30&to=2021-04-26&type=c))
+
+[@afshin](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Aafshin+updated%3A2021-03-30..2021-04-26&type=Issues) | [@blink1073](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Ablink1073+updated%3A2021-03-30..2021-04-26&type=Issues) | [@jtpio](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Ajtpio+updated%3A2021-03-30..2021-04-26&type=Issues) | [@mlucool](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Amlucool+updated%3A2021-03-30..2021-04-26&type=Issues) | [@welcome](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Awelcome+updated%3A2021-03-30..2021-04-26&type=Issues)
+
 ## 2.4.0
 
 ([Full Changelog](https://github.com/jupyterlab/jupyterlab_server/compare/2.3.0...1a9681654e627afdb67ec5fe1d6581617b813743))
