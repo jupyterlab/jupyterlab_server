@@ -4,6 +4,12 @@ github_url: 'https://github.com/jupyterlab/jupyterlab_server/blob/master/CHANGEL
 
 # Change Log
 
+## 2.5.1
+
+### Maintenance and upkeep improvements
+
+- Remove Packaging Dependency [#181](https://github.com/jupyterlab/jupyterlab_server/pull/181) ([@jtpio](https://github.com/jtpio))
+
 ## 2.5.0
 
 
