@@ -4,14 +4,17 @@ github_url: 'https://github.com/jupyterlab/jupyterlab_server/blob/master/CHANGEL
 
 # Change Log
 
+<!-- <START NEW CHANGELOG ENTRY> -->
+
 ## 2.5.1
 
 ### Maintenance and upkeep improvements
 
 - Remove Packaging Dependency [#181](https://github.com/jupyterlab/jupyterlab_server/pull/181) ([@jtpio](https://github.com/jtpio))
 
-## 2.5.0
+<!-- <END NEW CHANGELOG ENTRY> -->
 
+## 2.5.0
 
 ([Full Changelog](https://github.com/jupyterlab/jupyterlab_server/compare/2.4.0...f5009812e86ec47e36b3d90569d1eaa4771c9939))
 
