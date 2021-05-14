@@ -59,25 +59,9 @@ jobs:
         # See `setup.cfg` for full test options
         run: |
           pytest --pyargs jupyterlab_server
-      - name: Check manifest
-        run: |
-          set -eux
-          pip install check-manifest
-          git clean -dfx
-          check-manifest -v
       - name: Upload coverage
         run: |
           codecov
-      - name: Install and Test SDist
-        if: ${{ runner.os != 'Windows' }}
-        run: |
-          set -eux
-          pip uninstall -y jupyterlab_server
-          pip install build
-          python -m build --sdist .
-          cd dist
-          pip install *.tar.gz
-          pytest --pyargs jupyterlab_server
       - name: Build docs
         run: |
           set -eux
@@ -88,9 +72,43 @@ jobs:
           make html
           conda deactivate
           popd
-      - name: Check Version Bump
+
+  check_release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Install Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.9
+          architecture: "x64"
+      - name: Get pip cache dir
+        id: pip-cache
         run: |
-          set -eux
-          pip install tbump
-          tbump --non-interactive --only-patch 100.1.1
-          git checkout .
+          echo "::set-output name=dir::$(pip cache dir)"
+      - name: Cache pip
+        uses: actions/cache@v2
+        with:
+          path: ${{ steps.pip-cache.outputs.dir }}
+          key: ${{ runner.os }}-pip-${{ hashFiles('setup.cfg') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+            ${{ runner.os }}-pip-
+      - name: Cache checked links
+        uses: actions/cache@v2
+        with:
+          path: ~/.cache/pytest-link-check
+          key: ${{ runner.os }}-linkcheck-${{ hashFiles('**/.md') }}-md-links
+          restore-keys: |
+            ${{ runner.os }}-linkcheck-
+      - name: Upgrade packaging dependencies
+        run: |
+          pip install --upgrade pip setuptools wheel --user
+      - name: Install Dependencies
+        run: |
+          pip install -e .
+      - name: Check Release
+        uses: jupyter-server/jupyter_releaser/.github/actions/check-release@v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
