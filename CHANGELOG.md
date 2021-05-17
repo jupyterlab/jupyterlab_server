@@ -6,13 +6,27 @@ github_url: 'https://github.com/jupyterlab/jupyterlab_server/blob/master/CHANGEL
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
+## 2.5.2
+
+([Full Changelog](https://github.com/jupyterlab/jupyterlab_server/compare/v2.5.1...4b13c1d166906ee5033f6d3e8c7248c0ddf40d5b))
+
+### Maintenance and upkeep improvements
+
+- Use Jupyter Releaser [#183](https://github.com/jupyterlab/jupyterlab_server/pull/183) ([@afshin](https://github.com/afshin))
+
+### Contributors to this release
+
+([GitHub contributors page for this release](https://github.com/jupyterlab/jupyterlab_server/graphs/contributors?from=2021-05-10&to=2021-05-17&type=c))
+
+[@afshin](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Aafshin+updated%3A2021-05-10..2021-05-17&type=Issues)
+
+<!-- <END NEW CHANGELOG ENTRY> -->
+
 ## 2.5.1
 
 ### Maintenance and upkeep improvements
 
 - Remove Packaging Dependency [#181](https://github.com/jupyterlab/jupyterlab_server/pull/181) ([@jtpio](https://github.com/jtpio))
-
-<!-- <END NEW CHANGELOG ENTRY> -->
 
 ## 2.5.0
 
