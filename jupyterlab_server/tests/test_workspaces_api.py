@@ -8,16 +8,16 @@ import tornado
 from strict_rfc3339 import rfc3339_to_timestamp
 
 from .utils import expected_http_error, maybe_patch_ioloop, big_unicode_string
-
+from .utils import validate_request
 
 maybe_patch_ioloop()
 
 
 async def test_delete(jp_fetch, labserverapp):
-    orig = 'f/o/o/'
+    orig = 'f/o/o'
     copy = 'baz'
     r = await jp_fetch('lab', 'api', 'workspaces', orig)
-    assert r.code == 200
+    validate_request(r)
     res = r.body.decode()
     data = json.loads(res)
     data['metadata']['id'] = copy
@@ -35,14 +35,16 @@ async def test_get_non_existant(jp_fetch, labserverapp):
     id = 'foo'
 
     r = await jp_fetch('lab', 'api', 'workspaces', id)
+    validate_request(r)
     data = json.loads(r.body.decode())
 
     r2 = await jp_fetch('lab', 'api', 'workspaces', id,
         method='PUT',
         body=json.dumps(data))
-    assert r2.code == 204
+    validate_request(r2)
 
     r3 = await jp_fetch('lab', 'api', 'workspaces', id)
+    validate_request(r3)
     data = json.loads(r3.body.decode())
     first_metadata = data["metadata"]
     first_created = rfc3339_to_timestamp(first_metadata['created'])
@@ -51,9 +53,10 @@ async def test_get_non_existant(jp_fetch, labserverapp):
     r4 = await jp_fetch('lab', 'api', 'workspaces', id,
         method='PUT',
         body=json.dumps(data))
-    assert r4.code == 204
+    validate_request(r4)
 
     r5 = await jp_fetch('lab', 'api', 'workspaces', id)
+    validate_request(r5)
     data = json.loads(r5.body.decode())
     second_metadata = data["metadata"]
     second_created = rfc3339_to_timestamp(second_metadata['created'])
@@ -67,6 +70,7 @@ async def test_get_non_existant(jp_fetch, labserverapp):
 async def test_get(jp_fetch, labserverapp):
     id = 'foo'
     r = await jp_fetch('lab', 'api', 'workspaces', id)
+    validate_request(r)
     data = json.loads(r.body.decode())
     metadata = data['metadata']
     assert metadata['id'] == id
@@ -74,15 +78,15 @@ async def test_get(jp_fetch, labserverapp):
     assert rfc3339_to_timestamp(metadata['last_modified'])
 
     r2 = await jp_fetch('lab', 'api', 'workspaces', id)
-    assert r2.code == 200
+    validate_request(r2)
     data = json.loads(r.body.decode())
     assert data['metadata']['id'] == id
 
 async def test_listing(jp_fetch, labserverapp):
     # ID fields are from workspaces/*.jupyterlab-workspace
     listing = set(['foo', 'f/o/o/'])
-    r = await jp_fetch('lab', 'api', 'workspaces')
-    assert r.code == 200
+    r = await jp_fetch('lab', 'api', 'workspaces/')
+    validate_request(r)
     res = r.body.decode()
     data = json.loads(res)
     output = set(data['workspaces']['ids'])

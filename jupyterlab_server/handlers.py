@@ -60,6 +60,7 @@ class LabHandler(ExtensionHandlerJinjaMixin, ExtensionHandlerMixin, JupyterHandl
     @web.authenticated
     @web.removeslash
     def get(self, mode = None, workspace = None, tree = None):
+        """Get the JupyterLab html page."""
         workspace = 'default' if workspace is None else workspace.replace('/workspaces/','')
         tree_path = '' if tree is None else tree.replace('/tree/','')
 

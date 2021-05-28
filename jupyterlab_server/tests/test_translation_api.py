@@ -17,6 +17,7 @@ from ..translation_utils import (_get_installed_language_pack_locales,
                                  run_process_and_parse, translator)
 
 from .utils import maybe_patch_ioloop
+from .utils import validate_request
 
 maybe_patch_ioloop()
 
@@ -71,13 +72,15 @@ def before_after_test(schemas_dir, user_settings_dir, labserverapp):
 
 
 async def test_get(jp_fetch):
-    r = await jp_fetch("lab", "api", "translations", "")
+    r = await jp_fetch("lab", "api", "translations/")
+    validate_request(r)
     data = json.loads(r.body.decode())["data"]
     assert "en" in data
 
 async def test_get_locale(jp_fetch):
     locale = "es_CO"
     r = await jp_fetch("lab", "api", "translations", locale)
+    validate_request(r)
     data = json.loads(r.body.decode())["data"]
     assert "jupyterlab" in data
     assert data["jupyterlab"][""]["language"] == locale
@@ -88,17 +91,20 @@ async def test_get_locale(jp_fetch):
 
 async def test_get_locale_bad(jp_fetch):
     r = await jp_fetch("lab", "api", "translations", "foo_BAR")
+    validate_request(r)
     data = json.loads(r.body.decode())["data"]
     assert data == {}
 
 async def test_get_locale_not_installed(jp_fetch):
     r = await jp_fetch("lab", "api", "translations", "es_AR")
+    validate_request(r)
     result = json.loads(r.body.decode())
     assert "not installed" in result["message"]
     assert result["data"] == {}
 
 async def test_get_locale_not_valid(jp_fetch):
     r = await jp_fetch("lab", "api", "translations", "foo_BAR")
+    validate_request(r)
     result = json.loads(r.body.decode())
     assert "not valid" in result["message"]
     assert result["data"] == {}

@@ -2,8 +2,12 @@ name: Tests
 
 on: [push, pull_request]
 
+defaults:
+  run:
+    shell: bash -l {0}
+
 jobs:
-  linux:
+  test:
     name: ${{ matrix.PLATFORM }} py${{ matrix.PYTHON_VERSION }}
     runs-on: ${{ matrix.PLATFORM }}-latest
     env:
@@ -20,40 +24,91 @@ jobs:
           PYTHON_VERSION: pypy3
     steps:
       - name: Checkout
-        uses: actions/checkout@v1
+        uses: actions/checkout@v2
       - name: Cache pip
-        uses: actions/cache@v1
+        uses: actions/cache@v2
         with:
           path: ~/.cache/pip
           key: ${{ runner.os }}-py-${{ matrix.PYTHON_VERSION }}-pip-${{ hashFiles('**/setup.py') }}
-      - name: Setup python ${{ matrix.PYTHON_VERSION }}
-        uses: actions/setup-python@v1
+      - name: Cache conda
+        uses: actions/cache@v2
         with:
-          python-version: ${{ matrix.PYTHON_VERSION }}
-          architecture: 'x64'
+          path: ~/conda_pkgs_dir
+          key:
+            ${{ runner.os }}-conda-${{ env.CACHE_NUMBER }}-${{
+            hashFiles('etc/example-environment.yml') }}
+      - name: Setup conda ${{ matrix.PYTHON_VERSION }}
+        uses: conda-incubator/setup-miniconda@v2
+        with:
+          auto-update-conda: true
+          python-version: ${{ matrix.python-version }}
       - name: Install python dependencies
         run: |
-          pip install setuptools pip wheel --upgrade --user --cache-dir ~/.cache/pip
+          conda install setuptools pip wheel
+      - name: Install pywin32 on Windows
+        if: ${{ runner.os == 'Windows' }}
+        run: conda install pywin32
       - name: Install project dependencies
         run: |
           pip install -v -e ".[test]" --cache-dir ~/.cache/pip
-      - name: Show python environment
-        run: |
-          python --version
-          python -m pip freeze
-          python -m pip check
+      - run: conda info
+      - run: conda list
+      - run: conda config --show
+      - run: pip check
       - name: Run python tests
         # See `setup.cfg` for full test options
         run: |
-          pytest
+          pytest --pyargs jupyterlab_server
       - name: Upload coverage
         run: |
           codecov
-      - name: Install and Test SDist
-        if: ${{ runner.os != 'Windows' }}
+      - name: Build docs
         run: |
-          pip uninstall -y jupyterlab_server
-          python setup.py sdist
-          cd dist
-          pip install *.tar.gz
-          pytest --pyargs jupyterlab_server
+          set -eux
+          pushd docs
+          conda env create -f environment.yml
+          conda activate jupyterlab_server_documentation
+          pip install ..
+          make html
+          conda deactivate
+          popd
+
+  check_release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Install Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.9
+          architecture: "x64"
+      - name: Get pip cache dir
+        id: pip-cache
+        run: |
+          echo "::set-output name=dir::$(pip cache dir)"
+      - name: Cache pip
+        uses: actions/cache@v2
+        with:
+          path: ${{ steps.pip-cache.outputs.dir }}
+          key: ${{ runner.os }}-pip-${{ hashFiles('setup.cfg') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+            ${{ runner.os }}-pip-
+      - name: Cache checked links
+        uses: actions/cache@v2
+        with:
+          path: ~/.cache/pytest-link-check
+          key: ${{ runner.os }}-linkcheck-${{ hashFiles('**/.md') }}-md-links
+          restore-keys: |
+            ${{ runner.os }}-linkcheck-
+      - name: Upgrade packaging dependencies
+        run: |
+          pip install --upgrade pip setuptools wheel --user
+      - name: Install Dependencies
+        run: |
+          pip install -e .
+      - name: Check Release
+        uses: jupyter-server/jupyter_releaser/.github/actions/check-release@v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}

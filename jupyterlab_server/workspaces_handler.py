@@ -101,7 +101,7 @@ class WorkspacesHandler(ExtensionHandlerMixin, ExtensionHandlerJinjaMixin, APIHa
         self.workspaces_dir = path
 
     def ensure_directory(self):
-        """Return the workspaces directory if set or raise error if not set."""
+        """Return the workspaces directory if set or raise error if not set"""
         if not self.workspaces_dir:
             raise web.HTTPError(500, 'Workspaces directory is not set')
 
@@ -109,6 +109,7 @@ class WorkspacesHandler(ExtensionHandlerMixin, ExtensionHandlerJinjaMixin, APIHa
 
     @web.authenticated
     def delete(self, space_name):
+        """Remove a workspace"""
         directory = self.ensure_directory()
 
         if not space_name:
@@ -129,6 +130,7 @@ class WorkspacesHandler(ExtensionHandlerMixin, ExtensionHandlerJinjaMixin, APIHa
 
     @web.authenticated
     def get(self, space_name=''):
+        """Get workspace(s) data"""
         directory = self.ensure_directory()
 
         if not space_name:
@@ -153,6 +155,7 @@ class WorkspacesHandler(ExtensionHandlerMixin, ExtensionHandlerJinjaMixin, APIHa
 
     @web.authenticated
     def put(self, space_name=''):
+        """Update workspace data"""
         if not space_name:
             raise web.HTTPError(400, 'Workspace name is required for PUT.')
 

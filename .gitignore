@@ -17,3 +17,9 @@ __pycache__
 .coverage
 .cache
 .pytest_cache
+
+# generated changelog
+docs/source/changelog.md
+
+# generated cli docs
+docs/source/api/app-config.rst

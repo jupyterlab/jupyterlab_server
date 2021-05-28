@@ -69,8 +69,8 @@ def get_federated_extensions(labextensions_path):
 def get_static_page_config(app_settings_dir=None, logger=None, level='all'):
     """Get the static page config for JupyterLab
 
-    Params
-    ------
+    Parameters
+    ----------
     logger: logger, optional
         An optional logging object
     level: string, optional ['all']
@@ -185,68 +185,68 @@ def write_page_config(page_config, level='all'):
 class LabConfig(HasTraits):
     """The lab application configuration object.
     """
-    app_name = Unicode('', help='The name of the application.')
+    app_name = Unicode('', help='The name of the application.').tag(config=True)
 
-    app_version = Unicode('', help='The version of the application.')
+    app_version = Unicode('', help='The version of the application.').tag(config=True)
 
-    app_namespace = Unicode('', help='The namespace of the application.')
+    app_namespace = Unicode('', help='The namespace of the application.').tag(config=True)
 
-    app_url = Unicode('/lab', help='The url path for the application.')
+    app_url = Unicode('/lab', help='The url path for the application.').tag(config=True)
 
-    app_settings_dir = Unicode('', help='The application settings directory.')
+    app_settings_dir = Unicode('', help='The application settings directory.').tag(config=True)
 
     extra_labextensions_path = List(Unicode(),
         help="""Extra paths to look for federated JupyterLab extensions"""
-    )
+    ).tag(config=True)
 
-    labextensions_path = List(Unicode(), help='The standard paths to look in for federated JupyterLab extensions')
+    labextensions_path = List(Unicode(), help='The standard paths to look in for federated JupyterLab extensions').tag(config=True)
 
-    templates_dir = Unicode('', help='The application templates directory.')
+    templates_dir = Unicode('', help='The application templates directory.').tag(config=True)
 
     static_dir = Unicode('',
                          help=('The optional location of local static files. '
                                'If given, a static file handler will be '
-                               'added.'))
+                               'added.')).tag(config=True)
 
 
-    labextensions_url = Unicode('', help='The url for federated JupyterLab extensions')
+    labextensions_url = Unicode('', help='The url for federated JupyterLab extensions').tag(config=True)
 
-    settings_url = Unicode(help='The url path of the settings handler.')
+    settings_url = Unicode(help='The url path of the settings handler.').tag(config=True)
 
     user_settings_dir = Unicode('',
                                 help=('The optional location of the user '
-                                      'settings directory.'))
+                                      'settings directory.')).tag(config=True)
 
     schemas_dir = Unicode('',
                           help=('The optional location of the settings '
                                 'schemas directory. If given, a handler will '
-                                'be added for settings.'))
+                                'be added for settings.')).tag(config=True)
 
-    workspaces_api_url = Unicode(help='The url path of the workspaces API.')
+    workspaces_api_url = Unicode(help='The url path of the workspaces API.').tag(config=True)
 
     workspaces_dir = Unicode('',
                              help=('The optional location of the saved '
                                    'workspaces directory. If given, a handler '
-                                   'will be added for workspaces.'))
+                                   'will be added for workspaces.')).tag(config=True)
 
-    listings_url = Unicode(help='The listings url.')
+    listings_url = Unicode(help='The listings url.').tag(config=True)
 
-    themes_url = Unicode(help='The theme url.')
+    themes_url = Unicode(help='The theme url.').tag(config=True)
 
     licenses_url = Unicode(help='The third-party licenses url.')
 
     themes_dir = Unicode('',
                          help=('The optional location of the themes '
                                'directory. If given, a handler will be added '
-                               'for themes.'))
+                               'for themes.')).tag(config=True)
 
-    translations_api_url = Unicode(help='The url path of the translations handler.')
+    translations_api_url = Unicode(help='The url path of the translations handler.').tag(config=True)
 
-    tree_url = Unicode(help='The url path of the tree handler.')
+    tree_url = Unicode(help='The url path of the tree handler.').tag(config=True)
 
     cache_files = Bool(True,
                        help=('Whether to cache files on the server. '
-                             'This should be `True` except in dev mode.'))
+                             'This should be `True` except in dev mode.')).tag(config=True)
 
     @default('template_dir')
     def _default_template_dir(self):
