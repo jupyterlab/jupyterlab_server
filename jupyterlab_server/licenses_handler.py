@@ -75,24 +75,30 @@ class LicensesManager(LoggingConfigurable):
 
     def report(self, report_format, bundles_pattern, full_text):
         """create a human- or machine-readable report"""
-        licenses = self.licenses(bundles_pattern=bundles_pattern)
+        bundles = self.bundles(bundles_pattern=bundles_pattern)
         if report_format == "json":
-            return json.dumps(licenses, indent=2, sort_keys=True), "application/json"
+            return self.report_json(bundles), "application/json"
         elif report_format == "csv":
-            return self.report_csv(licenses), "text/csv"
+            return self.report_csv(bundles), "text/csv"
         elif report_format == "markdown":
             return (
-                self.report_markdown(licenses, full_text=full_text),
+                self.report_markdown(bundles, full_text=full_text),
                 "text/markdown",
             )
 
-    def report_csv(self, licenses):
+    def report_json(self, bundles):
+        """create a JSON report
+        TODO: SPDX
+        """
+        return json.dumps({"bundles": bundles}, indent=2, sort_keys=True)
+
+    def report_csv(self, bundles):
         """create a CSV report"""
         outfile = io.StringIO()
         fieldnames = ["name", "versionInfo", "licenseId", "extractedText"]
         writer = csv.DictWriter(outfile, fieldnames=["bundle"] + fieldnames)
         writer.writeheader()
-        for bundle_name, bundle in licenses.items():
+        for bundle_name, bundle in bundles.items():
             for package in bundle["packages"]:
                 writer.writerow(
                     {
@@ -102,17 +108,17 @@ class LicensesManager(LoggingConfigurable):
                 )
         return outfile.getvalue()
 
-    def report_markdown(self, licenses, full_text=True):
+    def report_markdown(self, bundles, full_text=True):
         """create a markdown report"""
         lines = []
         library_names = [
             len(package.get("name", UNKNOWN_PACKAGE_NAME))
-            for bundle_name, bundle in licenses.items()
+            for bundle_name, bundle in bundles.items()
             for package in bundle.get("packages", [])
         ]
         longest_name = max(library_names) if library_names else 1
 
-        for bundle_name, bundle in licenses.items():
+        for bundle_name, bundle in bundles.items():
             # TODO: parametrize template
             lines += [f"# {bundle_name}", ""]
 
@@ -201,11 +207,11 @@ class LicensesManager(LoggingConfigurable):
         name = json.loads(package_json.read_text(encoding="utf-8"))["name"]
         return path, name
 
-    def licenses(self, bundles_pattern=".*"):
+    def bundles(self, bundles_pattern=".*"):
         """Read all of the licenses
         TODO: schema
         """
-        licenses = {
+        bundles = {
             name: self.license_bundle(Path(ext["ext_path"]), name)
             for name, ext in self.federated_extensions.items()
             if re.match(bundles_pattern, name)
@@ -213,12 +219,12 @@ class LicensesManager(LoggingConfigurable):
 
         app_path, app_name = self.app_static_info()
         if app_path is not None and re.match(bundles_pattern, app_name):
-            licenses[app_name] = self.license_bundle(app_path, app_name)
+            bundles[app_name] = self.license_bundle(app_path, app_name)
 
-        if not licenses:
-            self.log.warn("No licenses found at all")
+        if not bundles:
+            self.log.warn("No license bundles found at all")
 
-        return licenses
+        return bundles
 
 
 class LicensesHandler(APIHandler):
