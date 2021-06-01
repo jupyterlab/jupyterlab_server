@@ -2,6 +2,7 @@
 # Distributed under the terms of the Modified BSD License.
 
 from .app import LabServerApp
+from .licenses_app import LicensesApp
 from .handlers import add_handlers, LabHandler, LabConfig
 from .workspaces_handler import slugify, WORKSPACE_EXTENSION
 from ._version import __version__

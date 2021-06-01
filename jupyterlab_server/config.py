@@ -233,6 +233,8 @@ class LabConfig(HasTraits):
 
     themes_url = Unicode(help='The theme url.').tag(config=True)
 
+    licenses_url = Unicode(help='The third-party licenses url.')
+
     themes_dir = Unicode('',
                          help=('The optional location of the themes '
                                'directory. If given, a handler will be added '
@@ -277,6 +279,10 @@ class LabConfig(HasTraits):
     @default('themes_url')
     def _default_themes_url(self):
         return ujoin(self.app_url, 'api', 'themes/')
+
+    @default('licenses_url')
+    def _default_licenses_url(self):
+        return ujoin(self.app_url, 'api', 'licenses/')
 
     @default('tree_url')
     def _default_tree_url(self):

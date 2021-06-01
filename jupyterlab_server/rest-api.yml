@@ -223,6 +223,50 @@ paths:
       responses:
         "204":
           description: The workspace has been deleted
+  /lab/api/licenses/:
+    get:
+      summary: License report
+      description: |
+        Get the third-party licenses for the core application and all federated
+        extensions
+      parameters:
+        - name: full_text
+          description: Return full license texts
+          in: query
+          schema:
+            type: boolean
+        - name: format
+          in: query
+          description: The format in which to report licenses
+          schema:
+            type: string
+            enum:
+              - csv
+              - json
+              - markdown
+        - name: bundles
+          description: A regular expression to limit the names of bundles reported
+          in: query
+          schema:
+            type: string
+        - name: download
+          in: query
+          description: Whether to set a representative filename header
+          schema:
+            type: boolean
+      responses:
+        "200":
+          description: A license report
+          content:
+            application/markdown:
+              schema:
+                type: string
+            text/csv:
+              schema:
+                type: string
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LicenseBundles"
 
 components:
   schemas:
@@ -289,3 +333,24 @@ components:
               type: string
             created:
               type: string
+    LicenseBundles:
+      type: object
+      properties:
+        bundles:
+          type: object
+          additionalProperties:
+            type: object
+            properties:
+              packages:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    extractedText:
+                      type: string
+                    licenseId:
+                      type: string
+                    name:
+                      type: string
+                    versionInfo:
+                      type: string
