@@ -6,6 +6,20 @@ github_url: 'https://github.com/jupyterlab/jupyterlab_server/blob/master/CHANGEL
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
+## 2.6.0
+
+([Full Changelog](https://github.com/jupyterlab/jupyterlab_server/compare/v2.5.2...c348b1690589f254112e7bd66c5df306f112e7e9))
+
+### Enhancements made
+
+- LicensesManager and API/CLI [#161](https://github.com/jupyterlab/jupyterlab_server/pull/161) ([@bollwyvl](https://github.com/bollwyvl))
+
+### Contributors to this release
+
+([GitHub contributors page for this release](https://github.com/jupyterlab/jupyterlab_server/graphs/contributors?from=2021-05-17&to=2021-06-01&type=c))
+
+[@bollwyvl](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Abollwyvl+updated%3A2021-05-17..2021-06-01&type=Issues)
+
 ## 2.5.2
 
 ([Full Changelog](https://github.com/jupyterlab/jupyterlab_server/compare/v2.5.1...4b13c1d166906ee5033f6d3e8c7248c0ddf40d5b))
