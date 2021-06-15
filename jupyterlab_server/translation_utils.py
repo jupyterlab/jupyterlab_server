@@ -12,7 +12,7 @@ import sys
 import traceback
 
 import babel
-import pkg_resources
+import entrypoints
 from packaging.version import parse as parse_version
 
 # Entry points
@@ -45,7 +45,7 @@ def _get_installed_language_pack_locales():
     """
     data = {}
     messages = []
-    for entry_point in pkg_resources.iter_entry_points(JUPYTERLAB_LANGUAGEPACK_ENTRY):
+    for entry_point in entrypoints.get_group_all(JUPYTERLAB_LANGUAGEPACK_ENTRY):
         try:
             data[entry_point.name] = os.path.dirname(entry_point.load().__file__)
         except Exception:
@@ -74,7 +74,7 @@ def _get_installed_package_locales():
     """
     data = {}
     messages = []
-    for entry_point in pkg_resources.iter_entry_points(JUPYTERLAB_LOCALE_ENTRY):
+    for entry_point in entrypoints.get_group_all(JUPYTERLAB_LOCALE_ENTRY):
         try:
             data[entry_point.name] = os.path.dirname(entry_point.load().__file__)
         except Exception:
@@ -107,31 +107,6 @@ def _main():
 
 # --- Helpers
 # ----------------------------------------------------------------------------
-def run_process_and_parse(cmd: list):
-    """
-    Run a list of commands and return the result parsed form stdout.
-
-    Parameters
-    ----------
-    cmd: list
-        List of commands
-
-    Returns
-    -------
-    tuple
-        A tuple in the form `(result_dict, message)`.
-    """
-    result = {"data": {}, "message": ""}
-    try:
-        p = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        stdout, stderr = p.communicate()
-        result = json.loads(stdout.decode('utf-8'))
-    except Exception:
-        result["message"] = traceback.format_exc() + "\n" + repr(stderr.decode('utf-8'))
-
-    return result["data"], result["message"]
-
-
 def is_valid_locale(locale: str) -> bool:
     """
     Check if a `locale` value is valid.
@@ -168,7 +143,7 @@ def is_valid_locale(locale: str) -> bool:
     return valid
 
 
-def get_display_name(locale: str, display_locale: str=DEFAULT_LOCALE) -> str:
+def get_display_name(locale: str, display_locale: str = DEFAULT_LOCALE) -> str:
     """
     Return the language name to use with a `display_locale` for a given language locale.
 
@@ -185,7 +160,9 @@ def get_display_name(locale: str, display_locale: str=DEFAULT_LOCALE) -> str:
         Localized `locale` and capitalized language name using `display_locale` as language.
     """
     locale = locale if is_valid_locale(locale) else DEFAULT_LOCALE
-    display_locale = display_locale if is_valid_locale(display_locale) else DEFAULT_LOCALE
+    display_locale = (
+        display_locale if is_valid_locale(display_locale) else DEFAULT_LOCALE
+    )
     loc = babel.Locale.parse(locale)
     return loc.get_display_name(display_locale).capitalize()
 
@@ -242,8 +219,7 @@ def get_installed_packages_locale(locale: str) -> dict:
     - `entry_points={"jupyterlab.locale": "package-name = package_module"}`
     - `entry_points={"jupyterlab.locale": "jupyterlab-git = jupyterlab_git"}`
     """
-    cmd = [sys.executable, __file__, "_get_installed_package_locales"]
-    found_package_locales, message = run_process_and_parse(cmd)
+    found_package_locales, message = _get_installed_package_locales()
     packages_locale_data = {}
     messages = message.split("\n")
     if not message:
@@ -269,7 +245,7 @@ def get_installed_packages_locale(locale: str) -> dict:
                 )
                 if os.path.isfile(locale_json_path):
                     try:
-                        with open(locale_json_path, "r", encoding='utf-8') as fh:
+                        with open(locale_json_path, "r", encoding="utf-8") as fh:
                             packages_locale_data[package_name] = json.load(fh)
                     except Exception:
                         messages.append(traceback.format_exc())
@@ -279,7 +255,7 @@ def get_installed_packages_locale(locale: str) -> dict:
 
 # --- API
 # ----------------------------------------------------------------------------
-def get_language_packs(display_locale: str=DEFAULT_LOCALE) -> tuple:
+def get_language_packs(display_locale: str = DEFAULT_LOCALE) -> tuple:
     """
     Return the available language packs installed in the system.
 
@@ -295,15 +271,8 @@ def get_language_packs(display_locale: str=DEFAULT_LOCALE) -> tuple:
     -------
     tuple
         A tuple in the form `(locale_data_dict, message)`.
-
-    Notes
-    -----
-    We call `_get_installed_language_pack_locales` via a subprocess to
-    guarantee the results represent the most up-to-date entry point
-    information, which seems to be defined on interpreter startup.
     """
-    cmd = [sys.executable, __file__, "_get_installed_language_pack_locales"]
-    found_locales, message = run_process_and_parse(cmd)
+    found_locales, message = _get_installed_language_pack_locales()
     locales = {}
     messages = message.split("\n")
     if not message:
@@ -316,7 +285,9 @@ def get_language_packs(display_locale: str=DEFAULT_LOCALE) -> tuple:
             else:
                 invalid_locales.append(locale)
 
-        display_locale = display_locale if display_locale in valid_locales else DEFAULT_LOCALE
+        display_locale = (
+            display_locale if display_locale in valid_locales else DEFAULT_LOCALE
+        )
         locales = {
             DEFAULT_LOCALE: {
                 "displayName": get_display_name(DEFAULT_LOCALE, display_locale),
@@ -330,7 +301,9 @@ def get_language_packs(display_locale: str=DEFAULT_LOCALE) -> tuple:
             }
 
         if invalid_locales:
-            messages.append("The following locales are invalid: {0}!".format(invalid_locales))
+            messages.append(
+                "The following locales are invalid: {0}!".format(invalid_locales)
+            )
 
     return locales, "\n".join(messages)
 
@@ -351,8 +324,7 @@ def get_language_pack(locale: str) -> tuple:
     guarantee the results represent the most up-to-date entry point
     information, which seems to be defined on interpreter startup.
     """
-    cmd = [sys.executable, __file__, "_get_installed_language_pack_locales"]
-    found_locales, message = run_process_and_parse(cmd)
+    found_locales, message = _get_installed_language_pack_locales()
     found_packages_locales, message = get_installed_packages_locale(locale)
     locale_data = {}
     messages = message.split("\n")
@@ -365,7 +337,7 @@ def get_language_pack(locale: str) -> tuple:
                         pkg_name = name.replace(".json", "")
                         json_path = os.path.join(root, name)
                         try:
-                            with open(json_path, "r", encoding='utf-8') as fh:
+                            with open(json_path, "r", encoding="utf-8") as fh:
                                 merged_data = json.load(fh)
                         except Exception:
                             messages.append(traceback.format_exc())
