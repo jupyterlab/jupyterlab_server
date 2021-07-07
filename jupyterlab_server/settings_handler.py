@@ -217,11 +217,10 @@ def _override(schema_name, schema, overrides):
         defaults = overrides[schema_name]
         for key in defaults:
             if key in schema['properties']:
-                # schema['properties'][key]['default'] = defaults[key]
                 new_defaults = schema['properties'][key]['default']
+                # If values for defaults are dicts do a recursive update
                 if isinstance(new_defaults, dict):
-                    new_defaults = new_defaults.copy()
-                    new_defaults.update(defaults[key])
+                    recursive_update(new_defaults.copy(), defaults[key])
                 else:
                     new_defaults = defaults[key]
 
