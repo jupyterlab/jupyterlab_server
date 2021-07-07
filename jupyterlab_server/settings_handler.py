@@ -21,8 +21,6 @@ SETTINGS_EXTENSION = '.jupyterlab-settings'
 
 def _get_schema(schemas_dir, schema_name, overrides, labextensions_path):
     """Returns a dict containing a parsed and validated JSON schema."""
-
-
     notfound_error = 'Schema not found: %s'
     parse_error = 'Failed parsing schema (%s): %s'
     validation_error = 'Failed validating schema (%s): %s'
@@ -215,12 +213,19 @@ def _list_settings(schemas_dir, settings_dir, overrides, extension='.json', labe
 
 def _override(schema_name, schema, overrides):
     """Override default values in the schema if necessary."""
-
     if schema_name in overrides:
         defaults = overrides[schema_name]
         for key in defaults:
             if key in schema['properties']:
-                schema['properties'][key]['default'] = defaults[key]
+                # schema['properties'][key]['default'] = defaults[key]
+                new_defaults = schema['properties'][key]['default']
+                if isinstance(new_defaults, dict):
+                    new_defaults = new_defaults.copy()
+                    new_defaults.update(defaults[key])
+                else:
+                    new_defaults = defaults[key]
+
+                schema['properties'][key]['default'] = new_defaults
             else:
                 schema['properties'][key] = dict(default=defaults[key])
 
@@ -259,14 +264,17 @@ def _get_overrides(app_settings_dir):
     """Get overrides settings from `app_settings_dir`."""
     overrides, error = {}, ""
     overrides_path = os.path.join(app_settings_dir, 'overrides.json')
+
     if not os.path.exists(overrides_path):
         overrides_path = os.path.join(app_settings_dir, 'overrides.json5')
+
     if os.path.exists(overrides_path):
         with open(overrides_path, encoding='utf-8') as fid:
             try:
                 overrides = json5.load(fid)
             except Exception as e:
                 error = e
+
     # Allow `default_settings_overrides.json` files in <jupyter_config>/labconfig dirs
     # to allow layering of defaults
     cm = ConfigManager(config_dir_name="labconfig")
