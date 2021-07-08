@@ -4,7 +4,7 @@ channels:
   - conda-forge
 dependencies:
 - python=3.8
-- sphinx>=1.8
+- sphinx<4.0
 - sphinx-copybutton
 - pip
 - myst-parser

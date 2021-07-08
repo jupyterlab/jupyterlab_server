@@ -13,6 +13,21 @@ from .utils import maybe_patch_ioloop, big_unicode_string
 from .utils import validate_request
 
 
+async def test_get_settings_overrides_dicts(jp_fetch, labserverapp):
+    # Check that values that are dictionaries in overrides.json are
+    # merged with the schema.
+    id = '@jupyterlab/apputils-extension:themes'
+    r = await jp_fetch('lab', 'api', 'settings', id)
+    validate_request(r)
+    res = r.body.decode()
+    data = json.loads(res)
+    assert data['id'] == id
+    schema = data['schema']
+    # Check that overrides.json file is respected.
+    assert schema['properties']['codeCellConfig']['default']["lineNumbers"] is False
+    assert len(schema['properties']['codeCellConfig']['default']) == 15
+
+
 async def test_get_settings(jp_fetch, labserverapp):
     id = '@jupyterlab/apputils-extension:themes'
     r = await jp_fetch('lab', 'api', 'settings', id)
