@@ -167,12 +167,6 @@ def get_page_config(labextensions_path, app_settings_dir=None, logger=None):
     rollup_disabled.update(page_config.get(disabled_key, []))
     page_config[disabled_key] = rollup_disabled
 
-    # Convert dictionaries to lists to give to the front end
-    for (key, value) in page_config.items():
-
-        if isinstance(value, dict):
-            page_config[key] = [subkey for subkey in value if value[subkey]]
-
     return page_config
 
 
