@@ -84,6 +84,15 @@ class LabHandler(ExtensionHandlerJinjaMixin, ExtensionHandlerMixin, JupyterHandl
         page_config.setdefault('ignorePlugins', [])
         page_config.setdefault('serverRoot', server_root)
         page_config['store_id'] = self.application.store_id
+
+        server_root = os.path.normpath(os.path.expanduser(server_root))
+        try:
+            page_config['preferredDir'] = self.serverapp.preferred_dir
+            page_config['preferredPath'] = self.serverapp.preferred_dir.replace(server_root, "")
+        except Exception:
+            page_config['preferredDir'] = server_root
+            page_config['preferredPath'] = '/'
+
         self.application.store_id += 1
 
         mathjax_config = self.settings.get('mathjax_config',
