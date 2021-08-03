@@ -6,6 +6,30 @@ github_url: 'https://github.com/jupyterlab/jupyterlab_server/blob/master/CHANGEL
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
+## 2.6.2
+
+([Full Changelog](https://github.com/jupyterlab/jupyterlab_server/compare/v2.6.1...1ac80fc439a8150de11bc470d370693cf5389781))
+
+### Enhancements made
+
+- PR: Add preferred dir option to config [#190](https://github.com/jupyterlab/jupyterlab_server/pull/190) ([@goanpeca](https://github.com/goanpeca))
+
+### Bugs fixed
+
+- PR: Update new_defaults dictionary instead of copy [#194](https://github.com/jupyterlab/jupyterlab_server/pull/194) ([@goanpeca](https://github.com/goanpeca))
+
+### Other merged PRs
+
+- Update tests workflow [#193](https://github.com/jupyterlab/jupyterlab_server/pull/193) ([@afshin](https://github.com/afshin))
+
+### Contributors to this release
+
+([GitHub contributors page for this release](https://github.com/jupyterlab/jupyterlab_server/graphs/contributors?from=2021-07-09&to=2021-08-03&type=c))
+
+[@afshin](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Aafshin+updated%3A2021-07-09..2021-08-03&type=Issues) | [@codecov-commenter](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Acodecov-commenter+updated%3A2021-07-09..2021-08-03&type=Issues) | [@goanpeca](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Agoanpeca+updated%3A2021-07-09..2021-08-03&type=Issues)
+
+<!-- <END NEW CHANGELOG ENTRY> -->
+
 ## 2.6.1
 
 ([Full Changelog](https://github.com/jupyterlab/jupyterlab_server/compare/v2.6.0...52f4cf92adb8b6dc3b350ce324619a231a9003ba))
@@ -19,8 +43,6 @@ github_url: 'https://github.com/jupyterlab/jupyterlab_server/blob/master/CHANGEL
 ([GitHub contributors page for this release](https://github.com/jupyterlab/jupyterlab_server/graphs/contributors?from=2021-06-01&to=2021-07-09&type=c))
 
 [@goanpeca](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Agoanpeca+updated%3A2021-06-01..2021-07-09&type=Issues)
-
-<!-- <END NEW CHANGELOG ENTRY> -->
 
 ## 2.6.0
 
