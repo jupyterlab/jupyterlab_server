@@ -24,7 +24,7 @@ async def test_get_settings_overrides_dicts(jp_fetch, labserverapp):
     assert data['id'] == id
     schema = data['schema']
     # Check that overrides.json file is respected.
-    assert schema['properties']['codeCellConfig']['default']["lineNumbers"] is False
+    assert schema['properties']['codeCellConfig']['default']["lineNumbers"] is True
     assert len(schema['properties']['codeCellConfig']['default']) == 15
 
 

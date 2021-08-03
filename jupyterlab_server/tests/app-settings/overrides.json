@@ -2,7 +2,7 @@
   "@jupyterlab/apputils-extension:themes": {
     "theme": "JupyterLab Dark",
     "codeCellConfig": {
-      "lineNumbers": false
+      "lineNumbers": true
    }
   },
   "@jupyterlab/unicode-extension:plugin": {
