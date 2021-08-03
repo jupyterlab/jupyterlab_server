@@ -220,7 +220,7 @@ def _override(schema_name, schema, overrides):
                 new_defaults = schema['properties'][key]['default']
                 # If values for defaults are dicts do a recursive update
                 if isinstance(new_defaults, dict):
-                    recursive_update(new_defaults.copy(), defaults[key])
+                    recursive_update(new_defaults, defaults[key])
                 else:
                     new_defaults = defaults[key]
 
