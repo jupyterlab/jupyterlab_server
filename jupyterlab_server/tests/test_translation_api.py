@@ -14,7 +14,7 @@ from ..translation_utils import (_get_installed_language_pack_locales,
                                  get_installed_packages_locale,
                                  get_language_pack, get_language_packs,
                                  is_valid_locale, merge_locale_data,
-                                 run_process_and_parse, translator)
+                                 translator)
 
 from .utils import maybe_patch_ioloop
 from .utils import validate_request
@@ -130,31 +130,13 @@ async def test_backend_locale_extension(jp_fetch):
 
 # --- Utils testing
 # ------------------------------------------------------------------------
-def test_get_installed_language_pack_locales_fails():
-    # This should not be able to find entry points, since it needs to be
-    # ran in a subprocess
-    data, message = _get_installed_language_pack_locales()
-    assert "es_CO" not in data
-    assert message == ""
-
 def test_get_installed_language_pack_locales_passes():
-    utils_file = os.path.join(os.path.dirname(HERE), "translation_utils.py")
-    cmd = [sys.executable, utils_file, "_get_installed_language_pack_locales"]
-    data, message = run_process_and_parse(cmd)
+    data, message = _get_installed_language_pack_locales()
     assert "es_CO" in data
     assert message == ""
 
-def test_get_installed_package_locales_fails():
-    # This should not be able to find entry points, since it needs to be
-    # ran in a subprocess
-    data, message = _get_installed_package_locales()
-    assert "jupyterlab_some_package" not in data
-    assert message == ""
-
 def test_get_installed_package_locales():
-    utils_file = os.path.join(os.path.dirname(HERE), "translation_utils.py")
-    cmd = [sys.executable, utils_file, "_get_installed_package_locales"]
-    data, message = run_process_and_parse(cmd)
+    data, message = _get_installed_package_locales()
     assert "jupyterlab_some_package" in data
     assert os.path.isdir(data["jupyterlab_some_package"])
     assert message == ""
