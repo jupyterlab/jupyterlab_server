@@ -6,6 +6,12 @@ github_url: 'https://github.com/jupyterlab/jupyterlab_server/blob/master/CHANGEL
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
+## 2.7.0
+
+No merged PRs
+
+<!-- <END NEW CHANGELOG ENTRY> -->
+
 ## 2.6.2
 
 ([Full Changelog](https://github.com/jupyterlab/jupyterlab_server/compare/v2.6.1...1ac80fc439a8150de11bc470d370693cf5389781))
@@ -27,8 +33,6 @@ github_url: 'https://github.com/jupyterlab/jupyterlab_server/blob/master/CHANGEL
 ([GitHub contributors page for this release](https://github.com/jupyterlab/jupyterlab_server/graphs/contributors?from=2021-07-09&to=2021-08-03&type=c))
 
 [@afshin](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Aafshin+updated%3A2021-07-09..2021-08-03&type=Issues) | [@codecov-commenter](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Acodecov-commenter+updated%3A2021-07-09..2021-08-03&type=Issues) | [@goanpeca](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Agoanpeca+updated%3A2021-07-09..2021-08-03&type=Issues)
-
-<!-- <END NEW CHANGELOG ENTRY> -->
 
 ## 2.6.1
 
