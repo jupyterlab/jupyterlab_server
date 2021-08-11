@@ -140,7 +140,7 @@ github_url: 'https://github.com/jupyterlab/jupyterlab_server/blob/master/CHANGEL
 
 ## 2.1.5
 
-* Fix/cp949 encoding error [#158](https://github.com/jupyterlab/jupyterlab_server/pull/158) ([@k-takanori](https://github.com/k-takanori))
+* Fix/cp949 encoding error [#158](https://github.com/jupyterlab/jupyterlab_server/pull/158) (@k-takanori)
 
 ## 2.1.4
 
