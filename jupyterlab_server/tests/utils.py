@@ -44,7 +44,7 @@ def wrap_request(request, spec):
     # work around lack of support for path parameters which can contain slashes
     # https://github.com/OAI/OpenAPI-Specification/issues/892
     url = None
-    for path in spec.paths:
+    for path in spec['paths']:
         if url:
             continue
         has_arg = '{' in path
