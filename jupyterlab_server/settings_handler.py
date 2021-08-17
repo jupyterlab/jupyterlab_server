@@ -100,6 +100,7 @@ def _get_user_settings(settings_dir, schema_name, schema):
         except ValidationError as e:
             warning = validation_warning % (schema_name, str(e))
             raw = '{}'
+            settings = {}
 
     return dict(
         raw=raw,
