@@ -10,10 +10,9 @@ from urllib.parse import parse_qs, urlparse, urljoin
 from openapi_core.validation.request.datatypes import (
     RequestParameters, OpenAPIRequest
 )
-from openapi_core import create_spec
-from openapi_core.exceptions import OpenAPIError
-from openapi_core.validation.request.validators import RequestValidator
 from openapi_core.validation.response.datatypes import OpenAPIResponse
+from openapi_core import create_spec
+from openapi_core.validation.request.validators import RequestValidator
 from openapi_core.validation.response.validators import ResponseValidator
 import requests
 from ruamel.yaml import YAML
@@ -45,13 +44,7 @@ def wrap_request(request, spec):
     # work around lack of support for path parameters which can contain slashes
     # https://github.com/OAI/OpenAPI-Specification/issues/892
     url = None
-    try:
-       # with openapi-core >= 0.14 spec is a SpecPath object
-       specpaths = spec['paths']
-    except OpenAPIError:
-       # openapi-core < 0.14 spec is a Spec object
-       specpaths = spec.paths
-    for path in specpaths:
+    for path in spec['paths']:
         if url:
             continue
         has_arg = '{' in path
