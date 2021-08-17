@@ -6,6 +6,26 @@ github_url: 'https://github.com/jupyterlab/jupyterlab_server/blob/master/CHANGEL
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
+## 2.7.1
+
+([Full Changelog](https://github.com/jupyterlab/jupyterlab_server/compare/v2.7.0...4c5f9c84fa4c1be2267712d2a5f28fe82bdf9047))
+
+### Bugs fixed
+
+- Fix reset user settings if validation failed [#199](https://github.com/jupyterlab/jupyterlab_server/pull/199) ([@fcollonval](https://github.com/fcollonval))
+
+### Maintenance and upkeep improvements
+
+- TST: support openapi-core 0.14 SpecPath [#198](https://github.com/jupyterlab/jupyterlab_server/pull/198) ([@bnavigator](https://github.com/bnavigator))
+
+### Contributors to this release
+
+([GitHub contributors page for this release](https://github.com/jupyterlab/jupyterlab_server/graphs/contributors?from=2021-08-11&to=2021-08-17&type=c))
+
+[@blink1073](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Ablink1073+updated%3A2021-08-11..2021-08-17&type=Issues) | [@bnavigator](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Abnavigator+updated%3A2021-08-11..2021-08-17&type=Issues) | [@fcollonval](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Afcollonval+updated%3A2021-08-11..2021-08-17&type=Issues) | [@welcome](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Awelcome+updated%3A2021-08-11..2021-08-17&type=Issues)
+
+<!-- <END NEW CHANGELOG ENTRY> -->
+
 ## 2.7.0
 
 ([Full Changelog](https://github.com/jupyterlab/jupyterlab_server/compare/v2.6.2...919186b026f8c86f2f14c11318776e272a9dd629))
@@ -19,8 +39,6 @@ github_url: 'https://github.com/jupyterlab/jupyterlab_server/blob/master/CHANGEL
 ([GitHub contributors page for this release](https://github.com/jupyterlab/jupyterlab_server/graphs/contributors?from=2021-08-03&to=2021-08-11&type=c))
 
 [@fcollonval](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Afcollonval+updated%3A2021-08-03..2021-08-11&type=Issues) | [@welcome](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Awelcome+updated%3A2021-08-03..2021-08-11&type=Issues)
-
-<!-- <END NEW CHANGELOG ENTRY> -->
 
 ## 2.6.2
 
