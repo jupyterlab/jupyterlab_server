@@ -1,6 +1,10 @@
 name: Tests
 
-on: [push, pull_request]
+on:
+  push:
+    branches: 'master'
+  pull_request:
+    branches: '*'
 
 defaults:
   run:
@@ -75,6 +79,9 @@ jobs:
 
   check_release:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        group: [check_release, link_check]
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -96,6 +103,7 @@ jobs:
             ${{ runner.os }}-pip-
             ${{ runner.os }}-pip-
       - name: Cache checked links
+        if: ${{ matrix.group == 'link_check' }}
         uses: actions/cache@v2
         with:
           path: ~/.cache/pytest-link-check
@@ -109,6 +117,10 @@ jobs:
         run: |
           pip install -e .
       - name: Check Release
+        if: ${{ matrix.group == 'check_release' }}
         uses: jupyter-server/jupyter_releaser/.github/actions/check-release@v1
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Run Link Check
+        if: ${{ matrix.group == 'link_check' }}
+        uses: jupyter-server/jupyter_releaser/.github/actions/check-links@v1
