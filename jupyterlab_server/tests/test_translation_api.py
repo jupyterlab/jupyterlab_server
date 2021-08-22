@@ -219,6 +219,7 @@ def test_get_display_name_valid():
     assert get_display_name("en", "fr") == "Anglais"
     assert get_display_name("es", "en") == "Spanish"
     assert get_display_name("fr", "en") == "French"
+    assert get_display_name("pl_pl", "en") == "Polish (Poland)"
 
 
 def test_get_display_name_invalid():

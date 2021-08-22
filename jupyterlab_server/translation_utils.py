@@ -164,7 +164,10 @@ def get_display_name(locale: str, display_locale: str = DEFAULT_LOCALE) -> str:
         display_locale if is_valid_locale(display_locale) else DEFAULT_LOCALE
     )
     loc = babel.Locale.parse(locale)
-    return loc.get_display_name(display_locale).capitalize()
+    display_name = loc.get_display_name(display_locale)
+    if display_name:
+        display_name = display_name[0].upper() + display_name[1:]
+    return display_name
 
 
 def merge_locale_data(language_pack_locale_data, package_locale_data):
