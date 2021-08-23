@@ -6,6 +6,30 @@ github_url: 'https://github.com/jupyterlab/jupyterlab_server/blob/master/CHANGEL
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
+## 2.7.2
+
+([Full Changelog](https://github.com/jupyterlab/jupyterlab_server/compare/v2.7.1...1508ff86421f1473ad388ac2d384bf986e326862))
+
+### Bugs fixed
+
+- Do not overwrite capitalization of region names [#202](https://github.com/jupyterlab/jupyterlab_server/pull/202) ([@krassowski](https://github.com/krassowski))
+
+### Maintenance and upkeep improvements
+
+- Use Check Links Action [#201](https://github.com/jupyterlab/jupyterlab_server/pull/201) ([@blink1073](https://github.com/blink1073))
+
+### Documentation improvements
+
+- Recommend `pytest --pyargs jupyterlab_server` [#203](https://github.com/jupyterlab/jupyterlab_server/pull/203) ([@krassowski](https://github.com/krassowski))
+
+### Contributors to this release
+
+([GitHub contributors page for this release](https://github.com/jupyterlab/jupyterlab_server/graphs/contributors?from=2021-08-17&to=2021-08-23&type=c))
+
+[@blink1073](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Ablink1073+updated%3A2021-08-17..2021-08-23&type=Issues) | [@codecov-commenter](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Acodecov-commenter+updated%3A2021-08-17..2021-08-23&type=Issues) | [@krassowski](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Akrassowski+updated%3A2021-08-17..2021-08-23&type=Issues)
+
+<!-- <END NEW CHANGELOG ENTRY> -->
+
 ## 2.7.1
 
 ([Full Changelog](https://github.com/jupyterlab/jupyterlab_server/compare/v2.7.0...4c5f9c84fa4c1be2267712d2a5f28fe82bdf9047))
@@ -23,8 +47,6 @@ github_url: 'https://github.com/jupyterlab/jupyterlab_server/blob/master/CHANGEL
 ([GitHub contributors page for this release](https://github.com/jupyterlab/jupyterlab_server/graphs/contributors?from=2021-08-11&to=2021-08-17&type=c))
 
 [@blink1073](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Ablink1073+updated%3A2021-08-11..2021-08-17&type=Issues) | [@bnavigator](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Abnavigator+updated%3A2021-08-11..2021-08-17&type=Issues) | [@fcollonval](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Afcollonval+updated%3A2021-08-11..2021-08-17&type=Issues) | [@welcome](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Awelcome+updated%3A2021-08-11..2021-08-17&type=Issues)
-
-<!-- <END NEW CHANGELOG ENTRY> -->
 
 ## 2.7.0
 
