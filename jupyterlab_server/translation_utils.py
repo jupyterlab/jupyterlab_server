@@ -7,9 +7,11 @@ import gettext
 import importlib
 import json
 import os
-import subprocess
+import re
 import sys
 import traceback
+from functools import lru_cache
+from typing import Dict, Pattern
 
 import babel
 import entrypoints
@@ -23,6 +25,44 @@ JUPYTERLAB_LOCALE_ENTRY = "jupyterlab.locale"
 DEFAULT_LOCALE = "en"
 LOCALE_DIR = "locale"
 LC_MESSAGES_DIR = "LC_MESSAGES"
+DEFAULT_DOMAIN = "jupyterlab"
+L10N_SCHEMA_NAME = "@jupyterlab/translation-extension:plugin"
+
+_default_schema_context = "schema"
+_default_settings_context = "settings"
+_lab_i18n_config = "jupyter.lab.internationalization"
+
+# mapping of schema translatable string selectors to translation context
+DEFAULT_SCHEMA_SELECTORS = {
+    "properties/.*/title": _default_settings_context,
+    "properties/.*/description": _default_settings_context,
+    "definitions/.*/properties/.*/title": _default_settings_context,
+    "definitions/.*/properties/.*/description": _default_settings_context,
+    "title": _default_schema_context,
+    "description": _default_schema_context,
+    # JupyterLab-specific
+    "jupyter\.lab\.setting-icon-label": _default_settings_context,
+    "jupyter\.lab\.menus/.*/label": "menu",
+    "jupyter\.lab\.toolbars/.*/label": "toolbar",
+}
+
+
+@lru_cache()
+def _get_default_schema_selectors() -> Dict[Pattern, str]:
+    return {
+        re.compile("^/" + pattern + "$"): context
+        for pattern, context in DEFAULT_SCHEMA_SELECTORS.items()
+    }
+
+
+def _prepare_schema_patterns(schema: dict) -> Dict[Pattern, str]:
+    return {
+        **_get_default_schema_selectors(),
+        **{
+            re.compile("^/" + selector + "$"): _default_schema_context
+            for selector in schema.get(_lab_i18n_config, {}).get("selectors", [])
+        },
+    }
 
 
 # --- Private process helpers
@@ -431,7 +471,7 @@ class TranslationBundle:
         """
         return gettext.dngettext(self._domain, msgid, msgid_plural, n)
 
-    def pgettext(self, msgctxt: str, singular: str) -> str:
+    def pgettext(self, msgctxt: str, msgid: str) -> str:
         """
         Translate a singular string with context.
 
@@ -506,7 +546,7 @@ class TranslationBundle:
         str
             The translated string.
         """
-        return self.ngettext(msgid, plural, n)
+        return self.ngettext(msgid, msgid_plural, n)
 
     def _p(self, msgctxt: str, msgid: str) -> str:
         """
@@ -526,7 +566,7 @@ class TranslationBundle:
         """
         return self.pgettext(msgctxt, msgid)
 
-    def _np(self, msgctxt: str, msgid: str, msgid_plular: str, n: str) -> str:
+    def _np(self, msgctxt: str, msgid: str, msgid_plural: str, n: str) -> str:
         """
         Shorthand for npgettext.
 
@@ -546,13 +586,14 @@ class TranslationBundle:
         str
             The translated string.
         """
-        return self.npgettext(msgctxt, msgid, msgid_plular, n)
+        return self.npgettext(msgctxt, msgid, msgid_plural, n)
 
 
 class translator:
     """
     Translations manager.
     """
+
     _TRANSLATORS = {}
     _LOCALE = DEFAULT_LOCALE
 
@@ -569,6 +610,22 @@ class translator:
         for key in ["LANGUAGE", "LANG"]:
             os.environ[key] = f"{locale}.UTF-8"
 
+    @staticmethod
+    def normalize_domain(domain: str) -> str:
+        """Normalize a domain name.
+
+        Parameters
+        ----------
+        domain: str
+            Domain to normalize
+
+        Returns
+        -------
+        str
+            Normalized domain
+        """
+        return domain.replace("-", "_")
+
     @classmethod
     def set_locale(cls, locale: str):
         """
@@ -579,6 +636,10 @@ class translator:
         locale: str
             The language name to use.
         """
+        if locale == cls._LOCALE:
+            # Nothing to do bail early
+            return
+
         if is_valid_locale(locale):
             cls._LOCALE = locale
             translator._update_env(locale)
@@ -602,13 +663,80 @@ class translator:
         Translator
             A translator instance bound to the domain.
         """
-        if domain in cls._TRANSLATORS:
-            trans = cls._TRANSLATORS[domain]
+        norm_domain = translator.normalize_domain(domain)
+        if norm_domain in cls._TRANSLATORS:
+            trans = cls._TRANSLATORS[norm_domain]
         else:
-            trans = TranslationBundle(domain, cls._LOCALE)
-            cls._TRANSLATORS[domain] = trans
+            trans = TranslationBundle(norm_domain, cls._LOCALE)
+            cls._TRANSLATORS[norm_domain] = trans
 
         return trans
+
+    @staticmethod
+    def _translate_schema_strings(
+        translations,
+        schema: dict,
+        prefix: str = "",
+        to_translate: Dict[Pattern, str] = None,
+    ) -> None:
+        """Translate a schema in-place."""
+        if to_translate is None:
+            to_translate = _prepare_schema_patterns(schema)
+
+        for key, value in schema.items():
+            path = prefix + "/" + key
+
+            if isinstance(value, str):
+                matched = False
+                for pattern, context in to_translate.items():
+                    if pattern.fullmatch(path):
+                        matched = True
+                        break
+                if matched:
+                    schema[key] = translations.pgettext(context, value)
+            elif isinstance(value, dict):
+                translator._translate_schema_strings(
+                    translations,
+                    value,
+                    prefix=path,
+                    to_translate=to_translate,
+                )
+            elif isinstance(value, list):
+                for i, element in enumerate(value):
+                    if not isinstance(element, dict):
+                        continue
+                    translator._translate_schema_strings(
+                        translations,
+                        element,
+                        prefix=path + "[" + str(i) + "]",
+                        to_translate=to_translate,
+                    )
+
+    @staticmethod
+    def translate_schema(schema: Dict) -> Dict:
+        """Translate a schema.
+        
+        Parameters
+        ----------
+        schema: dict
+            The schema to be translated
+
+        Returns
+        -------
+        Dict
+            The translated schema
+        """
+        if translator._LOCALE == DEFAULT_LOCALE:
+            return schema
+
+        translations = translator.load(
+            schema.get(_lab_i18n_config, {}).get("domain", DEFAULT_DOMAIN)
+        )
+
+        new_schema = schema.copy()
+        translator._translate_schema_strings(translations, schema.copy())
+
+        return new_schema
 
 
 if __name__ == "__main__":
