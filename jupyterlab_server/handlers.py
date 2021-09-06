@@ -201,6 +201,19 @@ def add_handlers(handlers, extension_app):
         setting_path = ujoin(extension_app.settings_url, '(?P<schema_name>.+)')
         handlers.append((setting_path, SettingsHandler, settings_config))
 
+        # Handle translations.
+        ## Translations requires settings as the locale source of truth is stored in it
+        if extension_app.translations_api_url:
+            # Handle requests for the list of language packs available.
+            # Make slash optional.
+            translations_path = ujoin(extension_app.translations_api_url, '?')
+            handlers.append((translations_path, TranslationsHandler, settings_config))
+
+            # Handle requests for an individual language pack.
+            translations_lang_path = ujoin(
+                extension_app.translations_api_url, '(?P<locale>.*)')
+            handlers.append((translations_lang_path, TranslationsHandler, settings_config))
+
     # Handle saved workspaces.
     if extension_app.workspaces_dir:
 
@@ -278,18 +291,6 @@ def add_handlers(handlers, extension_app):
                 'manager': LicensesManager(parent=extension_app)
             }
         ))
-
-    # Handle translations.
-    if extension_app.translations_api_url:
-        # Handle requests for the list of language packs available.
-        # Make slash optional.
-        translations_path = ujoin(extension_app.translations_api_url, '?')
-        handlers.append((translations_path, TranslationsHandler, {'lab_config': extension_app}))
-
-        # Handle requests for an individual language pack.
-        translations_lang_path = ujoin(
-            extension_app.translations_api_url, '(?P<locale>.*)')
-        handlers.append((translations_lang_path, TranslationsHandler, {'lab_config': extension_app}))
 
     # Let the lab handler act as the fallthrough option instead of a 404.
     fallthrough_url = ujoin(extension_app.app_url, r'.*')
