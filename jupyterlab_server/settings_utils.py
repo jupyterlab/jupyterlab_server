@@ -2,18 +2,16 @@
 
 # Copyright (c) Jupyter Development Team.
 # Distributed under the terms of the Modified BSD License.
-import json
-from jupyterlab_server.translation_utils import DEFAULT_LOCALE, L10N_SCHEMA_NAME, is_valid_locale
-import os
 from glob import glob
-
+import json
 import json5
-from jsonschema import Draft4Validator as Validator
-from jsonschema import ValidationError
+from jsonschema import Draft4Validator as Validator, ValidationError
 from jupyter_server.services.config.manager import ConfigManager, recursive_update
+import os
 from tornado import web
 
 from .server import APIHandler, tz
+from .translation_utils import DEFAULT_LOCALE, L10N_SCHEMA_NAME, is_valid_locale
 
 # The JupyterLab settings file extension.
 SETTINGS_EXTENSION = '.jupyterlab-settings'
@@ -436,14 +434,21 @@ class SchemaHandler(APIHandler):
         -----
         If the locale setting is not available or not valid, it will default to jupyterlab_server.translation_utils.DEFAULT_LOCALE.
         """
-        settings, _ = get_settings(
-            self.app_settings_dir,
-            self.schemas_dir,
-            self.settings_dir,
-            schema_name=L10N_SCHEMA_NAME,
-            overrides=self.overrides,
-            labextensions_path=self.labextensions_path,
-        )
+        try:
+            settings, _ = get_settings(
+                self.app_settings_dir,
+                self.schemas_dir,
+                self.settings_dir,
+                schema_name=L10N_SCHEMA_NAME,
+                overrides=self.overrides,
+                labextensions_path=self.labextensions_path,
+            )
+        except web.HTTPError as e:
+            schema_warning = "Missing or misshappen translation settings schema:\n%s"
+            self.log.warn(schema_warning % str(e))
+
+            settings = {}
+
         current_locale = settings.get("settings", {}).get("locale", DEFAULT_LOCALE)
         if not is_valid_locale(current_locale):
             current_locale = DEFAULT_LOCALE

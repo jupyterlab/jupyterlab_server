@@ -24,4 +24,11 @@ docs/source/changelog.md
 # generated cli docs
 docs/source/api/app-config.rst
 
-.vscode/
+# jetbrains IDE stuff
+*.iml
+.idea/
+
+# ms IDE stuff
+*.code-workspace
+.history
+.vscode
