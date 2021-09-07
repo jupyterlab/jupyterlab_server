@@ -6,6 +6,22 @@ github_url: 'https://github.com/jupyterlab/jupyterlab_server/blob/master/CHANGEL
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
+## 2.8.0
+
+([Full Changelog](https://github.com/jupyterlab/jupyterlab_server/compare/v2.7.2...407a8e997825e76b7f9c8992ee03206c21ea0fa0))
+
+### Enhancements made
+
+- Translate settings schema [#205](https://github.com/jupyterlab/jupyterlab_server/pull/205) ([@fcollonval](https://github.com/fcollonval))
+
+### Contributors to this release
+
+([GitHub contributors page for this release](https://github.com/jupyterlab/jupyterlab_server/graphs/contributors?from=2021-08-23&to=2021-09-07&type=c))
+
+[@fcollonval](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Afcollonval+updated%3A2021-08-23..2021-09-07&type=Issues)
+
+<!-- <END NEW CHANGELOG ENTRY> -->
+
 ## 2.7.2
 
 ([Full Changelog](https://github.com/jupyterlab/jupyterlab_server/compare/v2.7.1...1508ff86421f1473ad388ac2d384bf986e326862))
@@ -27,8 +43,6 @@ github_url: 'https://github.com/jupyterlab/jupyterlab_server/blob/master/CHANGEL
 ([GitHub contributors page for this release](https://github.com/jupyterlab/jupyterlab_server/graphs/contributors?from=2021-08-17&to=2021-08-23&type=c))
 
 [@blink1073](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Ablink1073+updated%3A2021-08-17..2021-08-23&type=Issues) | [@codecov-commenter](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Acodecov-commenter+updated%3A2021-08-17..2021-08-23&type=Issues) | [@krassowski](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Akrassowski+updated%3A2021-08-17..2021-08-23&type=Issues)
-
-<!-- <END NEW CHANGELOG ENTRY> -->
 
 ## 2.7.1
 
