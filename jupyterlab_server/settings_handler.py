@@ -35,7 +35,14 @@ class SettingsHandler(ExtensionHandlerMixin, ExtensionHandlerJinjaMixin, SchemaH
         """Get setting(s)"""
         # Need to be update here as translator locale is not change when a new locale is put
         # from frontend
-        translator.set_locale(self.get_current_locale())
+        try:
+            locale = self.get_current_locale()
+        except web.HTTPError as e:
+            # fallback in case of missing (404) or misshapen (500) translation schema
+            locale = DEFAULT_LOCALE
+            'Failed loading or validating translation settings schema'
+
+        translator.set_locale(locale)
 
         result, warnings = get_settings(
             self.app_settings_dir,
