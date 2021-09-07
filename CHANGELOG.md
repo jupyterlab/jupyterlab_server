@@ -6,6 +6,22 @@ github_url: 'https://github.com/jupyterlab/jupyterlab_server/blob/master/CHANGEL
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
+## 2.8.1
+
+([Full Changelog](https://github.com/jupyterlab/jupyterlab_server/compare/v2.8.0...680f4fe1c8c7d1d7841e14562720d81a27e6d0ad))
+
+### Bugs fixed
+
+- Fall back to `DEFAULT_LOCALE` when translation settings schema is invalid in `get_current_locale` [#207](https://github.com/jupyterlab/jupyterlab_server/pull/207) ([@telamonian](https://github.com/telamonian))
+
+### Contributors to this release
+
+([GitHub contributors page for this release](https://github.com/jupyterlab/jupyterlab_server/graphs/contributors?from=2021-09-07&to=2021-09-07&type=c))
+
+[@telamonian](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Atelamonian+updated%3A2021-09-07..2021-09-07&type=Issues)
+
+<!-- <END NEW CHANGELOG ENTRY> -->
+
 ## 2.8.0
 
 ([Full Changelog](https://github.com/jupyterlab/jupyterlab_server/compare/v2.7.2...407a8e997825e76b7f9c8992ee03206c21ea0fa0))
@@ -19,8 +35,6 @@ github_url: 'https://github.com/jupyterlab/jupyterlab_server/blob/master/CHANGEL
 ([GitHub contributors page for this release](https://github.com/jupyterlab/jupyterlab_server/graphs/contributors?from=2021-08-23&to=2021-09-07&type=c))
 
 [@fcollonval](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Afcollonval+updated%3A2021-08-23..2021-09-07&type=Issues)
-
-<!-- <END NEW CHANGELOG ENTRY> -->
 
 ## 2.7.2
 
