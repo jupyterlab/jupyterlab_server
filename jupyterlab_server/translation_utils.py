@@ -16,6 +16,7 @@ from typing import Dict, Pattern
 import babel
 import entrypoints
 from packaging.version import parse as parse_version
+from typing import Tuple
 
 # Entry points
 JUPYTERLAB_LANGUAGEPACK_ENTRY = "jupyterlab.languagepack"
@@ -27,6 +28,7 @@ LOCALE_DIR = "locale"
 LC_MESSAGES_DIR = "LC_MESSAGES"
 DEFAULT_DOMAIN = "jupyterlab"
 L10N_SCHEMA_NAME = "@jupyterlab/translation-extension:plugin"
+PY37_OR_LOWER = sys.version_info[:2] <= (3, 7)
 
 _default_schema_context = "schema"
 _default_settings_context = "settings"
@@ -247,15 +249,17 @@ def merge_locale_data(language_pack_locale_data, package_locale_data):
     return result
 
 
-def get_installed_packages_locale(locale: str) -> dict:
+def get_installed_packages_locale(locale: str) -> Tuple[dict, str]:
     """
     Get all jupyterlab extensions installed that contain locale data.
 
     Returns
     -------
-    dict
-        Ordered list of available language packs.
-        >>> {"package-name": locale_data, ...}
+    tuple
+        A tuple in the form `(locale_data_dict, message)`,
+        where the `locale_data_dict` is an ordered list
+        of available language packs:
+            >>> {"package-name": locale_data, ...}
 
     Examples
     --------
@@ -298,7 +302,7 @@ def get_installed_packages_locale(locale: str) -> dict:
 
 # --- API
 # ----------------------------------------------------------------------------
-def get_language_packs(display_locale: str = DEFAULT_LOCALE) -> tuple:
+def get_language_packs(display_locale: str = DEFAULT_LOCALE) -> Tuple[dict, str]:
     """
     Return the available language packs installed in the system.
 
@@ -487,7 +491,14 @@ class TranslationBundle:
         str
             The translated string.
         """
-        return gettext.dpgettext(self._domain, msgctxt, msgid)
+        # Python 3.7 or lower does not offer translations based on context.
+        # On these versions `pgettext` falls back to `gettext`
+        if PY37_OR_LOWER:
+            translation = gettext.dgettext(self._domain, msgid)
+        else:
+            translation = gettext.dpgettext(self._domain, msgctxt, msgid)
+
+        return translation
 
     def npgettext(self, msgctxt: str, msgid: str, msgid_plural: str, n: int) -> str:
         """
@@ -509,7 +520,14 @@ class TranslationBundle:
         str
             The translated string.
         """
-        return gettext.dnpgettext(self._domain, msgctxt, msgid, msgid_plural, n)
+        # Python 3.7 or lower does not offer translations based on context.
+        # On these versions `npgettext` falls back to `ngettext`
+        if PY37_OR_LOWER:
+            translation = gettext.dngettext(self._domain, msgid, msgid_plural, n)
+        else:
+            translation = gettext.dnpgettext(self._domain, msgctxt, msgid, msgid_plural, n)
+
+        return translation
 
     # Shorthands
     def __(self, msgid: str) -> str:
@@ -566,7 +584,7 @@ class TranslationBundle:
         """
         return self.pgettext(msgctxt, msgid)
 
-    def _np(self, msgctxt: str, msgid: str, msgid_plural: str, n: str) -> str:
+    def _np(self, msgctxt: str, msgid: str, msgid_plural: str, n: int) -> str:
         """
         Shorthand for npgettext.
 
