@@ -6,6 +6,23 @@ github_url: 'https://github.com/jupyterlab/jupyterlab_server/blob/master/CHANGEL
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
+## 2.8.2
+
+([Full Changelog](https://github.com/jupyterlab/jupyterlab_server/compare/v2.8.1...27cead5e506882c1cf999cb8ca48a94031064c9a))
+
+### Bugs fixed
+
+- Fallback to context-less translation on Python 3.7 [#213](https://github.com/jupyterlab/jupyterlab_server/pull/213) ([@krassowski](https://github.com/krassowski))
+- Clean unneeded catch [#210](https://github.com/jupyterlab/jupyterlab_server/pull/210) ([@fcollonval](https://github.com/fcollonval))
+
+### Contributors to this release
+
+([GitHub contributors page for this release](https://github.com/jupyterlab/jupyterlab_server/graphs/contributors?from=2021-09-07&to=2021-09-25&type=c))
+
+[@codecov-commenter](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Acodecov-commenter+updated%3A2021-09-07..2021-09-25&type=Issues) | [@fcollonval](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Afcollonval+updated%3A2021-09-07..2021-09-25&type=Issues) | [@krassowski](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Akrassowski+updated%3A2021-09-07..2021-09-25&type=Issues)
+
+<!-- <END NEW CHANGELOG ENTRY> -->
+
 ## 2.8.1
 
 ([Full Changelog](https://github.com/jupyterlab/jupyterlab_server/compare/v2.8.0...680f4fe1c8c7d1d7841e14562720d81a27e6d0ad))
@@ -19,8 +36,6 @@ github_url: 'https://github.com/jupyterlab/jupyterlab_server/blob/master/CHANGEL
 ([GitHub contributors page for this release](https://github.com/jupyterlab/jupyterlab_server/graphs/contributors?from=2021-09-07&to=2021-09-07&type=c))
 
 [@telamonian](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Atelamonian+updated%3A2021-09-07..2021-09-07&type=Issues)
-
-<!-- <END NEW CHANGELOG ENTRY> -->
 
 ## 2.8.0
 
