@@ -4,6 +4,11 @@
 [![Build Status](https://github.com/jupyterlab/jupyterlab_server/workflows/Tests/badge.svg?branch=master)](https://github.com/jupyterlab/jupyterlab_server/actions?query=branch%3Amaster+workflow%3A%22Tests%22)
 [![Documentation Status](https://readthedocs.org/projects/jupyterlab_server/badge/?version=stable)](http://jupyterlab_server.readthedocs.io/en/stable/)
 
+## Movivation
+
+JupyterLab Server sits between JupyterLab and Jupyter Server, and provides a
+set of REST API handlers and utilities that are used by JupyterLab.  It is a separate project in order to
+accommodate creating JupyterLab-like applications from a more limited scope.
 
 ## Install
 
@@ -11,11 +16,11 @@
 
 ## Usage
 
-The application author creates a JupyterLab build on their machine
-using the core JupyterLab application.  They can then serve their
-files by subclassing the `LabServerApp` with the appropriate
-configuration and creating a Python entry point that launches the app.
+See the full documentation for [API docs](https://jupyterlab-server.readthedocs.io/en/stable/api/index.html) and [REST endpoint descriptions](https://jupyterlab-server.readthedocs.io/en/stable/api/rest.html).
 
+## Extending the Application
+
+Subclass the `LabServerApp` and provide additional traits and handlers as appropriate for your application.
 
 ## Contribution
 
