@@ -5,6 +5,7 @@
 # Distributed under the terms of the Modified BSD License.
 import os
 from urllib.parse import urlparse
+from functools import lru_cache
 
 from tornado import template, web
 
@@ -57,18 +58,13 @@ def is_url(url):
 class LabHandler(ExtensionHandlerJinjaMixin, ExtensionHandlerMixin, JupyterHandler):
     """Render the JupyterLab View."""
 
-    @web.authenticated
-    @web.removeslash
-    def get(self, mode = None, workspace = None, tree = None):
-        """Get the JupyterLab html page."""
-        workspace = 'default' if workspace is None else workspace.replace('/workspaces/','')
-        tree_path = '' if tree is None else tree.replace('/tree/','')
-
+    @lru_cache()
+    def get_page_config(self):
+        """Construct the page config object"""
         self.application.store_id = getattr(self.application, 'store_id', 0)
         config = LabConfig()
         app = self.extensionapp
         settings_dir = app.app_settings_dir
-
         # Handle page config data.
         page_config = self.settings.setdefault('page_config_data', {})
         terminals = self.settings.get('terminals_available', False)
@@ -76,7 +72,7 @@ class LabHandler(ExtensionHandlerJinjaMixin, ExtensionHandlerMixin, JupyterHandl
         server_root = server_root.replace(os.sep, '/')
         base_url = self.settings.get('base_url')
 
-        # Remove the trailing slash for compatibiity with html-webpack-plugin.
+        # Remove the trailing slash for compatibility with html-webpack-plugin.
         full_static_url = self.static_url_prefix.rstrip('/')
         page_config.setdefault('fullStaticUrl', full_static_url)
 
@@ -105,14 +101,6 @@ class LabHandler(ExtensionHandlerJinjaMixin, ExtensionHandlerMixin, JupyterHandl
         page_config.setdefault('mathjaxConfig', mathjax_config)
         page_config.setdefault('fullMathjaxUrl', mathjax_url)
 
-        # Add parameters parsed from the URL
-        if mode == 'doc':
-            page_config['mode'] = 'single-document'
-        else:
-            page_config['mode'] = 'multiple-document'
-        page_config['workspace'] = workspace
-        page_config['treePath'] = tree_path
-
         # Put all our config in page_config
         for name in config.trait_names():
             page_config[_camelCase(name)] = getattr(app, name)
@@ -132,17 +120,43 @@ class LabHandler(ExtensionHandlerJinjaMixin, ExtensionHandlerMixin, JupyterHandl
         labextensions_path = app.extra_labextensions_path + app.labextensions_path
         recursive_update(page_config, get_page_config(labextensions_path, settings_dir, logger=self.log))
 
+        # modify page config with custom hook
+        page_config_hook = self.settings.get("page_config_hook", None)
+        if page_config_hook:
+            page_config = page_config_hook(self, page_config)
+
+        return page_config
+
+    @web.authenticated
+    @web.removeslash
+    def get(self, mode=None, workspace=None, tree=None):
+        """Get the JupyterLab html page."""
+        workspace = (
+            "default" if workspace is None else workspace.replace("/workspaces/", "")
+        )
+        tree_path = "" if tree is None else tree.replace("/tree/", "")
+
+        page_config = self.get_page_config()
+
+        # Add parameters parsed from the URL
+        if mode == "doc":
+            page_config["mode"] = "single-document"
+        else:
+            page_config["mode"] = "multiple-document"
+        page_config["workspace"] = workspace
+        page_config["treePath"] = tree_path
+
         # Write the template with the config.
         tpl = self.render_template('index.html', page_config=page_config)
         self.write(tpl)
 
 
 class NotFoundHandler(LabHandler):
-    def render_template(self, name, **ns):
-        if 'page_config' in ns:
-            ns['page_config'] = ns['page_config'].copy()
-            ns['page_config']['notFoundUrl'] = self.request.path
-        return super().render_template(name, **ns)
+    @lru_cache()
+    def get_page_config(self):
+        page_config = super().get_page_config()
+        page_config["notFoundUrl"] = self.request.path
+        return page_config
 
 
 def add_handlers(handlers, extension_app):
