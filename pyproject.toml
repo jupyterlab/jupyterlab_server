@@ -1,5 +1,5 @@
 [build-system]
-requires = ["jupyter_packaging~=0.9,<2", "jupyter_server"]
+requires = ["jupyter_packaging~=0.9", "jupyter_server"]
 build-backend = "setuptools.build_meta"
 
 [tool.jupyter-releaser]
