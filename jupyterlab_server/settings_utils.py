@@ -266,26 +266,50 @@ def _path(root_dir, schema_name, make_dirs=False, extension='.json'):
 
     return path
 
-
 def _get_overrides(app_settings_dir):
-    """Get overrides settings from `app_settings_dir`."""
+    """Get overrides settings from `app_settings_dir`.
+
+    The ordering of paths is:
+    - {app_settings_dir}/overrides.d/*.{json,json5} (many, namespaced by package)
+    - {app_settings_dir}/overrides.{json,json5} (singleton, owned by the user)
+    """
     overrides, error = {}, ""
-    overrides_path = os.path.join(app_settings_dir, 'overrides.json')
 
-    if not os.path.exists(overrides_path):
-        overrides_path = os.path.join(app_settings_dir, 'overrides.json5')
+    overrides_d = os.path.join(app_settings_dir, 'overrides.d')
 
-    if os.path.exists(overrides_path):
+    # find (and sort) the conf.d overrides files
+    all_override_paths = sorted([
+        *(glob(os.path.join(overrides_d, '*.json'))),
+        *(glob(os.path.join(overrides_d, '*.json5'))),
+    ])
+
+    all_override_paths += [
+        os.path.join(app_settings_dir, 'overrides.json'),
+        os.path.join(app_settings_dir, 'overrides.json5')
+    ]
+
+    for overrides_path in all_override_paths:
+        if not os.path.exists(overrides_path):
+            continue
+
         with open(overrides_path, encoding='utf-8') as fid:
             try:
-                overrides = json5.load(fid)
+                if overrides_path.endswith('.json5'):
+                    path_overrides = json5.load(fid)
+                else:
+                    path_overrides = json.load(fid)
+                for plugin_id, config in path_overrides.items():
+                    recursive_update(overrides.setdefault(plugin_id, {}), config)
+                print(overrides_path, overrides)
             except Exception as e:
                 error = e
 
     # Allow `default_settings_overrides.json` files in <jupyter_config>/labconfig dirs
     # to allow layering of defaults
     cm = ConfigManager(config_dir_name="labconfig")
-    recursive_update(overrides, cm.get('default_setting_overrides'))
+
+    for plugin_id, config in cm.get('default_setting_overrides').items():
+        recursive_update(overrides.setdefault(plugin_id, {}), config)
 
     return overrides, error
 
