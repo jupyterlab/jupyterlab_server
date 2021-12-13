@@ -6,6 +6,34 @@ github_url: 'https://github.com/jupyterlab/jupyterlab_server/blob/master/CHANGEL
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
+## 2.9.0
+
+([Full Changelog](https://github.com/jupyterlab/jupyterlab_server/compare/v2.8.2...ea75fc04f9a4d29b9c22c9ec769835df3ba6a0e4))
+
+### Enhancements made
+
+- Add `overrides.d` for settings defaults [#224](https://github.com/jupyterlab/jupyterlab_server/pull/224) ([@bollwyvl](https://github.com/bollwyvl))
+- Add `page_config_hook` [#220](https://github.com/jupyterlab/jupyterlab_server/pull/220) ([@minrk](https://github.com/minrk))
+
+### Maintenance and upkeep improvements
+
+- Enforce labels on PRs [#221](https://github.com/jupyterlab/jupyterlab_server/pull/221) ([@blink1073](https://github.com/blink1073))
+- Fix caching of conda env in CI [#218](https://github.com/jupyterlab/jupyterlab_server/pull/218) ([@blink1073](https://github.com/blink1073))
+- `pyproject.toml`: clarify build system version [#222](https://github.com/jupyterlab/jupyterlab_server/pull/222) ([@adamjstewart](https://github.com/adamjstewart))
+
+### Documentation improvements
+
+- Fix typo in README [#216](https://github.com/jupyterlab/jupyterlab_server/pull/216) ([@Mithil467](https://github.com/Mithil467))
+- Clean up Readme [#215](https://github.com/jupyterlab/jupyterlab_server/pull/215) ([@blink1073](https://github.com/blink1073))
+
+### Contributors to this release
+
+([GitHub contributors page for this release](https://github.com/jupyterlab/jupyterlab_server/graphs/contributors?from=2021-09-25&to=2021-12-13&type=c))
+
+[@adamjstewart](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Aadamjstewart+updated%3A2021-09-25..2021-12-13&type=Issues) | [@blink1073](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Ablink1073+updated%3A2021-09-25..2021-12-13&type=Issues) | [@bollwyvl](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Abollwyvl+updated%3A2021-09-25..2021-12-13&type=Issues) | [@codecov-commenter](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Acodecov-commenter+updated%3A2021-09-25..2021-12-13&type=Issues) | [@minrk](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Aminrk+updated%3A2021-09-25..2021-12-13&type=Issues) | [@Mithil467](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3AMithil467+updated%3A2021-09-25..2021-12-13&type=Issues) | [@welcome](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Awelcome+updated%3A2021-09-25..2021-12-13&type=Issues)
+
+<!-- <END NEW CHANGELOG ENTRY> -->
+
 ## 2.8.2
 
 ([Full Changelog](https://github.com/jupyterlab/jupyterlab_server/compare/v2.8.1...27cead5e506882c1cf999cb8ca48a94031064c9a))
@@ -20,8 +48,6 @@ github_url: 'https://github.com/jupyterlab/jupyterlab_server/blob/master/CHANGEL
 ([GitHub contributors page for this release](https://github.com/jupyterlab/jupyterlab_server/graphs/contributors?from=2021-09-07&to=2021-09-25&type=c))
 
 [@codecov-commenter](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Acodecov-commenter+updated%3A2021-09-07..2021-09-25&type=Issues) | [@fcollonval](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Afcollonval+updated%3A2021-09-07..2021-09-25&type=Issues) | [@krassowski](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Akrassowski+updated%3A2021-09-07..2021-09-25&type=Issues)
-
-<!-- <END NEW CHANGELOG ENTRY> -->
 
 ## 2.8.1
 
