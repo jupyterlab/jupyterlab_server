@@ -1,8 +1,9 @@
 """Test the Settings service API.
 """
+from pathlib import Path
+import json
 
 import pytest
-import json
 import json5
 import tornado
 
@@ -26,6 +27,28 @@ async def test_get_settings_overrides_dicts(jp_fetch, labserverapp):
     # Check that overrides.json file is respected.
     assert schema['properties']['codeCellConfig']['default']["lineNumbers"] is True
     assert len(schema['properties']['codeCellConfig']['default']) == 15
+
+
+@pytest.mark.parametrize('ext', ['json', 'json5'])
+async def test_get_settings_overrides_d_dicts(jp_fetch, labserverapp, ext):
+    # Check that values that are dictionaries in overrides.d/*.json are
+    # merged with the schema.
+    id = '@jupyterlab/apputils-extension:themes'
+    overrides_d = Path(labserverapp.app_settings_dir) / "overrides.d"
+    overrides_d.mkdir(exist_ok=True, parents=True)
+    for i in range(10):
+        text = json.dumps({id: {'codeCellConfig': {'cursorBlinkRate': 530 + i}}})
+        if ext == 'json5':
+            text += '\n// a comment'
+        (overrides_d / f"foo-{i}.{ext}").write_text(text, encoding='utf-8')
+    r = await jp_fetch('lab', 'api', 'settings', id)
+    validate_request(r)
+    res = r.body.decode()
+    data = json.loads(res)
+    assert data['id'] == id
+    schema = data['schema']
+    # Check that the last overrides.d/*.json file is respected.
+    assert schema['properties']['codeCellConfig']['default']['cursorBlinkRate'] == 539
 
 
 async def test_get_settings(jp_fetch, labserverapp):
