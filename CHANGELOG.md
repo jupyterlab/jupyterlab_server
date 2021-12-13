@@ -12,14 +12,16 @@ github_url: 'https://github.com/jupyterlab/jupyterlab_server/blob/master/CHANGEL
 
 ### Enhancements made
 
-- add overrides.d for settings defaults [#224](https://github.com/jupyterlab/jupyterlab_server/pull/224) ([@bollwyvl](https://github.com/bollwyvl))
-- pyproject.toml: clarify build system version [#222](https://github.com/jupyterlab/jupyterlab_server/pull/222) ([@adamjstewart](https://github.com/adamjstewart))
-- add page_config_hook [#220](https://github.com/jupyterlab/jupyterlab_server/pull/220) ([@minrk](https://github.com/minrk))
+- Add `overrides.d` for settings defaults [#224](https://github.com/jupyterlab/jupyterlab_server/pull/224) ([@bollwyvl](https://github.com/bollwyvl))
+- Add `page_config_hook` [#220](https://github.com/jupyterlab/jupyterlab_server/pull/220) ([@minrk](https://github.com/minrk))
 
 ### Maintenance and upkeep improvements
 
 - Enforce labels on PRs [#221](https://github.com/jupyterlab/jupyterlab_server/pull/221) ([@blink1073](https://github.com/blink1073))
 - Fix caching of conda env in CI [#218](https://github.com/jupyterlab/jupyterlab_server/pull/218) ([@blink1073](https://github.com/blink1073))
+- `pyproject.toml`: clarify build system version [#222](https://github.com/jupyterlab/jupyterlab_server/pull/222) ([@adamjstewart](https://github.com/adamjstewart))
+
+### Documentation improvements
 
 - Fix typo in README [#216](https://github.com/jupyterlab/jupyterlab_server/pull/216) ([@Mithil467](https://github.com/Mithil467))
 - Clean up Readme [#215](https://github.com/jupyterlab/jupyterlab_server/pull/215) ([@blink1073](https://github.com/blink1073))
