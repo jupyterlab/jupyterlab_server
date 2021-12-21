@@ -97,7 +97,7 @@ def get_page_config(labextensions_path, app_settings_dir=None, logger=None):
             # Convert lists to dicts
             for key in [disabled_key, "deferredExtensions"]:
                 if key in data:
-                    data[key] = dict((key, True) for key in data[key])
+                    data[key] = dict((k, True) for k in data[key])
 
             recursive_update(page_config, data)
 
