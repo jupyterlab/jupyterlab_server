@@ -6,6 +6,26 @@ github_url: 'https://github.com/jupyterlab/jupyterlab_server/blob/master/CHANGEL
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
+## 2.10.0
+
+([Full Changelog](https://github.com/jupyterlab/jupyterlab_server/compare/v2.9.0...6fa038f12ad7946e16c5e18665e8a88177080264))
+
+### Enhancements made
+
+- Move workspace management in jupyterlab_server [#227](https://github.com/jupyterlab/jupyterlab_server/pull/227) ([@fcollonval](https://github.com/fcollonval))
+
+### Bugs fixed
+
+- Delay list -> dict conversation to end [#192](https://github.com/jupyterlab/jupyterlab_server/pull/192) ([@vidartf](https://github.com/vidartf))
+
+### Contributors to this release
+
+([GitHub contributors page for this release](https://github.com/jupyterlab/jupyterlab_server/graphs/contributors?from=2021-12-13&to=2021-12-22&type=c))
+
+[@codecov-commenter](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Acodecov-commenter+updated%3A2021-12-13..2021-12-22&type=Issues) | [@fcollonval](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Afcollonval+updated%3A2021-12-13..2021-12-22&type=Issues) | [@vidartf](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Avidartf+updated%3A2021-12-13..2021-12-22&type=Issues)
+
+<!-- <END NEW CHANGELOG ENTRY> -->
+
 ## 2.9.0
 
 ([Full Changelog](https://github.com/jupyterlab/jupyterlab_server/compare/v2.8.2...ea75fc04f9a4d29b9c22c9ec769835df3ba6a0e4))
@@ -31,8 +51,6 @@ github_url: 'https://github.com/jupyterlab/jupyterlab_server/blob/master/CHANGEL
 ([GitHub contributors page for this release](https://github.com/jupyterlab/jupyterlab_server/graphs/contributors?from=2021-09-25&to=2021-12-13&type=c))
 
 [@adamjstewart](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Aadamjstewart+updated%3A2021-09-25..2021-12-13&type=Issues) | [@blink1073](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Ablink1073+updated%3A2021-09-25..2021-12-13&type=Issues) | [@bollwyvl](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Abollwyvl+updated%3A2021-09-25..2021-12-13&type=Issues) | [@codecov-commenter](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Acodecov-commenter+updated%3A2021-09-25..2021-12-13&type=Issues) | [@minrk](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Aminrk+updated%3A2021-09-25..2021-12-13&type=Issues) | [@Mithil467](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3AMithil467+updated%3A2021-09-25..2021-12-13&type=Issues) | [@welcome](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Awelcome+updated%3A2021-09-25..2021-12-13&type=Issues)
-
-<!-- <END NEW CHANGELOG ENTRY> -->
 
 ## 2.8.2
 
