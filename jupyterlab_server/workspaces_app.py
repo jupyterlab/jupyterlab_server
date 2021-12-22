@@ -1,4 +1,4 @@
-""""""
+"""A workspace management CLI"""
 import json
 import sys
 from pathlib import Path
