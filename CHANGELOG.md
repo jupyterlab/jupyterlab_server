@@ -6,6 +6,22 @@ github_url: 'https://github.com/jupyterlab/jupyterlab_server/blob/master/CHANGEL
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
+## 2.10.1
+
+([Full Changelog](https://github.com/jupyterlab/jupyterlab_server/compare/v2.10.0...65027f3ca0a2c5846ba8381c47809e5d04eb05c7))
+
+### Bugs fixed
+
+- Restore back older export for workspaces [#229](https://github.com/jupyterlab/jupyterlab_server/pull/229) ([@fcollonval](https://github.com/fcollonval))
+
+### Contributors to this release
+
+([GitHub contributors page for this release](https://github.com/jupyterlab/jupyterlab_server/graphs/contributors?from=2021-12-22&to=2021-12-22&type=c))
+
+[@fcollonval](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Afcollonval+updated%3A2021-12-22..2021-12-22&type=Issues)
+
+<!-- <END NEW CHANGELOG ENTRY> -->
+
 ## 2.10.0
 
 ([Full Changelog](https://github.com/jupyterlab/jupyterlab_server/compare/v2.9.0...6fa038f12ad7946e16c5e18665e8a88177080264))
@@ -23,8 +39,6 @@ github_url: 'https://github.com/jupyterlab/jupyterlab_server/blob/master/CHANGEL
 ([GitHub contributors page for this release](https://github.com/jupyterlab/jupyterlab_server/graphs/contributors?from=2021-12-13&to=2021-12-22&type=c))
 
 [@codecov-commenter](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Acodecov-commenter+updated%3A2021-12-13..2021-12-22&type=Issues) | [@fcollonval](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Afcollonval+updated%3A2021-12-13..2021-12-22&type=Issues) | [@vidartf](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Avidartf+updated%3A2021-12-13..2021-12-22&type=Issues)
-
-<!-- <END NEW CHANGELOG ENTRY> -->
 
 ## 2.9.0
 
