@@ -4,7 +4,8 @@
 from .app import LabServerApp
 from .licenses_app import LicensesApp
 from .handlers import add_handlers, LabHandler, LabConfig
-from .workspaces_handler import slugify, WORKSPACE_EXTENSION
+from .translation_utils import translator
+from .workspaces_app import WorkspaceExportApp, WorkspaceImportApp, WorkspaceListApp
 from ._version import __version__
 
 __all__ = [
@@ -13,9 +14,12 @@ __all__ = [
     'LabConfig',
     'LabHandler',
     'LabServerApp',
-    'slugify',
+    'LicensesApp',
     'SETTINGS_EXTENSION',
-    'WORKSPACE_EXTENSION'
+    'translator',
+    'WorkspaceExportApp',
+    'WorkspaceImportApp',
+    'WorkspaceListApp'
 ]
 
 def _jupyter_server_extension_points():

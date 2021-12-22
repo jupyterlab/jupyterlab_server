@@ -18,7 +18,7 @@ from .server import url_path_join as ujoin
 from .settings_handler import SettingsHandler
 from .themes_handler import ThemesHandler
 from .translations_handler import TranslationsHandler
-from .workspaces_handler import WorkspacesHandler
+from .workspaces_handler import WorkspacesHandler, WorkspacesManager
 from .licenses_handler import LicensesHandler, LicensesManager
 
 # -----------------------------------------------------------------------------
@@ -239,7 +239,7 @@ def add_handlers(handlers, extension_app):
     if extension_app.workspaces_dir:
 
         workspaces_config = {
-            'path': extension_app.workspaces_dir
+            'manager': WorkspacesManager(extension_app.workspaces_dir)
         }
 
         # Handle requests for the list of workspaces. Make slash optional.
