@@ -112,6 +112,15 @@ def make_labserver_extension_app(
             data = dict(name=target_name, jupyterlab=dict(extension=True))
             json.dump(data, fid)
 
+    # Disable an extension in page config
+    app_page_config = pjoin(app_settings_dir, 'page_config.json')
+    with open(app_page_config, mode="w", encoding='utf-8') as fid:
+        json.dump({
+            "disabledExtensions": {
+                "@foo/bar:plugin": True
+            }
+        }, fid)
+
     # Copy the overrides file.
     src = pjoin(
         os.path.abspath(os.path.dirname(__file__)),

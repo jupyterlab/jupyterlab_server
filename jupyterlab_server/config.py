@@ -97,7 +97,7 @@ def get_page_config(labextensions_path, app_settings_dir=None, logger=None):
             # Convert lists to dicts
             for key in [disabled_key, "deferredExtensions"]:
                 if key in data:
-                    data[key] = dict((key, True) for key in data[key])
+                    data[key] = dict((k, True) for k in data[key])
 
             recursive_update(page_config, data)
 
@@ -166,12 +166,6 @@ def get_page_config(labextensions_path, app_settings_dir=None, logger=None):
     rollup_disabled = disabled_by_extensions
     rollup_disabled.update(page_config.get(disabled_key, []))
     page_config[disabled_key] = rollup_disabled
-
-    # Convert dictionaries to lists to give to the front end
-    for (key, value) in page_config.items():
-
-        if isinstance(value, dict):
-            page_config[key] = [subkey for subkey in value if value[subkey]]
 
     return page_config
 
