@@ -1,0 +1,25 @@
+name: Test downstream projects
+
+on:
+  push:
+    branches: "main"
+  pull_request:
+    branches: "*"
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Base Setup
+        uses: jupyterlab/maintainer-tools/.github/actions/base-setup@v1
+
+      - name: Test jupyterlab
+        uses: jupyterlab/maintainer-tools/.github/actions/downstream-test@v1
+        with:
+          package_name: jupyterlab
+          test_command: "python -m jupyterlab.browser_check --no-browser-test"
