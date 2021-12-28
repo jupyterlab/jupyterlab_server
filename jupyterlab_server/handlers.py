@@ -25,7 +25,7 @@ from .licenses_handler import LicensesHandler, LicensesManager
 # Module globals
 # -----------------------------------------------------------------------------
 
-MASTER_URL_PATTERN = r'/(?P<mode>{}|doc)(?P<workspace>/workspaces/[a-zA-Z0-9\-\_]+)?(?P<tree>/tree/.*)?'
+MASTER_URL_PATTERN = '/(?P<mode>{}|doc)(?P<workspace>/workspaces/[a-zA-Z0-9\-\_]+)?(?P<tree>/tree/.*)?'
 
 DEFAULT_TEMPLATE = template.Template("""
 <!DOCTYPE html>
@@ -126,13 +126,6 @@ class LabHandler(ExtensionHandlerJinjaMixin, ExtensionHandlerMixin, JupyterHandl
         page_config_hook = self.settings.get("page_config_hook", None)
         if page_config_hook:
             page_config = page_config_hook(self, page_config)
-
-        # Convert dictionaries to lists to give to the front end
-        # copy first, so that we don't have converted values in page_copy that we have a ref to
-        page_config = page_config.copy()
-        for (key, value) in page_config.items():
-            if isinstance(value, dict):
-                page_config[key] = [subkey for subkey in value if value[subkey]]
 
         return page_config
 
