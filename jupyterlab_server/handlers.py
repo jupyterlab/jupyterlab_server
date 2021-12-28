@@ -83,10 +83,12 @@ class LabHandler(ExtensionHandlerJinjaMixin, ExtensionHandlerMixin, JupyterHandl
 
         server_root = os.path.normpath(os.path.expanduser(server_root))
         try:
-            page_config['preferredDir'] = self.serverapp.preferred_dir
-            page_config['preferredPath'] = self.serverapp.preferred_dir.replace(server_root, "")
+            # Remove the server_root from pref dir
+            if self.serverapp.preferred_dir != server_root:
+                page_config['preferredPath'] = '/' + os.path.relpath(self.serverapp.preferred_dir, server_root)
+            else:
+                page_config['preferredPath'] = '/'
         except Exception:
-            page_config['preferredDir'] = server_root
             page_config['preferredPath'] = '/'
 
         self.application.store_id += 1
