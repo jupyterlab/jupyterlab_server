@@ -6,6 +6,27 @@ github_url: 'https://github.com/jupyterlab/jupyterlab_server/blob/master/CHANGEL
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
+## 2.10.2
+
+([Full Changelog](https://github.com/jupyterlab/jupyterlab_server/compare/v2.10.1...cbe3b92d732b327a695d832c66f00e096d47ea2b))
+
+### Bugs fixed
+
+- Revert "Delay list -> dict conversation to end (#192)" [#234](https://github.com/jupyterlab/jupyterlab_server/pull/234) ([@blink1073](https://github.com/blink1073))
+- Fix issue where preferredPath is incorrectly calculated [#233](https://github.com/jupyterlab/jupyterlab_server/pull/233) ([@mlucool](https://github.com/mlucool))
+
+### Maintenance and upkeep improvements
+
+- Add downstream test workflow [#232](https://github.com/jupyterlab/jupyterlab_server/pull/232) ([@blink1073](https://github.com/blink1073))
+
+### Contributors to this release
+
+([GitHub contributors page for this release](https://github.com/jupyterlab/jupyterlab_server/graphs/contributors?from=2021-12-22&to=2021-12-28&type=c))
+
+[@blink1073](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Ablink1073+updated%3A2021-12-22..2021-12-28&type=Issues) | [@codecov-commenter](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Acodecov-commenter+updated%3A2021-12-22..2021-12-28&type=Issues) | [@mlucool](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Amlucool+updated%3A2021-12-22..2021-12-28&type=Issues)
+
+<!-- <END NEW CHANGELOG ENTRY> -->
+
 ## 2.10.1
 
 ([Full Changelog](https://github.com/jupyterlab/jupyterlab_server/compare/v2.10.0...65027f3ca0a2c5846ba8381c47809e5d04eb05c7))
@@ -19,8 +40,6 @@ github_url: 'https://github.com/jupyterlab/jupyterlab_server/blob/master/CHANGEL
 ([GitHub contributors page for this release](https://github.com/jupyterlab/jupyterlab_server/graphs/contributors?from=2021-12-22&to=2021-12-22&type=c))
 
 [@fcollonval](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Afcollonval+updated%3A2021-12-22..2021-12-22&type=Issues)
-
-<!-- <END NEW CHANGELOG ENTRY> -->
 
 ## 2.10.0
 
