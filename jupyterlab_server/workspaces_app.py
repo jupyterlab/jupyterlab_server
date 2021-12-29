@@ -11,6 +11,9 @@ from .config import LabConfig
 from .workspaces_handler import WorkspacesManager
 
 
+DEFAULT_WORKSPACE = "default"
+
+
 class WorkspaceListApp(JupyterApp, LabConfig):
     version = __version__
     description = """
@@ -84,7 +87,7 @@ class WorkspaceExportApp(JupyterApp, LabConfig):
             print("Too many arguments were provided for workspace export.")
             self.exit(1)
 
-        raw = self.extra_args[0]
+        raw = DEFAULT_WORKSPACE if not self.extra_args else self.extra_args[0]
         try:
             workspace = self.manager.load(raw)
             print(json.dumps(workspace))
