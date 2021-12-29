@@ -10,7 +10,8 @@ from ._version import __version__
 from .config import LabConfig
 from .workspaces_handler import WorkspacesManager
 
-
+# Default workspace ID
+#  Needs to match PageConfig.defaultWorkspace define in packages/coreutils/src/pageconfig.ts
 DEFAULT_WORKSPACE = "default"
 
 
