@@ -6,6 +6,22 @@ github_url: 'https://github.com/jupyterlab/jupyterlab_server/blob/master/CHANGEL
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
+## 2.10.3
+
+([Full Changelog](https://github.com/jupyterlab/jupyterlab_server/compare/v2.10.2...788e118e25cd7ad29a3041767201a0e3f66ba28e))
+
+### Bugs fixed
+
+- Fix workspace export without arguments [#236](https://github.com/jupyterlab/jupyterlab_server/pull/236) ([@fcollonval](https://github.com/fcollonval))
+
+### Contributors to this release
+
+([GitHub contributors page for this release](https://github.com/jupyterlab/jupyterlab_server/graphs/contributors?from=2021-12-28&to=2022-01-07&type=c))
+
+[@fcollonval](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Afcollonval+updated%3A2021-12-28..2022-01-07&type=Issues)
+
+<!-- <END NEW CHANGELOG ENTRY> -->
+
 ## 2.10.2
 
 ([Full Changelog](https://github.com/jupyterlab/jupyterlab_server/compare/v2.10.1...cbe3b92d732b327a695d832c66f00e096d47ea2b))
@@ -24,8 +40,6 @@ github_url: 'https://github.com/jupyterlab/jupyterlab_server/blob/master/CHANGEL
 ([GitHub contributors page for this release](https://github.com/jupyterlab/jupyterlab_server/graphs/contributors?from=2021-12-22&to=2021-12-28&type=c))
 
 [@blink1073](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Ablink1073+updated%3A2021-12-22..2021-12-28&type=Issues) | [@codecov-commenter](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Acodecov-commenter+updated%3A2021-12-22..2021-12-28&type=Issues) | [@mlucool](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Amlucool+updated%3A2021-12-22..2021-12-28&type=Issues)
-
-<!-- <END NEW CHANGELOG ENTRY> -->
 
 ## 2.10.1
 
