@@ -9,7 +9,7 @@ import pytest
 import mistune
 
 from .. import LicensesApp
-from ..licenses_handler import DEFAULT_THIRD_PARTY_LICENSE_FILE
+from ..licenses_handler import DEFAULT_THIRD_PARTY_LICENSE_FILE, LicensesManager
 
 # utilities
 
@@ -166,3 +166,33 @@ async def test_licenses_cli(licenses_app, capsys, mime_format_parser):
 
     captured = capsys.readouterr()
     assert parse(captured.out) is not None
+
+
+@pytest.fixture
+def a_fake_labextension(tmp_path):
+    """just enough of an extension to be parsed"""
+    ext_name = "@an-org/an-extension"
+    ext_path = tmp_path / ext_name
+    package_data = {"name": ext_name}
+    bundle_data = {"packages": [dict(FULL_ENTRY)]}
+
+    package_json = ext_path / "package.json"
+    third_party_licenses = ext_path / "static" / DEFAULT_THIRD_PARTY_LICENSE_FILE
+
+    third_party_licenses.parent.mkdir(parents=True)
+
+    package_json.write_text(json.dumps(package_data), encoding="utf-8")
+    third_party_licenses.write_text(json.dumps(bundle_data), encoding="utf-8")
+
+    yield ext_path, ext_name
+
+
+@pytest.fixture
+def a_licenses_manager():
+    yield LicensesManager()
+
+
+def test_labextension_bundle(a_fake_labextension, a_licenses_manager):
+    ext_path, ext_name = a_fake_labextension
+    bundle = a_licenses_manager.license_bundle(ext_path, ext_name)
+    assert bundle["packages"][0]["name"] == dict(FULL_ENTRY)["name"]

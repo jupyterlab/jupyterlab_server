@@ -38,7 +38,10 @@ class LicensesManager(LoggingConfigurable):
 
     third_party_licenses_files = List(
         Unicode(),
-        default_value=[DEFAULT_THIRD_PARTY_LICENSE_FILE],
+        default_value=[
+            DEFAULT_THIRD_PARTY_LICENSE_FILE,
+            f"static/{DEFAULT_THIRD_PARTY_LICENSE_FILE}"
+        ],
         help="the license report data in built app and federated extensions",
     )
 
