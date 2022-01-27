@@ -38,7 +38,10 @@ class LicensesManager(LoggingConfigurable):
 
     third_party_licenses_files = List(
         Unicode(),
-        default_value=[DEFAULT_THIRD_PARTY_LICENSE_FILE],
+        default_value=[
+            DEFAULT_THIRD_PARTY_LICENSE_FILE,
+            f"static/{DEFAULT_THIRD_PARTY_LICENSE_FILE}"
+        ],
         help="the license report data in built app and federated extensions",
     )
 
@@ -156,14 +159,13 @@ class LicensesManager(LoggingConfigurable):
     def license_bundle(self, path, bundle):
         """Return the content of a packages's license bundles"""
         bundle_json = {"packages": []}
+        checked_paths = []
 
         for license_file in self.third_party_licenses_files:
             licenses_path = path / license_file
             self.log.debug("Loading licenses from %s", licenses_path)
             if not licenses_path.exists():
-                self.log.warning(
-                    "Third-party licenses not found for %s: %s", bundle, licenses_path
-                )
+                checked_paths += [licenses_path]
                 continue
 
             try:
@@ -187,6 +189,11 @@ class LicensesManager(LoggingConfigurable):
                     err,
                 )
                 continue
+
+        if not bundle_json["packages"]:
+            self.log.warning(
+                "Third-party licenses not found for %s: %s", bundle, checked_paths
+            )
 
         return bundle_json
 
@@ -222,7 +229,7 @@ class LicensesManager(LoggingConfigurable):
             bundles[app_name] = self.license_bundle(app_path, app_name)
 
         if not bundles:
-            self.log.warn("No license bundles found at all")
+            self.log.warning("No license bundles found at all")
 
         return bundles
 
