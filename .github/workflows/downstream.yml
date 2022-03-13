@@ -7,7 +7,7 @@ on:
     branches: "*"
 
 jobs:
-  tests:
+  downstream:
     runs-on: ubuntu-latest
     timeout-minutes: 15
 
