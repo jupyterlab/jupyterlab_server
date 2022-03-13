@@ -10,8 +10,7 @@ from jupyterlab_server import LabServerApp
 from jupyterlab_server.app import LabServerApp
 
 pytest_plugins = [
-    "jupyter_server.pytest_plugin",
-    "jupyterlab_server.pytest_plugin"
+    "jupyter_server.pytest_plugin"
 ]
 
 def mkdir(tmp_path, *parts):

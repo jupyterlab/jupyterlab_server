@@ -8,6 +8,7 @@ recursive-include docs *.*
 include docs/Makefile
 
 prune docs/build
+recursive-exclude tests/translations/**/build *.*
 
 # Patterns to exclude from any directory
 global-exclude *~
