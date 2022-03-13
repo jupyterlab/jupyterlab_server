@@ -10,7 +10,8 @@ from jupyterlab_server import LabServerApp
 from jupyterlab_server.app import LabServerApp
 
 pytest_plugins = [
-    "jupyter_server.pytest_plugin"
+    "jupyter_server.pytest_plugin",
+    "jupyterlab_server.pytest_plugin"
 ]
 
 def mkdir(tmp_path, *parts):
@@ -18,6 +19,8 @@ def mkdir(tmp_path, *parts):
     if not path.exists():
         path.mkdir(parents=True)
     return path
+
+HERE = os.path.abspath(os.path.dirname(__file__))
 
 app_settings_dir = pytest.fixture(lambda tmp_path: mkdir(tmp_path, 'app_settings'))
 user_settings_dir = pytest.fixture(lambda tmp_path: mkdir(tmp_path, 'user_settings'))
@@ -85,8 +88,7 @@ def make_labserver_extension_app(
 
     # Copy the schema files.
     src = pjoin(
-        os.path.abspath(os.path.dirname(__file__)),
-        'tests',
+        HERE,
         'schemas',
         '@jupyterlab')
     dst = pjoin(str(schemas_dir), '@jupyterlab')
@@ -99,8 +101,7 @@ def make_labserver_extension_app(
         target_name = name + '-federated'
         target = pjoin(str(labextensions_dir), '@jupyterlab', target_name)
         src = pjoin(
-            os.path.abspath(os.path.dirname(__file__)),
-            'tests',
+            HERE,
             'schemas',
             '@jupyterlab',
             name)
@@ -114,8 +115,7 @@ def make_labserver_extension_app(
 
     # Copy the overrides file.
     src = pjoin(
-        os.path.abspath(os.path.dirname(__file__)),
-        'tests',
+        HERE,
         'app-settings',
         'overrides.json')
     dst = pjoin(str(app_settings_dir), 'overrides.json')
@@ -125,8 +125,7 @@ def make_labserver_extension_app(
 
     # Copy workspaces.
     data = pjoin(
-        os.path.abspath(os.path.dirname(__file__)),
-        'tests',
+        HERE,
         'workspaces')
     for item in os.listdir(data):
         src = pjoin(data, item)

@@ -62,7 +62,7 @@ jobs:
       - name: Run python tests
         # See `setup.cfg` for full test options
         run: |
-          pytest --pyargs jupyterlab_server
+          pytest
       - name: Upload coverage
         run: |
           codecov

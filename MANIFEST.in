@@ -2,14 +2,12 @@ include *.md
 include LICENSE
 include jupyterlab_server/rest-api.yml
 include jupyterlab_server/templates/*.html
-recursive-include jupyterlab_server/tests *.json *.json.orig *.jupyterlab-workspace
+recursive-include tests *.*
 recursive-include docs *.*
+
 include docs/Makefile
 
 prune docs/build
-
-# prune translation test data to avoid long path limits on Windows
-prune jupyterlab_server/tests/translations
 
 # Patterns to exclude from any directory
 global-exclude *~
