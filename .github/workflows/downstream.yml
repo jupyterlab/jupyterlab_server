@@ -2,9 +2,8 @@ name: Test downstream projects
 
 on:
   push:
-    branches: "main"
+    branches: ["main"]
   pull_request:
-    branches: "*"
 
 jobs:
   downstream:
