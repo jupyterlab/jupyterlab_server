@@ -7,7 +7,7 @@ on:
     branches: "*"
 
 jobs:
-  tests:
+  downstream:
     runs-on: ubuntu-latest
     timeout-minutes: 15
 
@@ -22,4 +22,5 @@ jobs:
         uses: jupyterlab/maintainer-tools/.github/actions/downstream-test@v1
         with:
           package_name: jupyterlab
+          package_spec: "\".[test]\""
           test_command: "python -m jupyterlab.browser_check --no-browser-test"

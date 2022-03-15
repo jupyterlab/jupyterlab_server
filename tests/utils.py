@@ -96,7 +96,7 @@ def wrap_response(response):
 
 def validate_request(response):
     """Validate an API request"""
-    path = (Path(__file__) / '../../rest-api.yml').resolve()
+    path = (Path(here) / '../jupyterlab_server/rest-api.yml').resolve()
     yaml = YAML(typ='safe')
     spec_dict = yaml.load(path.read_text(encoding='utf-8'))
     spec = create_spec(spec_dict)

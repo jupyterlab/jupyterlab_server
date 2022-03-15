@@ -8,8 +8,9 @@ import mimetypes
 import pytest
 import mistune
 
-from .. import LicensesApp
-from ..licenses_handler import DEFAULT_THIRD_PARTY_LICENSE_FILE, LicensesManager
+from jupyterlab_server import LicensesApp
+from jupyterlab_server.licenses_handler import DEFAULT_THIRD_PARTY_LICENSE_FILE, LicensesManager
+
 
 # utilities
 

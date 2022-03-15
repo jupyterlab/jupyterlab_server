@@ -8,7 +8,7 @@ import subprocess
 import sys
 
 from .utils import expected_http_error
-from ..translation_utils import (_get_installed_language_pack_locales,
+from jupyterlab_server.translation_utils import (_get_installed_language_pack_locales,
                                  _get_installed_package_locales,
                                  get_display_name,
                                  get_installed_packages_locale,
