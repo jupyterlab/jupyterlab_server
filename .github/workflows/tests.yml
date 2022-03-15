@@ -38,17 +38,30 @@ jobs:
       - name: Upload coverage
         run: |
           codecov
+
+  docs:
+    name: Docs Build
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python_version: ['3.10']
+    setps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Base Setup
+        uses: jupyterlab/maintainer-tools/.github/actions/base-setup@v1
+      - uses: conda-incubator/setup-miniconda@v2
+        with:
+          auto-update-conda: true
+          python-version: ${{ matrix.python-version }}
+          activate-environment: jupyterlab_server_documentation
+          environment-file: docs/environment.yml
       - name: Build docs
         shell: bash -l {0}
         run: |
-          set -eux
+          pip install .
           pushd docs
-          conda env create -f environment.yml
-          conda activate jupyterlab_server_documentation
-          pip install ..
-          make html
-          conda deactivate
-          popd
+          make html SPHINXOPTS="-W"
 
   check_release:
     runs-on: ubuntu-latest
