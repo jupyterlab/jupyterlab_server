@@ -18,7 +18,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python_version: ['3.7', '3.10', 'pypy3']
+        python_version: ['3.7', '3.10', 'pypy-3.7']
         platform: ['ubuntu', 'macos',  'windows']
         exclude:
         - platform: windows
