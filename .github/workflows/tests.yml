@@ -9,7 +9,7 @@ on:
 
 jobs:
   test:
-    name: ${{ matrix.platform }} py${{ matrix.python_version }}
+    name: ${{ matrix.platform }} ${{ matrix.python_version }}
     runs-on: ${{ matrix.platform }}-latest
     env:
       CI: True
