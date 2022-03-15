@@ -39,6 +39,7 @@ jobs:
         run: |
           codecov
       - name: Build docs
+        shell: bash -l {0}
         run: |
           set -eux
           pushd docs
