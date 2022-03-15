@@ -7,26 +7,22 @@ on:
   schedule:
     - cron: "0 8 * * *"
 
-defaults:
-  run:
-    shell: bash -l {0}
-
 jobs:
   test:
-    name: ${{ matrix.PLATFORM }} py${{ matrix.PYTHON_VERSION }}
-    runs-on: ${{ matrix.PLATFORM }}-latest
+    name: ${{ matrix.platform }} py${{ matrix.python_version }}
+    runs-on: ${{ matrix.platform }}-latest
     env:
       CI: True
-      PYTHON_VERSION: ${{ matrix.PYTHON_VERSION }}
+      PYTHON_VERSION: ${{ matrix.python_version }}
       CODECOV_TOKEN: e025254a-fe54-4914-8890-0c26e7aa0d07
     strategy:
       fail-fast: false
       matrix:
-        PYTHON_VERSION: ['3.7', '3.10', 'pypy3']
-        PLATFORM: ['ubuntu', 'macos',  'windows']
+        python_version: ['3.7', '3.10', 'pypy3']
+        platform: ['ubuntu', 'macos',  'windows']
         exclude:
-        - PLATFORM: windows
-          PYTHON_VERSION: pypy3
+        - platform: windows
+          python_version: pypy3
     steps:
       - name: Checkout
         uses: actions/checkout@v2
