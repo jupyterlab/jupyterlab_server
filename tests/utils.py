@@ -22,7 +22,7 @@ import tornado
 here = os.path.dirname(__file__)
 
 with open(
-    os.path.join(here, 'app-settings', 'overrides.json'),
+    os.path.join(here, '..', 'jupyterlab_server', 'test_data', 'app-settings', 'overrides.json'),
     encoding='utf-8'
 ) as fpt:
     big_unicode_string = json.load(fpt)["@jupyterlab/unicode-extension:plugin"]["comment"]

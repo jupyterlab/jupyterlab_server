@@ -4,6 +4,7 @@ include jupyterlab_server/rest-api.yml
 include jupyterlab_server/templates/*.html
 recursive-include tests *.*
 recursive-include docs *.*
+recursive-include jupyterlab_server/test_data *.*
 
 include docs/Makefile
 

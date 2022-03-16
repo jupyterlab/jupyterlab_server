@@ -47,7 +47,8 @@ def before_after_test(schemas_dir, user_settings_dir, labserverapp):
     # Code that will run before any test.
 
     # Copy the schema files.
-    src = os.path.join(HERE, 'schemas', '@jupyterlab')
+    test_data = os.path.join(HERE, '..', 'jupyterlab_server', 'test_data')
+    src =  os.path.join(test_data, 'schemas', '@jupyterlab')
     dst = os.path.join(str(schemas_dir), '@jupyterlab')
     if os.path.exists(dst):
         shutil.rmtree(dst)
@@ -55,7 +56,7 @@ def before_after_test(schemas_dir, user_settings_dir, labserverapp):
     shutil.copytree(src, dst)
 
     # Copy the overrides file.
-    src = os.path.join(HERE, 'app-settings', 'overrides.json')
+    src = os.path.join(test_data, 'app-settings', 'overrides.json')
     dst = os.path.join(str(user_settings_dir), 'overrides.json')
 
     if os.path.exists(dst):
