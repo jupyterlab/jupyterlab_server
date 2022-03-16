@@ -64,8 +64,6 @@ Module: :mod:`jupyterlab_server.translations_handler`
 .. autoclass:: TranslationsHandler
     :members:
 
-.. autofunction:: get_current_locale
-
 
 Module: :mod:`jupyterlab_server.workspaces_handler`
 =====================================================

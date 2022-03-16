@@ -2,63 +2,35 @@ name: Tests
 
 on:
   push:
-    branches: 'master'
+    branches: ['main']
   pull_request:
-    branches: '*'
-
-defaults:
-  run:
-    shell: bash -l {0}
+  schedule:
+    - cron: "0 8 * * *"
 
 jobs:
   test:
-    name: ${{ matrix.PLATFORM }} py${{ matrix.PYTHON_VERSION }}
-    runs-on: ${{ matrix.PLATFORM }}-latest
+    name: ${{ matrix.platform }} ${{ matrix.python_version }}
+    runs-on: ${{ matrix.platform }}-latest
     env:
       CI: True
-      PYTHON_VERSION: ${{ matrix.PYTHON_VERSION }}
+      PYTHON_VERSION: ${{ matrix.python_version }}
       CODECOV_TOKEN: e025254a-fe54-4914-8890-0c26e7aa0d07
     strategy:
       fail-fast: false
       matrix:
-        PYTHON_VERSION: ['3.6', '3.9', 'pypy3']
-        PLATFORM: ['ubuntu', 'macos',  'windows']
+        python_version: ['3.7', '3.10', 'pypy-3.7']
+        platform: ['ubuntu', 'macos',  'windows']
         exclude:
-        - PLATFORM: windows
-          PYTHON_VERSION: pypy3
+        - platform: windows
+          python_version: pypy3
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-      - name: Cache pip
-        uses: actions/cache@v2
-        with:
-          path: ~/.cache/pip
-          key: ${{ runner.os }}-py-${{ matrix.PYTHON_VERSION }}-pip-${{ hashFiles('**/setup.py') }}
-      - name: Cache conda
-        uses: actions/cache@v2
-        with:
-          path: ~/conda_pkgs_dir
-          key:
-            ${{ runner.os }}-conda-${{ env.CACHE_NUMBER }}-${{
-            hashFiles('docs/environment.yml') }}
-      - name: Setup conda ${{ matrix.PYTHON_VERSION }}
-        uses: conda-incubator/setup-miniconda@v2
-        with:
-          auto-update-conda: true
-          python-version: ${{ matrix.python-version }}
-      - name: Install python dependencies
-        run: |
-          conda install setuptools pip wheel
-      - name: Install pywin32 on Windows
-        if: ${{ runner.os == 'Windows' }}
-        run: conda install pywin32
+      - name: Base Setup
+        uses: jupyterlab/maintainer-tools/.github/actions/base-setup@v1
       - name: Install project dependencies
         run: |
-          pip install -v -e ".[test]" --cache-dir ~/.cache/pip
-      - run: conda info
-      - run: conda list
-      - run: conda config --show
-      - run: pip check
+          pip install -e ".[test]"
       - name: Run python tests
         # See `setup.cfg` for full test options
         run: |
@@ -66,16 +38,29 @@ jobs:
       - name: Upload coverage
         run: |
           codecov
-      - name: Build docs
+
+  docs:
+    name: Docs Build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Base Setup
+        uses: jupyterlab/maintainer-tools/.github/actions/base-setup@v1
+      - uses: conda-incubator/setup-miniconda@v2
+        with:
+          auto-update-conda: true
+          activate-environment: jupyterlab_server_documentation
+          environment-file: docs/environment.yml
+      - name: Install lib
+        shell: bash -l {0}
         run: |
-          set -eux
+          pip install .
+      - name: Build docs
+        shell: bash -l {0}
+        run: |
           pushd docs
-          conda env create -f environment.yml
-          conda activate jupyterlab_server_documentation
-          pip install ..
-          make html
-          conda deactivate
-          popd
+          make html SPHINXOPTS="-W"
 
   check_release:
     runs-on: ubuntu-latest
@@ -85,34 +70,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-      - name: Install Python
-        uses: actions/setup-python@v2
-        with:
-          python-version: 3.9
-          architecture: "x64"
-      - name: Get pip cache dir
-        id: pip-cache
-        run: |
-          echo "::set-output name=dir::$(pip cache dir)"
-      - name: Cache pip
-        uses: actions/cache@v2
-        with:
-          path: ${{ steps.pip-cache.outputs.dir }}
-          key: ${{ runner.os }}-pip-${{ hashFiles('setup.cfg') }}
-          restore-keys: |
-            ${{ runner.os }}-pip-
-            ${{ runner.os }}-pip-
-      - name: Cache checked links
-        if: ${{ matrix.group == 'link_check' }}
-        uses: actions/cache@v2
-        with:
-          path: ~/.cache/pytest-link-check
-          key: ${{ runner.os }}-linkcheck-${{ hashFiles('**/*.md', '**/*.rst') }}-md-links
-          restore-keys: |
-            ${{ runner.os }}-linkcheck-
-      - name: Upgrade packaging dependencies
-        run: |
-          pip install --upgrade pip setuptools wheel --user
+      - name: Base Setup
+        uses: jupyterlab/maintainer-tools/.github/actions/base-setup@v1
       - name: Install Dependencies
         run: |
           pip install -e .
@@ -124,3 +83,79 @@ jobs:
       - name: Run Link Check
         if: ${{ matrix.group == 'link_check' }}
         uses: jupyter-server/jupyter_releaser/.github/actions/check-links@v1
+
+  test_miniumum_verisons:
+    name: Test Minimum Versions
+    timeout-minutes: 20
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Base Setup
+        uses: jupyterlab/maintainer-tools/.github/actions/base-setup@v1
+        with:
+          python_version: "3.7"
+      - name: Install miniumum versions
+        uses: jupyterlab/maintainer-tools/.github/actions/install-minimums@v1
+      - name: Run the unit tests
+        run: pytest -vv|| pytest -vv --lf
+
+  test_prereleases:
+    name: Test Prereleases
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Base Setup
+        uses: jupyterlab/maintainer-tools/.github/actions/base-setup@v1
+      - name: Install the Python dependencies
+        run: |
+          pip install --pre -e ".[test]"
+      - name: List installed packages
+        run: |
+          pip freeze
+          pip check
+      - name: Run the tests
+        run: |
+          pytest -vv || pytest -vv --lf
+
+  make_sdist:
+    name: Make SDist
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v2
+      - name: Base Setup
+        uses: jupyterlab/maintainer-tools/.github/actions/base-setup@v1
+      - name: Build SDist
+        run: |
+          pip install build
+          python -m build --sdist
+      - uses: actions/upload-artifact@v2
+        with:
+          name: "sdist"
+          path: dist/*.tar.gz
+
+  test_sdist:
+    runs-on: ubuntu-latest
+    needs: [make_sdist]
+    name: Install from SDist and Test
+    timeout-minutes: 20
+    steps:
+      - name: Base Setup
+        uses: jupyterlab/maintainer-tools/.github/actions/base-setup@v1
+      - name: Download sdist
+        uses: actions/download-artifact@v2
+      - name: Install From SDist
+        run: |
+          set -ex
+          cd sdist
+          mkdir test
+          tar --strip-components=1 -zxvf *.tar.gz -C ./test
+          cd test
+          pip install .[test]
+          pip install pytest-github-actions-annotate-failures
+      - name: Run Test
+        run: |
+          cd sdist/test
+          pytest -vv || pytest -vv --lf
