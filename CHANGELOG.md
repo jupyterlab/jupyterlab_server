@@ -6,6 +6,27 @@ github_url: 'https://github.com/jupyterlab/jupyterlab_server/blob/master/CHANGEL
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
+## 2.11.0
+
+([Full Changelog](https://github.com/jupyterlab/jupyterlab_server/compare/v2.10.3...e004d2d23cb298bc9ae8f1fcb04c47a71cfe7a3a))
+
+### Enhancements made
+
+- Also look in `static` for license files [#238](https://github.com/jupyterlab/jupyterlab_server/pull/238) ([@bollwyvl](https://github.com/bollwyvl))
+
+### Maintenance and upkeep improvements
+
+- Clean up CI [#241](https://github.com/jupyterlab/jupyterlab_server/pull/241) ([@blink1073](https://github.com/blink1073))
+- Include Tests in Sdist But Not Wheel [#239](https://github.com/jupyterlab/jupyterlab_server/pull/239) ([@blink1073](https://github.com/blink1073))
+
+### Contributors to this release
+
+([GitHub contributors page for this release](https://github.com/jupyterlab/jupyterlab_server/graphs/contributors?from=2022-01-07&to=2022-03-16&type=c))
+
+[@blink1073](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Ablink1073+updated%3A2022-01-07..2022-03-16&type=Issues) | [@bollwyvl](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Abollwyvl+updated%3A2022-01-07..2022-03-16&type=Issues) | [@codecov-commenter](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Acodecov-commenter+updated%3A2022-01-07..2022-03-16&type=Issues)
+
+<!-- <END NEW CHANGELOG ENTRY> -->
+
 ## 2.10.3
 
 ([Full Changelog](https://github.com/jupyterlab/jupyterlab_server/compare/v2.10.2...788e118e25cd7ad29a3041767201a0e3f66ba28e))
@@ -19,8 +40,6 @@ github_url: 'https://github.com/jupyterlab/jupyterlab_server/blob/master/CHANGEL
 ([GitHub contributors page for this release](https://github.com/jupyterlab/jupyterlab_server/graphs/contributors?from=2021-12-28&to=2022-01-07&type=c))
 
 [@fcollonval](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Afcollonval+updated%3A2021-12-28..2022-01-07&type=Issues)
-
-<!-- <END NEW CHANGELOG ENTRY> -->
 
 ## 2.10.2
 
