@@ -19,10 +19,10 @@ from ruamel.yaml import YAML
 import tornado
 
 
-here = os.path.dirname(__file__)
+HERE = Path(os.path.dirname(__file__)).resolve()
 
 with open(
-    os.path.abspath(os.path.join(here, '..', 'jupyterlab_server', 'test_data', 'app-settings', 'overrides.json')),
+    HERE / 'test_data' / 'app-settings' / 'overrides.json',
     encoding='utf-8'
 ) as fpt:
     big_unicode_string = json.load(fpt)["@jupyterlab/unicode-extension:plugin"]["comment"]
@@ -96,7 +96,7 @@ def wrap_response(response):
 
 def validate_request(response):
     """Validate an API request"""
-    path = (Path(here) / '../jupyterlab_server/rest-api.yml').resolve()
+    path = HERE / 'rest-api.yml'
     yaml = YAML(typ='safe')
     spec_dict = yaml.load(path.read_text(encoding='utf-8'))
     spec = create_spec(spec_dict)

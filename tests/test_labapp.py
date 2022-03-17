@@ -4,7 +4,7 @@
 import pytest
 import tornado
 
-from .utils import expected_http_error
+from jupyterlab_server.test_utils import expected_http_error
 
 
 @pytest.fixture
