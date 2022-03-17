@@ -6,6 +6,22 @@ github_url: 'https://github.com/jupyterlab/jupyterlab_server/blob/master/CHANGEL
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
+## 2.11.2
+
+([Full Changelog](https://github.com/jupyterlab/jupyterlab_server/compare/v2.11.1...271f61678c43a7856058ef0adb422ed1070d76d6))
+
+### Bugs fixed
+
+- Resolve paths in tests [#245](https://github.com/jupyterlab/jupyterlab_server/pull/245) ([@blink1073](https://github.com/blink1073))
+
+### Contributors to this release
+
+([GitHub contributors page for this release](https://github.com/jupyterlab/jupyterlab_server/graphs/contributors?from=2022-03-16&to=2022-03-17&type=c))
+
+[@blink1073](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Ablink1073+updated%3A2022-03-16..2022-03-17&type=Issues)
+
+<!-- <END NEW CHANGELOG ENTRY> -->
+
 ## 2.11.1
 
 ([Full Changelog](https://github.com/jupyterlab/jupyterlab_server/compare/v2.11.0...681cd7a24fbe6425140d3cb8daabcf4c5f45a069))
@@ -19,8 +35,6 @@ github_url: 'https://github.com/jupyterlab/jupyterlab_server/blob/master/CHANGEL
 ([GitHub contributors page for this release](https://github.com/jupyterlab/jupyterlab_server/graphs/contributors?from=2022-03-16&to=2022-03-16&type=c))
 
 [@blink1073](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Ablink1073+updated%3A2022-03-16..2022-03-16&type=Issues)
-
-<!-- <END NEW CHANGELOG ENTRY> -->
 
 ## 2.11.0
 
