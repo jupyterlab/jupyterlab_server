@@ -159,3 +159,5 @@ jobs:
         run: |
           cd sdist/test
           pytest -vv || pytest -vv --lf
+          # Ensure that the pytest plugin is importable.
+          python -c "from jupyterlab_server import pytest_plugin"

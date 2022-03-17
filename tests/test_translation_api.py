@@ -48,6 +48,7 @@ def before_after_test(schemas_dir, user_settings_dir, labserverapp):
 
     # Copy the schema files.
     test_data = os.path.join(HERE, '..', 'jupyterlab_server', 'test_data')
+    test_data = os.path.abspath(test_data)
     src =  os.path.join(test_data, 'schemas', '@jupyterlab')
     dst = os.path.join(str(schemas_dir), '@jupyterlab')
     if os.path.exists(dst):
