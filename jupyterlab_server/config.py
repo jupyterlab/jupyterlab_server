@@ -249,7 +249,7 @@ class LabConfig(HasTraits):
                              'This should be `True` except in dev mode.')).tag(config=True)
     
     notebook_starts_kernel = Bool(True,
-                                  help='Whether a notebook can start a kernel automatically.').tag(config=True)
+                                  help='Whether a notebook should start a kernel automatically.').tag(config=True)
 
     @default('template_dir')
     def _default_template_dir(self):
