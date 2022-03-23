@@ -10,7 +10,7 @@ on:
 jobs:
   test:
     name: ${{ matrix.platform }} ${{ matrix.python_version }}
-    runs-on: ${{ matrix.platform }}-latest
+    runs-on: ${{ matrix.platform }}
     env:
       CI: True
       PYTHON_VERSION: ${{ matrix.python_version }}
