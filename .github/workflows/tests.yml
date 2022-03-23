@@ -18,11 +18,15 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python_version: ['3.7', '3.10', 'pypy-3.7']
-        platform: ['ubuntu', 'macos',  'windows']
-        exclude:
-        - platform: windows
-          python_version: pypy3
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        python-version: ["3.7", "3.10"]
+        include:
+          - os: windows-latest
+            python-version: "3.9"
+          - os: ubuntu-latest
+            python-version: "pypy-3.7"
+          - os: macos-latest
+            python-version: "3.8"
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -34,7 +38,8 @@ jobs:
       - name: Run python tests
         # See `setup.cfg` for full test options
         run: |
-          pytest
+          args="-vv -raXs --cov jupyterlab_server --cov-branch --cov-report term-missing:skip-covered --durations 10 --color=yes --cov-fail-under 65"
+          python -m pytest $args || python -m pytest $args --lf
       - name: Upload coverage
         run: |
           codecov
@@ -97,7 +102,7 @@ jobs:
       - name: Install miniumum versions
         uses: jupyterlab/maintainer-tools/.github/actions/install-minimums@v1
       - name: Run the unit tests
-        run: pytest -vv|| pytest -vv --lf
+        run: python -m pytest -vv -raXs || python -m pytest -vv -raXs --lf
 
   test_prereleases:
     name: Test Prereleases
@@ -116,8 +121,7 @@ jobs:
           pip freeze
           pip check
       - name: Run the tests
-        run: |
-          pytest -vv || pytest -vv --lf
+        run: python -m pytest -vv -raXs || python -m pytest -vv -raXs --lf
 
   make_sdist:
     name: Make SDist
@@ -154,10 +158,9 @@ jobs:
           tar --strip-components=1 -zxvf *.tar.gz -C ./test
           cd test
           pip install .[test]
-          pip install pytest-github-actions-annotate-failures
       - name: Run Test
         run: |
           cd sdist/test
-          pytest -vv || pytest -vv --lf
+          python -m pytest -vv -raXs || python -m pytest -vv -raXs --lf
           # Ensure that the pytest plugin is importable.
           python -c "from jupyterlab_server import pytest_plugin"
