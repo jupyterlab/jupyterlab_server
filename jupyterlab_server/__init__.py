@@ -4,7 +4,7 @@
 from .app import LabServerApp
 from .licenses_app import LicensesApp
 from .handlers import add_handlers, LabHandler, LabConfig
-from .spec import openapi_spec, openapi_spec_dict
+from .spec import get_openapi_spec, get_openapi_spec_dict
 from .translation_utils import translator
 from .workspaces_app import WorkspaceExportApp, WorkspaceImportApp, WorkspaceListApp
 from .workspaces_handler import slugify, WORKSPACE_EXTENSION

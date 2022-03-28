@@ -14,6 +14,14 @@ accommodate creating JupyterLab-like applications from a more limited scope.
 
 `pip install jupyterlab_server`
 
+To include optional `openapi` dependencies, use:
+
+`pip install jupyterlab_server[openapi]`
+
+To include optional `pytest_plugin` dependencies, use:
+
+`pip install jupyterlab_server[test]`
+
 ## Usage
 
 See the full documentation for [API docs](https://jupyterlab-server.readthedocs.io/en/stable/api/index.html) and [REST endpoint descriptions](https://jupyterlab-server.readthedocs.io/en/stable/api/rest.html).

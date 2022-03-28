@@ -15,7 +15,7 @@ from openapi_core.validation.response.validators import ResponseValidator
 import requests
 import tornado
 
-from jupyterlab_server.spec import openapi_spec
+from jupyterlab_server.spec import get_openapi_spec
 
 
 HERE = Path(os.path.dirname(__file__)).resolve()
@@ -95,6 +95,7 @@ def wrap_response(response):
 
 def validate_request(response):
     """Validate an API request"""
+    openapi_spec = get_openapi_spec()
     validator = RequestValidator(openapi_spec)
     request = wrap_request(response.request, openapi_spec)
     result = validator.validate(request)
