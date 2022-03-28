@@ -1,28 +1,27 @@
-import errno
 import json
 import os
 import sys
 from contextlib import contextmanager
 from http.cookies import SimpleCookie
 from pathlib import Path
-from urllib.parse import parse_qs, urlparse, urljoin
+from urllib.parse import parse_qs, urlparse
 
 from openapi_core.validation.request.datatypes import (
     RequestParameters, OpenAPIRequest
 )
 from openapi_core.validation.response.datatypes import OpenAPIResponse
-from openapi_core import create_spec
 from openapi_core.validation.request.validators import RequestValidator
 from openapi_core.validation.response.validators import ResponseValidator
 import requests
-from ruamel.yaml import YAML
 import tornado
 
+from jupyterlab_server.spec import openapi_spec
 
-here = os.path.dirname(__file__)
+
+HERE = Path(os.path.dirname(__file__)).resolve()
 
 with open(
-    os.path.abspath(os.path.join(here, '..', 'jupyterlab_server', 'test_data', 'app-settings', 'overrides.json')),
+    HERE / 'test_data' / 'app-settings' / 'overrides.json',
     encoding='utf-8'
 ) as fpt:
     big_unicode_string = json.load(fpt)["@jupyterlab/unicode-extension:plugin"]["comment"]
@@ -96,18 +95,13 @@ def wrap_response(response):
 
 def validate_request(response):
     """Validate an API request"""
-    path = (Path(here) / '../jupyterlab_server/rest-api.yml').resolve()
-    yaml = YAML(typ='safe')
-    spec_dict = yaml.load(path.read_text(encoding='utf-8'))
-    spec = create_spec(spec_dict)
-
-    validator = RequestValidator(spec)
-    request = wrap_request(response.request, spec)
+    validator = RequestValidator(openapi_spec)
+    request = wrap_request(response.request, openapi_spec)
     result = validator.validate(request)
     print(result.errors)
     result.raise_for_errors()
 
-    validator = ResponseValidator(spec)
+    validator = ResponseValidator(openapi_spec)
     response = wrap_response(response)
     result = validator.validate(request, response)
     print(result.errors)

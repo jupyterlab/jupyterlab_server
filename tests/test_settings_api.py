@@ -9,9 +9,9 @@ import tornado
 
 from strict_rfc3339 import rfc3339_to_timestamp
 
-from .utils import expected_http_error
-from .utils import maybe_patch_ioloop, big_unicode_string
-from .utils import validate_request
+from jupyterlab_server.test_utils import expected_http_error
+from jupyterlab_server.test_utils import maybe_patch_ioloop, big_unicode_string
+from jupyterlab_server.test_utils import validate_request
 
 
 async def test_get_settings_overrides_dicts(jp_fetch, labserverapp):

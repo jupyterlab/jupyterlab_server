@@ -1,5 +1,5 @@
 
-from .utils import validate_request
+from jupyterlab_server.test_utils import validate_request
 
 
 async def test_get_theme(jp_fetch, labserverapp):

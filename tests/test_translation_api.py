@@ -7,7 +7,6 @@ import shutil
 import subprocess
 import sys
 
-from .utils import expected_http_error
 from jupyterlab_server.translation_utils import (_get_installed_language_pack_locales,
                                  _get_installed_package_locales,
                                  get_display_name,
@@ -16,8 +15,9 @@ from jupyterlab_server.translation_utils import (_get_installed_language_pack_lo
                                  is_valid_locale, merge_locale_data,
                                  translator)
 
-from .utils import maybe_patch_ioloop
-from .utils import validate_request
+from jupyterlab_server.test_utils import expected_http_error
+from jupyterlab_server.test_utils import maybe_patch_ioloop
+from jupyterlab_server.test_utils import validate_request
 
 maybe_patch_ioloop()
 
