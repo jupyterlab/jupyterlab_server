@@ -14,3 +14,4 @@ JupyterLab Server API Reference:
     handlers
     process
     rest
+    specs
