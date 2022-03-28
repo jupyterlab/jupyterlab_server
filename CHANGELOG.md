@@ -6,6 +6,33 @@ github_url: 'https://github.com/jupyterlab/jupyterlab_server/blob/master/CHANGEL
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
+## 2.12.0
+
+([Full Changelog](https://github.com/jupyterlab/jupyterlab_server/compare/v2.11.2...d927c4cfcf75e3e61a9c1a37b46e68219bb2a324))
+
+### Enhancements made
+
+- Make openapi optional and lazy [#253](https://github.com/jupyterlab/jupyterlab_server/pull/253) ([@blink1073](https://github.com/blink1073))
+- Adds notebook_starts_kernel option to make "canStartKernel" configurable [#248](https://github.com/jupyterlab/jupyterlab_server/pull/248) ([@jweill-aws](https://github.com/jweill-aws))
+- Clean up tests and add public openapi_spec [#247](https://github.com/jupyterlab/jupyterlab_server/pull/247) ([@blink1073](https://github.com/blink1073))
+
+### Maintenance and upkeep improvements
+
+- Pin jinja for docs [#252](https://github.com/jupyterlab/jupyterlab_server/pull/252) ([@blink1073](https://github.com/blink1073))
+- More CI Cleanup [#249](https://github.com/jupyterlab/jupyterlab_server/pull/249) ([@blink1073](https://github.com/blink1073))
+
+### Documentation improvements
+
+- Updates parameter description for notebook_starts_kernel [#250](https://github.com/jupyterlab/jupyterlab_server/pull/250) ([@jweill-aws](https://github.com/jweill-aws))
+
+### Contributors to this release
+
+([GitHub contributors page for this release](https://github.com/jupyterlab/jupyterlab_server/graphs/contributors?from=2022-03-17&to=2022-03-28&type=c))
+
+[@blink1073](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Ablink1073+updated%3A2022-03-17..2022-03-28&type=Issues) | [@codecov-commenter](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Acodecov-commenter+updated%3A2022-03-17..2022-03-28&type=Issues) | [@jweill-aws](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Ajweill-aws+updated%3A2022-03-17..2022-03-28&type=Issues) | [@welcome](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Awelcome+updated%3A2022-03-17..2022-03-28&type=Issues)
+
+<!-- <END NEW CHANGELOG ENTRY> -->
+
 ## 2.11.2
 
 ([Full Changelog](https://github.com/jupyterlab/jupyterlab_server/compare/v2.11.1...271f61678c43a7856058ef0adb422ed1070d76d6))
@@ -19,8 +46,6 @@ github_url: 'https://github.com/jupyterlab/jupyterlab_server/blob/master/CHANGEL
 ([GitHub contributors page for this release](https://github.com/jupyterlab/jupyterlab_server/graphs/contributors?from=2022-03-16&to=2022-03-17&type=c))
 
 [@blink1073](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Ablink1073+updated%3A2022-03-16..2022-03-17&type=Issues)
-
-<!-- <END NEW CHANGELOG ENTRY> -->
 
 ## 2.11.1
 
