@@ -3,10 +3,3 @@ sphinx:
   configuration: docs/source/conf.py
 conda:
   environment: docs/environment.yml
-python:
-  version: 3.8
-  install:
-    # install jupyterlab_server itself
-    - method: pip
-      path: .
-
