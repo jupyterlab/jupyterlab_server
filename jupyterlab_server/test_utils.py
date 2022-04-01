@@ -159,4 +159,4 @@ def assert_http_error(status, msg=None):
         if msg:
             assert msg in str(e), e
     else:
-        assert False, "Expected HTTP error status"
+        raise AssertionError("Expected HTTP error status")

@@ -113,9 +113,9 @@ def get_page_config(labextensions_path, app_settings_dir=None, logger=None):
     # Ensure there is a disabled key
     page_config.setdefault(disabled_key, {})
 
-    for (ext, ext_data) in federated_exts.items():
-        if not "_build" in ext_data["jupyterlab"]:
-            logger.warn("%s is not a valid extension" % ext_data["name"])
+    for (_, ext_data) in federated_exts.items():
+        if "_build" not in ext_data["jupyterlab"]:
+            logger.warning("%s is not a valid extension" % ext_data["name"])
             continue
         extbuild = ext_data["jupyterlab"]["_build"]
         extension = {"name": ext_data["name"], "load": extbuild["load"]}
@@ -152,7 +152,7 @@ def get_page_config(labextensions_path, app_settings_dir=None, logger=None):
     disabled_by_extensions = {}
     for name in sorted(disabled_by_extensions_all):
         # skip if the extension itself is disabled by other config
-        if page_config[disabled_key].get(name) == True:
+        if page_config[disabled_key].get(name) is True:
             continue
 
         disabled_list = disabled_by_extensions_all[name]
@@ -217,7 +217,7 @@ class LabConfig(HasTraits):
     settings_url = Unicode(help="The url path of the settings handler.").tag(config=True)
 
     user_settings_dir = Unicode(
-        "", help=("The optional location of the user " "settings directory.")
+        "", help=("The optional location of the user settings directory.")
     ).tag(config=True)
 
     schemas_dir = Unicode(
@@ -263,7 +263,7 @@ class LabConfig(HasTraits):
 
     cache_files = Bool(
         True,
-        help=("Whether to cache files on the server. " "This should be `True` except in dev mode."),
+        help=("Whether to cache files on the server. This should be `True` except in dev mode."),
     ).tag(config=True)
 
     notebook_starts_kernel = Bool(
@@ -313,10 +313,6 @@ class LabConfig(HasTraits):
     @default("translations_api_url")
     def _default_translations_api_url(self):
         return ujoin(self.app_url, "api", "translations/")
-
-    @default("tree_url")
-    def _default_tree_url(self):
-        return ujoin(self.app_url, "tree/")
 
 
 def _get_config_manager(level):

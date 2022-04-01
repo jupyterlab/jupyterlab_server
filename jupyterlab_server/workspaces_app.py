@@ -92,7 +92,7 @@ class WorkspaceExportApp(JupyterApp, LabConfig):
         try:
             workspace = self.manager.load(raw)
             print(json.dumps(workspace))
-        except Exception as e:
+        except Exception:
             print(json.dumps(dict(data=dict(), metadata=dict(id=raw))))
 
 

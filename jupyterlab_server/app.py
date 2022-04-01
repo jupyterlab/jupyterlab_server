@@ -27,7 +27,7 @@ class LabServerApp(ExtensionAppJinjaMixin, LabConfig, ExtensionApp):
     # Should your extension expose other server extensions when launched directly?
     load_other_extensions = True
 
-    app_version = Unicode("", help="The version of the application.", default=__version__)
+    app_version = Unicode("", help="The version of the application.").tag(default=__version__)
 
     blacklist_uris = Unicode(
         "", config=True, help="Deprecated, use `LabServerApp.blocked_extensions_uris`"

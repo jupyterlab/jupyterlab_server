@@ -429,7 +429,7 @@ class SchemaHandler(APIHandler):
 
         if error:
             overrides_warning = "Failed loading overrides: %s"
-            self.log.warn(overrides_warning % str(error))
+            self.log.warning(overrides_warning % str(error))
 
     def get_current_locale(self):
         """
@@ -455,7 +455,7 @@ class SchemaHandler(APIHandler):
             )
         except web.HTTPError as e:
             schema_warning = "Missing or misshappen translation settings schema:\n%s"
-            self.log.warn(schema_warning % str(e))
+            self.log.warning(schema_warning % str(e))
 
             settings = {}
 

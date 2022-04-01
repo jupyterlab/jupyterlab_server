@@ -95,7 +95,7 @@ class Process:
         self.logger = logger = logger or logging.getLogger("jupyterlab")
         self._last_line = ""
         if not quiet:
-            self.logger.info("> " + list2cmdline(cmd))
+            self.logger.info(f"> {list2cmdline(cmd)}")
         self.cmd = cmd
 
         kwargs = {}

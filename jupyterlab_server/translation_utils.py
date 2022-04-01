@@ -654,7 +654,7 @@ class translator:
         if is_valid_locale(locale):
             cls._LOCALE = locale
             translator._update_env(locale)
-            for domain, bundle in cls._TRANSLATORS.items():
+            for _, bundle in cls._TRANSLATORS.items():
                 bundle.update_locale(locale)
 
     @classmethod
@@ -699,7 +699,7 @@ class translator:
 
             if isinstance(value, str):
                 matched = False
-                for pattern, context in to_translate.items():
+                for pattern, context in to_translate.items():  # noqa
                     if pattern.fullmatch(path):
                         matched = True
                         break

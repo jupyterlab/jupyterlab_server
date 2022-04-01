@@ -76,7 +76,6 @@ class LicensesApp(JupyterApp, LabConfig):
 
     def init_licenses_manager(self):
         self.licenses_manager = LicensesManager(
-            labextensions_path=sum([self.labextensions_path + self.extra_labextensions_path], []),
             parent=self,
         )
 
