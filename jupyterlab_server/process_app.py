@@ -21,7 +21,7 @@ class ProcessApp(ExtensionAppJinjaMixin, LabConfig, ExtensionApp):
         """Get the command and kwargs to run with `Process`.
         This is intended to be overridden.
         """
-        return ['python', '--version'], dict()
+        return ['python', '--version'], {}
 
     def initialize_settings(self):
         """Start the application.
