@@ -7,7 +7,6 @@ from os.path import join as pjoin
 import pytest
 
 from jupyterlab_server import LabServerApp
-from jupyterlab_server.app import LabServerApp
 
 pytest_plugins = ["jupyter_server.pytest_plugin"]
 

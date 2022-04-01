@@ -8,11 +8,7 @@ import sys
 
 import pytest
 
-from jupyterlab_server.test_utils import (
-    expected_http_error,
-    maybe_patch_ioloop,
-    validate_request,
-)
+from jupyterlab_server.test_utils import maybe_patch_ioloop, validate_request
 from jupyterlab_server.translation_utils import (
     _get_installed_language_pack_locales,
     _get_installed_package_locales,

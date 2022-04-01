@@ -75,7 +75,7 @@ class ThemesHandler(FileFindHandler):
         # Replace local paths with mangled paths.
         # We only match strings that are local urls,
         # e.g. `url('../foo.css')`, `url('images/foo.png')`
-        pattern = r"url\('(.*)'\)|" r'url\("(.*)"\)'
+        pattern = r"url\('(.*)'\)|url\('(.*)'\)"
 
         def replacer(m):
             """Replace the matched relative url with the mangled url."""

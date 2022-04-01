@@ -46,7 +46,7 @@ def _make_static_dir(app, tmp_path, has_licenses=True, license_json=None, packag
             encoding="utf-8",
         )
 
-    setattr(app, "static_dir", str(static_dir))
+    app.static_dir = str(static_dir)
 
 
 def _good_license_json():

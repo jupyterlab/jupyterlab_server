@@ -12,7 +12,7 @@ from jupyter_server.extension.handler import (
 from tornado import web
 
 from .settings_utils import SchemaHandler, get_settings, save_settings
-from .translation_utils import DEFAULT_LOCALE, translator
+from .translation_utils import translator
 
 
 class SettingsHandler(ExtensionHandlerMixin, ExtensionHandlerJinjaMixin, SchemaHandler):
@@ -45,7 +45,7 @@ class SettingsHandler(ExtensionHandlerMixin, ExtensionHandlerJinjaMixin, SchemaH
         # Print all warnings.
         for w in warnings:
             if w:
-                self.log.warn(w)
+                self.log.warning(w)
 
         return self.finish(json.dumps(result))
 
@@ -78,7 +78,7 @@ class SettingsHandler(ExtensionHandlerMixin, ExtensionHandlerJinjaMixin, SchemaH
             )
         except json.decoder.JSONDecodeError as e:
             raise web.HTTPError(400, invalid_json_error % str(e))
-        except (KeyError, TypeError) as e:
+        except (KeyError, TypeError):
             raise web.HTTPError(400, invalid_payload_format_error)
         except ValidationError as e:
             raise web.HTTPError(400, validation_error % str(e))

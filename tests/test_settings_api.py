@@ -11,7 +11,6 @@ from strict_rfc3339 import rfc3339_to_timestamp
 from jupyterlab_server.test_utils import (
     big_unicode_string,
     expected_http_error,
-    maybe_patch_ioloop,
     validate_request,
 )
 

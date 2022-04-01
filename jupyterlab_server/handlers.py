@@ -224,7 +224,7 @@ def add_handlers(handlers, extension_app):
         handlers.append((setting_path, SettingsHandler, settings_config))
 
         # Handle translations.
-        ## Translations requires settings as the locale source of truth is stored in it
+        # Translations requires settings as the locale source of truth is stored in it
         if extension_app.translations_api_url:
             # Handle requests for the list of language packs available.
             # Make slash optional.

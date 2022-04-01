@@ -1,4 +1,4 @@
-from jupyter_server import _tz as tz
+from jupyter_server import _tz as tz  # noqa
 from jupyter_server.base.handlers import (  # noqa
     APIHandler,
     FileFindHandler,
