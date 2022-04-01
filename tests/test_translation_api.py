@@ -2,43 +2,49 @@
 
 import json
 import os
-import pytest
 import shutil
 import subprocess
 import sys
 
-from jupyterlab_server.translation_utils import (_get_installed_language_pack_locales,
-                                 _get_installed_package_locales,
-                                 get_display_name,
-                                 get_installed_packages_locale,
-                                 get_language_pack, get_language_packs,
-                                 is_valid_locale, merge_locale_data,
-                                 translator)
+import pytest
 
-from jupyterlab_server.test_utils import expected_http_error
-from jupyterlab_server.test_utils import maybe_patch_ioloop
-from jupyterlab_server.test_utils import validate_request
+from jupyterlab_server.test_utils import (
+    expected_http_error,
+    maybe_patch_ioloop,
+    validate_request,
+)
+from jupyterlab_server.translation_utils import (
+    _get_installed_language_pack_locales,
+    _get_installed_package_locales,
+    get_display_name,
+    get_installed_packages_locale,
+    get_language_pack,
+    get_language_packs,
+    is_valid_locale,
+    merge_locale_data,
+    translator,
+)
 
 maybe_patch_ioloop()
 
 # Constants
 HERE = os.path.abspath(os.path.dirname(__file__))
 
-if not os.path.exists(os.path.join(HERE, 'translations')):
+if not os.path.exists(os.path.join(HERE, "translations")):
     pytest.skip("skipping translation tests", allow_module_level=True)
 
 
 def setup_module(module):
-    """ setup any state specific to the execution of this module."""
-    for pkg in ['jupyterlab-some-package', 'jupyterlab-language-pack-es_CO']:
-        src = os.path.join(HERE, 'translations', pkg)
-        subprocess.Popen([sys.executable, '-m', 'pip', 'install', src]).communicate()
+    """setup any state specific to the execution of this module."""
+    for pkg in ["jupyterlab-some-package", "jupyterlab-language-pack-es_CO"]:
+        src = os.path.join(HERE, "translations", pkg)
+        subprocess.Popen([sys.executable, "-m", "pip", "install", src]).communicate()
 
 
 def teardown_module(module):
-    """ teardown any state that was previously setup."""
-    for pkg in ['jupyterlab-some-package', 'jupyterlab-language-pack-es_CO']:
-        subprocess.Popen([sys.executable, '-m', 'pip', 'uninstall', pkg, '-y']).communicate()
+    """teardown any state that was previously setup."""
+    for pkg in ["jupyterlab-some-package", "jupyterlab-language-pack-es_CO"]:
+        subprocess.Popen([sys.executable, "-m", "pip", "uninstall", pkg, "-y"]).communicate()
 
 
 @pytest.fixture(autouse=True)
@@ -47,18 +53,18 @@ def before_after_test(schemas_dir, user_settings_dir, labserverapp):
     # Code that will run before any test.
 
     # Copy the schema files.
-    test_data = os.path.join(HERE, '..', 'jupyterlab_server', 'test_data')
+    test_data = os.path.join(HERE, "..", "jupyterlab_server", "test_data")
     test_data = os.path.abspath(test_data)
-    src =  os.path.join(test_data, 'schemas', '@jupyterlab')
-    dst = os.path.join(str(schemas_dir), '@jupyterlab')
+    src = os.path.join(test_data, "schemas", "@jupyterlab")
+    dst = os.path.join(str(schemas_dir), "@jupyterlab")
     if os.path.exists(dst):
         shutil.rmtree(dst)
 
     shutil.copytree(src, dst)
 
     # Copy the overrides file.
-    src = os.path.join(test_data, 'app-settings', 'overrides.json')
-    dst = os.path.join(str(user_settings_dir), 'overrides.json')
+    src = os.path.join(test_data, "app-settings", "overrides.json")
+    dst = os.path.join(str(user_settings_dir), "overrides.json")
 
     if os.path.exists(dst):
         os.remove(dst)
@@ -79,6 +85,7 @@ async def test_get(jp_fetch):
     data = json.loads(r.body.decode())["data"]
     assert "en" in data
 
+
 async def test_get_locale(jp_fetch):
     locale = "es_CO"
     r = await jp_fetch("lab", "api", "translations", locale)
@@ -91,11 +98,13 @@ async def test_get_locale(jp_fetch):
     assert data["jupyterlab_some_package"][""]["version"] == "0.1.0"
     assert data["jupyterlab_some_package"][""]["language"] == locale
 
+
 async def test_get_locale_bad(jp_fetch):
     r = await jp_fetch("lab", "api", "translations", "foo_BAR")
     validate_request(r)
     data = json.loads(r.body.decode())["data"]
     assert data == {}
+
 
 async def test_get_locale_not_installed(jp_fetch):
     r = await jp_fetch("lab", "api", "translations", "es_AR")
@@ -103,6 +112,7 @@ async def test_get_locale_not_installed(jp_fetch):
     result = json.loads(r.body.decode())
     assert "not installed" in result["message"]
     assert result["data"] == {}
+
 
 async def test_get_locale_not_valid(jp_fetch):
     r = await jp_fetch("lab", "api", "translations", "foo_BAR")
@@ -137,11 +147,13 @@ def test_get_installed_language_pack_locales_passes():
     assert "es_CO" in data
     assert message == ""
 
+
 def test_get_installed_package_locales():
     data, message = _get_installed_package_locales()
     assert "jupyterlab_some_package" in data
     assert os.path.isdir(data["jupyterlab_some_package"])
     assert message == ""
+
 
 def test_get_installed_packages_locale():
     data, message = get_installed_packages_locale("es_CO")
@@ -149,11 +161,13 @@ def test_get_installed_packages_locale():
     assert "" in data["jupyterlab_some_package"]
     assert message == ""
 
+
 def test_get_language_packs():
     data, message = get_language_packs("en")
     assert "en" in data
     assert "es_CO" in data
     assert message == ""
+
 
 def test_get_language_pack():
     data, message = get_language_pack("es_CO")
@@ -168,24 +182,15 @@ def test_get_language_pack():
 # ------------------------------------------------------------------------
 def test_merge_locale_data():
     some_package_data_1 = {
-        "": {
-            "domain": "some_package",
-            "version": "1.0.0"
-        },
+        "": {"domain": "some_package", "version": "1.0.0"},
         "FOO": ["BAR"],
     }
     some_package_data_2 = {
-        "": {
-            "domain": "some_package",
-            "version": "1.1.0"
-        },
+        "": {"domain": "some_package", "version": "1.1.0"},
         "SPAM": ["BAR"],
     }
     some_package_data_3 = {
-        "": {
-            "domain": "some_different_package",
-            "version": "1.4.0"
-        },
+        "": {"domain": "some_different_package", "version": "1.4.0"},
         "SPAM": ["BAR"],
     }
     # Package data 2 has a newer version so it should update the package data 1

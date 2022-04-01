@@ -3,7 +3,9 @@
   "description": "Theme manager settings.",
   "properties": {
     "theme": {
-      "type": "string", "title": "Selected Theme", "default": "JupyterLab Light"
+      "type": "string",
+      "title": "Selected Theme",
+      "default": "JupyterLab Light"
     },
     "codeCellConfig": {
       "title": "Code Cell Configuration",

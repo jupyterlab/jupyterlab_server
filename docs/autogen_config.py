@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import os
+
 from jupyterlab_server import LabServerApp
 
 header = """\
@@ -37,11 +38,11 @@ enter::
 """
 # Handle local and RTD locations
 cwd = os.getcwd()
-if os.path.basename(cwd) == 'source':
-    destination = os.path.join(cwd, 'api/app-config.rst')
+if os.path.basename(cwd) == "source":
+    destination = os.path.join(cwd, "api/app-config.rst")
 else:
-    destination = os.path.join(cwd, 'source/api/app-config.rst')
+    destination = os.path.join(cwd, "source/api/app-config.rst")
 
-with open(destination, 'w') as f:
+with open(destination, "w") as f:
     f.write(header)
     f.write(LabServerApp().document_config_options())

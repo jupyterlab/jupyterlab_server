@@ -87,9 +87,7 @@ def slugify(raw, base="", sign=True, max_length=128 - len(WORKSPACE_EXTENSION)):
         common += 1
     value = ujoin(base[common:], raw)
     value = urllib.parse.unquote(value)
-    value = (
-        unicodedata.normalize("NFKC", value).encode("ascii", "ignore").decode("ascii")
-    )
+    value = unicodedata.normalize("NFKC", value).encode("ascii", "ignore").decode("ascii")
     value = re.sub(r"[^\w\s-]", "", value).strip()
     value = re.sub(r"[-\s]+", "-", value)
     return value[: max_length - len(signature)] + signature
@@ -153,7 +151,7 @@ class WorkspacesManager(LoggingConfigurable):
         metadata_id = metadata_id if metadata_id.startswith("/") else "/" + metadata_id
         metadata_id = urllib.parse.unquote(metadata_id)
         if metadata_id != "/" + space_name:
-            message = "Workspace metadata ID mismatch: expected %r got %r" % (
+            message = "Workspace metadata ID mismatch: expected {!r} got {!r}".format(
                 space_name,
                 metadata_id,
             )
@@ -199,9 +197,7 @@ class WorkspacesHandler(ExtensionHandlerMixin, ExtensionHandlerJinjaMixin, APIHa
                 for workspace in workspaces:
                     ids.append(workspace["metadata"]["id"])
                     values.append(workspace)
-                return self.finish(
-                    json.dumps({"workspaces": {"ids": ids, "values": values}})
-                )
+                return self.finish(json.dumps({"workspaces": {"ids": ids, "values": values}}))
 
             workspace = self.manager.load(space_name)
             return self.finish(json.dumps(workspace))

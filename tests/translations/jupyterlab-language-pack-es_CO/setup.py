@@ -6,6 +6,8 @@ setup(
     packages=["jupyterlab_language_pack_es_CO"],
     include_package_data=True,
     entry_points={
-        "jupyterlab.languagepack": ["es_CO = jupyterlab_language_pack_es_CO",]
+        "jupyterlab.languagepack": [
+            "es_CO = jupyterlab_language_pack_es_CO",
+        ]
     },
 )

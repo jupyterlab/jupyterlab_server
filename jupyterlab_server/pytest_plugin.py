@@ -9,9 +9,8 @@ import pytest
 from jupyterlab_server import LabServerApp
 from jupyterlab_server.app import LabServerApp
 
-pytest_plugins = [
-    "jupyter_server.pytest_plugin"
-]
+pytest_plugins = ["jupyter_server.pytest_plugin"]
+
 
 def mkdir(tmp_path, *parts):
     path = tmp_path.joinpath(*parts)
@@ -19,13 +18,15 @@ def mkdir(tmp_path, *parts):
         path.mkdir(parents=True)
     return path
 
+
 HERE = os.path.abspath(os.path.dirname(__file__))
 
-app_settings_dir = pytest.fixture(lambda tmp_path: mkdir(tmp_path, 'app_settings'))
-user_settings_dir = pytest.fixture(lambda tmp_path: mkdir(tmp_path, 'user_settings'))
-schemas_dir = pytest.fixture(lambda tmp_path: mkdir(tmp_path, 'schemas'))
-workspaces_dir = pytest.fixture(lambda tmp_path: mkdir(tmp_path, 'workspaces'))
-labextensions_dir = pytest.fixture(lambda tmp_path: mkdir(tmp_path, 'labextensions_dir'))
+app_settings_dir = pytest.fixture(lambda tmp_path: mkdir(tmp_path, "app_settings"))
+user_settings_dir = pytest.fixture(lambda tmp_path: mkdir(tmp_path, "user_settings"))
+schemas_dir = pytest.fixture(lambda tmp_path: mkdir(tmp_path, "schemas"))
+workspaces_dir = pytest.fixture(lambda tmp_path: mkdir(tmp_path, "workspaces"))
+labextensions_dir = pytest.fixture(lambda tmp_path: mkdir(tmp_path, "labextensions_dir"))
+
 
 @pytest.fixture
 def make_labserver_extension_app(
@@ -35,25 +36,25 @@ def make_labserver_extension_app(
     user_settings_dir,
     schemas_dir,
     workspaces_dir,
-    labextensions_dir
-    ):
-
+    labextensions_dir,
+):
     def _make_labserver_extension_app(**kwargs):
 
         return LabServerApp(
-            static_dir = str(jp_root_dir),
-            templates_dir = str(jp_template_dir),
-            app_url = '/lab',
-            app_settings_dir = str(app_settings_dir),
-            user_settings_dir = str(user_settings_dir),
-            schemas_dir = str(schemas_dir),
-            workspaces_dir = str(workspaces_dir),
-            extra_labextensions_path=[str(labextensions_dir)]
+            static_dir=str(jp_root_dir),
+            templates_dir=str(jp_template_dir),
+            app_url="/lab",
+            app_settings_dir=str(app_settings_dir),
+            user_settings_dir=str(user_settings_dir),
+            schemas_dir=str(schemas_dir),
+            workspaces_dir=str(workspaces_dir),
+            extra_labextensions_path=[str(labextensions_dir)],
         )
 
     # Create the index files.
-    index = jp_template_dir.joinpath('index.html')
-    index.write_text("""
+    index = jp_template_dir.joinpath("index.html")
+    index.write_text(
+        """
 <!DOCTYPE html>
 <html>
 <head>
@@ -83,53 +84,38 @@ def make_labserver_extension_app(
   </script>
 </body>
 </html>
-""")
+"""
+    )
 
     # Copy the schema files.
-    src = pjoin(
-        HERE,
-        'test_data',
-        'schemas',
-        '@jupyterlab')
-    dst = pjoin(str(schemas_dir), '@jupyterlab')
+    src = pjoin(HERE, "test_data", "schemas", "@jupyterlab")
+    dst = pjoin(str(schemas_dir), "@jupyterlab")
     if os.path.exists(dst):
         shutil.rmtree(dst)
     shutil.copytree(src, dst)
 
     # Create the federated extensions
-    for name in ['apputils-extension', 'codemirror-extension']:
-        target_name = name + '-federated'
-        target = pjoin(str(labextensions_dir), '@jupyterlab', target_name)
-        src = pjoin(
-            HERE,
-            'test_data',
-            'schemas',
-            '@jupyterlab',
-            name)
-        dst = pjoin(target, 'schemas', '@jupyterlab', target_name)
+    for name in ["apputils-extension", "codemirror-extension"]:
+        target_name = name + "-federated"
+        target = pjoin(str(labextensions_dir), "@jupyterlab", target_name)
+        src = pjoin(HERE, "test_data", "schemas", "@jupyterlab", name)
+        dst = pjoin(target, "schemas", "@jupyterlab", target_name)
         if osp.exists(dst):
             shutil.rmtree(dst)
         shutil.copytree(src, dst)
-        with open(pjoin(target, 'package.orig.json'), 'w') as fid:
+        with open(pjoin(target, "package.orig.json"), "w") as fid:
             data = dict(name=target_name, jupyterlab=dict(extension=True))
             json.dump(data, fid)
 
     # Copy the overrides file.
-    src = pjoin(
-        HERE,
-        'test_data',
-        'app-settings',
-        'overrides.json')
-    dst = pjoin(str(app_settings_dir), 'overrides.json')
+    src = pjoin(HERE, "test_data", "app-settings", "overrides.json")
+    dst = pjoin(str(app_settings_dir), "overrides.json")
     if os.path.exists(dst):
         os.remove(dst)
     shutil.copyfile(src, dst)
 
     # Copy workspaces.
-    data = pjoin(
-        HERE,
-        'test_data',
-        'workspaces')
+    data = pjoin(HERE, "test_data", "workspaces")
     for item in os.listdir(data):
         src = pjoin(data, item)
         dst = pjoin(str(workspaces_dir), item)

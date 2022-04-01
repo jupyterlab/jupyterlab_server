@@ -10,38 +10,53 @@ import tornado
 
 from .server import APIHandler
 
-LISTINGS_URL_SUFFIX='@jupyterlab/extensionmanager-extension/listings.json'
+LISTINGS_URL_SUFFIX = "@jupyterlab/extensionmanager-extension/listings.json"
 
 
 def fetch_listings(logger):
     """Fetch the listings for the extension manager."""
     if not logger:
         from traitlets import log
+
         logger = log.get_logger()
     if len(ListingsHandler.blocked_extensions_uris) > 0:
         blocked_extensions = []
         for blocked_extensions_uri in ListingsHandler.blocked_extensions_uris:
-            logger.info('Fetching blocked_extensions from {}'.format(ListingsHandler.blocked_extensions_uris))
-            r = requests.request('GET', blocked_extensions_uri, **ListingsHandler.listings_request_opts)
+            logger.info(
+                "Fetching blocked_extensions from {}".format(
+                    ListingsHandler.blocked_extensions_uris
+                )
+            )
+            r = requests.request(
+                "GET", blocked_extensions_uri, **ListingsHandler.listings_request_opts
+            )
             j = json.loads(r.text)
-            for b in j['blocked_extensions']:
+            for b in j["blocked_extensions"]:
                 blocked_extensions.append(b)
             ListingsHandler.blocked_extensions = blocked_extensions
     if len(ListingsHandler.allowed_extensions_uris) > 0:
         allowed_extensions = []
         for allowed_extensions_uri in ListingsHandler.allowed_extensions_uris:
-            logger.info('Fetching allowed_extensions from {}'.format(ListingsHandler.allowed_extensions_uris))
-            r = requests.request('GET', allowed_extensions_uri, **ListingsHandler.listings_request_opts)
+            logger.info(
+                "Fetching allowed_extensions from {}".format(
+                    ListingsHandler.allowed_extensions_uris
+                )
+            )
+            r = requests.request(
+                "GET", allowed_extensions_uri, **ListingsHandler.listings_request_opts
+            )
             j = json.loads(r.text)
-            for w in j['allowed_extensions']:
+            for w in j["allowed_extensions"]:
                 allowed_extensions.append(w)
         ListingsHandler.allowed_extensions = allowed_extensions
-    ListingsHandler.listings = json.dumps({
-        'blocked_extensions_uris': list(ListingsHandler.blocked_extensions_uris),
-        'allowed_extensions_uris': list(ListingsHandler.allowed_extensions_uris),
-        'blocked_extensions': ListingsHandler.blocked_extensions,
-        'allowed_extensions': ListingsHandler.allowed_extensions,
-    })
+    ListingsHandler.listings = json.dumps(
+        {
+            "blocked_extensions_uris": list(ListingsHandler.blocked_extensions_uris),
+            "allowed_extensions_uris": list(ListingsHandler.allowed_extensions_uris),
+            "blocked_extensions": ListingsHandler.blocked_extensions,
+            "allowed_extensions": ListingsHandler.allowed_extensions,
+        }
+    )
 
 
 class ListingsHandler(APIHandler):
@@ -67,10 +82,9 @@ class ListingsHandler(APIHandler):
     # The PeriodicCallback that schedule the call to fetch_listings method.
     pc = None
 
-
     def get(self, path):
         """Get the listings for the extension manager."""
-        self.set_header('Content-Type', 'application/json')
+        self.set_header("Content-Type", "application/json")
         if path == LISTINGS_URL_SUFFIX:
             self.write(ListingsHandler.listings)
         else:

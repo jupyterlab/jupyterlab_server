@@ -1,4 +1,3 @@
-# coding: utf-8
 """A lab app that runs a sub process for a demo or a test."""
 import sys
 
@@ -21,11 +20,10 @@ class ProcessApp(ExtensionAppJinjaMixin, LabConfig, ExtensionApp):
         """Get the command and kwargs to run with `Process`.
         This is intended to be overridden.
         """
-        return ['python', '--version'], {}
+        return ["python", "--version"], {}
 
     def initialize_settings(self):
-        """Start the application.
-        """
+        """Start the application."""
         IOLoop.current().add_callback(self._run_command)
 
     def initialize_handlers(self):
@@ -33,7 +31,7 @@ class ProcessApp(ExtensionAppJinjaMixin, LabConfig, ExtensionApp):
 
     def _run_command(self):
         command, kwargs = self.get_command()
-        kwargs.setdefault('logger', self.log)
+        kwargs.setdefault("logger", self.log)
         future = Process(command, **kwargs).wait_async()
         IOLoop.current().add_future(future, self._process_finished)
 
