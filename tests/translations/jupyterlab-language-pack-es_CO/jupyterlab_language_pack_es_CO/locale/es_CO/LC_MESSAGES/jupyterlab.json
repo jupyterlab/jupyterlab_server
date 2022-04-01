@@ -1,11 +1,9 @@
 {
-    "": {
-        "domain": "jupyterlab",
-        "language": "es_CO",
-        "plural_forms": "nplurals=2; plural=(n != 1);",
-        "version": "2.2.0"
-    },
-    "ABOUT PROJECT JUPYTER": [
-        "SOBRE EL PROYECTO JUPYTER"
-    ]
+  "": {
+    "domain": "jupyterlab",
+    "language": "es_CO",
+    "plural_forms": "nplurals=2; plural=(n != 1);",
+    "version": "2.2.0"
+  },
+  "ABOUT PROJECT JUPYTER": ["SOBRE EL PROYECTO JUPYTER"]
 }

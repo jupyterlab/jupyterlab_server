@@ -12,11 +12,15 @@ import tornado
 from tornado import gen
 
 from .settings_utils import SchemaHandler
-from .translation_utils import get_language_pack, get_language_packs, is_valid_locale, translator
+from .translation_utils import (
+    get_language_pack,
+    get_language_packs,
+    is_valid_locale,
+    translator,
+)
 
 
 class TranslationsHandler(SchemaHandler):
-
     @gen.coroutine
     @tornado.web.authenticated
     def get(self, locale=""):
@@ -32,16 +36,14 @@ class TranslationsHandler(SchemaHandler):
         data, message = {}, ""
         try:
             if locale == "":
-                data, message = get_language_packs(
-                    display_locale=self.get_current_locale()
-                )
+                data, message = get_language_packs(display_locale=self.get_current_locale())
             else:
                 data, message = get_language_pack(locale)
                 if data == {} and message == "":
                     if is_valid_locale(locale):
-                        message = "Language pack '{}' not installed!".format(locale)
+                        message = f"Language pack '{locale}' not installed!"
                     else:
-                        message = "Language pack '{}' not valid!".format(locale)
+                        message = f"Language pack '{locale}' not valid!"
                 else:
                     # only change locale if the language pack is installed and valid
                     if is_valid_locale(locale):

@@ -20,21 +20,21 @@ HERE = osp.abspath(osp.dirname(__file__))
 
 # -- Project information -----------------------------------------------------
 
-project = 'JupyterLab Server'
-copyright = '2021, Project Jupyter'
-author = 'Project Jupyter'
+project = "JupyterLab Server"
+copyright = "2021, Project Jupyter"
+author = "Project Jupyter"
 
 # The full version, including alpha/beta/rc tags
-_version_py = osp.join(HERE, '..', '..', 'jupyterlab_server', '_version.py')
+_version_py = osp.join(HERE, "..", "..", "jupyterlab_server", "_version.py")
 version_ns = {}
 
-with open(_version_py, mode='r') as version_file:
+with open(_version_py) as version_file:
     exec(version_file.read(), version_ns)
 
 # The short X.Y version.
-version = '%i.%i' % version_ns['version_info'][:2]
+version = "%i.%i" % version_ns["version_info"][:2]
 # The full version, including alpha/beta/rc tags.
-release = version_ns['__version__']
+release = version_ns["__version__"]
 
 # -- General configuration ---------------------------------------------------
 
@@ -42,21 +42,21 @@ release = version_ns['__version__']
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = [
-    'myst_parser',
-    'numpydoc',
-    'autodoc_traits',
-    'sphinx.ext.autodoc',
-    'sphinx.ext.intersphinx',
-    'sphinxcontrib.openapi',
-    'sphinx.ext.napoleon',
-    'sphinx.ext.mathjax',
-    'sphinx_copybutton'
+    "myst_parser",
+    "numpydoc",
+    "autodoc_traits",
+    "sphinx.ext.autodoc",
+    "sphinx.ext.intersphinx",
+    "sphinxcontrib.openapi",
+    "sphinx.ext.napoleon",
+    "sphinx.ext.mathjax",
+    "sphinx_copybutton",
 ]
 
 myst_enable_extensions = ["html_image"]
 
 # Add any paths that contain templates here, relative to this directory.
-templates_path = ['_templates']
+templates_path = ["_templates"]
 
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
@@ -89,8 +89,9 @@ html_context = {
 # so disable
 numpydoc_show_class_members = False
 
+
 def setup(app):
-    dest = osp.join(HERE, 'changelog.md')
-    shutil.copy(osp.join(HERE, '..', '..', 'CHANGELOG.md'), dest)
-    with open(osp.join(HERE, '../autogen_config.py')) as f:
-        exec(compile(f.read(), '../autogen_config.py', 'exec'), {})
+    dest = osp.join(HERE, "changelog.md")
+    shutil.copy(osp.join(HERE, "..", "..", "CHANGELOG.md"), dest)
+    with open(osp.join(HERE, "../autogen_config.py")) as f:
+        exec(compile(f.read(), "../autogen_config.py", "exec"), {})

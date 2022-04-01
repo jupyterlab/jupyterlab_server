@@ -7,7 +7,7 @@
 ## Motivation
 
 JupyterLab Server sits between JupyterLab and Jupyter Server, and provides a
-set of REST API handlers and utilities that are used by JupyterLab.  It is a separate project in order to
+set of REST API handlers and utilities that are used by JupyterLab. It is a separate project in order to
 accommodate creating JupyterLab-like applications from a more limited scope.
 
 ## Install

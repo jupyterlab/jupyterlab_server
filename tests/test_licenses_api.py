@@ -1,16 +1,18 @@
 """Test the Settings service API.
 """
-import io
 import csv
+import io
 import json
 import mimetypes
 
-import pytest
 import mistune
+import pytest
 
 from jupyterlab_server import LicensesApp
-from jupyterlab_server.licenses_handler import DEFAULT_THIRD_PARTY_LICENSE_FILE, LicensesManager
-
+from jupyterlab_server.licenses_handler import (
+    DEFAULT_THIRD_PARTY_LICENSE_FILE,
+    LicensesManager,
+)
 
 # utilities
 
@@ -29,9 +31,7 @@ def _read_csv(csv_text):
         return [*csv.DictReader(csvfile)]
 
 
-def _make_static_dir(
-    app, tmp_path, has_licenses=True, license_json=None, package_in_app=False
-):
+def _make_static_dir(app, tmp_path, has_licenses=True, license_json=None, package_in_app=False):
     app_dir = tmp_path / "app"
     static_dir = app_dir / "static"
     static_dir.mkdir(parents=True)
@@ -50,9 +50,7 @@ def _make_static_dir(
 
 
 def _good_license_json():
-    return json.dumps(
-        {"packages": [dict(FULL_ENTRY[:i]) for i in range(1 + len(FULL_ENTRY))]}
-    )
+    return json.dumps({"packages": [dict(FULL_ENTRY[:i]) for i in range(1 + len(FULL_ENTRY))]})
 
 
 @pytest.fixture(

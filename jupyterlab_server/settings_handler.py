@@ -17,13 +17,7 @@ from .translation_utils import DEFAULT_LOCALE, translator
 
 class SettingsHandler(ExtensionHandlerMixin, ExtensionHandlerJinjaMixin, SchemaHandler):
     def initialize(
-        self,
-        name,
-        app_settings_dir,
-        schemas_dir,
-        settings_dir,
-        labextensions_path,
-        **kwargs
+        self, name, app_settings_dir, schemas_dir, settings_dir, labextensions_path, **kwargs
     ):
         SchemaHandler.initialize(
             self, app_settings_dir, schemas_dir, settings_dir, labextensions_path
@@ -45,7 +39,7 @@ class SettingsHandler(ExtensionHandlerMixin, ExtensionHandlerJinjaMixin, SchemaH
             labextensions_path=self.labextensions_path,
             schema_name=schema_name,
             overrides=self.overrides,
-            translator=translator.translate_schema
+            translator=translator.translate_schema,
         )
 
         # Print all warnings.
@@ -61,15 +55,17 @@ class SettingsHandler(ExtensionHandlerMixin, ExtensionHandlerJinjaMixin, SchemaH
         overrides = self.overrides
         schemas_dir = self.schemas_dir
         settings_dir = self.settings_dir
-        settings_error = 'No current settings directory'
-        invalid_json_error = 'Failed parsing JSON payload: %s'
-        invalid_payload_format_error = 'Invalid format for JSON payload. Must be in the form {\'raw\': ...}'
-        validation_error = 'Failed validating input: %s'
+        settings_error = "No current settings directory"
+        invalid_json_error = "Failed parsing JSON payload: %s"
+        invalid_payload_format_error = (
+            "Invalid format for JSON payload. Must be in the form {'raw': ...}"
+        )
+        validation_error = "Failed validating input: %s"
 
         if not settings_dir:
             raise web.HTTPError(500, settings_error)
 
-        raw_payload = self.request.body.strip().decode('utf-8')
+        raw_payload = self.request.body.strip().decode("utf-8")
         try:
             raw_settings = json.loads(raw_payload)["raw"]
             save_settings(

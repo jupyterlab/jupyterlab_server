@@ -131,13 +131,11 @@ class WorkspaceImportApp(JupyterApp, LabConfig):
             try:  # to load, parse, and validate the workspace file.
                 workspace = self._validate(fid)
             except Exception as e:
-                print("%s is not a valid workspace:\n%s" % (fid.name, e))
+                print(f"{fid.name} is not a valid workspace:\n{e}")
                 self.exit(1)
 
         try:
-            workspace_path = self.manager.save(
-                workspace["metadata"]["id"], json.dumps(workspace)
-            )
+            workspace_path = self.manager.save(workspace["metadata"]["id"], json.dumps(workspace))
         except Exception as e:
             print(f"Workspace could not be exported:\n{e!s}")
             self.exit(1)

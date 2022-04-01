@@ -11,12 +11,11 @@ import re
 import sys
 import traceback
 from functools import lru_cache
-from typing import Dict, Pattern
+from typing import Dict, Pattern, Tuple
 
 import babel
 import entrypoints
 from packaging.version import parse as parse_version
-from typing import Tuple
 
 # Entry points
 JUPYTERLAB_LANGUAGEPACK_ENTRY = "jupyterlab.languagepack"
@@ -43,9 +42,9 @@ DEFAULT_SCHEMA_SELECTORS = {
     "title": _default_schema_context,
     "description": _default_schema_context,
     # JupyterLab-specific
-    "jupyter\.lab\.setting-icon-label": _default_settings_context,
-    "jupyter\.lab\.menus/.*/label": "menu",
-    "jupyter\.lab\.toolbars/.*/label": "toolbar",
+    r"jupyter\.lab\.setting-icon-label": _default_settings_context,
+    r"jupyter\.lab\.menus/.*/label": "menu",
+    r"jupyter\.lab\.toolbars/.*/label": "toolbar",
 }
 
 
@@ -202,9 +201,7 @@ def get_display_name(locale: str, display_locale: str = DEFAULT_LOCALE) -> str:
         Localized `locale` and capitalized language name using `display_locale` as language.
     """
     locale = locale if is_valid_locale(locale) else DEFAULT_LOCALE
-    display_locale = (
-        display_locale if is_valid_locale(display_locale) else DEFAULT_LOCALE
-    )
+    display_locale = display_locale if is_valid_locale(display_locale) else DEFAULT_LOCALE
     loc = babel.Locale.parse(locale)
     display_name = loc.get_display_name(display_locale)
     if display_name:
@@ -288,11 +285,11 @@ def get_installed_packages_locale(locale: str) -> Tuple[dict, str]:
                     locale_path,
                     locales[locale.lower()],
                     LC_MESSAGES_DIR,
-                    "{0}.json".format(package_name),
+                    f"{package_name}.json",
                 )
                 if os.path.isfile(locale_json_path):
                     try:
-                        with open(locale_json_path, "r", encoding="utf-8") as fh:
+                        with open(locale_json_path, encoding="utf-8") as fh:
                             packages_locale_data[package_name] = json.load(fh)
                     except Exception:
                         messages.append(traceback.format_exc())
@@ -332,9 +329,7 @@ def get_language_packs(display_locale: str = DEFAULT_LOCALE) -> Tuple[dict, str]
             else:
                 invalid_locales.append(locale)
 
-        display_locale = (
-            display_locale if display_locale in valid_locales else DEFAULT_LOCALE
-        )
+        display_locale = display_locale if display_locale in valid_locales else DEFAULT_LOCALE
         locales = {
             DEFAULT_LOCALE: {
                 "displayName": get_display_name(DEFAULT_LOCALE, display_locale),
@@ -348,9 +343,7 @@ def get_language_packs(display_locale: str = DEFAULT_LOCALE) -> Tuple[dict, str]
             }
 
         if invalid_locales:
-            messages.append(
-                "The following locales are invalid: {0}!".format(invalid_locales)
-            )
+            messages.append(f"The following locales are invalid: {invalid_locales}!")
 
     return locales, "\n".join(messages)
 
@@ -384,7 +377,7 @@ def get_language_pack(locale: str) -> tuple:
                         pkg_name = name.replace(".json", "")
                         json_path = os.path.join(root, name)
                         try:
-                            with open(json_path, "r", encoding="utf-8") as fh:
+                            with open(json_path, encoding="utf-8") as fh:
                                 merged_data = json.load(fh)
                         except Exception:
                             messages.append(traceback.format_exc())
@@ -733,7 +726,7 @@ class translator:
     @staticmethod
     def translate_schema(schema: Dict) -> Dict:
         """Translate a schema.
-        
+
         Parameters
         ----------
         schema: dict

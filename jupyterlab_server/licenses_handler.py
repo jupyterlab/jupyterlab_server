@@ -3,22 +3,20 @@
 # Copyright (c) Jupyter Development Team.
 # Distributed under the terms of the Modified BSD License.
 
-import mimetypes
-import json
-import re
 import csv
 import io
+import json
+import mimetypes
+import re
+from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
-from concurrent.futures import ThreadPoolExecutor
-
-from tornado import web, gen
-
-from traitlets import Unicode, List
+from tornado import gen, web
+from traitlets import List, Unicode
 from traitlets.config import LoggingConfigurable
 
-from .server import APIHandler
 from .config import get_federated_extensions
+from .server import APIHandler
 
 # this is duplicated in @juptyerlab/builder
 DEFAULT_THIRD_PARTY_LICENSE_FILE = "third-party-licenses.json"
@@ -40,7 +38,7 @@ class LicensesManager(LoggingConfigurable):
         Unicode(),
         default_value=[
             DEFAULT_THIRD_PARTY_LICENSE_FILE,
-            f"static/{DEFAULT_THIRD_PARTY_LICENSE_FILE}"
+            f"static/{DEFAULT_THIRD_PARTY_LICENSE_FILE}",
         ],
         help="the license report data in built app and federated extensions",
     )
@@ -62,9 +60,7 @@ class LicensesManager(LoggingConfigurable):
         return get_federated_extensions(labextensions_path)
 
     @gen.coroutine
-    def report_async(
-        self, report_format="markdown", bundles_pattern=".*", full_text=False
-    ):
+    def report_async(self, report_format="markdown", bundles_pattern=".*", full_text=False):
         """Asynchronous wrapper around the potentially slow job of locating
         and encoding all of the licenses
         """
@@ -191,9 +187,7 @@ class LicensesManager(LoggingConfigurable):
                 continue
 
         if not bundle_json["packages"]:
-            self.log.warning(
-                "Third-party licenses not found for %s: %s", bundle, checked_paths
-            )
+            self.log.warning("Third-party licenses not found for %s: %s", bundle, checked_paths)
 
         return bundle_json
 
@@ -238,7 +232,7 @@ class LicensesHandler(APIHandler):
     """A handler for serving licenses used by the application"""
 
     def initialize(self, manager: LicensesManager):
-        super(LicensesHandler, self).initialize()
+        super().initialize()
         self.manager = manager
 
     @web.authenticated

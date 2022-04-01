@@ -21,8 +21,8 @@ as configured in `labextensions_path` and `extra_labextensions_path`.
         )
 
 """
-from traitlets import Bool, Unicode, Enum, Instance
 from jupyter_core.application import JupyterApp, base_aliases, base_flags
+from traitlets import Bool, Enum, Instance, Unicode
 
 from ._version import __version__
 from .config import LabConfig
@@ -36,21 +36,15 @@ class LicensesApp(JupyterApp, LabConfig):
     Report frontend licenses
     """
 
-    static_dir = Unicode(
-        "", config=True, help="The static directory from which to show licenses"
-    )
+    static_dir = Unicode("", config=True, help="The static directory from which to show licenses")
 
-    full_text = Bool(
-        False, config=True, help="Also print out full license text (if available)"
-    )
+    full_text = Bool(False, config=True, help="Also print out full license text (if available)")
 
     report_format = Enum(
         ["markdown", "json", "csv"], "markdown", config=True, help="Reporter format"
     )
 
-    bundles_pattern = Unicode(
-        ".*", config=True, help="A regular expression of bundles to print"
-    )
+    bundles_pattern = Unicode(".*", config=True, help="A regular expression of bundles to print")
 
     licenses_manager = Instance(LicensesManager)
 
@@ -82,9 +76,7 @@ class LicensesApp(JupyterApp, LabConfig):
 
     def init_licenses_manager(self):
         self.licenses_manager = LicensesManager(
-            labextensions_path=sum(
-                [self.labextensions_path + self.extra_labextensions_path], []
-            ),
+            labextensions_path=sum([self.labextensions_path + self.extra_labextensions_path], []),
             parent=self,
         )
 

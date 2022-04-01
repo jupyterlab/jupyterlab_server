@@ -180,7 +180,7 @@ paths:
                       values:
                         type: array
                         items:
-                            $ref: "#/components/schemas/Workspace"
+                          $ref: "#/components/schemas/Workspace"
 
   /lab/api/workspaces/{space_name}:
     parameters:
