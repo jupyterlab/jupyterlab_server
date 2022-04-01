@@ -39,7 +39,7 @@ def get_package_url(data):
 def get_federated_extensions(labextensions_path):
     """Get the metadata about federated extensions
     """
-    federated_extensions = dict()
+    federated_extensions = {}
     for ext_dir in labextensions_path:
         # extensions are either top-level directories, or two-deep in @org directories
         for ext_path in chain(iglob(pjoin(ext_dir, '[!@]*', 'package.json')),
@@ -106,7 +106,7 @@ def get_page_config(labextensions_path, app_settings_dir=None, logger=None):
     recursive_update(page_config, static_page_config)
 
     # Handle federated extensions that disable other extensions
-    disabled_by_extensions_all = dict()
+    disabled_by_extensions_all = {}
     extensions = page_config['federated_extensions'] = []
 
     federated_exts = get_federated_extensions(labextensions_path)
@@ -153,7 +153,7 @@ def get_page_config(labextensions_path, app_settings_dir=None, logger=None):
                 if ext_data.get(disabled_key):
                     disabled_by_extensions_all[ext] = ext_data[disabled_key]
 
-    disabled_by_extensions = dict()
+    disabled_by_extensions = {}
     for name in sorted(disabled_by_extensions_all):
         # skip if the extension itself is disabled by other config
         if page_config[disabled_key].get(name) == True:

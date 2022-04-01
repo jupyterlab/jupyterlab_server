@@ -138,7 +138,7 @@ class WorkspacesManager(LoggingConfigurable):
         if not self.workspaces_dir.exists():
             self.workspaces_dir.mkdir(parents=True)
 
-        workspace = dict()
+        workspace = {}
 
         # Make sure the data is valid JSON.
         try:
