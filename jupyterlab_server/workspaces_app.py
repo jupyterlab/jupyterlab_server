@@ -2,6 +2,7 @@
 import json
 import sys
 from pathlib import Path
+import warnings
 
 from jupyter_core.application import JupyterApp
 from traitlets import Bool, Unicode
@@ -85,7 +86,7 @@ class WorkspaceExportApp(JupyterApp, LabConfig):
 
     def start(self):
         if len(self.extra_args) > 1:
-            print("Too many arguments were provided for workspace export.")
+            warnings.warn("Too many arguments were provided for workspace export.")
             self.exit(1)
 
         raw = DEFAULT_WORKSPACE if not self.extra_args else self.extra_args[0]
