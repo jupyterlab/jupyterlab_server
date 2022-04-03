@@ -3,9 +3,9 @@
 # Copyright (c) Jupyter Development Team.
 # Distributed under the terms of the Modified BSD License.
 import os
+import warnings
 from functools import lru_cache
 from urllib.parse import urlparse
-import warnings
 
 from jupyter_server.extension.handler import (
     ExtensionHandlerJinjaMixin,

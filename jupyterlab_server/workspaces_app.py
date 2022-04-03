@@ -1,8 +1,8 @@
 """A workspace management CLI"""
 import json
 import sys
-from pathlib import Path
 import warnings
+from pathlib import Path
 
 from jupyter_core.application import JupyterApp
 from traitlets import Bool, Unicode

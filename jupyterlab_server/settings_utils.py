@@ -295,8 +295,6 @@ def _get_overrides(app_settings_dir):
                     path_overrides = json.load(fid)
                 for plugin_id, config in path_overrides.items():
                     recursive_update(overrides.setdefault(plugin_id, {}), config)
-                self.log.debug(f"Overriding with settings from {overrides_path}")
-                self.log.debug(overrides)
             except Exception as e:
                 error = e
 
