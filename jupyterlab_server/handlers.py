@@ -3,6 +3,7 @@
 # Copyright (c) Jupyter Development Team.
 # Distributed under the terms of the Modified BSD License.
 import os
+import warnings
 from functools import lru_cache
 from urllib.parse import urlparse
 
@@ -255,7 +256,7 @@ def add_handlers(handlers, extension_app):
     allowed_extensions_uris = settings_config.get("allowed_extensions_uris", "")
 
     if (blocked_extensions_uris) and (allowed_extensions_uris):
-        print(
+        warnings.warn(
             "Simultaneous blocked_extensions_uris and allowed_extensions_uris is not supported. Please define only one of those."
         )
         import sys
