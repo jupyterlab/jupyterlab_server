@@ -62,3 +62,6 @@ If you have already committed files before setting up the pre-commit
 hook with `pre-commit install`, you can fix everything up using
 `pre-commit run --all-files`. You need to make the fixing commit
 yourself after that.
+
+Some of the hooks only run on CI by default, but you can invoke them by
+running with the `--hook-stage manual` argument.
