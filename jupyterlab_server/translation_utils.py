@@ -16,6 +16,7 @@ from typing import Dict, Pattern, Tuple
 import babel
 from packaging.version import parse as parse_version
 
+# See compatibility note on `group` keyword in https://docs.python.org/3/library/importlib.metadata.html#entry-points
 if sys.version_info < (3, 10):
     from importlib_metadata import entry_points
 else:
