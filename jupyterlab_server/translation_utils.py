@@ -11,10 +11,14 @@ import re
 import sys
 import traceback
 from functools import lru_cache
+
+try:
+    from importlib.metadata import entry_points
+except ImportError:
+    from importlib_metadata import entry_points
 from typing import Dict, Pattern, Tuple
 
 import babel
-import entrypoints
 from packaging.version import parse as parse_version
 
 # Entry points
@@ -86,7 +90,7 @@ def _get_installed_language_pack_locales():
     """
     data = {}
     messages = []
-    for entry_point in entrypoints.get_group_all(JUPYTERLAB_LANGUAGEPACK_ENTRY):
+    for entry_point in entry_points(group=JUPYTERLAB_LANGUAGEPACK_ENTRY):
         try:
             data[entry_point.name] = os.path.dirname(entry_point.load().__file__)
         except Exception:
@@ -115,7 +119,7 @@ def _get_installed_package_locales():
     """
     data = {}
     messages = []
-    for entry_point in entrypoints.get_group_all(JUPYTERLAB_LOCALE_ENTRY):
+    for entry_point in entry_points(group=JUPYTERLAB_LOCALE_ENTRY):
         try:
             data[entry_point.name] = os.path.dirname(entry_point.load().__file__)
         except Exception:
