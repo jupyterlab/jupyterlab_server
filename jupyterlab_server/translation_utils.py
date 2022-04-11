@@ -11,15 +11,15 @@ import re
 import sys
 import traceback
 from functools import lru_cache
-
-try:
-    from importlib.metadata import entry_points
-except ImportError:
-    from importlib_metadata import entry_points
 from typing import Dict, Pattern, Tuple
 
 import babel
 from packaging.version import parse as parse_version
+
+if sys.version_info < (3, 10):
+    from importlib_metadata import entry_points
+else:
+    from importlib.metadata import entry_points
 
 # Entry points
 JUPYTERLAB_LANGUAGEPACK_ENTRY = "jupyterlab.languagepack"
