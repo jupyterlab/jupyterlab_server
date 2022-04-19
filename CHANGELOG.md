@@ -6,6 +6,35 @@ github_url: "https://github.com/jupyterlab/jupyterlab_server/blob/master/CHANGEL
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
+## 2.13.0
+
+([Full Changelog](https://github.com/jupyterlab/jupyterlab_server/compare/v2.12.0...5c123d20b8c1287b596eb50e18d127a851395840))
+
+### Bugs fixed
+
+- Audit uses of print [#261](https://github.com/jupyterlab/jupyterlab_server/pull/261) ([@blink1073](https://github.com/blink1073))
+
+### Maintenance and upkeep improvements
+
+- [pre-commit.ci] pre-commit autoupdate [#266](https://github.com/jupyterlab/jupyterlab_server/pull/266) ([@pre-commit-ci](https://github.com/pre-commit-ci))
+- [pre-commit.ci] pre-commit autoupdate [#265](https://github.com/jupyterlab/jupyterlab_server/pull/265) ([@pre-commit-ci](https://github.com/pre-commit-ci))
+- Switch to importlib.metadata to list entry points [#264](https://github.com/jupyterlab/jupyterlab_server/pull/264) ([@fcollonval](https://github.com/fcollonval))
+- Make some pre-commit hooks manual [#263](https://github.com/jupyterlab/jupyterlab_server/pull/263) ([@blink1073](https://github.com/blink1073))
+- [pre-commit.ci] pre-commit autoupdate [#262](https://github.com/jupyterlab/jupyterlab_server/pull/262) ([@pre-commit-ci](https://github.com/pre-commit-ci))
+- Add flake8 and handle warnings in tests [#259](https://github.com/jupyterlab/jupyterlab_server/pull/259) ([@blink1073](https://github.com/blink1073))
+- Add git-blame-ignore-revs [#258](https://github.com/jupyterlab/jupyterlab_server/pull/258) ([@blink1073](https://github.com/blink1073))
+- Apply Autoformats [#257](https://github.com/jupyterlab/jupyterlab_server/pull/257) ([@blink1073](https://github.com/blink1073))
+- Add initial pre-commit [#256](https://github.com/jupyterlab/jupyterlab_server/pull/256) ([@blink1073](https://github.com/blink1073))
+- update URLs, metadata, extras in setup.cfg [#255](https://github.com/jupyterlab/jupyterlab_server/pull/255) ([@bollwyvl](https://github.com/bollwyvl))
+
+### Contributors to this release
+
+([GitHub contributors page for this release](https://github.com/jupyterlab/jupyterlab_server/graphs/contributors?from=2022-03-28&to=2022-04-19&type=c))
+
+[@blink1073](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Ablink1073+updated%3A2022-03-28..2022-04-19&type=Issues) | [@bollwyvl](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Abollwyvl+updated%3A2022-03-28..2022-04-19&type=Issues) | [@codecov-commenter](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Acodecov-commenter+updated%3A2022-03-28..2022-04-19&type=Issues) | [@fcollonval](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Afcollonval+updated%3A2022-03-28..2022-04-19&type=Issues) | [@pre-commit-ci](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Apre-commit-ci+updated%3A2022-03-28..2022-04-19&type=Issues)
+
+<!-- <END NEW CHANGELOG ENTRY> -->
+
 ## 2.12.0
 
 ([Full Changelog](https://github.com/jupyterlab/jupyterlab_server/compare/v2.11.2...d927c4cfcf75e3e61a9c1a37b46e68219bb2a324))
@@ -30,8 +59,6 @@ github_url: "https://github.com/jupyterlab/jupyterlab_server/blob/master/CHANGEL
 ([GitHub contributors page for this release](https://github.com/jupyterlab/jupyterlab_server/graphs/contributors?from=2022-03-17&to=2022-03-28&type=c))
 
 [@blink1073](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Ablink1073+updated%3A2022-03-17..2022-03-28&type=Issues) | [@codecov-commenter](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Acodecov-commenter+updated%3A2022-03-17..2022-03-28&type=Issues) | [@jweill-aws](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Ajweill-aws+updated%3A2022-03-17..2022-03-28&type=Issues) | [@welcome](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Awelcome+updated%3A2022-03-17..2022-03-28&type=Issues)
-
-<!-- <END NEW CHANGELOG ENTRY> -->
 
 ## 2.11.2
 
