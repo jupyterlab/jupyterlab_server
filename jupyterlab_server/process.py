@@ -32,8 +32,6 @@ else:
         return " ".join(map(pipes.quote, cmd_list))
 
 
-
-
 def which(command, env=None):
     """Get the full path to a command.
 
@@ -180,7 +178,7 @@ class Process:
             proc.terminate()
 
     def get_log(self):
-        if hasattr(self, 'logger') and self.logger:
+        if hasattr(self, "logger") and self.logger:
             return self.logger
         # fallback logger
         self.logger = logging.getLogger("jupyterlab")
