@@ -32,7 +32,6 @@ else:
         return " ".join(map(pipes.quote, cmd_list))
 
 
-logging.basicConfig(format="%(message)s", level=logging.INFO)
 
 
 def which(command, env=None):
@@ -92,7 +91,7 @@ class Process:
         if kill_event and kill_event.is_set():
             raise ValueError("Process aborted")
 
-        self.logger = logger = logger or logging.getLogger("jupyterlab")
+        self.logger = logger = logger or self.get_log()
         self._last_line = ""
         if not quiet:
             self.logger.info(f"> {list2cmdline(cmd)}")
@@ -179,6 +178,14 @@ class Process:
         """Clean up the started subprocesses at exit."""
         for proc in list(cls._procs):
             proc.terminate()
+
+    def get_log(self):
+        if hasattr(self, 'logger') and self.logger:
+            return self.logger
+        # fallback logger
+        self.logger = logging.getLogger("jupyterlab")
+        self.logger.setLevel(logging.INFO)
+        return self.logger
 
 
 class WatchHelper(Process):
