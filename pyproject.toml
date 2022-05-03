@@ -5,31 +5,32 @@ build-backend = "flit_core.buildapi"
 [project]
 name = "jupyterlab_server"
 description = "A set of server components for JupyterLab and JupyterLab like applications."
-keywords = [ "jupyter", "jupyterlab",]
+keywords = ["jupyter", "jupyterlab"]
 classifiers = [
   "Framework :: Jupyter",
   "Framework :: Jupyter :: JupyterLab",
-   "Intended Audience :: Developers",
-   "Intended Audience :: Science/Research",
-   "Intended Audience :: System Administrators",
-    "License :: OSI Approved :: BSD License",
-    "Programming Language :: Python",
-    "Programming Language :: Python :: 3 :: Only",
-    "Programming Language :: Python :: 3.7",
-    "Programming Language :: Python :: 3.8",
-    "Programming Language :: Python :: 3.9",
-    "Programming Language :: Python :: 3.10",]
+  "Intended Audience :: Developers",
+  "Intended Audience :: Science/Research",
+  "Intended Audience :: System Administrators",
+  "License :: OSI Approved :: BSD License",
+  "Programming Language :: Python",
+  "Programming Language :: Python :: 3 :: Only",
+  "Programming Language :: Python :: 3.7",
+  "Programming Language :: Python :: 3.8",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",]
 requires-python = ">=3.7"
 dependencies = [
-"babel",
-"importlib_metadata>=3.6;python_version<\"3.10\"",
-"jinja2>=3.0.3",
-"json5",
-"jsonschema>=3.0.1",
-"jupyter_server>=1.8,<2",
-"packaging",
-"requests",]
-dynamic = [ "version",]
+  "babel",
+  "importlib_metadata>=3.6;python_version<\"3.10\"",
+  "jinja2>=3.0.3",
+  "json5",
+  "jsonschema>=3.0.1",
+  "jupyter_server>=1.8,<2",
+  "packaging",
+  "requests",
+]
+dynamic = ["version"]
 
 [[project.authors]]
 name = "Jupyter Development Team"
@@ -48,20 +49,21 @@ Tracker = "https://github.com/jupyterlab/jupyterlab_server/issues"
 
 [project.optional-dependencies]
 openapi = [
-"openapi_core>=0.14.2",
-"ruamel.yaml",
+  "openapi_core>=0.14.2",
+  "ruamel.yaml",
 ]
 test = [
-"openapi_core>=0.14.2",
-"ruamel.yaml",
-"codecov",
-"ipykernel",
-"jupyter_server[test]",
-"openapi-spec-validator<0.5",
-"pytest-console-scripts",
-"pytest-cov",
-"pytest>=5.3.2",
-"strict-rfc3339"]
+  "openapi_core>=0.14.2",
+  "ruamel.yaml",
+  "codecov",
+  "ipykernel",
+  "jupyter_server[test]",
+  "openapi-spec-validator<0.5",
+  "pytest-console-scripts",
+  "pytest-cov",
+  "pytest>=5.3.2",
+  "strict-rfc3339"
+]
 
 [project.license]
 file = 'LICENSE'
@@ -71,10 +73,6 @@ include = ["tests/"]
 
 [tool.jupyter-releaser]
 skip = ["check-links"]
-
-[tool.check-manifest]
-ignore = ["tbump.toml", ".*", "*.yml", "docs/source/api/app-config.rst", "docs/source/changelog.md"]
-ignore-bad-ideas = ["tests/translations/**/*.mo"]
 
 [tool.tbump.version]
 current = "2.13.0"
