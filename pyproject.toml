@@ -4,6 +4,7 @@ build-backend = "flit_core.buildapi"
 
 [project]
 name = "jupyterlab_server"
+license = { file = "LICENSE" }
 description = "A set of server components for JupyterLab and JupyterLab like applications."
 keywords = ["jupyter", "jupyterlab"]
 classifiers = [
@@ -53,20 +54,17 @@ openapi = [
   "ruamel.yaml",
 ]
 test = [
-  "openapi_core>=0.14.2",
-  "ruamel.yaml",
   "codecov",
   "ipykernel",
   "jupyter_server[test]",
+  "openapi_core>=0.14.2",
   "openapi-spec-validator<0.5",
   "pytest-console-scripts",
   "pytest-cov",
   "pytest>=5.3.2",
+  "ruamel.yaml",
   "strict-rfc3339"
 ]
-
-[project.license]
-file = 'LICENSE'
 
 [tool.flit.sdist]
 include = ["tests/"]
