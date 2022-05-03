@@ -1,6 +1,73 @@
 [build-system]
-requires = ["jupyter_packaging>=0.9", "jupyter_server"]
-build-backend = "setuptools.build_meta"
+requires = ["flit_core >=3.2,<4"]
+build-backend = "flit_core.buildapi"
+
+[project]
+name = "jupyterlab_server"
+description = "A set of server components for JupyterLab and JupyterLab like applications."
+keywords = [ "jupyter", "jupyterlab",]
+classifiers = [
+  "Framework :: Jupyter",
+  "Framework :: Jupyter :: JupyterLab",
+   "Intended Audience :: Developers",
+   "Intended Audience :: Science/Research",
+   "Intended Audience :: System Administrators",
+    "License :: OSI Approved :: BSD License",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",]
+requires-python = ">=3.7"
+dependencies = [
+"babel",
+"importlib_metadata>=3.6;python_version<\"3.10\"",
+"jinja2>=3.0.3",
+"json5",
+"jsonschema>=3.0.1",
+"jupyter_server>=1.8,<2",
+"packaging",
+"requests",]
+dynamic = [ "version",]
+
+[[project.authors]]
+name = "Jupyter Development Team"
+email = "jupyter@googlegroups.com"
+
+[project.readme]
+file = "README.md"
+content-type = "text/markdown"
+
+[project.urls]
+Homepage = "https://jupyterlab-server.readthedocs.io"
+Documentation = "https://jupyterlab-server.readthedocs.io"
+Funding = "https://numfocus.org/donate-to-jupyter"
+Source = "https://github.com/jupyterlab/jupyterlab_server"
+Tracker = "https://github.com/jupyterlab/jupyterlab_server/issues"
+
+[project.optional-dependencies]
+openapi = [
+"openapi_core>=0.14.2",
+"ruamel.yaml",
+]
+test = [
+"openapi_core>=0.14.2",
+"ruamel.yaml",
+"codecov",
+"ipykernel",
+"jupyter_server[test]",
+"openapi-spec-validator<0.5",
+"pytest-console-scripts",
+"pytest-cov",
+"pytest>=5.3.2",
+"strict-rfc3339"]
+
+[project.license]
+file = 'LICENSE'
+
+[tool.flit.sdist]
+include = ["tests/"]
 
 [tool.jupyter-releaser]
 skip = ["check-links"]
