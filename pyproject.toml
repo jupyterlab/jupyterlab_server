@@ -1,9 +1,10 @@
 [build-system]
-requires = ["flit_core >=3.2,<4"]
-build-backend = "flit_core.buildapi"
+requires = ["hatchling"]
+build-backend = "hatchling.build"
 
 [project]
 name = "jupyterlab_server"
+version = "2.13.0"
 license = { file = "LICENSE" }
 description = "A set of server components for JupyterLab and JupyterLab like applications."
 keywords = ["jupyter", "jupyterlab"]
@@ -31,7 +32,6 @@ dependencies = [
   "packaging",
   "requests",
 ]
-dynamic = ["version"]
 
 [[project.authors]]
 name = "Jupyter Development Team"
@@ -66,9 +66,6 @@ test = [
   "strict-rfc3339"
 ]
 
-[tool.flit.sdist]
-include = ["tests/"]
-
 [tool.jupyter-releaser]
 skip = ["check-links"]
 
@@ -85,6 +82,9 @@ tag_template = "v{new_version}"
 
 [[tool.tbump.file]]
 src = "jupyterlab_server/_version.py"
+
+[[tool.tbump.file]]
+src = "pyproject.toml"
 
 [tool.pytest.ini_options]
 addopts = "-raXs --durations 10 --color=yes --doctest-modules"
