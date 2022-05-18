@@ -6,6 +6,30 @@ github_url: "https://github.com/jupyterlab/jupyterlab_server/blob/master/CHANGEL
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
+## 2.14.0
+
+([Full Changelog](https://github.com/jupyterlab/jupyterlab_server/compare/v2.13.0...faaf10cbe5abcfa5e3f0e3f7a491d651ed998a26))
+
+### Bugs fixed
+
+- proper setup for the fallback logger [#269](https://github.com/jupyterlab/jupyterlab_server/pull/269) ([@rvalieris](https://github.com/rvalieris))
+
+### Maintenance and upkeep improvements
+
+- [pre-commit.ci] pre-commit autoupdate [#275](https://github.com/jupyterlab/jupyterlab_server/pull/275) ([@pre-commit-ci](https://github.com/pre-commit-ci))
+- Switch to hatch backend [#274](https://github.com/jupyterlab/jupyterlab_server/pull/274) ([@blink1073](https://github.com/blink1073))
+- [pre-commit.ci] pre-commit autoupdate [#272](https://github.com/jupyterlab/jupyterlab_server/pull/272) ([@pre-commit-ci](https://github.com/pre-commit-ci))
+- Switch to flit build backend [#271](https://github.com/jupyterlab/jupyterlab_server/pull/271) ([@blink1073](https://github.com/blink1073))
+- Allow bot PRs to be automatically labeled [#270](https://github.com/jupyterlab/jupyterlab_server/pull/270) ([@blink1073](https://github.com/blink1073))
+
+### Contributors to this release
+
+([GitHub contributors page for this release](https://github.com/jupyterlab/jupyterlab_server/graphs/contributors?from=2022-04-19&to=2022-05-18&type=c))
+
+[@blink1073](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Ablink1073+updated%3A2022-04-19..2022-05-18&type=Issues) | [@codecov-commenter](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Acodecov-commenter+updated%3A2022-04-19..2022-05-18&type=Issues) | [@kloczek](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Akloczek+updated%3A2022-04-19..2022-05-18&type=Issues) | [@pre-commit-ci](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Apre-commit-ci+updated%3A2022-04-19..2022-05-18&type=Issues) | [@rvalieris](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Arvalieris+updated%3A2022-04-19..2022-05-18&type=Issues) | [@welcome](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Awelcome+updated%3A2022-04-19..2022-05-18&type=Issues)
+
+<!-- <END NEW CHANGELOG ENTRY> -->
+
 ## 2.13.0
 
 ([Full Changelog](https://github.com/jupyterlab/jupyterlab_server/compare/v2.12.0...5c123d20b8c1287b596eb50e18d127a851395840))
@@ -32,8 +56,6 @@ github_url: "https://github.com/jupyterlab/jupyterlab_server/blob/master/CHANGEL
 ([GitHub contributors page for this release](https://github.com/jupyterlab/jupyterlab_server/graphs/contributors?from=2022-03-28&to=2022-04-19&type=c))
 
 [@blink1073](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Ablink1073+updated%3A2022-03-28..2022-04-19&type=Issues) | [@bollwyvl](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Abollwyvl+updated%3A2022-03-28..2022-04-19&type=Issues) | [@codecov-commenter](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Acodecov-commenter+updated%3A2022-03-28..2022-04-19&type=Issues) | [@fcollonval](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Afcollonval+updated%3A2022-03-28..2022-04-19&type=Issues) | [@pre-commit-ci](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Apre-commit-ci+updated%3A2022-03-28..2022-04-19&type=Issues)
-
-<!-- <END NEW CHANGELOG ENTRY> -->
 
 ## 2.12.0
 
