@@ -6,7 +6,12 @@ HERE = Path(os.path.dirname(__file__)).resolve()
 
 def get_openapi_spec():
     """Get the OpenAPI spec object."""
-    from openapi_core import create_spec
+    try:
+        from openapi_core import OpenAPISpec as Spec
+
+        create_spec = Spec.create
+    except ImportError:
+        from openapi_core import create_spec
 
     openapi_spec_dict = get_openapi_spec_dict()
     return create_spec(openapi_spec_dict)
