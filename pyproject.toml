@@ -28,6 +28,7 @@ dependencies = [
   "jinja2>=3.0.3",
   "json5",
   "jsonschema>=3.0.1",
+  "jupyter-lsp",
   "jupyter_server>=1.8,<2",
   "packaging",
   "requests",
