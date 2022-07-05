@@ -6,6 +6,30 @@ github_url: "https://github.com/jupyterlab/jupyterlab_server/blob/master/CHANGEL
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
+## 2.15.0
+
+([Full Changelog](https://github.com/jupyterlab/jupyterlab_server/compare/v2.14.0...2d6ff4077a58bb9ac1531c4a7ad7669163e0ec99))
+
+### Maintenance and upkeep improvements
+
+- [pre-commit.ci] pre-commit autoupdate [#287](https://github.com/jupyterlab/jupyterlab_server/pull/287) ([@pre-commit-ci](https://github.com/pre-commit-ci))
+- [pre-commit.ci] pre-commit autoupdate [#286](https://github.com/jupyterlab/jupyterlab_server/pull/286) ([@pre-commit-ci](https://github.com/pre-commit-ci))
+- Suppress tornado 6.2 beta warnings [#285](https://github.com/jupyterlab/jupyterlab_server/pull/285) ([@blink1073](https://github.com/blink1073))
+- [pre-commit.ci] pre-commit autoupdate [#284](https://github.com/jupyterlab/jupyterlab_server/pull/284) ([@pre-commit-ci](https://github.com/pre-commit-ci))
+- [pre-commit.ci] pre-commit autoupdate [#283](https://github.com/jupyterlab/jupyterlab_server/pull/283) ([@pre-commit-ci](https://github.com/pre-commit-ci))
+- Add compat for openapi-core 0.15 [#281](https://github.com/jupyterlab/jupyterlab_server/pull/281) ([@blink1073](https://github.com/blink1073))
+- [pre-commit.ci] pre-commit autoupdate [#280](https://github.com/jupyterlab/jupyterlab_server/pull/280) ([@pre-commit-ci](https://github.com/pre-commit-ci))
+- [pre-commit.ci] pre-commit autoupdate [#279](https://github.com/jupyterlab/jupyterlab_server/pull/279) ([@pre-commit-ci](https://github.com/pre-commit-ci))
+- [pre-commit.ci] pre-commit autoupdate [#277](https://github.com/jupyterlab/jupyterlab_server/pull/277) ([@pre-commit-ci](https://github.com/pre-commit-ci))
+
+### Contributors to this release
+
+([GitHub contributors page for this release](https://github.com/jupyterlab/jupyterlab_server/graphs/contributors?from=2022-05-18&to=2022-07-05&type=c))
+
+[@blink1073](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Ablink1073+updated%3A2022-05-18..2022-07-05&type=Issues) | [@codecov-commenter](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Acodecov-commenter+updated%3A2022-05-18..2022-07-05&type=Issues) | [@pre-commit-ci](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Apre-commit-ci+updated%3A2022-05-18..2022-07-05&type=Issues)
+
+<!-- <END NEW CHANGELOG ENTRY> -->
+
 ## 2.14.0
 
 ([Full Changelog](https://github.com/jupyterlab/jupyterlab_server/compare/v2.13.0...faaf10cbe5abcfa5e3f0e3f7a491d651ed998a26))
@@ -27,8 +51,6 @@ github_url: "https://github.com/jupyterlab/jupyterlab_server/blob/master/CHANGEL
 ([GitHub contributors page for this release](https://github.com/jupyterlab/jupyterlab_server/graphs/contributors?from=2022-04-19&to=2022-05-18&type=c))
 
 [@blink1073](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Ablink1073+updated%3A2022-04-19..2022-05-18&type=Issues) | [@codecov-commenter](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Acodecov-commenter+updated%3A2022-04-19..2022-05-18&type=Issues) | [@kloczek](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Akloczek+updated%3A2022-04-19..2022-05-18&type=Issues) | [@pre-commit-ci](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Apre-commit-ci+updated%3A2022-04-19..2022-05-18&type=Issues) | [@rvalieris](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Arvalieris+updated%3A2022-04-19..2022-05-18&type=Issues) | [@welcome](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Awelcome+updated%3A2022-04-19..2022-05-18&type=Issues)
-
-<!-- <END NEW CHANGELOG ENTRY> -->
 
 ## 2.13.0
 
