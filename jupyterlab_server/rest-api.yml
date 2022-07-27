@@ -8,39 +8,6 @@ info:
     name: BSD-3-Clause
 
 paths:
-  /lab/api/listings/%40jupyterlab/extensionmanager-extension/listings.json:
-    get:
-      summary: Get Extension Listings Specs
-      description: |
-        Gets the list of extension metadata for the application
-      responses:
-        "200":
-          description: The Extension Listing specs
-          content:
-            application/json:
-              schema:
-                properties:
-                  blocked_extension_uris:
-                    type: array
-                    description: list of blocked extension uris
-                    items:
-                      type: string
-                  allowed_extension_uris:
-                    type: array
-                    description: list of allowed extension uris
-                    items:
-                      type: string
-                  blocked_extensions:
-                    type: array
-                    description: list of blocked extensions
-                    items:
-                      $ref: "#/components/schemas/ListEntry"
-                  allowed_extensions:
-                    type: array
-                    description: list of blocked extensions
-                    items:
-                      $ref: "#/components/schemas/ListEntry"
-
   /lab/api/settings/:
     get:
       summary: Get Settings List

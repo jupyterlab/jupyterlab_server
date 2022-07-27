@@ -27,10 +27,8 @@ class LabServerApp(ExtensionAppJinjaMixin, LabConfig, ExtensionApp):
     # Should your extension expose other server extensions when launched directly?
     load_other_extensions = True
 
-    app_version = Unicode("", help="The version of the application.").tag(default=__version__)
-
-    blacklist_uris = Unicode(
-        "", config=True, help="Deprecated, use `LabServerApp.blocked_extensions_uris`"
+    app_version = Unicode("", help="The version of the application.").tag(
+        default=__version__
     )
 
     blocked_extensions_uris = Unicode(
@@ -38,24 +36,14 @@ class LabServerApp(ExtensionAppJinjaMixin, LabConfig, ExtensionApp):
         config=True,
         help="""
         A list of comma-separated URIs to get the blocked extensions list
-
-        .. versionchanged:: 2.0.0
-            `LabServerApp.blacklist_uris` renamed to `blocked_extensions_uris`
         """,
-    )
-
-    whitelist_uris = Unicode(
-        "", config=True, help="Deprecated, use `LabServerApp.allowed_extensions_uris`"
     )
 
     allowed_extensions_uris = Unicode(
         "",
         config=True,
         help="""
-        "A list of comma-separated URIs to get the allowed extensions list
-
-        .. versionchanged:: 2.0.0
-            `LabServerApp.whitetlist_uris` renamed to `allowed_extensions_uris`
+        A list of comma-separated URIs to get the allowed extensions list
         """,
     )
 
@@ -63,17 +51,12 @@ class LabServerApp(ExtensionAppJinjaMixin, LabConfig, ExtensionApp):
         60 * 60, config=True, help="The interval delay in seconds to refresh the lists"
     )
 
-    listings_request_options = Dict(
+    listings_tornado_options = Dict(
         {},
         config=True,
         help="The optional kwargs to use for the listings HTTP requests \
-            as described on https://2.python-requests.org/en/v2.7.0/api/#requests.request",
+            as described on https://www.tornadoweb.org/en/stable/httpclient.html#tornado.httpclient.HTTPRequest",
     )
-
-    _deprecated_aliases = {
-        "blacklist_uris": ("blocked_extensions_uris", "1.2"),
-        "whitelist_uris": ("allowed_extensions_uris", "1.2"),
-    }
 
     # Method copied from
     # https://github.com/jupyterhub/jupyterhub/blob/d1a85e53dccfc7b1dd81b0c1985d158cc6b61820/jupyterhub/auth.py#L143-L161

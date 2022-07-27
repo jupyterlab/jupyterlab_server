@@ -17,19 +17,6 @@ Module: :mod:`jupyterlab_server.handlers`
 .. autofunction:: is_url
 
 
-Module: :mod:`jupyterlab_server.listings_handler`
-=================================================
-
-.. automodule:: jupyterlab_server.listings_handler
-
-.. currentmodule:: jupyterlab_server.listings_handler
-
-.. autoclass:: ListingsHandler
-    :members:
-
-.. autofunction:: fetch_listings
-
-
 Module: :mod:`jupyterlab_server.settings_handler`
 =================================================
 
