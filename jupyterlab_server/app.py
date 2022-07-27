@@ -27,9 +27,7 @@ class LabServerApp(ExtensionAppJinjaMixin, LabConfig, ExtensionApp):
     # Should your extension expose other server extensions when launched directly?
     load_other_extensions = True
 
-    app_version = Unicode("", help="The version of the application.").tag(
-        default=__version__
-    )
+    app_version = Unicode("", help="The version of the application.").tag(default=__version__)
 
     blocked_extensions_uris = Unicode(
         "",
