@@ -56,30 +56,6 @@ class LabServerApp(ExtensionAppJinjaMixin, LabConfig, ExtensionApp):
             as described on https://www.tornadoweb.org/en/stable/httpclient.html#tornado.httpclient.HTTPRequest",
     )
 
-    _deprecated_aliases = {}
-
-    # Method copied from
-    # https://github.com/jupyterhub/jupyterhub/blob/d1a85e53dccfc7b1dd81b0c1985d158cc6b61820/jupyterhub/auth.py#L143-L161
-    @observe(*list(_deprecated_aliases))
-    def _deprecated_trait(self, change):
-        """observer for deprecated traits"""
-        old_attr = change.name
-        new_attr, version = self._deprecated_aliases.get(old_attr)
-        new_value = getattr(self, new_attr)
-        if new_value != change.new:
-            # only warn if different
-            # protects backward-compatible config from warnings
-            # if they set the same value under both names
-            self.log.warning(
-                "{cls}.{old} is deprecated in JupyterLab {version}, use {cls}.{new} instead".format(
-                    cls=self.__class__.__name__,
-                    old=old_attr,
-                    new=new_attr,
-                    version=version,
-                )
-            )
-            setattr(self, new_attr, change.new)
-
     def initialize_templates(self):
         self.static_paths = [self.static_dir]
         self.template_paths = [self.templates_dir]
