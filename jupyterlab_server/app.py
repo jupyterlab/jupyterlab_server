@@ -55,9 +55,9 @@ class LabServerApp(ExtensionAppJinjaMixin, LabConfig, ExtensionApp):
         help="The optional kwargs to use for the listings HTTP requests \
             as described on https://www.tornadoweb.org/en/stable/httpclient.html#tornado.httpclient.HTTPRequest",
     )
-    
+
     _deprecated_aliases = {}
-    
+
     # Method copied from
     # https://github.com/jupyterhub/jupyterhub/blob/d1a85e53dccfc7b1dd81b0c1985d158cc6b61820/jupyterhub/auth.py#L143-L161
     @observe(*list(_deprecated_aliases))
