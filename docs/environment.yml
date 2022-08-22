@@ -1,6 +1,7 @@
 name: jupyterlab_server_documentation
 channels:
   - conda-forge
+  - nodefaults
 dependencies:
   - python=3.9
   - sphinx<4.0
