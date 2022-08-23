@@ -10,10 +10,13 @@ header:
   paths-ignore:
     - "**/*.json"
     - "**/*.md"
+    - "**/*.po"
     - "**/*.svg"
     - "**/*.yml"
     - "**/*.yaml"
     - "**/.*"
+    - "**/MANIFEST.in"
     - "LICENSE"
+    - "jupyterlab_server/test_data/*"
 
   comment: on-failure
