@@ -1,0 +1,22 @@
+header:
+  license:
+    spdx-id: BSD-3-Clause
+    copyright-owner: Jupyter Development Team
+    software-name: JupyterLab
+    content: |
+      Copyright (c) Jupyter Development Team.
+      Distributed under the terms of the Modified BSD License.
+
+  paths-ignore:
+    - "**/*.json"
+    - "**/*.md"
+    - "**/*.po"
+    - "**/*.svg"
+    - "**/*.yml"
+    - "**/*.yaml"
+    - "**/.*"
+    - "**/MANIFEST.in"
+    - "LICENSE"
+    - "jupyterlab_server/test_data"
+
+  comment: on-failure
