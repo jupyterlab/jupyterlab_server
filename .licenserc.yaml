@@ -8,12 +8,12 @@ header:
       Distributed under the terms of the Modified BSD License.
 
   paths-ignore:
-    - '**/*.json'
-    - '**/*.md'
-    - '**/*.svg'
-    - '**/*.yml'
-    - '**/*.yaml'
-    - '**/.*'
-    - 'LICENSE'
+    - "**/*.json"
+    - "**/*.md"
+    - "**/*.svg"
+    - "**/*.yml"
+    - "**/*.yaml"
+    - "**/.*"
+    - "LICENSE"
 
   comment: on-failure
