@@ -17,6 +17,6 @@ header:
     - "**/.*"
     - "**/MANIFEST.in"
     - "LICENSE"
-    - "jupyterlab_server/test_data/*"
+    - "jupyterlab_server/test_data"
 
   comment: on-failure
