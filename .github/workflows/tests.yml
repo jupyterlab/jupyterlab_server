@@ -93,9 +93,6 @@ jobs:
 
   check_release:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        group: [check_release, link_check]
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -105,13 +102,9 @@ jobs:
         run: |
           pip install -e .
       - name: Check Release
-        if: ${{ matrix.group == 'check_release' }}
         uses: jupyter-server/jupyter_releaser/.github/actions/check-release@v1
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-      - name: Run Link Check
-        if: ${{ matrix.group == 'link_check' }}
-        uses: jupyter-server/jupyter_releaser/.github/actions/check-links@v1
 
   test_miniumum_verisons:
     name: Test Minimum Versions
@@ -188,3 +181,11 @@ jobs:
           python -m pytest -vv -raXs || python -m pytest -vv -raXs --lf
           # Ensure that the pytest plugin is importable.
           python -c "from jupyterlab_server import pytest_plugin"
+
+  check_links:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v2
+      - uses: jupyterlab/maintainer-tools/.github/actions/base-setup@v1
+      - uses: jupyterlab/maintainer-tools/.github/actions/check-links@v1

@@ -9,7 +9,7 @@ The recommended way to make a release is to use [`jupyter_releaser`](https://git
 ### Set up
 
 ```
-pip install tbump twine build
+pip install pipx
 git pull origin $(git branch --show-current)
 git clean -dffx
 ```
@@ -19,19 +19,20 @@ git clean -dffx
 ```
 echo "Enter new version"
 read script_version
-tbump ${script_version}
+pipx run hatch version ${script_version}
+git tag -a ${script_version} -m ${script_version}
 ```
 
 ### Build the artifacts
 
 ```
 rm -rf dist
-python -m build .
+pipx run build .
 ```
 
 ### Publish the artifacts to pypi
 
 ```
-twine check dist/*
-twine upload dist/*
+pipx run twine check dist/*
+pipx run twine upload dist/*
 ```

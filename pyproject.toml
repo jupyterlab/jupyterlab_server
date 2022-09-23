@@ -1,10 +1,10 @@
 [build-system]
-requires = ["hatchling>=0.25"]
+requires = ["hatchling>=1.5"]
 build-backend = "hatchling.build"
 
 [project]
 name = "jupyterlab_server"
-version = "2.16.0rc0"
+dynamic = ["version"]
 license = { file = "LICENSE" }
 description = "A set of server components for JupyterLab and JupyterLab like applications."
 keywords = ["jupyter", "jupyterlab"]
@@ -67,25 +67,11 @@ test = [
   "strict-rfc3339"
 ]
 
+[tool.hatch.version]
+path = "jupyterlab_server/_version.py"
+
 [tool.jupyter-releaser]
 skip = ["check-links"]
-
-[tool.tbump.version]
-current = "2.16.0rc0"
-regex = '''
-  (?P<major>\d+)\.(?P<minor>\d+)\.(?P<patch>\d+)
-  ((?P<channel>a|b|rc|.dev)(?P<release>\d+))?
-'''
-
-[tool.tbump.git]
-message_template = "Bump to {new_version}"
-tag_template = "v{new_version}"
-
-[[tool.tbump.file]]
-src = "jupyterlab_server/_version.py"
-
-[[tool.tbump.file]]
-src = "pyproject.toml"
 
 [tool.pytest.ini_options]
 addopts = "-raXs --durations 10 --color=yes --doctest-modules"

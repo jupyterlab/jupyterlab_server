@@ -63,7 +63,7 @@ def is_url(url):
 class LabHandler(ExtensionHandlerJinjaMixin, ExtensionHandlerMixin, JupyterHandler):
     """Render the JupyterLab View."""
 
-    @lru_cache()
+    @lru_cache()  # noqa
     def get_page_config(self):
         """Construct the page config object"""
         self.application.store_id = getattr(self.application, "store_id", 0)
@@ -160,7 +160,7 @@ class LabHandler(ExtensionHandlerJinjaMixin, ExtensionHandlerMixin, JupyterHandl
 
 
 class NotFoundHandler(LabHandler):
-    @lru_cache()
+    @lru_cache()  # noqa
     def get_page_config(self):
         page_config = super().get_page_config()
         page_config["notFoundUrl"] = self.request.path
