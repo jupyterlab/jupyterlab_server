@@ -63,7 +63,7 @@ def _load_with_file_times(workspace_path: Path) -> dict:
     return workspace
 
 
-def slugify(raw, base="", sign=True, max_length=128 - len(WORKSPACE_EXTENSION)):
+def slugify(raw, base="", sign=True, max_length=128 - len(WORKSPACE_EXTENSION)):  # noqa
     """
     Use the common superset of raw and base values to build a slug shorter
     than max_length. By default, base value is an empty string.
