@@ -57,7 +57,8 @@ test = [
   "codecov",
   "ipykernel",
   "jupyter_server[test]",
-  "openapi_core>=0.14.2",
+  # openapi_core 0.15.0 is not working
+  "openapi_core~=0.14.2",
   "openapi-spec-validator<0.5",
   "pytest>=5.3.2",
   "pytest-console-scripts",
