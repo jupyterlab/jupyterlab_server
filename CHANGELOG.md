@@ -6,6 +6,22 @@ github_url: "https://github.com/jupyterlab/jupyterlab_server/blob/master/CHANGEL
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
+## 2.15.2
+
+([Full Changelog](https://github.com/jupyterlab/jupyterlab_server/compare/v2.15.1...256028a107fd5cbc52304366074e175d3a43796c))
+
+### Bugs fixed
+
+- Pin openapi_core dependency [#308](https://github.com/jupyterlab/jupyterlab_server/pull/308) ([@blink1073](https://github.com/blink1073))
+
+### Contributors to this release
+
+([GitHub contributors page for this release](https://github.com/jupyterlab/jupyterlab_server/graphs/contributors?from=2022-08-23&to=2022-09-26&type=c))
+
+[@blink1073](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Ablink1073+updated%3A2022-08-23..2022-09-26&type=Issues) | [@codecov-commenter](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Acodecov-commenter+updated%3A2022-08-23..2022-09-26&type=Issues)
+
+<!-- <END NEW CHANGELOG ENTRY> -->
+
 ## 2.15.1
 
 ([Full Changelog](https://github.com/jupyterlab/jupyterlab_server/compare/v2.15.0...6de991c68abad7041581dd5a7c292194d3b2dea7))
@@ -30,8 +46,6 @@ github_url: "https://github.com/jupyterlab/jupyterlab_server/blob/master/CHANGEL
 ([GitHub contributors page for this release](https://github.com/jupyterlab/jupyterlab_server/graphs/contributors?from=2022-07-05&to=2022-08-23&type=c))
 
 [@afshin](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Aafshin+updated%3A2022-07-05..2022-08-23&type=Issues) | [@blink1073](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Ablink1073+updated%3A2022-07-05..2022-08-23&type=Issues) | [@codecov-commenter](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Acodecov-commenter+updated%3A2022-07-05..2022-08-23&type=Issues) | [@fcollonval](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Afcollonval+updated%3A2022-07-05..2022-08-23&type=Issues) | [@pre-commit-ci](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Apre-commit-ci+updated%3A2022-07-05..2022-08-23&type=Issues)
-
-<!-- <END NEW CHANGELOG ENTRY> -->
 
 ## 2.15.0
 
