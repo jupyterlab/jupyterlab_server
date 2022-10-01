@@ -138,7 +138,7 @@ jobs:
           pip freeze
           pip check
       - name: Run the tests
-        run: python -m pytest -vv -raXs || python -m pytest -vv -raXs --lf
+        run: python -m pytest -vv -raXs -W default || python -m pytest -vv -raXs -W default --lf
 
   make_sdist:
     name: Make SDist
