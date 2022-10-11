@@ -1,7 +1,3 @@
----
-github_url: "https://github.com/jupyterlab/jupyterlab_server/blob/master/CHANGELOG.md"
----
-
 # Change Log
 
 <!-- <START NEW CHANGELOG ENTRY> -->
@@ -16,8 +12,8 @@ github_url: "https://github.com/jupyterlab/jupyterlab_server/blob/master/CHANGEL
 
 ### Maintenance and upkeep improvements
 
-- [pre-commit.ci] pre-commit autoupdate [#301](https://github.com/jupyterlab/jupyterlab_server/pull/301) ([@pre-commit-ci](https://github.com/pre-commit-ci))
-- [pre-commit.ci] pre-commit autoupdate [#300](https://github.com/jupyterlab/jupyterlab_server/pull/300) ([@pre-commit-ci](https://github.com/pre-commit-ci))
+- \[pre-commit.ci\] pre-commit autoupdate [#301](https://github.com/jupyterlab/jupyterlab_server/pull/301) ([@pre-commit-ci](https://github.com/pre-commit-ci))
+- \[pre-commit.ci\] pre-commit autoupdate [#300](https://github.com/jupyterlab/jupyterlab_server/pull/300) ([@pre-commit-ci](https://github.com/pre-commit-ci))
 
 ### Contributors to this release
 
@@ -34,13 +30,13 @@ github_url: "https://github.com/jupyterlab/jupyterlab_server/blob/master/CHANGEL
 ### Maintenance and upkeep improvements
 
 - Add fix license header job [#298](https://github.com/jupyterlab/jupyterlab_server/pull/298) ([@fcollonval](https://github.com/fcollonval))
-- [pre-commit.ci] pre-commit autoupdate [#297](https://github.com/jupyterlab/jupyterlab_server/pull/297) ([@pre-commit-ci](https://github.com/pre-commit-ci))
+- \[pre-commit.ci\] pre-commit autoupdate [#297](https://github.com/jupyterlab/jupyterlab_server/pull/297) ([@pre-commit-ci](https://github.com/pre-commit-ci))
 - Ignore deprecationwarning from jsonschema [#295](https://github.com/jupyterlab/jupyterlab_server/pull/295) ([@blink1073](https://github.com/blink1073))
-- [pre-commit.ci] pre-commit autoupdate [#294](https://github.com/jupyterlab/jupyterlab_server/pull/294) ([@pre-commit-ci](https://github.com/pre-commit-ci))
-- [pre-commit.ci] pre-commit autoupdate [#293](https://github.com/jupyterlab/jupyterlab_server/pull/293) ([@pre-commit-ci](https://github.com/pre-commit-ci))
-- [pre-commit.ci] pre-commit autoupdate [#291](https://github.com/jupyterlab/jupyterlab_server/pull/291) ([@pre-commit-ci](https://github.com/pre-commit-ci))
-- [pre-commit.ci] pre-commit autoupdate [#290](https://github.com/jupyterlab/jupyterlab_server/pull/290) ([@pre-commit-ci](https://github.com/pre-commit-ci))
-- [pre-commit.ci] pre-commit autoupdate [#289](https://github.com/jupyterlab/jupyterlab_server/pull/289) ([@pre-commit-ci](https://github.com/pre-commit-ci))
+- \[pre-commit.ci\] pre-commit autoupdate [#294](https://github.com/jupyterlab/jupyterlab_server/pull/294) ([@pre-commit-ci](https://github.com/pre-commit-ci))
+- \[pre-commit.ci\] pre-commit autoupdate [#293](https://github.com/jupyterlab/jupyterlab_server/pull/293) ([@pre-commit-ci](https://github.com/pre-commit-ci))
+- \[pre-commit.ci\] pre-commit autoupdate [#291](https://github.com/jupyterlab/jupyterlab_server/pull/291) ([@pre-commit-ci](https://github.com/pre-commit-ci))
+- \[pre-commit.ci\] pre-commit autoupdate [#290](https://github.com/jupyterlab/jupyterlab_server/pull/290) ([@pre-commit-ci](https://github.com/pre-commit-ci))
+- \[pre-commit.ci\] pre-commit autoupdate [#289](https://github.com/jupyterlab/jupyterlab_server/pull/289) ([@pre-commit-ci](https://github.com/pre-commit-ci))
 
 ### Documentation improvements
 
@@ -58,15 +54,15 @@ github_url: "https://github.com/jupyterlab/jupyterlab_server/blob/master/CHANGEL
 
 ### Maintenance and upkeep improvements
 
-- [pre-commit.ci] pre-commit autoupdate [#287](https://github.com/jupyterlab/jupyterlab_server/pull/287) ([@pre-commit-ci](https://github.com/pre-commit-ci))
-- [pre-commit.ci] pre-commit autoupdate [#286](https://github.com/jupyterlab/jupyterlab_server/pull/286) ([@pre-commit-ci](https://github.com/pre-commit-ci))
+- \[pre-commit.ci\] pre-commit autoupdate [#287](https://github.com/jupyterlab/jupyterlab_server/pull/287) ([@pre-commit-ci](https://github.com/pre-commit-ci))
+- \[pre-commit.ci\] pre-commit autoupdate [#286](https://github.com/jupyterlab/jupyterlab_server/pull/286) ([@pre-commit-ci](https://github.com/pre-commit-ci))
 - Suppress tornado 6.2 beta warnings [#285](https://github.com/jupyterlab/jupyterlab_server/pull/285) ([@blink1073](https://github.com/blink1073))
-- [pre-commit.ci] pre-commit autoupdate [#284](https://github.com/jupyterlab/jupyterlab_server/pull/284) ([@pre-commit-ci](https://github.com/pre-commit-ci))
-- [pre-commit.ci] pre-commit autoupdate [#283](https://github.com/jupyterlab/jupyterlab_server/pull/283) ([@pre-commit-ci](https://github.com/pre-commit-ci))
+- \[pre-commit.ci\] pre-commit autoupdate [#284](https://github.com/jupyterlab/jupyterlab_server/pull/284) ([@pre-commit-ci](https://github.com/pre-commit-ci))
+- \[pre-commit.ci\] pre-commit autoupdate [#283](https://github.com/jupyterlab/jupyterlab_server/pull/283) ([@pre-commit-ci](https://github.com/pre-commit-ci))
 - Add compat for openapi-core 0.15 [#281](https://github.com/jupyterlab/jupyterlab_server/pull/281) ([@blink1073](https://github.com/blink1073))
-- [pre-commit.ci] pre-commit autoupdate [#280](https://github.com/jupyterlab/jupyterlab_server/pull/280) ([@pre-commit-ci](https://github.com/pre-commit-ci))
-- [pre-commit.ci] pre-commit autoupdate [#279](https://github.com/jupyterlab/jupyterlab_server/pull/279) ([@pre-commit-ci](https://github.com/pre-commit-ci))
-- [pre-commit.ci] pre-commit autoupdate [#277](https://github.com/jupyterlab/jupyterlab_server/pull/277) ([@pre-commit-ci](https://github.com/pre-commit-ci))
+- \[pre-commit.ci\] pre-commit autoupdate [#280](https://github.com/jupyterlab/jupyterlab_server/pull/280) ([@pre-commit-ci](https://github.com/pre-commit-ci))
+- \[pre-commit.ci\] pre-commit autoupdate [#279](https://github.com/jupyterlab/jupyterlab_server/pull/279) ([@pre-commit-ci](https://github.com/pre-commit-ci))
+- \[pre-commit.ci\] pre-commit autoupdate [#277](https://github.com/jupyterlab/jupyterlab_server/pull/277) ([@pre-commit-ci](https://github.com/pre-commit-ci))
 
 ### Contributors to this release
 
@@ -84,9 +80,9 @@ github_url: "https://github.com/jupyterlab/jupyterlab_server/blob/master/CHANGEL
 
 ### Maintenance and upkeep improvements
 
-- [pre-commit.ci] pre-commit autoupdate [#275](https://github.com/jupyterlab/jupyterlab_server/pull/275) ([@pre-commit-ci](https://github.com/pre-commit-ci))
+- \[pre-commit.ci\] pre-commit autoupdate [#275](https://github.com/jupyterlab/jupyterlab_server/pull/275) ([@pre-commit-ci](https://github.com/pre-commit-ci))
 - Switch to hatch backend [#274](https://github.com/jupyterlab/jupyterlab_server/pull/274) ([@blink1073](https://github.com/blink1073))
-- [pre-commit.ci] pre-commit autoupdate [#272](https://github.com/jupyterlab/jupyterlab_server/pull/272) ([@pre-commit-ci](https://github.com/pre-commit-ci))
+- \[pre-commit.ci\] pre-commit autoupdate [#272](https://github.com/jupyterlab/jupyterlab_server/pull/272) ([@pre-commit-ci](https://github.com/pre-commit-ci))
 - Switch to flit build backend [#271](https://github.com/jupyterlab/jupyterlab_server/pull/271) ([@blink1073](https://github.com/blink1073))
 - Allow bot PRs to be automatically labeled [#270](https://github.com/jupyterlab/jupyterlab_server/pull/270) ([@blink1073](https://github.com/blink1073))
 
@@ -106,11 +102,11 @@ github_url: "https://github.com/jupyterlab/jupyterlab_server/blob/master/CHANGEL
 
 ### Maintenance and upkeep improvements
 
-- [pre-commit.ci] pre-commit autoupdate [#266](https://github.com/jupyterlab/jupyterlab_server/pull/266) ([@pre-commit-ci](https://github.com/pre-commit-ci))
-- [pre-commit.ci] pre-commit autoupdate [#265](https://github.com/jupyterlab/jupyterlab_server/pull/265) ([@pre-commit-ci](https://github.com/pre-commit-ci))
+- \[pre-commit.ci\] pre-commit autoupdate [#266](https://github.com/jupyterlab/jupyterlab_server/pull/266) ([@pre-commit-ci](https://github.com/pre-commit-ci))
+- \[pre-commit.ci\] pre-commit autoupdate [#265](https://github.com/jupyterlab/jupyterlab_server/pull/265) ([@pre-commit-ci](https://github.com/pre-commit-ci))
 - Switch to importlib.metadata to list entry points [#264](https://github.com/jupyterlab/jupyterlab_server/pull/264) ([@fcollonval](https://github.com/fcollonval))
 - Make some pre-commit hooks manual [#263](https://github.com/jupyterlab/jupyterlab_server/pull/263) ([@blink1073](https://github.com/blink1073))
-- [pre-commit.ci] pre-commit autoupdate [#262](https://github.com/jupyterlab/jupyterlab_server/pull/262) ([@pre-commit-ci](https://github.com/pre-commit-ci))
+- \[pre-commit.ci\] pre-commit autoupdate [#262](https://github.com/jupyterlab/jupyterlab_server/pull/262) ([@pre-commit-ci](https://github.com/pre-commit-ci))
 - Add flake8 and handle warnings in tests [#259](https://github.com/jupyterlab/jupyterlab_server/pull/259) ([@blink1073](https://github.com/blink1073))
 - Add git-blame-ignore-revs [#258](https://github.com/jupyterlab/jupyterlab_server/pull/258) ([@blink1073](https://github.com/blink1073))
 - Apply Autoformats [#257](https://github.com/jupyterlab/jupyterlab_server/pull/257) ([@blink1073](https://github.com/blink1073))
