@@ -60,7 +60,7 @@ test = [
   # openapi_core 0.15.0 alpha is not working
   "openapi_core~=0.14.2",
   "openapi-spec-validator<0.5",
-  "pytest>=5.3.2",
+  "pytest>=7.0",
   "pytest-console-scripts",
   "pytest-cov",
   "ruamel.yaml",
