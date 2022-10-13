@@ -2,6 +2,28 @@
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
+## 2.16.0
+
+([Full Changelog](https://github.com/jupyterlab/jupyterlab_server/compare/v2.15.1...c278cb9bbda81a2730d1198f0a5fc708a18506d9))
+
+### Enhancements made
+
+- raise jupyter_server pin to include 2.x [#302](https://github.com/jupyterlab/jupyterlab_server/pull/302) ([@Zsailer](https://github.com/Zsailer))
+
+### Maintenance and upkeep improvements
+
+- CI Cleanup [#316](https://github.com/jupyterlab/jupyterlab_server/pull/316) ([@blink1073](https://github.com/blink1073))
+- Ignore warnings in prerelease test [#312](https://github.com/jupyterlab/jupyterlab_server/pull/312) ([@blink1073](https://github.com/blink1073))
+- Clean up pyproject and ci [#306](https://github.com/jupyterlab/jupyterlab_server/pull/306) ([@blink1073](https://github.com/blink1073))
+
+### Contributors to this release
+
+([GitHub contributors page for this release](https://github.com/jupyterlab/jupyterlab_server/graphs/contributors?from=2022-08-23&to=2022-10-13&type=c))
+
+[@blink1073](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Ablink1073+updated%3A2022-08-23..2022-10-13&type=Issues) | [@codecov-commenter](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Acodecov-commenter+updated%3A2022-08-23..2022-10-13&type=Issues) | [@fcollonval](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Afcollonval+updated%3A2022-08-23..2022-10-13&type=Issues) | [@pre-commit-ci](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Apre-commit-ci+updated%3A2022-08-23..2022-10-13&type=Issues) | [@Zsailer](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3AZsailer+updated%3A2022-08-23..2022-10-13&type=Issues)
+
+<!-- <END NEW CHANGELOG ENTRY> -->
+
 ## 2.16.0rc0
 
 ([Full Changelog](https://github.com/jupyterlab/jupyterlab_server/compare/v2.15.1...7d83684f3f94724c977692c2785d5ad81fac231e))
@@ -20,8 +42,6 @@
 ([GitHub contributors page for this release](https://github.com/jupyterlab/jupyterlab_server/graphs/contributors?from=2022-08-23&to=2022-09-09&type=c))
 
 [@codecov-commenter](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Acodecov-commenter+updated%3A2022-08-23..2022-09-09&type=Issues) | [@pre-commit-ci](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Apre-commit-ci+updated%3A2022-08-23..2022-09-09&type=Issues) | [@Zsailer](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3AZsailer+updated%3A2022-08-23..2022-09-09&type=Issues)
-
-<!-- <END NEW CHANGELOG ENTRY> -->
 
 ## 2.15.1
 
