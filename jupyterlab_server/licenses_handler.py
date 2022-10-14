@@ -85,6 +85,8 @@ class LicensesManager(LoggingConfigurable):
                 "text/markdown",
             )
 
+        raise ValueError(f"Unsupported report format {report_format}.")
+
     def report_json(self, bundles):
         """create a JSON report
         TODO: SPDX

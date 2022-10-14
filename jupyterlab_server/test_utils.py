@@ -108,7 +108,6 @@ def maybe_patch_ioloop():
     """a windows 3.8+ patch for the asyncio loop"""
     if sys.platform.startswith("win") and tornado.version_info < (6, 1):
         if sys.version_info >= (3, 8):
-            import asyncio
 
             try:
                 from asyncio import (
@@ -119,10 +118,12 @@ def maybe_patch_ioloop():
                 pass
                 # not affected
             else:
-                if type(asyncio.get_event_loop_policy()) is WindowsProactorEventLoopPolicy:
+                from asyncio import get_event_loop_policy, set_event_loop_policy
+
+                if type(get_event_loop_policy()) is WindowsProactorEventLoopPolicy:
                     # WindowsProactorEventLoopPolicy is not compatible with tornado 6
                     # fallback to the pre-3.8 default of Selector
-                    asyncio.set_event_loop_policy(WindowsSelectorEventLoopPolicy())
+                    set_event_loop_policy(WindowsSelectorEventLoopPolicy())
 
 
 def expected_http_error(error, expected_code, expected_message=None):
@@ -147,6 +148,8 @@ def expected_http_error(error, expected_code, expected_message=None):
             if expected_message != message:
                 return False
         return True
+
+    return False
 
 
 @contextmanager

@@ -122,7 +122,7 @@ async def test_get_locale_not_valid(jp_fetch):
 # ------------------------------------------------------------------------
 async def test_backend_locale(jp_fetch):
     locale = "es_CO"
-    r = await jp_fetch("lab", "api", "translations", locale)
+    await jp_fetch("lab", "api", "translations", locale)
     trans = translator.load("jupyterlab")
     result = trans.__("MORE ABOUT PROJECT JUPYTER")
     assert result == "Más sobre el proyecto jupyter"
@@ -130,7 +130,7 @@ async def test_backend_locale(jp_fetch):
 
 async def test_backend_locale_extension(jp_fetch):
     locale = "es_CO"
-    r = await jp_fetch("lab", "api", "translations", locale)
+    await jp_fetch("lab", "api", "translations", locale)
     trans = translator.load("jupyterlab_some_package")
     result = trans.__("BOOM")
     assert result == "Foo bar 2"

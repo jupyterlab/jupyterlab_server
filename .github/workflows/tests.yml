@@ -18,7 +18,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
-        python_version: ["3.7", "3.10"]
+        python-version: ["3.7", "3.10"]
         include:
           - os: windows-latest
             python-version: "3.9"
@@ -40,7 +40,7 @@ jobs:
           args="-vv -raXs --cov jupyterlab_server --cov-branch --cov-report term-missing:skip-covered --durations 10 --color=yes --cov-fail-under 65"
           python -m pytest $args || python -m pytest $args --lf
       - name: Run the tests on pypy and windows
-        if: ${{ startsWith(matrix.python_version, 'pypy') || startsWith(matrix.os, 'windows') }}
+        if: ${{ startsWith(matrix.python-version, 'pypy') || startsWith(matrix.os, 'windows') }}
         run: |
           python -m pytest -vv -raXs || python -m pytest -vv -raXs --lf
       - name: Upload coverage

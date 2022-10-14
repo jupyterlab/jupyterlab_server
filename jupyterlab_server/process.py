@@ -89,7 +89,7 @@ class Process:
         if kill_event and kill_event.is_set():
             raise ValueError("Process aborted")
 
-        self.logger = logger = logger or self.get_log()
+        self.logger = logger or self.get_log()
         self._last_line = ""
         if not quiet:
             self.logger.info(f"> {list2cmdline(cmd)}")

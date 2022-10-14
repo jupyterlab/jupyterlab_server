@@ -17,7 +17,6 @@ __all__ = [
     "LabHandler",
     "LabServerApp",
     "LicensesApp",
-    "SETTINGS_EXTENSION",
     "slugify",
     "translator",
     "WORKSPACE_EXTENSION",
