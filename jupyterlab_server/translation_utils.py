@@ -182,8 +182,10 @@ def is_valid_locale(locale: str) -> bool:
         babel.Locale.parse(locale)
         valid = True
     except babel.core.UnknownLocaleError:
+        # no-op
         pass
     except ValueError:
+        # no-op
         pass
 
     return valid
@@ -433,6 +435,7 @@ class TranslationBundle:
                 mod = importlib.import_module(language_pack_module)
                 localedir = os.path.join(os.path.dirname(mod.__file__), LOCALE_DIR)
             except Exception:
+                # no-op
                 pass
 
         gettext.bindtextdomain(self._domain, localedir=localedir)

@@ -239,7 +239,6 @@ def _path(root_dir, schema_name, make_dirs=False, extension=".json"):
     parent directory for the calculated path if it does not exist.
     """
 
-    parent_dir = root_dir
     notfound_error = "Settings not found (%s)"
     write_error = "Failed writing settings (%s): %s"
 

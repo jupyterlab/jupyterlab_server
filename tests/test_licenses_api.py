@@ -139,13 +139,11 @@ async def test_dev_mode_license_report(
 )
 async def test_malformed_license_report(
     license_json,
-    mime_format_parser,
     jp_fetch,
     labserverapp,
     tmp_path,
 ):
     _make_static_dir(labserverapp, tmp_path, license_json=license_json)
-    mime, fmt, parse = mime_format_parser
     r = await jp_fetch("lab", "api", "licenses/")
     assert r.code == 200
 
