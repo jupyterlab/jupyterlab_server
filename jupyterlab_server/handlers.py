@@ -3,6 +3,7 @@
 # Copyright (c) Jupyter Development Team.
 # Distributed under the terms of the Modified BSD License.
 import os
+import pathlib
 import warnings
 from functools import lru_cache
 from urllib.parse import urlparse
@@ -84,16 +85,23 @@ class LabHandler(ExtensionHandlerJinjaMixin, ExtensionHandlerMixin, JupyterHandl
         page_config["store_id"] = self.application.store_id  # type:ignore
 
         server_root = os.path.normpath(os.path.expanduser(server_root))
+        preferred_path = ""
         try:
-            # Remove the server_root from pref dir
-            if self.serverapp.preferred_dir != server_root:
-                page_config["preferredPath"] = "/" + os.path.relpath(
-                    self.serverapp.preferred_dir, server_root
-                )
-            else:
-                page_config["preferredPath"] = "/"
+            preferred_path = self.serverapp.contents_manager.preferred_dir
         except Exception:
-            page_config["preferredPath"] = "/"
+            # FIXME: Remove fallback once CM.preferred_dir is ubiquitous.
+            try:
+                # Remove the server_root from app pref dir
+                if self.serverapp.preferred_dir and self.serverapp.preferred_dir != server_root:
+                    preferred_path = (
+                        pathlib.Path(self.serverapp.preferred_dir)
+                        .relative_to(server_root)
+                        .as_posix()
+                    )
+            except Exception:
+                pass
+        # JupyterLab relies on an unset/default path being "/"
+        page_config["preferredPath"] = preferred_path or "/"
 
         self.application.store_id += 1  # type:ignore
 
