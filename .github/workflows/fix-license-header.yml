@@ -33,7 +33,8 @@ jobs:
         id: changed-files
         uses: tj-actions/changed-files@v32
         with:
-          fetch-depth: 2
+          base_sha: 'HEAD~1'
+          sha: 'HEAD'
 
       - name: Apply Changes
         if: steps.changed-files.outputs.any_changed == 'true'
