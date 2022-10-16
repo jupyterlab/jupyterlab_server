@@ -49,6 +49,17 @@ Source = "https://github.com/jupyterlab/jupyterlab_server"
 Tracker = "https://github.com/jupyterlab/jupyterlab_server/issues"
 
 [project.optional-dependencies]
+docs = [
+  "autodoc-traits",
+  "docutils<0.19",
+  "pydata_sphinx_theme",
+  "sphinx",
+  "sphinx-copybutton",
+  "sphinxcontrib-openapi",
+  "myst-parser",
+  "mistune<1",
+  "jinja2<3.1.0"
+]
 openapi = [
   "openapi_core>=0.14.2",
   "ruamel.yaml",
@@ -69,9 +80,26 @@ test = [
 
 [tool.hatch.version]
 path = "jupyterlab_server/_version.py"
+validate-bump = false
 
-[tool.jupyter-releaser]
-skip = ["check-links"]
+[tool.hatch.envs.docs]
+features = ["docs"]
+[tool.hatch.envs.docs.scripts]
+build = "make -C docs html SPHINXOPTS='-W'"
+
+[tool.hatch.envs.test]
+features = ["test"]
+[tool.hatch.envs.test.scripts]
+test = "python -m pytest -vv {args}"
+nowarn = "python -m pytest -vv -W default {args}"
+
+[tool.hatch.envs.cov]
+features = ["test"]
+dependencies = ["coverage", "pytest-cov"]
+[tool.hatch.envs.cov.env-vars]
+ARGS = "-vv --cov jupyterlab_server --cov-branch --cov-report term-missing:skip-covered"
+[tool.hatch.envs.cov.scripts]
+test = "python -m pytest $ARGS --cov-fail-under 65 {args}"
 
 [tool.pytest.ini_options]
 addopts = "-raXs --durations 10 --color=yes --doctest-modules"
@@ -88,4 +116,25 @@ filterwarnings = [
   "module:There is no current event loop:DeprecationWarning",
   "ignore:Passing a schema to Validator.iter_errors:DeprecationWarning",
   "module:Subclassing validator classes is not intended to be part of their public API:DeprecationWarning"
+]
+
+[tool.flake8]
+ignore = "E501, W503, E402"
+builtins = "c, get_config"
+exclude = [
+    ".cache",
+    ".github",
+    "docs",
+    "setup.py",
+]
+enable-extensions = "G"
+extend-ignore = [
+    "G001", "G002", "G004", "G200", "G201", "G202",
+    # black adds spaces around ':'
+    "E203",
+]
+per-file-ignores = [
+    # B011: Do not call assert False since python -O removes these calls
+    # F841 local variable 'foo' is assigned to but never used
+    "tests/*: B011", "F841",
 ]

@@ -15,8 +15,10 @@
 # sys.path.insert(0, os.path.abspath('.'))
 import os.path as osp
 import shutil
+import sys
 
 HERE = osp.abspath(osp.dirname(__file__))
+sys.path.insert(0, osp.join(HERE, "..", ".."))
 
 # -- Project information -----------------------------------------------------
 
@@ -43,7 +45,6 @@ release = version_ns["__version__"]
 # ones.
 extensions = [
     "myst_parser",
-    "numpydoc",
     "autodoc_traits",
     "sphinx.ext.autodoc",
     "sphinx.ext.intersphinx",
