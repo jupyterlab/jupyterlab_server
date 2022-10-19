@@ -2,6 +2,28 @@
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
+## 2.16.1
+
+([Full Changelog](https://github.com/jupyterlab/jupyterlab_server/compare/v2.16.0...11e0bb82dbaeb0cb45d16e18d80220003a15d459))
+
+### Maintenance and upkeep improvements
+
+- Prep for using releaser [#327](https://github.com/jupyterlab/jupyterlab_server/pull/327) ([@blink1073](https://github.com/blink1073))
+- Maintenance cleanup [#325](https://github.com/jupyterlab/jupyterlab_server/pull/325) ([@blink1073](https://github.com/blink1073))
+- Bump actions/upload-artifact from 2 to 3 [#322](https://github.com/jupyterlab/jupyterlab_server/pull/322) ([@dependabot](https://github.com/dependabot))
+- Bump actions/download-artifact from 2 to 3 [#321](https://github.com/jupyterlab/jupyterlab_server/pull/321) ([@dependabot](https://github.com/dependabot))
+- Bump actions/checkout from 2 to 3 [#320](https://github.com/jupyterlab/jupyterlab_server/pull/320) ([@dependabot](https://github.com/dependabot))
+- Bump tj-actions/changed-files from 24 to 32 [#319](https://github.com/jupyterlab/jupyterlab_server/pull/319) ([@dependabot](https://github.com/dependabot))
+- Fix workflows and add new ones [#318](https://github.com/jupyterlab/jupyterlab_server/pull/318) ([@fcollonval](https://github.com/fcollonval))
+
+### Contributors to this release
+
+([GitHub contributors page for this release](https://github.com/jupyterlab/jupyterlab_server/graphs/contributors?from=2022-10-13&to=2022-10-19&type=c))
+
+[@blink1073](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Ablink1073+updated%3A2022-10-13..2022-10-19&type=Issues) | [@codecov-commenter](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Acodecov-commenter+updated%3A2022-10-13..2022-10-19&type=Issues) | [@dependabot](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Adependabot+updated%3A2022-10-13..2022-10-19&type=Issues) | [@fcollonval](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Afcollonval+updated%3A2022-10-13..2022-10-19&type=Issues) | [@pre-commit-ci](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Apre-commit-ci+updated%3A2022-10-13..2022-10-19&type=Issues)
+
+<!-- <END NEW CHANGELOG ENTRY> -->
+
 ## 2.16.0
 
 ([Full Changelog](https://github.com/jupyterlab/jupyterlab_server/compare/v2.15.1...c278cb9bbda81a2730d1198f0a5fc708a18506d9))
@@ -21,8 +43,6 @@
 ([GitHub contributors page for this release](https://github.com/jupyterlab/jupyterlab_server/graphs/contributors?from=2022-08-23&to=2022-10-13&type=c))
 
 [@blink1073](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Ablink1073+updated%3A2022-08-23..2022-10-13&type=Issues) | [@codecov-commenter](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Acodecov-commenter+updated%3A2022-08-23..2022-10-13&type=Issues) | [@fcollonval](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Afcollonval+updated%3A2022-08-23..2022-10-13&type=Issues) | [@pre-commit-ci](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Apre-commit-ci+updated%3A2022-08-23..2022-10-13&type=Issues) | [@Zsailer](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3AZsailer+updated%3A2022-08-23..2022-10-13&type=Issues)
-
-<!-- <END NEW CHANGELOG ENTRY> -->
 
 ## 2.16.0rc0
 
