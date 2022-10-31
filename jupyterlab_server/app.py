@@ -101,11 +101,6 @@ class LabServerApp(ExtensionAppJinjaMixin, LabConfig, ExtensionApp):
         self.static_paths = [self.static_dir]
         self.template_paths = [self.templates_dir]
 
-    def initialize_settings(self):
-        settings = self.serverapp.web_app.settings
-        # By default, make terminals available.
-        settings.setdefault("terminals_available", True)
-
     def initialize_handlers(self):
         add_handlers(self.handlers, self)
 
