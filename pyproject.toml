@@ -99,7 +99,7 @@ dependencies = ["coverage", "pytest-cov"]
 [tool.hatch.envs.cov.env-vars]
 ARGS = "-vv --cov jupyterlab_server --cov-branch --cov-report term-missing:skip-covered"
 [tool.hatch.envs.cov.scripts]
-test = "python -m pytest $ARGS --cov-fail-under 65 {args}"
+test = "python -m pytest $ARGS --cov-fail-under 80 {args}"
 
 [tool.pytest.ini_options]
 addopts = "-raXs --durations 10 --color=yes --doctest-modules"
