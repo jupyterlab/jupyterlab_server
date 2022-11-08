@@ -85,7 +85,7 @@ class WorkspaceExportApp(JupyterApp, LabConfig):
         self.manager = WorkspacesManager(self.workspaces_dir)
 
     def start(self):
-        if len(self.extra_args) > 1:
+        if len(self.extra_args) > 1:  # pragma: no cover
             warnings.warn("Too many arguments were provided for workspace export.")
             self.exit(1)
 
@@ -93,7 +93,7 @@ class WorkspaceExportApp(JupyterApp, LabConfig):
         try:
             workspace = self.manager.load(raw)
             print(json.dumps(workspace))
-        except Exception:
+        except Exception:  # pragma: no cover
             print(json.dumps(dict(data=dict(), metadata=dict(id=raw))))
 
 
@@ -124,20 +124,20 @@ class WorkspaceImportApp(JupyterApp, LabConfig):
 
     def start(self):
 
-        if len(self.extra_args) != 1:
+        if len(self.extra_args) != 1:  # pragma: no cover
             print("One argument is required for workspace import.")
             self.exit(1)
 
         with self._smart_open() as fid:
             try:  # to load, parse, and validate the workspace file.
                 workspace = self._validate(fid)
-            except Exception as e:
+            except Exception as e:  # pragma: no cover
                 print(f"{fid.name} is not a valid workspace:\n{e}")
                 self.exit(1)
 
         try:
             workspace_path = self.manager.save(workspace["metadata"]["id"], json.dumps(workspace))
-        except Exception as e:
+        except Exception as e:  # pragma: no cover
             print(f"Workspace could not be exported:\n{e!s}")
             self.exit(1)
 
@@ -146,12 +146,12 @@ class WorkspaceImportApp(JupyterApp, LabConfig):
     def _smart_open(self):
         file_name = self.extra_args[0]
 
-        if file_name == "-":
+        if file_name == "-":  # pragma: no cover
             return sys.stdin
         else:
             file_path = Path(file_name).resolve()
 
-            if not file_path.exists():
+            if not file_path.exists():  # pragma: no cover
                 print(f"{file_name!s} does not exist.")
                 self.exit(1)
 

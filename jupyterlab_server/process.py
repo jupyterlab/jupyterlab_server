@@ -27,9 +27,9 @@ if sys.platform == "win32":
 else:
 
     def list2cmdline(cmd_list):
-        import pipes
+        import shlex
 
-        return " ".join(map(pipes.quote, cmd_list))
+        return " ".join(map(shlex.quote, cmd_list))
 
 
 def which(command, env=None):
@@ -125,7 +125,8 @@ class Process:
                 os.kill(proc.pid, sig)
 
         finally:
-            Process._procs.remove(self)
+            if self in Process._procs:
+                Process._procs.remove(self)
 
         return proc.wait()
 
@@ -220,8 +221,7 @@ class WatchHelper(Process):
             if re.match(startup_regex, line):
                 break
 
-        self._read_thread = threading.Thread(target=self._read_incoming)
-        self._read_thread.setDaemon(True)
+        self._read_thread = threading.Thread(target=self._read_incoming, daemon=True)
         self._read_thread.start()
 
     def terminate(self):
@@ -239,7 +239,8 @@ class WatchHelper(Process):
         try:
             proc.wait()
         finally:
-            Process._procs.remove(self)
+            if self in Process._procs:
+                Process._procs.remove(self)
 
         return proc.returncode
 

@@ -34,6 +34,25 @@ async def test_delete(jp_fetch, labserverapp):
         method="DELETE",
     )
     assert r3.code == 204
+    with pytest.raises(tornado.httpclient.HTTPClientError) as e:
+        await jp_fetch(
+            "lab",
+            "api",
+            "workspaces",
+            "does_not_exist",
+            method="DELETE",
+        )
+        assert expected_http_error(e, 404)
+
+    with pytest.raises(tornado.httpclient.HTTPClientError) as e:
+        await jp_fetch(
+            "lab",
+            "api",
+            "workspaces",
+            "",
+            method="DELETE",
+        )
+        assert expected_http_error(e, 400)
 
 
 async def test_get_non_existant(jp_fetch, labserverapp):

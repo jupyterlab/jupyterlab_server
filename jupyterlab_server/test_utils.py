@@ -1,12 +1,10 @@
 import json
 import os
 import sys
-from contextlib import contextmanager
 from http.cookies import SimpleCookie
 from pathlib import Path
 from urllib.parse import parse_qs, urlparse
 
-import requests
 import tornado
 from openapi_core.validation.request.datatypes import OpenAPIRequest, RequestParameters
 from openapi_core.validation.request.validators import RequestValidator
@@ -150,16 +148,3 @@ def expected_http_error(error, expected_code, expected_message=None):
         return True
 
     return False
-
-
-@contextmanager
-def assert_http_error(status, msg=None):
-    try:
-        yield
-    except requests.HTTPError as e:
-        real_status = e.response.status_code
-        assert real_status == status, "Expected status %d, got %d" % (status, real_status)
-        if msg:
-            assert msg in str(e), e
-    else:
-        raise AssertionError("Expected HTTP error status")
