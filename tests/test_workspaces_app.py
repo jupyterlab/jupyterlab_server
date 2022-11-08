@@ -64,3 +64,6 @@ def test_workspace_apps(jp_environ, tmp_path):
     app = WorkspaceListApp(workspaces_dir=str(tmp_path))
     app.initialize()
     app.start()
+
+    app.jsonlines = True
+    app.start()

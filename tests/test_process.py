@@ -1,7 +1,9 @@
 import sys
 
+import pytest
+
 from jupyterlab_server.process import Process, WatchHelper, which
-from jupyterlab_server.process_app import ProcessApp
+from jupyterlab_server.process_app import IOLoop, ProcessApp
 
 
 def test_which():
@@ -26,4 +28,11 @@ async def test_watch_helper():
 
 
 def test_process_app():
-    _ = ProcessApp()
+    class TestApp(ProcessApp):
+        name = "tests"
+
+    app = TestApp()
+    app.initialize_server([])
+    app.initialize()
+    with pytest.raises(SystemExit):
+        app.start()
