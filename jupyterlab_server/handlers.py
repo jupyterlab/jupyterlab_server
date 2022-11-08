@@ -15,7 +15,6 @@ from tornado import template, web
 
 from .config import LabConfig, get_page_config, recursive_update
 from .licenses_handler import LicensesHandler, LicensesManager
-from .listings_handler import ListingsHandler, fetch_listings
 from .server import FileFindHandler, JupyterHandler
 from .server import url_path_join as ujoin
 from .settings_handler import SettingsHandler
@@ -248,49 +247,6 @@ def add_handlers(handlers, extension_app):
         # Handle requests for an individually named workspace.
         workspace_api_path = ujoin(extension_app.workspaces_api_url, "(?P<space_name>.+)")
         handlers.append((workspace_api_path, WorkspacesHandler, workspaces_config))
-
-    # Handle local listings.
-
-    settings_config = extension_app.settings.get("config", {}).get("LabServerApp", {})
-    blocked_extensions_uris = settings_config.get("blocked_extensions_uris", "")
-    allowed_extensions_uris = settings_config.get("allowed_extensions_uris", "")
-
-    if (blocked_extensions_uris) and (allowed_extensions_uris):
-        warnings.warn(
-            "Simultaneous blocked_extensions_uris and allowed_extensions_uris is not supported. Please define only one of those."
-        )
-        import sys
-
-        sys.exit(-1)
-
-    ListingsHandler.listings_refresh_seconds = settings_config.get(
-        "listings_refresh_seconds", 60 * 60
-    )
-    ListingsHandler.listings_request_opts = settings_config.get("listings_request_options", {})
-    listings_url = ujoin(extension_app.listings_url)
-    listings_path = ujoin(listings_url, "(.*)")
-
-    if blocked_extensions_uris:
-        ListingsHandler.blocked_extensions_uris = set(blocked_extensions_uris.split(","))
-    if allowed_extensions_uris:
-        ListingsHandler.allowed_extensions_uris = set(allowed_extensions_uris.split(","))
-
-    fetch_listings(None)
-
-    if (
-        len(ListingsHandler.blocked_extensions_uris) > 0
-        or len(ListingsHandler.allowed_extensions_uris) > 0
-    ):
-        from tornado import ioloop
-
-        ListingsHandler.pc = ioloop.PeriodicCallback(
-            lambda: fetch_listings(None),
-            callback_time=ListingsHandler.listings_refresh_seconds * 1000,
-            jitter=0.1,
-        )
-        ListingsHandler.pc.start()
-
-    handlers.append((listings_path, ListingsHandler, {}))
 
     # Handle local themes.
     if extension_app.themes_dir:

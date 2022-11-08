@@ -29,33 +29,19 @@ class LabServerApp(ExtensionAppJinjaMixin, LabConfig, ExtensionApp):
 
     app_version = Unicode("", help="The version of the application.").tag(default=__version__)
 
-    blacklist_uris = Unicode(
-        "", config=True, help="Deprecated, use `LabServerApp.blocked_extensions_uris`"
-    )
-
     blocked_extensions_uris = Unicode(
         "",
         config=True,
         help="""
         A list of comma-separated URIs to get the blocked extensions list
-
-        .. versionchanged:: 2.0.0
-            `LabServerApp.blacklist_uris` renamed to `blocked_extensions_uris`
         """,
-    )
-
-    whitelist_uris = Unicode(
-        "", config=True, help="Deprecated, use `LabServerApp.allowed_extensions_uris`"
     )
 
     allowed_extensions_uris = Unicode(
         "",
         config=True,
         help="""
-        "A list of comma-separated URIs to get the allowed extensions list
-
-        .. versionchanged:: 2.0.0
-            `LabServerApp.whitetlist_uris` renamed to `allowed_extensions_uris`
+        A list of comma-separated URIs to get the allowed extensions list
         """,
     )
 
@@ -63,39 +49,12 @@ class LabServerApp(ExtensionAppJinjaMixin, LabConfig, ExtensionApp):
         60 * 60, config=True, help="The interval delay in seconds to refresh the lists"
     )
 
-    listings_request_options = Dict(
+    listings_tornado_options = Dict(
         {},
         config=True,
         help="The optional kwargs to use for the listings HTTP requests \
-            as described on https://2.python-requests.org/en/v2.7.0/api/#requests.request",
+            as described on https://www.tornadoweb.org/en/stable/httpclient.html#tornado.httpclient.HTTPRequest",
     )
-
-    _deprecated_aliases = {
-        "blacklist_uris": ("blocked_extensions_uris", "1.2"),
-        "whitelist_uris": ("allowed_extensions_uris", "1.2"),
-    }
-
-    # Method copied from
-    # https://github.com/jupyterhub/jupyterhub/blob/d1a85e53dccfc7b1dd81b0c1985d158cc6b61820/jupyterhub/auth.py#L143-L161
-    @observe(*list(_deprecated_aliases))
-    def _deprecated_trait(self, change):
-        """observer for deprecated traits"""
-        old_attr = change.name
-        new_attr, version = self._deprecated_aliases.get(old_attr)
-        new_value = getattr(self, new_attr)
-        if new_value != change.new:
-            # only warn if different
-            # protects backward-compatible config from warnings
-            # if they set the same value under both names
-            self.log.warning(
-                "{cls}.{old} is deprecated in JupyterLab {version}, use {cls}.{new} instead".format(
-                    cls=self.__class__.__name__,
-                    old=old_attr,
-                    new=new_attr,
-                    version=version,
-                )
-            )
-            setattr(self, new_attr, change.new)
 
     def initialize_templates(self):
         self.static_paths = [self.static_dir]
