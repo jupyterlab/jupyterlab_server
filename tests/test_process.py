@@ -3,7 +3,7 @@ import sys
 import pytest
 
 from jupyterlab_server.process import Process, WatchHelper, which
-from jupyterlab_server.process_app import IOLoop, ProcessApp
+from jupyterlab_server.process_app import ProcessApp
 
 
 def test_which():
@@ -33,6 +33,8 @@ def test_process_app():
 
     app = TestApp()
     app.initialize_server([])
+    if hasattr(app, "link_to_serverapp"):
+        app.link_to_serverapp()
     app.initialize()
     with pytest.raises(SystemExit):
         app.start()

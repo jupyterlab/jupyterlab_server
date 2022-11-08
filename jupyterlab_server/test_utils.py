@@ -1,12 +1,10 @@
 import json
 import os
 import sys
-from contextlib import contextmanager
 from http.cookies import SimpleCookie
 from pathlib import Path
 from urllib.parse import parse_qs, urlparse
 
-import requests
 import tornado
 from openapi_core.validation.request.datatypes import OpenAPIRequest, RequestParameters
 from openapi_core.validation.request.validators import RequestValidator
