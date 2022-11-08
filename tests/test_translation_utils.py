@@ -1,3 +1,5 @@
+import sys
+
 from jupyterlab_server.translation_utils import (
     TranslationBundle,
     _main,
@@ -8,7 +10,9 @@ from jupyterlab_server.translation_utils import (
 
 
 def test_transutils_main():
+    sys.argv = ["", "get_language_packs"]
     _main()
+    sys.argv = [""]
 
 
 def test_get_installed_packages_locale(jp_environ):

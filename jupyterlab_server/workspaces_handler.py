@@ -182,7 +182,7 @@ class WorkspacesHandler(ExtensionHandlerMixin, ExtensionHandlerJinjaMixin, APIHa
             return self.set_status(204)
         except FileNotFoundError as e:
             raise web.HTTPError(404, str(e)) from e
-        except Exception as e:
+        except Exception as e:  # pragma: no cover
             raise web.HTTPError(500, str(e)) from e
 
     @web.authenticated
@@ -201,7 +201,7 @@ class WorkspacesHandler(ExtensionHandlerMixin, ExtensionHandlerJinjaMixin, APIHa
 
             workspace = self.manager.load(space_name)
             return self.finish(json.dumps(workspace))
-        except Exception as e:
+        except Exception as e:  # pragma: no cover
             raise web.HTTPError(500, str(e)) from e
 
     @web.authenticated
@@ -217,7 +217,7 @@ class WorkspacesHandler(ExtensionHandlerMixin, ExtensionHandlerJinjaMixin, APIHa
             self.manager.save(space_name, raw)
         except ValueError as e:
             raise web.HTTPError(400, str(e)) from e
-        except Exception as e:
+        except Exception as e:  # pragma: no cover
             raise web.HTTPError(500, str(e)) from e
 
         self.set_status(204)

@@ -17,9 +17,9 @@ import babel
 from packaging.version import parse as parse_version
 
 # See compatibility note on `group` keyword in https://docs.python.org/3/library/importlib.metadata.html#entry-points
-if sys.version_info < (3, 10):
+if sys.version_info < (3, 10):  # pragma: no cover
     from importlib_metadata import entry_points
-else:
+else:  # pragma: no cover
     from importlib.metadata import entry_points
 
 # Entry points
@@ -94,7 +94,7 @@ def _get_installed_language_pack_locales():
     for entry_point in entry_points(group=JUPYTERLAB_LANGUAGEPACK_ENTRY):
         try:
             data[entry_point.name] = os.path.dirname(entry_point.load().__file__)
-        except Exception:
+        except Exception:  # pragma: no cover
             messages.append(traceback.format_exc())
 
     message = "\n".join(messages)
@@ -139,7 +139,6 @@ def _main():
     if len(sys.argv) == 2:
         func_name = sys.argv[-1]
         func = globals().get(func_name, None)
-
         if func:
             try:
                 data, message = func()
