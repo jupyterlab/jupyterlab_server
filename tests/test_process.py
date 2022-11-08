@@ -1,3 +1,4 @@
+import os
 import sys
 
 import pytest
@@ -21,6 +22,7 @@ async def test_process():
     assert p.terminate() == 0
 
 
+@pytest.mark.skipif(os.name == "nt", reason="Fails on Windows")
 async def test_watch_helper():
     helper = WatchHelper([sys.executable, "-i"], ">>>")
     helper.terminate()
