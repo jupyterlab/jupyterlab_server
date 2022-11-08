@@ -150,16 +150,3 @@ def expected_http_error(error, expected_code, expected_message=None):
         return True
 
     return False
-
-
-@contextmanager
-def assert_http_error(status, msg=None):
-    try:
-        yield
-    except requests.HTTPError as e:
-        real_status = e.response.status_code
-        assert real_status == status, "Expected status %d, got %d" % (status, real_status)
-        if msg:
-            assert msg in str(e), e
-    else:
-        raise AssertionError("Expected HTTP error status")
