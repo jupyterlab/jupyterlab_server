@@ -38,10 +38,9 @@ def test_process_app():
     app.initialize_server([])
     try:
         app.initialize()
+        with pytest.raises(SystemExit):
+            app.start()
     # Kandle exception on older versions of server.
     except Exception as e:
         # Convert to warning so the test will pass on min version test.
         warnings.warn(str(e))
-
-    with pytest.raises(SystemExit):
-        app.start()
