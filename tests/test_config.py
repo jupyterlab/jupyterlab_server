@@ -20,3 +20,8 @@ def test_get_page_config(tmp_path):
         json.dump(data, fid)
 
     config = get_page_config(labext_path, settings_path)
+    assert config == {
+        "deferredExtensions": ["foo"],
+        "federated_extensions": [],
+        "disabledExtensions": ["bar"],
+    }
