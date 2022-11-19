@@ -15,21 +15,18 @@ jobs:
   test:
     name: ${{ matrix.os }} ${{ matrix.python-version }}
     runs-on: ${{ matrix.os }}
-    env:
-      CI: True
-      CODECOV_TOKEN: e025254a-fe54-4914-8890-0c26e7aa0d07
     strategy:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
-        python-version: ["3.7", "3.10"]
+        python-version: ["3.7", "3.11"]
         include:
           - os: windows-latest
             python-version: "3.9"
           - os: ubuntu-latest
-            python-version: "pypy-3.7"
+            python-version: "pypy-3.8"
           - os: ubuntu-latest
-            python-version: "3.11"
+            python-version: "3.10"
           - os: macos-latest
             python-version: "3.8"
     steps:
@@ -37,17 +34,8 @@ jobs:
         uses: actions/checkout@v3
       - name: Base Setup
         uses: jupyterlab/maintainer-tools/.github/actions/base-setup@v1
-      - name: Install project dependencies
-        run: |
-          pip install -e ".[test]"
       - name: Run the tests
-        if: ${{ !startsWith(matrix.python-version, 'pypy') && !startsWith(matrix.os, 'windows') }}
-        run: |
-          hatch run cov:test || hatch run test:test --lf
-      - name: Run the tests on pypy and windows
-        if: ${{ startsWith(matrix.python-version, 'pypy') || startsWith(matrix.os, 'windows') }}
-        run: |
-          hatch run test:test || hatch run test:test --lf
+        run: hatch run cov:test
       - name: Upload coverage
         run: |
           pip install codecov
@@ -84,39 +72,35 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
 
-  test_miniumum_verisons:
+  test_minimum_versions:
     name: Test Minimum Versions
     timeout-minutes: 20
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - name: Base Setup
-        uses: jupyterlab/maintainer-tools/.github/actions/base-setup@v1
+      - uses: jupyterlab/maintainer-tools/.github/actions/base-setup@v1
         with:
-          python_version: "3.7"
-      - name: Install miniumum versions
-        uses: jupyterlab/maintainer-tools/.github/actions/install-minimums@v1
+          python_version: "3.8"
+      - uses: jupyterlab/maintainer-tools/.github/actions/install-minimums@v1
+        with:
+          only_create_file: 1
       - name: Run the unit tests
-        run: pytest -vv -W default || pytest -vv -W default --lf
-
+        run: |
+          export PIP_CONSTRAINT="./contraints_file.txt"
+          hatch run test:nowarn || hatch run test:nowarn --lf
   test_prereleases:
     name: Test Prereleases
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-      - name: Base Setup
-        uses: jupyterlab/maintainer-tools/.github/actions/base-setup@v1
-      - name: Install the Python dependencies
-        run: |
-          pip install --pre -e ".[test]"
-      - name: List installed packages
-        run: |
-          pip freeze
-          pip check
+      - uses: actions/checkout@v3
+      - uses: jupyterlab/maintainer-tools/.github/actions/base-setup@v1
+        with:
+          python_version: "3.11"
       - name: Run the tests
-        run: pytest -W default || pytest -W default --lf
+        run: |
+          export PIP_PRE=1
+          hatch run test:nowarn || hatch run test:nowarn --lf
 
   make_sdist:
     name: Make SDist
