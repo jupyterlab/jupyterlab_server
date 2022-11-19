@@ -56,7 +56,7 @@ async def test_delete(jp_fetch, labserverapp):
         assert expected_http_error(e, 400)
 
 
-@pytest.amrk.skipif(
+@pytest.mark.skipif(
     sys.implementation.name.lower() == "pypy", reason="socket is not properly closed on pypy"
 )
 async def test_get_non_existant(jp_fetch, labserverapp):
