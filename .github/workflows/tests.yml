@@ -72,7 +72,7 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
 
-  test_minimum_versions:
+  test_miniumum_versions:
     name: Test Minimum Versions
     timeout-minutes: 20
     runs-on: ubuntu-latest
@@ -88,6 +88,7 @@ jobs:
         run: |
           export PIP_CONSTRAINT="./contraints_file.txt"
           hatch run test:nowarn || hatch run test:nowarn --lf
+
   test_prereleases:
     name: Test Prereleases
     runs-on: ubuntu-latest
