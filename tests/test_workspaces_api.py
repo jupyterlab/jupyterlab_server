@@ -1,7 +1,6 @@
 """Test the kernels service API."""
 import json
 import os
-import sys
 
 import pytest
 import tornado
