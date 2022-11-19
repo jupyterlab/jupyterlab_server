@@ -142,7 +142,7 @@ jobs:
       - check_links
       - docs
       - check_release
-      - test_miniumum_verisons
+      - test_miniumum_versions
       - test_prereleases
       - test_sdist
     runs-on: ubuntu-latest
