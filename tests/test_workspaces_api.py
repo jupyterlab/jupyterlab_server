@@ -1,6 +1,7 @@
 """Test the kernels service API."""
 import json
 import os
+import sys
 
 import pytest
 import tornado
@@ -55,6 +56,9 @@ async def test_delete(jp_fetch, labserverapp):
         assert expected_http_error(e, 400)
 
 
+@pytest.amrk.skipif(
+    sys.implementation.name.lower() == "pypy", reason="socket is not properly closed on pypy"
+)
 async def test_get_non_existant(jp_fetch, labserverapp):
     id = "foo"
 
