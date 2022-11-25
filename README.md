@@ -1,6 +1,6 @@
 # jupyterlab server
 
-[![Coverage](https://codecov.io/gh/jupyterlab/jupyterlab_server/branch/master/graph/badge.svg)](https://codecov.io/gh/jupyterlab/jupyterlab_server)
+[![codecov](https://codecov.io/gh/jupyterlab/jupyterlab_server/branch/main/graph/badge.svg?token=4fjcFj91Le)](https://codecov.io/gh/jupyterlab/jupyterlab_server)
 [![Build Status](https://github.com/jupyterlab/jupyterlab_server/workflows/Tests/badge.svg?branch=master)](https://github.com/jupyterlab/jupyterlab_server/actions?query=branch%3Amaster+workflow%3A%22Tests%22)
 [![Documentation Status](https://readthedocs.org/projects/jupyterlab_server/badge/?version=stable)](http://jupyterlab_server.readthedocs.io/en/stable/)
 
