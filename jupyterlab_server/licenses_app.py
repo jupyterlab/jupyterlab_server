@@ -85,5 +85,5 @@ class LicensesApp(JupyterApp, LabConfig):
             full_text=self.full_text,
             bundles_pattern=self.bundles_pattern,
         )[0]
-        self.log.info(str(report))
+        print(report)  # noqa
         self.exit(0)
