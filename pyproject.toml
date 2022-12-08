@@ -71,7 +71,7 @@ test = [
   "jupyter_server[test]",
   # openapi_core 0.15.0 alpha is not working
   "openapi_core~=0.14.2",
-  "openapi-spec-validator<0.5",
+  "openapi-spec-validator<0.6",
   "requests_mock",
   "pytest>=7.0",
   "pytest-console-scripts",
