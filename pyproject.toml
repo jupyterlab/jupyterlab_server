@@ -21,6 +21,7 @@ classifiers = [
   "Programming Language :: Python :: 3.8",
   "Programming Language :: Python :: 3.9",
   "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
   "Typing :: Typed"]
 requires-python = ">=3.7"
 dependencies = [
@@ -68,7 +69,7 @@ openapi = [
 test = [
   "codecov",
   "ipykernel",
-  "jupyter_server[test]",
+  "pytest-jupyter[server]>=0.6",
   # openapi_core 0.15.0 alpha is not working
   "openapi_core~=0.14.2",
   "openapi-spec-validator<0.6",
