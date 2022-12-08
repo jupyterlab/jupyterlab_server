@@ -1,11 +1,11 @@
 from jupyter_server import _tz as tz  # noqa
-from jupyter_server.base.handlers import (  # noqa
+from jupyter_server.base.handlers import (
     APIHandler,
     FileFindHandler,
     JupyterHandler,
     json_errors,
 )
-from jupyter_server.extension.serverextension import (  # noqa
+from jupyter_server.extension.serverextension import (
     GREEN_ENABLED,
     GREEN_OK,
     RED_DISABLED,

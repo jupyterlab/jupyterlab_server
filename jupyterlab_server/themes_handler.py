@@ -23,7 +23,7 @@ class ThemesHandler(FileFindHandler):
         no_cache_paths=None,
         themes_url=None,
         labextensions_path=None,
-        **kwargs
+        **kwargs,
     ):
 
         # Get all of the available theme paths in order
@@ -58,6 +58,7 @@ class ThemesHandler(FileFindHandler):
 
     def get_content_size(self):
         """Retrieve the total size of the resource at the given path."""
+        assert self.absolute_path is not None  # noqa
         base, ext = osp.splitext(self.absolute_path)
         if ext != ".css":
             return FileFindHandler.get_content_size(self)
@@ -66,6 +67,7 @@ class ThemesHandler(FileFindHandler):
 
     def _get_css(self):
         """Get the mangled css file contents."""
+        assert self.absolute_path is not None  # noqa
         with open(self.absolute_path, "rb") as fid:
             data = fid.read().decode("utf-8")
 

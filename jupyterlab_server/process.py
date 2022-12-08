@@ -20,7 +20,7 @@ from tornado import gen
 try:
     import pty
 except ImportError:
-    pty = False
+    pty = False  # type:ignore
 
 if sys.platform == "win32":
     list2cmdline = subprocess.list2cmdline
@@ -62,7 +62,7 @@ def which(command, env=None):
 class Process:
     """A wrapper for a child process."""
 
-    _procs = weakref.WeakSet()
+    _procs: weakref.WeakSet = weakref.WeakSet()
     _pool = None
 
     def __init__(self, cmd, logger=None, cwd=None, kill_event=None, env=None, quiet=False):
@@ -117,7 +117,7 @@ class Process:
             proc.wait(timeout=2.0)
         except subprocess.TimeoutExpired:
             if os.name == "nt":
-                sig = signal.SIGBREAK
+                sig = signal.SIGBREAK  # type:ignore
             else:
                 sig = signal.SIGKILL
 
@@ -161,7 +161,7 @@ class Process:
 
     def _create_process(self, **kwargs):
         """Create the process."""
-        cmd = self.cmd
+        cmd = list(self.cmd)
         kwargs.setdefault("stderr", subprocess.STDOUT)
 
         cmd[0] = which(cmd[0], kwargs.get("env"))
@@ -217,7 +217,7 @@ class WatchHelper(Process):
             line = self._stdout.readline().decode("utf-8")
             if not line:
                 raise RuntimeError("Process ended improperly")
-            print(line.rstrip())
+            self.logger.info(line.rstrip())
             if re.match(startup_regex, line):
                 break
 
@@ -257,7 +257,7 @@ class WatchHelper(Process):
             if not buf:
                 return
 
-            print(buf.decode("utf-8"), end="")
+            self.logger.info(buf.decode("utf-8"), end="")
 
     def _create_process(self, **kwargs):
         """Create the watcher helper process."""
@@ -272,10 +272,10 @@ class WatchHelper(Process):
             kwargs["stdout"] = subprocess.PIPE
 
             if os.name == "nt":
-                startupinfo = subprocess.STARTUPINFO()
-                startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
+                startupinfo = subprocess.STARTUPINFO()  # type:ignore
+                startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW  # type:ignore
                 kwargs["startupinfo"] = startupinfo
-                kwargs["creationflags"] = subprocess.CREATE_NEW_PROCESS_GROUP
+                kwargs["creationflags"] = subprocess.CREATE_NEW_PROCESS_GROUP  # type:ignore
                 kwargs["shell"] = True
 
         return super()._create_process(**kwargs)

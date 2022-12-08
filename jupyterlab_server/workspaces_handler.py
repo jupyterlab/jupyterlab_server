@@ -9,10 +9,7 @@ import unicodedata
 import urllib
 from pathlib import Path
 
-from jupyter_server.extension.handler import (
-    ExtensionHandlerJinjaMixin,
-    ExtensionHandlerMixin,
-)
+from jupyter_server.extension.handler import ExtensionHandlerJinjaMixin, ExtensionHandlerMixin
 from tornado import web
 from traitlets.config import LoggingConfigurable
 
@@ -28,7 +25,7 @@ def _list_workspaces(directory: Path, prefix: str) -> list:
     Return the list of workspaces in a given directory beginning with the
     given prefix.
     """
-    workspaces = []
+    workspaces: list = []
     if not directory.exists():
         return workspaces
 
@@ -60,7 +57,7 @@ def _load_with_file_times(workspace_path: Path) -> dict:
             last_modified=tz.utcfromtimestamp(stat.st_mtime).isoformat(),
             created=tz.utcfromtimestamp(stat.st_ctime).isoformat(),
         )
-    return workspace
+    return workspace  # type:ignore
 
 
 def slugify(raw, base="", sign=True, max_length=128 - len(WORKSPACE_EXTENSION)):  # noqa
@@ -128,10 +125,10 @@ class WorkspacesManager(LoggingConfigurable):
             # to load and parse the workspace file.
             return _load_with_file_times(workspace_path)
         else:
-            id = space_name if space_name.startswith("/") else "/" + space_name
-            return dict(data=dict(), metadata=dict(id=id))
+            _id = space_name if space_name.startswith("/") else "/" + space_name
+            return dict(data=dict(), metadata=dict(id=_id))
 
-    def save(self, space_name, raw) -> Path:
+    def save(self, space_name: str, raw: str) -> Path:
         """Save the ``raw`` data as workspace ``space_name``."""
         if not self.workspaces_dir.exists():
             self.workspaces_dir.mkdir(parents=True)
@@ -163,11 +160,11 @@ class WorkspacesManager(LoggingConfigurable):
         # Write the workspace data to a file.
         workspace_path.write_text(raw, encoding="utf-8")
 
-        return workspace_path
+        return workspace_path  # type:ignore
 
 
 class WorkspacesHandler(ExtensionHandlerMixin, ExtensionHandlerJinjaMixin, APIHandler):
-    def initialize(self, name, manager: WorkspacesManager, **kwargs):
+    def initialize(self, name, manager: WorkspacesManager, **kwargs) -> None:  # type:ignore
         super().initialize(name)
         self.manager = manager
 

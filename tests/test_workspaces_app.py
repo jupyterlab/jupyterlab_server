@@ -54,16 +54,16 @@ def test_workspace_apps(jp_environ, tmp_path):
 
     app = WorkspaceImportApp(workspaces_dir=str(tmp_path))
     app.initialize()
-    app.extra_args = data_file
+    app.extra_args = [data_file]
     app.start()
 
-    app = WorkspaceExportApp(workspaces_dir=str(tmp_path))
-    app.initialize()
-    app.start()
+    app1 = WorkspaceExportApp(workspaces_dir=str(tmp_path))
+    app1.initialize()
+    app1.start()
 
-    app = WorkspaceListApp(workspaces_dir=str(tmp_path))
-    app.initialize()
-    app.start()
+    app2 = WorkspaceListApp(workspaces_dir=str(tmp_path))
+    app2.initialize()
+    app2.start()
 
-    app.jsonlines = True
-    app.start()
+    app2.jsonlines = True
+    app2.start()

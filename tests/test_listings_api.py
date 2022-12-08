@@ -13,13 +13,13 @@ async def test_get_listing(jp_fetch, labserverapp):
 
 
 def test_fetch_listings():
-    ListingsHandler.allowed_extensions_uris = ["http://foo"]
-    ListingsHandler.blocked_extensions_uris = ["http://bar"]
+    ListingsHandler.allowed_extensions_uris = ["http://foo"]  # type:ignore
+    ListingsHandler.blocked_extensions_uris = ["http://bar"]  # type:ignore
     with requests_mock.Mocker() as m:
-        data = dict(blocked_extensions=[])
+        data = dict(blocked_extensions=[])  # type:ignore
         m.get("http://bar", text=json.dumps(data))
         data = dict(allowed_extensions=[])
         m.get("http://foo", text=json.dumps(data))
         fetch_listings(None)
-    ListingsHandler.allowed_extensions_uris = []
-    ListingsHandler.blocked_extensions_uris = []
+    ListingsHandler.allowed_extensions_uris = []  # type:ignore
+    ListingsHandler.blocked_extensions_uris = []  # type:ignore

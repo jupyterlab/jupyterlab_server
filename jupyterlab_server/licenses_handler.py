@@ -50,7 +50,7 @@ class LicensesManager(LoggingConfigurable):
         This is expensive, but probably the only way to be sure to get
         up-to-date license information for extensions installed interactively.
         """
-        labextensions_path = sum(
+        labextensions_path: list = sum(
             [
                 self.parent.labextensions_path,
                 self.parent.extra_labextensions_path,
@@ -156,7 +156,7 @@ class LicensesManager(LoggingConfigurable):
 
     def license_bundle(self, path, bundle):
         """Return the content of a packages's license bundles"""
-        bundle_json = {"packages": []}
+        bundle_json: dict = {"packages": []}
         checked_paths = []
 
         for license_file in self.third_party_licenses_files:
@@ -233,7 +233,7 @@ class LicensesManager(LoggingConfigurable):
 class LicensesHandler(APIHandler):
     """A handler for serving licenses used by the application"""
 
-    def initialize(self, manager: LicensesManager):
+    def initialize(self, manager: LicensesManager) -> None:
         super().initialize()
         self.manager = manager
 

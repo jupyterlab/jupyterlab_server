@@ -12,12 +12,7 @@ import tornado
 from tornado import gen
 
 from .settings_utils import SchemaHandler
-from .translation_utils import (
-    get_language_pack,
-    get_language_packs,
-    is_valid_locale,
-    translator,
-)
+from .translation_utils import get_language_pack, get_language_packs, is_valid_locale, translator
 
 
 class TranslationsHandler(SchemaHandler):
@@ -33,6 +28,7 @@ class TranslationsHandler(SchemaHandler):
             If no locale is provided, it will list all the installed language packs.
             Default is `""`.
         """
+        data: dict
         data, message = {}, ""
         try:
             if locale == "":

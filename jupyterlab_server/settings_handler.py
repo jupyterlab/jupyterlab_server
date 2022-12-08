@@ -5,10 +5,7 @@
 import json
 
 from jsonschema import ValidationError
-from jupyter_server.extension.handler import (
-    ExtensionHandlerJinjaMixin,
-    ExtensionHandlerMixin,
-)
+from jupyter_server.extension.handler import ExtensionHandlerJinjaMixin, ExtensionHandlerMixin
 from tornado import web
 
 from .settings_utils import SchemaHandler, get_settings, save_settings
@@ -77,10 +74,10 @@ class SettingsHandler(ExtensionHandlerMixin, ExtensionHandlerJinjaMixin, SchemaH
                 self.labextensions_path,
             )
         except json.decoder.JSONDecodeError as e:
-            raise web.HTTPError(400, invalid_json_error % str(e))
+            raise web.HTTPError(400, invalid_json_error % str(e)) from None
         except (KeyError, TypeError):
-            raise web.HTTPError(400, invalid_payload_format_error)
+            raise web.HTTPError(400, invalid_payload_format_error) from None
         except ValidationError as e:
-            raise web.HTTPError(400, validation_error % str(e))
+            raise web.HTTPError(400, validation_error % str(e)) from None
 
         self.set_status(204)

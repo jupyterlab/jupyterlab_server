@@ -114,9 +114,9 @@ def make_labserver_extension_app(
     shutil.copyfile(src, dst)
 
     # Copy workspaces.
-    data = pjoin(HERE, "test_data", "workspaces")
-    for item in os.listdir(data):
-        src = pjoin(data, item)
+    ws_path = pjoin(HERE, "test_data", "workspaces")
+    for item in os.listdir(ws_path):
+        src = pjoin(ws_path, item)
         dst = pjoin(str(workspaces_dir), item)
         if os.path.exists(dst):
             os.remove(dst)

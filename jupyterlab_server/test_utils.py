@@ -5,11 +5,15 @@ from http.cookies import SimpleCookie
 from pathlib import Path
 from urllib.parse import parse_qs, urlparse
 
-import tornado
-from openapi_core.validation.request.datatypes import OpenAPIRequest, RequestParameters
-from openapi_core.validation.request.validators import RequestValidator
-from openapi_core.validation.response.datatypes import OpenAPIResponse
-from openapi_core.validation.response.validators import ResponseValidator
+import tornado.httpclient
+import tornado.web
+from openapi_core.validation.request.datatypes import (  # type:ignore
+    OpenAPIRequest,
+    RequestParameters,
+)
+from openapi_core.validation.request.validators import RequestValidator  # type:ignore
+from openapi_core.validation.response.datatypes import OpenAPIResponse  # type:ignore
+from openapi_core.validation.response.validators import ResponseValidator  # type:ignore
 
 from jupyterlab_server.spec import get_openapi_spec
 
@@ -22,7 +26,7 @@ with open(HERE / "test_data" / "app-settings" / "overrides.json", encoding="utf-
 def wrap_request(request, spec):
     """Wrap a tornado request as an open api request"""
     # Extract cookie dict from cookie header
-    cookie = SimpleCookie()
+    cookie: SimpleCookie = SimpleCookie()
     cookie.load(request.headers.get("Set-Cookie", ""))
     cookies = {}
     for key, morsel in cookie.items():
@@ -92,13 +96,11 @@ def validate_request(response):
     validator = RequestValidator(openapi_spec)
     request = wrap_request(response.request, openapi_spec)
     result = validator.validate(request)
-    print(result.errors)
     result.raise_for_errors()
 
     validator = ResponseValidator(openapi_spec)
     response = wrap_response(response)
     result = validator.validate(request, response)
-    print(result.errors)
     result.raise_for_errors()
 
 
@@ -108,10 +110,7 @@ def maybe_patch_ioloop():
         if sys.version_info >= (3, 8):
 
             try:
-                from asyncio import (
-                    WindowsProactorEventLoopPolicy,
-                    WindowsSelectorEventLoopPolicy,
-                )
+                from asyncio import WindowsProactorEventLoopPolicy, WindowsSelectorEventLoopPolicy
             except ImportError:
                 pass
                 # not affected
