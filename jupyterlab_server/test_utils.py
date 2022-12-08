@@ -7,9 +7,10 @@ from urllib.parse import parse_qs, urlparse
 
 import tornado.httpclient
 import tornado.web
-from openapi_core.validation.request.datatypes import OpenAPIRequest, RequestParameters
-
-# type:ignore
+from openapi_core.validation.request.datatypes import (
+    OpenAPIRequest,
+    RequestParameters,  # type:ignore
+)
 from openapi_core.validation.request.validators import RequestValidator  # type:ignore
 from openapi_core.validation.response.datatypes import OpenAPIResponse  # type:ignore
 from openapi_core.validation.response.validators import ResponseValidator  # type:ignore
