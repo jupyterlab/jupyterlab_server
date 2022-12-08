@@ -52,7 +52,7 @@ Tracker = "https://github.com/jupyterlab/jupyterlab_server/issues"
 [project.optional-dependencies]
 docs = [
   "autodoc-traits",
-  "docutils<0.19",
+  "docutils<0.20",
   "pydata_sphinx_theme",
   "sphinx",
   "sphinx-copybutton",
