@@ -3,8 +3,8 @@ import json
 import os
 
 import pytest
-import tornado
-from strict_rfc3339 import rfc3339_to_timestamp
+import tornado.httpclient
+from strict_rfc3339 import rfc3339_to_timestamp  # type:ignore
 
 from jupyterlab_server.test_utils import (
     big_unicode_string,
@@ -118,7 +118,7 @@ async def test_listing_dates(jp_fetch, labserverapp):
     r = await jp_fetch("lab", "api", "workspaces")
     data = json.loads(r.body.decode())
     values = data["workspaces"]["values"]
-    times = sum(
+    times: list = sum(
         ([ws["metadata"].get("last_modified"), ws["metadata"].get("created")] for ws in values), []
     )
     assert None not in times

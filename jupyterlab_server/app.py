@@ -16,7 +16,7 @@ class LabServerApp(ExtensionAppJinjaMixin, LabConfig, ExtensionApp):
     name = "jupyterlab_server"
     extension_url = "/lab"
     app_name = "JupyterLab Server Application"
-    file_url_prefix = "/lab/tree"
+    file_url_prefix = "/lab/tree"  # type:ignore
 
     @property
     def app_namespace(self):
@@ -81,7 +81,7 @@ class LabServerApp(ExtensionAppJinjaMixin, LabConfig, ExtensionApp):
     def _deprecated_trait(self, change):
         """observer for deprecated traits"""
         old_attr = change.name
-        new_attr, version = self._deprecated_aliases.get(old_attr)
+        new_attr, version = self._deprecated_aliases.get(old_attr)  # type:ignore
         new_value = getattr(self, new_attr)
         if new_value != change.new:
             # only warn if different

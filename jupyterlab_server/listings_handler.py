@@ -49,7 +49,7 @@ def fetch_listings(logger):
             for w in j["allowed_extensions"]:
                 allowed_extensions.append(w)
         ListingsHandler.allowed_extensions = allowed_extensions
-    ListingsHandler.listings = json.dumps(
+    ListingsHandler.listings = json.dumps(  # type:ignore
         {
             "blocked_extensions_uris": list(ListingsHandler.blocked_extensions_uris),
             "allowed_extensions_uris": list(ListingsHandler.allowed_extensions_uris),
@@ -70,15 +70,15 @@ class ListingsHandler(APIHandler):
     them.
     """
     # The list of blocked_extensions URIS.
-    blocked_extensions_uris = set()
+    blocked_extensions_uris: set = set()
     # The list of allowed_extensions URIS.
-    allowed_extensions_uris = set()
+    allowed_extensions_uris: set = set()
     # The blocked extensions extensions.
-    blocked_extensions = []
+    blocked_extensions: list = []
     # The allowed extensions extensions.
-    allowed_extensions = []
+    allowed_extensions: list = []
     # The provider request options to be used for the request library.
-    listings_request_opts = {}
+    listings_request_opts: dict = {}
     # The PeriodicCallback that schedule the call to fetch_listings method.
     pc = None
 
@@ -86,6 +86,6 @@ class ListingsHandler(APIHandler):
         """Get the listings for the extension manager."""
         self.set_header("Content-Type", "application/json")
         if path == LISTINGS_URL_SUFFIX:
-            self.write(ListingsHandler.listings)
+            self.write(ListingsHandler.listings)  # type:ignore
         else:
             raise tornado.web.HTTPError(400)

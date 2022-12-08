@@ -2,7 +2,7 @@
 """
 
 import pytest
-import tornado
+import tornado.httpclient
 
 from jupyterlab_server.test_utils import expected_http_error
 

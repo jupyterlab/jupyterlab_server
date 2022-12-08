@@ -82,7 +82,7 @@ def get_static_page_config(app_settings_dir=None, logger=None, level="all"):
 def get_page_config(labextensions_path, app_settings_dir=None, logger=None):
     """Get the page config for the application handler"""
     # Build up the full page config
-    page_config = {}
+    page_config: dict = {}
 
     disabled_key = "disabledExtensions"
 

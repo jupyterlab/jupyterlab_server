@@ -6,7 +6,7 @@ import json
 import os
 from glob import glob
 
-import json5
+import json5  # type:ignore
 from jsonschema import Draft4Validator as Validator
 from jsonschema import ValidationError
 from jupyter_server.services.config.manager import ConfigManager, recursive_update
@@ -51,7 +51,7 @@ def _get_schema(schemas_dir, schema_name, overrides, labextensions_path):
             schema = json.load(fid)
         except Exception as e:
             name = schema_name
-            raise web.HTTPError(500, parse_error % (name, str(e)))
+            raise web.HTTPError(500, parse_error % (name, str(e))) from None
 
     schema = _override(schema_name, schema, overrides)
 
@@ -60,7 +60,7 @@ def _get_schema(schemas_dir, schema_name, overrides, labextensions_path):
         Validator.check_schema(schema)
     except Exception as e:
         name = schema_name
-        raise web.HTTPError(500, validation_error % (name, str(e)))
+        raise web.HTTPError(500, validation_error % (name, str(e))) from None
 
     version = _get_version(schemas_dir, schema_name)
 
@@ -90,7 +90,7 @@ def _get_user_settings(settings_dir, schema_name, schema):
                 raw = fid.read() or raw
                 settings = json5.loads(raw)
             except Exception as e:
-                raise web.HTTPError(500, parse_error % (schema_name, str(e)))
+                raise web.HTTPError(500, parse_error % (schema_name, str(e))) from None
 
     # Validate the parsed data against the schema.
     if len(settings):
@@ -153,7 +153,7 @@ def _list_settings(
         # Generate the schema_name used to request individual settings.
         rel_path = os.path.relpath(schema_path, schemas_dir)
         rel_schema_dir, schema_base = os.path.split(rel_path)
-        id = schema_name = ":".join(
+        _id = schema_name = ":".join(
             [rel_schema_dir, schema_base[: -len(extension)]]  # Remove file extension.
         ).replace(
             "\\", "/"
@@ -167,7 +167,7 @@ def _list_settings(
             warnings.append(user_settings.pop("warning"))
 
         # Add the plugin to the list of settings.
-        settings[id] = dict(id=id, schema=schema, version=version, **user_settings)
+        settings[_id] = dict(id=_id, schema=schema, version=version, **user_settings)
 
     if labextensions_path is not None:
         schema_paths = []
@@ -184,14 +184,14 @@ def _list_settings(
 
             # Generate the schema_name used to request individual settings.
             rel_schema_dir, schema_base = os.path.split(rel_path)
-            id = schema_name = ":".join(
+            _id = schema_name = ":".join(
                 [rel_schema_dir, schema_base[: -len(extension)]]  # Remove file extension.
             ).replace(
                 "\\", "/"
             )  # Normalize slashes.
 
             # bail if we've already handled the highest federated setting
-            if id in federated_settings:
+            if _id in federated_settings:
                 continue
 
             schema, version = _get_schema(
@@ -203,7 +203,7 @@ def _list_settings(
                 warnings.append(user_settings.pop("warning"))
 
             # Add the plugin to the list of settings.
-            federated_settings[id] = dict(id=id, schema=schema, version=version, **user_settings)
+            federated_settings[_id] = dict(id=_id, schema=schema, version=version, **user_settings)
 
     settings.update(federated_settings)
     settings_list = [settings[key] for key in sorted(settings.keys(), reverse=True)]
@@ -247,13 +247,13 @@ def _path(root_dir, schema_name, make_dirs=False, extension=".json"):
         parent_dir = os.path.join(root_dir, package_dir)
         path = os.path.join(parent_dir, plugin + extension)
     except Exception:
-        raise web.HTTPError(404, notfound_error % schema_name)
+        raise web.HTTPError(404, notfound_error % schema_name) from None
 
     if make_dirs and not os.path.exists(parent_dir):
         try:
             os.makedirs(parent_dir)
         except Exception as e:
-            raise web.HTTPError(500, write_error % (schema_name, str(e)))
+            raise web.HTTPError(500, write_error % (schema_name, str(e))) from None
 
     return path
 
@@ -265,6 +265,7 @@ def _get_overrides(app_settings_dir):
     - {app_settings_dir}/overrides.d/*.{json,json5} (many, namespaced by package)
     - {app_settings_dir}/overrides.{json,json5} (singleton, owned by the user)
     """
+    overrides: dict
     overrides, error = {}, ""
 
     overrides_d = os.path.join(app_settings_dir, "overrides.d")
@@ -295,7 +296,7 @@ def _get_overrides(app_settings_dir):
                 for plugin_id, config in path_overrides.items():
                     recursive_update(overrides.setdefault(plugin_id, {}), config)
             except Exception as e:
-                error = e
+                error = e  # type:ignore
 
     # Allow `default_settings_overrides.json` files in <jupyter_config>/labconfig dirs
     # to allow layering of defaults

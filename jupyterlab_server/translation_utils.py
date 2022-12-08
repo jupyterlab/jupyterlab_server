@@ -11,7 +11,7 @@ import re
 import sys
 import traceback
 from functools import lru_cache
-from typing import Dict, Pattern, Tuple
+from typing import Any, Dict, Optional, Pattern, Tuple
 
 import babel
 from packaging.version import parse as parse_version
@@ -212,7 +212,7 @@ def get_display_name(locale: str, display_locale: str = DEFAULT_LOCALE) -> str:
     display_name = loc.get_display_name(display_locale)
     if display_name:
         display_name = display_name[0].upper() + display_name[1:]
-    return display_name
+    return display_name  # type:ignore
 
 
 def merge_locale_data(language_pack_locale_data, package_locale_data):
@@ -416,7 +416,7 @@ class TranslationBundle:
 
         self.update_locale(locale)
 
-    def update_locale(self, locale: str):
+    def update_locale(self, locale: str) -> None:
         """
         Update the locale environment variables.
 
@@ -432,6 +432,7 @@ class TranslationBundle:
             language_pack_module = f"jupyterlab_language_pack_{locale}"
             try:
                 mod = importlib.import_module(language_pack_module)
+                assert mod.__file__ is not None  # noqa
                 localedir = os.path.join(os.path.dirname(mod.__file__), LOCALE_DIR)
             except Exception:
                 # no-op
@@ -607,16 +608,16 @@ class TranslationBundle:
         return self.npgettext(msgctxt, msgid, msgid_plural, n)
 
 
-class translator:
+class translator:  # noqa
     """
     Translations manager.
     """
 
-    _TRANSLATORS = {}
+    _TRANSLATORS: dict = {}
     _LOCALE = DEFAULT_LOCALE
 
     @staticmethod
-    def _update_env(locale: str):
+    def _update_env(locale: str) -> None:
         """
         Update the locale environment variables based on the settings.
 
@@ -645,7 +646,7 @@ class translator:
         return domain.replace("-", "_")
 
     @classmethod
-    def set_locale(cls, locale: str):
+    def set_locale(cls, locale: str) -> None:
         """
         Set locale for the translation bundles based on the settings.
 
@@ -688,14 +689,14 @@ class translator:
             trans = TranslationBundle(norm_domain, cls._LOCALE)
             cls._TRANSLATORS[norm_domain] = trans
 
-        return trans
+        return trans  # type:ignore
 
     @staticmethod
     def _translate_schema_strings(
-        translations,
+        translations: Any,
         schema: dict,
         prefix: str = "",
-        to_translate: Dict[Pattern, str] = None,
+        to_translate: Optional[Dict[Pattern, str]] = None,
     ) -> None:
         """Translate a schema in-place."""
         if to_translate is None:

@@ -23,7 +23,7 @@ sys.path.insert(0, osp.join(HERE, "..", ".."))
 # -- Project information -----------------------------------------------------
 
 project = "JupyterLab Server"
-copyright = "2021, Project Jupyter"
+copyright = "2021, Project Jupyter"  # noqa
 author = "Project Jupyter"
 
 # The full version, including alpha/beta/rc tags
@@ -31,7 +31,7 @@ _version_py = osp.join(HERE, "..", "..", "jupyterlab_server", "_version.py")
 version_ns = {}
 
 with open(_version_py) as version_file:
-    exec(version_file.read(), version_ns)
+    exec(version_file.read(), version_ns)  # noqa
 
 # The short X.Y version.
 version = "%i.%i" % version_ns["version_info"][:2]
@@ -95,4 +95,4 @@ def setup(app):
     dest = osp.join(HERE, "changelog.md")
     shutil.copy(osp.join(HERE, "..", "..", "CHANGELOG.md"), dest)
     with open(osp.join(HERE, "../autogen_config.py")) as f:
-        exec(compile(f.read(), "../autogen_config.py", "exec"), {})
+        exec(compile(f.read(), "../autogen_config.py", "exec"), {})  # noqa

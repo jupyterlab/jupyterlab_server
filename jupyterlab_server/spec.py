@@ -11,7 +11,7 @@ def get_openapi_spec():
 
         create_spec = Spec.create
     except ImportError:
-        from openapi_core import create_spec
+        from openapi_core import create_spec  # type:ignore
 
     openapi_spec_dict = get_openapi_spec_dict()
     return create_spec(openapi_spec_dict)

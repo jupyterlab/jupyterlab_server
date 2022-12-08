@@ -61,12 +61,12 @@ class WorkspaceListApp(JupyterApp, LabConfig):
         workspaces = self.manager.list_workspaces()
         if self.jsonlines:
             for workspace in workspaces:
-                print(json.dumps(workspace))
+                self.log.info(json.dumps(workspace))
         elif self.json:
-            print(json.dumps(workspaces))
+            self.log.info(json.dumps(workspaces))
         else:
             for workspace in workspaces:
-                print(workspace["metadata"]["id"])
+                self.log.info(workspace["metadata"]["id"])
 
 
 class WorkspaceExportApp(JupyterApp, LabConfig):
@@ -92,9 +92,9 @@ class WorkspaceExportApp(JupyterApp, LabConfig):
         raw = DEFAULT_WORKSPACE if not self.extra_args else self.extra_args[0]
         try:
             workspace = self.manager.load(raw)
-            print(json.dumps(workspace))
+            self.log.info(json.dumps(workspace))
         except Exception:  # pragma: no cover
-            print(json.dumps(dict(data=dict(), metadata=dict(id=raw))))
+            self.log.error(json.dumps(dict(data=dict(), metadata=dict(id=raw))))
 
 
 class WorkspaceImportApp(JupyterApp, LabConfig):
@@ -125,23 +125,23 @@ class WorkspaceImportApp(JupyterApp, LabConfig):
     def start(self):
 
         if len(self.extra_args) != 1:  # pragma: no cover
-            print("One argument is required for workspace import.")
+            self.log.info("One argument is required for workspace import.")
             self.exit(1)
 
         with self._smart_open() as fid:
             try:  # to load, parse, and validate the workspace file.
                 workspace = self._validate(fid)
             except Exception as e:  # pragma: no cover
-                print(f"{fid.name} is not a valid workspace:\n{e}")
+                self.log.info(f"{fid.name} is not a valid workspace:\n{e}")
                 self.exit(1)
 
         try:
             workspace_path = self.manager.save(workspace["metadata"]["id"], json.dumps(workspace))
         except Exception as e:  # pragma: no cover
-            print(f"Workspace could not be exported:\n{e!s}")
+            self.log.info(f"Workspace could not be exported:\n{e!s}")
             self.exit(1)
 
-        print(f"Saved workspace: {workspace_path!s}")
+        self.log.info(f"Saved workspace: {workspace_path!s}")
 
     def _smart_open(self):
         file_name = self.extra_args[0]
@@ -152,7 +152,7 @@ class WorkspaceImportApp(JupyterApp, LabConfig):
             file_path = Path(file_name).resolve()
 
             if not file_path.exists():  # pragma: no cover
-                print(f"{file_name!s} does not exist.")
+                self.log.info(f"{file_name!s} does not exist.")
                 self.exit(1)
 
             return file_path.open(encoding="utf-8")

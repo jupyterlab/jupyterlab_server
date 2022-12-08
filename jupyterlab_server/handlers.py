@@ -7,10 +7,7 @@ import warnings
 from functools import lru_cache
 from urllib.parse import urlparse
 
-from jupyter_server.extension.handler import (
-    ExtensionHandlerJinjaMixin,
-    ExtensionHandlerMixin,
-)
+from jupyter_server.extension.handler import ExtensionHandlerJinjaMixin, ExtensionHandlerMixin
 from tornado import template, web
 
 from .config import LabConfig, get_page_config, recursive_update
@@ -66,7 +63,7 @@ class LabHandler(ExtensionHandlerJinjaMixin, ExtensionHandlerMixin, JupyterHandl
     @lru_cache()  # noqa
     def get_page_config(self):
         """Construct the page config object"""
-        self.application.store_id = getattr(self.application, "store_id", 0)
+        self.application.store_id = getattr(self.application, "store_id", 0)  # type:ignore
         config = LabConfig()
         app = self.extensionapp
         settings_dir = app.app_settings_dir
@@ -84,7 +81,7 @@ class LabHandler(ExtensionHandlerJinjaMixin, ExtensionHandlerMixin, JupyterHandl
         page_config.setdefault("terminalsAvailable", terminals)
         page_config.setdefault("ignorePlugins", [])
         page_config.setdefault("serverRoot", server_root)
-        page_config["store_id"] = self.application.store_id
+        page_config["store_id"] = self.application.store_id  # type:ignore
 
         server_root = os.path.normpath(os.path.expanduser(server_root))
         try:
@@ -98,7 +95,7 @@ class LabHandler(ExtensionHandlerJinjaMixin, ExtensionHandlerMixin, JupyterHandl
         except Exception:
             page_config["preferredPath"] = "/"
 
-        self.application.store_id += 1
+        self.application.store_id += 1  # type:ignore
 
         mathjax_config = self.settings.get("mathjax_config", "TeX-AMS_HTML-full,Safe")
         # TODO Remove CDN usage.
@@ -263,7 +260,7 @@ def add_handlers(handlers, extension_app):
 
         sys.exit(-1)
 
-    ListingsHandler.listings_refresh_seconds = settings_config.get(
+    ListingsHandler.listings_refresh_seconds = settings_config.get(  # type:ignore
         "listings_refresh_seconds", 60 * 60
     )
     ListingsHandler.listings_request_opts = settings_config.get("listings_request_options", {})
@@ -283,12 +280,13 @@ def add_handlers(handlers, extension_app):
     ):
         from tornado import ioloop
 
+        callback_time = (ListingsHandler.listings_refresh_seconds * 1000,)  # type:ignore
         ListingsHandler.pc = ioloop.PeriodicCallback(
-            lambda: fetch_listings(None),
-            callback_time=ListingsHandler.listings_refresh_seconds * 1000,
+            lambda: fetch_listings(None),  # type:ignore
+            callback_time=callback_time,  # type:ignore
             jitter=0.1,
         )
-        ListingsHandler.pc.start()
+        ListingsHandler.pc.start()  # type:ignore
 
     handlers.append((listings_path, ListingsHandler, {}))
 
@@ -322,7 +320,7 @@ def add_handlers(handlers, extension_app):
     handlers.append((fallthrough_url, NotFoundHandler))
 
 
-def _camelCase(base):
+def _camelCase(base):  # noqa
     """Convert a string to camelCase.
     https://stackoverflow.com/a/20744956
     """
