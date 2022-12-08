@@ -2,6 +2,22 @@
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
+## 2.16.5
+
+([Full Changelog](https://github.com/jupyterlab/jupyterlab_server/compare/v2.16.4...ee8db6a651c68fc1413935fa1d10d58a38f1ccc1))
+
+### Maintenance and upkeep improvements
+
+- Use pytest-jupyter [#351](https://github.com/jupyterlab/jupyterlab_server/pull/351) ([@blink1073](https://github.com/blink1073))
+
+### Contributors to this release
+
+([GitHub contributors page for this release](https://github.com/jupyterlab/jupyterlab_server/graphs/contributors?from=2022-12-08&to=2022-12-08&type=c))
+
+[@blink1073](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Ablink1073+updated%3A2022-12-08..2022-12-08&type=Issues)
+
+<!-- <END NEW CHANGELOG ENTRY> -->
+
 ## 2.16.4
 
 ([Full Changelog](https://github.com/jupyterlab/jupyterlab_server/compare/v2.16.3...2005945e4cbe81a1d7a52103557cefa6e1283592))
@@ -26,8 +42,6 @@
 ([GitHub contributors page for this release](https://github.com/jupyterlab/jupyterlab_server/graphs/contributors?from=2022-11-11&to=2022-12-08&type=c))
 
 [@blink1073](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Ablink1073+updated%3A2022-11-11..2022-12-08&type=Issues) | [@codecov-commenter](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Acodecov-commenter+updated%3A2022-11-11..2022-12-08&type=Issues) | [@dependabot](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Adependabot+updated%3A2022-11-11..2022-12-08&type=Issues) | [@pre-commit-ci](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Apre-commit-ci+updated%3A2022-11-11..2022-12-08&type=Issues)
-
-<!-- <END NEW CHANGELOG ENTRY> -->
 
 ## 2.16.3
 
