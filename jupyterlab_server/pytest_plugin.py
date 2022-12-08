@@ -8,7 +8,7 @@ import pytest
 
 from jupyterlab_server import LabServerApp
 
-pytest_plugins = ["jupyter_server.pytest_plugin"]
+pytest_plugins = ["pytest_jupyter.jupyter_server"]
 
 
 def mkdir(tmp_path, *parts):

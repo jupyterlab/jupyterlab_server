@@ -61,12 +61,12 @@ class WorkspaceListApp(JupyterApp, LabConfig):
         workspaces = self.manager.list_workspaces()
         if self.jsonlines:
             for workspace in workspaces:
-                self.log.info(json.dumps(workspace))
+                print(json.dumps(workspace))  # noqa
         elif self.json:
-            self.log.info(json.dumps(workspaces))
+            print(json.dumps(workspaces))  # noqa
         else:
             for workspace in workspaces:
-                self.log.info(workspace["metadata"]["id"])
+                print(workspace["metadata"]["id"])  # noqa
 
 
 class WorkspaceExportApp(JupyterApp, LabConfig):
@@ -92,7 +92,7 @@ class WorkspaceExportApp(JupyterApp, LabConfig):
         raw = DEFAULT_WORKSPACE if not self.extra_args else self.extra_args[0]
         try:
             workspace = self.manager.load(raw)
-            self.log.info(json.dumps(workspace))
+            print(json.dumps(workspace))  # noqa
         except Exception:  # pragma: no cover
             self.log.error(json.dumps(dict(data=dict(), metadata=dict(id=raw))))
 
