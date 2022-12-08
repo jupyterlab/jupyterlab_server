@@ -70,7 +70,7 @@ test = [
   "ipykernel",
   "jupyter_server[test]",
   # openapi_core 0.15.0 alpha is not working
-  "openapi_core~=0.14.2",
+  "openapi_core>=0.14.2,<0.17.0",
   "openapi-spec-validator<0.5",
   "requests_mock",
   "pytest>=7.0",
