@@ -93,6 +93,9 @@ typing = ["mypy>=0.990"]
 path = "jupyterlab_server/_version.py"
 validate-bump = false
 
+[tool.hatch.build.targets.wheel]
+exclude = ["/jupyterlab_server/test_data"]
+
 [tool.hatch.envs.docs]
 features = ["docs"]
 [tool.hatch.envs.docs.scripts]
