@@ -69,7 +69,7 @@ openapi = [
 test = [
   "codecov",
   "ipykernel",
-  "pytest-jupyter[server]>=0.6.1",
+  "pytest-jupyter[server]>=0.6.2",
   # openapi_core 0.15.0 alpha is not working
   "openapi_core~=0.14.2",
   "openapi-spec-validator<0.6",
