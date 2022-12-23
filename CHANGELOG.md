@@ -2,6 +2,27 @@
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
+## 2.16.6
+
+([Full Changelog](https://github.com/jupyterlab/jupyterlab_server/compare/v2.16.5...b8135b4a661f75560d39b52aab90f3e951884c39))
+
+### Bugs fixed
+
+- Restore print outputs in process [#357](https://github.com/jupyterlab/jupyterlab_server/pull/357) ([@blink1073](https://github.com/blink1073))
+
+### Maintenance and upkeep improvements
+
+- Bump tj-actions/changed-files from 34 to 35 [#355](https://github.com/jupyterlab/jupyterlab_server/pull/355) ([@dependabot](https://github.com/dependabot))
+- Fix license header job [#354](https://github.com/jupyterlab/jupyterlab_server/pull/354) ([@fcollonval](https://github.com/fcollonval))
+
+### Contributors to this release
+
+([GitHub contributors page for this release](https://github.com/jupyterlab/jupyterlab_server/graphs/contributors?from=2022-12-08&to=2022-12-23&type=c))
+
+[@blink1073](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Ablink1073+updated%3A2022-12-08..2022-12-23&type=Issues) | [@codecov-commenter](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Acodecov-commenter+updated%3A2022-12-08..2022-12-23&type=Issues) | [@dependabot](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Adependabot+updated%3A2022-12-08..2022-12-23&type=Issues) | [@fcollonval](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Afcollonval+updated%3A2022-12-08..2022-12-23&type=Issues)
+
+<!-- <END NEW CHANGELOG ENTRY> -->
+
 ## 2.16.5
 
 ([Full Changelog](https://github.com/jupyterlab/jupyterlab_server/compare/v2.16.4...ee8db6a651c68fc1413935fa1d10d58a38f1ccc1))
@@ -15,8 +36,6 @@
 ([GitHub contributors page for this release](https://github.com/jupyterlab/jupyterlab_server/graphs/contributors?from=2022-12-08&to=2022-12-08&type=c))
 
 [@blink1073](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Ablink1073+updated%3A2022-12-08..2022-12-08&type=Issues)
-
-<!-- <END NEW CHANGELOG ENTRY> -->
 
 ## 2.16.4
 
