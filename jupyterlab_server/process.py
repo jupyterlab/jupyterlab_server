@@ -217,7 +217,7 @@ class WatchHelper(Process):
             line = self._stdout.readline().decode("utf-8")
             if not line:
                 raise RuntimeError("Process ended improperly")
-            self.logger.info(line.rstrip())
+            print(line.rstrip())  # noqa
             if re.match(startup_regex, line):
                 break
 
@@ -257,7 +257,7 @@ class WatchHelper(Process):
             if not buf:
                 return
 
-            self.logger.info(buf.decode("utf-8"), end="")
+            print(buf.decode("utf-8"), end="")  # noqa
 
     def _create_process(self, **kwargs):
         """Create the watcher helper process."""
