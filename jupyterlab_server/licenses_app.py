@@ -30,6 +30,8 @@ from .licenses_handler import LicensesManager
 
 
 class LicensesApp(JupyterApp, LabConfig):
+    """A license management app."""
+
     version = __version__
 
     description = """
@@ -71,15 +73,18 @@ class LicensesApp(JupyterApp, LabConfig):
     }
 
     def initialize(self, *args, **kwargs):
+        """Initialize the app."""
         super().initialize(*args, **kwargs)
         self.init_licenses_manager()
 
     def init_licenses_manager(self):
+        """Initialize the license manager."""
         self.licenses_manager = LicensesManager(
             parent=self,
         )
 
     def start(self):
+        """Start the app."""
         report = self.licenses_manager.report(
             report_format=self.report_format,
             full_text=self.full_text,

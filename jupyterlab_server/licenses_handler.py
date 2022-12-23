@@ -234,6 +234,7 @@ class LicensesHandler(APIHandler):
     """A handler for serving licenses used by the application"""
 
     def initialize(self, manager: LicensesManager) -> None:
+        """Initialize the handler."""
         super().initialize()
         self.manager = manager
 

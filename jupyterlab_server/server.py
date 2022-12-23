@@ -1,3 +1,4 @@
+"""Server api."""
 from jupyter_server import _tz as tz  # noqa
 from jupyter_server.base.handlers import (
     APIHandler,

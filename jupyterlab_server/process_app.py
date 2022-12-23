@@ -27,6 +27,7 @@ class ProcessApp(ExtensionAppJinjaMixin, LabConfig, ExtensionApp):
         IOLoop.current().add_callback(self._run_command)
 
     def initialize_handlers(self):
+        """Initialize the handlers."""
         add_handlers(self.handlers, self)
 
     def _run_command(self):

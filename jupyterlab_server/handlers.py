@@ -157,8 +157,11 @@ class LabHandler(ExtensionHandlerJinjaMixin, ExtensionHandlerMixin, JupyterHandl
 
 
 class NotFoundHandler(LabHandler):
+    """A handler for page not found."""
+
     @lru_cache()  # noqa
     def get_page_config(self):
+        """Get the page config."""
         page_config = super().get_page_config()
         page_config["notFoundUrl"] = self.request.path
         return page_config
