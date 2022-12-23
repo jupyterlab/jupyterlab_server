@@ -411,6 +411,7 @@ class TranslationBundle:
     """
 
     def __init__(self, domain: str, locale: str):
+        """Initialize the bundle."""
         self._domain = domain
         self._locale = locale
 

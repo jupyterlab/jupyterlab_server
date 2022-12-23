@@ -1,9 +1,8 @@
-# Copyright (c) Jupyter Development Team.
-# Distributed under the terms of the Modified BSD License.
-
 """
 Translation handler.
 """
+# Copyright (c) Jupyter Development Team.
+# Distributed under the terms of the Modified BSD License.
 
 import json
 import traceback
@@ -16,6 +15,8 @@ from .translation_utils import get_language_pack, get_language_packs, is_valid_l
 
 
 class TranslationsHandler(SchemaHandler):
+    """Translation handler."""
+
     @gen.coroutine
     @tornado.web.authenticated
     def get(self, locale=""):

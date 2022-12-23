@@ -164,7 +164,10 @@ class WorkspacesManager(LoggingConfigurable):
 
 
 class WorkspacesHandler(ExtensionHandlerMixin, ExtensionHandlerJinjaMixin, APIHandler):
+    """A workspaces API handler."""
+
     def initialize(self, name, manager: WorkspacesManager, **kwargs) -> None:  # type:ignore
+        """Initialize the handler."""
         super().initialize(name)
         self.manager = manager
 

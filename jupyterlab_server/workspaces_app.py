@@ -17,6 +17,8 @@ DEFAULT_WORKSPACE = "default"
 
 
 class WorkspaceListApp(JupyterApp, LabConfig):
+    """An app to list workspaces."""
+
     version = __version__
     description = """
     Print all the workspaces available
@@ -54,10 +56,12 @@ class WorkspaceListApp(JupyterApp, LabConfig):
     )
 
     def initialize(self, *args, **kwargs):
+        """Initialize the app."""
         super().initialize(*args, **kwargs)
         self.manager = WorkspacesManager(self.workspaces_dir)
 
     def start(self):
+        """Start the app."""
         workspaces = self.manager.list_workspaces()
         if self.jsonlines:
             for workspace in workspaces:
@@ -70,6 +74,8 @@ class WorkspaceListApp(JupyterApp, LabConfig):
 
 
 class WorkspaceExportApp(JupyterApp, LabConfig):
+    """A workspace export app."""
+
     version = __version__
     description = """
     Export a JupyterLab workspace
@@ -81,10 +87,12 @@ class WorkspaceExportApp(JupyterApp, LabConfig):
     """
 
     def initialize(self, *args, **kwargs):
+        """Initialize the app."""
         super().initialize(*args, **kwargs)
         self.manager = WorkspacesManager(self.workspaces_dir)
 
     def start(self):
+        """Start the app."""
         if len(self.extra_args) > 1:  # pragma: no cover
             warnings.warn("Too many arguments were provided for workspace export.")
             self.exit(1)
@@ -98,6 +106,8 @@ class WorkspaceExportApp(JupyterApp, LabConfig):
 
 
 class WorkspaceImportApp(JupyterApp, LabConfig):
+    """A workspace import app."""
+
     version = __version__
     description = """
     Import a JupyterLab workspace
@@ -119,11 +129,12 @@ class WorkspaceImportApp(JupyterApp, LabConfig):
     aliases = {"name": "WorkspaceImportApp.workspace_name"}
 
     def initialize(self, *args, **kwargs):
+        """Initialize the app."""
         super().initialize(*args, **kwargs)
         self.manager = WorkspacesManager(self.workspaces_dir)
 
     def start(self):
-
+        """Start the app."""
         if len(self.extra_args) != 1:  # pragma: no cover
             self.log.info("One argument is required for workspace import.")
             self.exit(1)

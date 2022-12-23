@@ -1,3 +1,4 @@
+"""pytest fixtures."""
 import json
 import os
 import os.path as osp
@@ -12,6 +13,7 @@ pytest_plugins = ["pytest_jupyter.jupyter_server"]
 
 
 def mkdir(tmp_path, *parts):
+    """Util for making a directory."""
     path = tmp_path.joinpath(*parts)
     if not path.exists():
         path.mkdir(parents=True)
@@ -37,8 +39,10 @@ def make_labserver_extension_app(
     workspaces_dir,
     labextensions_dir,
 ):
-    def _make_labserver_extension_app(**kwargs):
+    """Return a factory function for a labserver extension app."""
 
+    def _make_labserver_extension_app(**kwargs):
+        """Factory function for lab server extension apps."""
         return LabServerApp(
             static_dir=str(jp_root_dir),
             templates_dir=str(jp_template_dir),
@@ -127,6 +131,7 @@ def make_labserver_extension_app(
 
 @pytest.fixture
 def labserverapp(jp_serverapp, make_labserver_extension_app):
+    """A lab server app."""
     app = make_labserver_extension_app()
     app._link_jupyter_server_extension(jp_serverapp)
     app.initialize()

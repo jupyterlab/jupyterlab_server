@@ -1,3 +1,4 @@
+"""OpenAPI spec utils."""
 import os
 from pathlib import Path
 

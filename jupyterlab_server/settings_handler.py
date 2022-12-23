@@ -13,9 +13,12 @@ from .translation_utils import translator
 
 
 class SettingsHandler(ExtensionHandlerMixin, ExtensionHandlerJinjaMixin, SchemaHandler):
+    """A settings API handler."""
+
     def initialize(
         self, name, app_settings_dir, schemas_dir, settings_dir, labextensions_path, **kwargs
     ):
+        """Initialize the handler."""
         SchemaHandler.initialize(
             self, app_settings_dir, schemas_dir, settings_dir, labextensions_path
         )
