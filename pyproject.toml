@@ -70,9 +70,8 @@ test = [
   "codecov",
   "ipykernel",
   "pytest-jupyter[server]>=0.6",
-  # openapi_core 0.15.0 alpha is not working
-  "openapi_core~=0.14.2",
-  "openapi-spec-validator<0.6",
+  "openapi_core>=0.16",
+  "openapi-spec-validator>=0.5.1",
   "sphinxcontrib_spelling",
   "requests_mock",
   "pytest>=7.0",
@@ -80,7 +79,8 @@ test = [
   "pytest-cov",
   "pytest-timeout",
   "ruamel.yaml",
-  "strict-rfc3339"
+  "strict-rfc3339",
+  "werkzeug",
 ]
 
 [tool.hatch.version]
