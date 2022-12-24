@@ -1,18 +1,17 @@
 """OpenAPI spec utils."""
 import os
+import typing
 from pathlib import Path
+
+if typing.TYPE_CHECKING:
+    from openapi_core.spec.paths import Spec
 
 HERE = Path(os.path.dirname(__file__)).resolve()
 
 
-def get_openapi_spec():
+def get_openapi_spec() -> "Spec":
     """Get the OpenAPI spec object."""
-    try:
-        from openapi_core import OpenAPISpec as Spec
-
-        create_spec = Spec.create
-    except ImportError:
-        from openapi_core import create_spec  # type:ignore
+    from openapi_core.spec.shortcuts import create_spec
 
     openapi_spec_dict = get_openapi_spec_dict()
     return create_spec(openapi_spec_dict)
