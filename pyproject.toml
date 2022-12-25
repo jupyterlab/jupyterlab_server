@@ -70,7 +70,7 @@ test = [
   "codecov",
   "ipykernel",
   "pytest-jupyter[server]>=0.6",
-  "openapi_core>=0.16.1",
+  "jupyterlab_server[openapi]",
   "openapi-spec-validator>=0.5.1",
   "sphinxcontrib_spelling",
   "requests_mock",
@@ -78,7 +78,6 @@ test = [
   "pytest-console-scripts",
   "pytest-cov",
   "pytest-timeout",
-  "ruamel.yaml",
   "strict-rfc3339",
   "werkzeug",
 ]
