@@ -2,6 +2,24 @@
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
+## 2.17.0
+
+([Full Changelog](https://github.com/jupyterlab/jupyterlab_server/compare/v2.16.6...6870153670345c20e2b86a02e6a35394703fbbf5))
+
+### Maintenance and upkeep improvements
+
+- Do not repeat requirements [#361](https://github.com/jupyterlab/jupyterlab_server/pull/361) ([@blink1073](https://github.com/blink1073))
+- Add support for newer openapi spec [#360](https://github.com/jupyterlab/jupyterlab_server/pull/360) ([@blink1073](https://github.com/blink1073))
+- Add spelling and docstring enforcement [#358](https://github.com/jupyterlab/jupyterlab_server/pull/358) ([@blink1073](https://github.com/blink1073))
+
+### Contributors to this release
+
+([GitHub contributors page for this release](https://github.com/jupyterlab/jupyterlab_server/graphs/contributors?from=2022-12-23&to=2022-12-26&type=c))
+
+[@blink1073](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Ablink1073+updated%3A2022-12-23..2022-12-26&type=Issues) | [@codecov-commenter](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Acodecov-commenter+updated%3A2022-12-23..2022-12-26&type=Issues)
+
+<!-- <END NEW CHANGELOG ENTRY> -->
+
 ## 2.16.6
 
 ([Full Changelog](https://github.com/jupyterlab/jupyterlab_server/compare/v2.16.5...b8135b4a661f75560d39b52aab90f3e951884c39))
@@ -20,8 +38,6 @@
 ([GitHub contributors page for this release](https://github.com/jupyterlab/jupyterlab_server/graphs/contributors?from=2022-12-08&to=2022-12-23&type=c))
 
 [@blink1073](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Ablink1073+updated%3A2022-12-08..2022-12-23&type=Issues) | [@codecov-commenter](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Acodecov-commenter+updated%3A2022-12-08..2022-12-23&type=Issues) | [@dependabot](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Adependabot+updated%3A2022-12-08..2022-12-23&type=Issues) | [@fcollonval](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Afcollonval+updated%3A2022-12-08..2022-12-23&type=Issues)
-
-<!-- <END NEW CHANGELOG ENTRY> -->
 
 ## 2.16.5
 
