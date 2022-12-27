@@ -9,7 +9,7 @@ from jupyterlab_server.process_app import ProcessApp
 
 
 def test_which():
-    assert which("python")
+    assert which("jupyter")
 
 
 async def test_process():
