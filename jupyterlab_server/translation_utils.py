@@ -9,6 +9,7 @@ localization data.
 import gettext
 import importlib
 import json
+import locale
 import os
 import re
 import sys
@@ -31,6 +32,7 @@ JUPYTERLAB_LOCALE_ENTRY = "jupyterlab.locale"
 
 # Constants
 DEFAULT_LOCALE = "en"
+SYS_LOCALE = locale.getlocale()[0] or DEFAULT_LOCALE
 LOCALE_DIR = "locale"
 LC_MESSAGES_DIR = "LC_MESSAGES"
 DEFAULT_DOMAIN = "jupyterlab"
@@ -85,12 +87,6 @@ def _get_installed_language_pack_locales():
     tuple
         A tuple, where the first item is the result and the second item any
         error messages.
-
-    Notes
-    -----
-    This functions are meant to be called via a subprocess to guarantee the
-    results represent the most up-to-date entry point information, which
-    seems to be defined on interpreter startup.
     """
     data = {}
     messages = []
@@ -114,12 +110,6 @@ def _get_installed_package_locales():
         A tuple, where the first item is the result and the second item any
         error messages. The value for the key points to the root location
         the package.
-
-    Notes
-    -----
-    This functions are meant to be called via a subprocess to guarantee the
-    results represent the most up-to-date entry point information, which
-    seems to be defined on interpreter startup.
     """
     data = {}
     messages = []
@@ -131,26 +121,6 @@ def _get_installed_package_locales():
 
     message = "\n".join(messages)
     return data, message
-
-
-def _main():
-    """
-    Run functions in this file in a subprocess and prints to stdout the results.
-    """
-    data = {}
-    message = ""
-    if len(sys.argv) == 2:
-        func_name = sys.argv[-1]
-        func = globals().get(func_name, None)
-        if func:
-            try:
-                data, message = func()
-            except Exception:
-                message = traceback.format_exc()
-    else:
-        message = "Invalid number of arguments!"
-
-    sys.stdout.write(json.dumps({"data": data, "message": message}))
 
 
 # --- Helpers
@@ -179,15 +149,15 @@ def is_valid_locale(locale: str) -> bool:
     - Australian Spanish: "es_AU"
     - Brazilian German: "de_BR"
     """
+    # Add exception for Norwegian
+    if locale == "no_NO":
+        return True
+
     valid = False
     try:
         babel.Locale.parse(locale)
         valid = True
-    except babel.core.UnknownLocaleError:
-        # no-op
-        pass
-    except ValueError:
-        # no-op
+    except (babel.core.UnknownLocaleError, ValueError):
         pass
 
     return valid
@@ -422,7 +392,7 @@ class TranslationBundle:
 
     def update_locale(self, locale: str) -> None:
         """
-        Update the locale environment variables.
+        Update the locale.
 
         Parameters
         ----------
@@ -617,21 +587,8 @@ class translator:  # noqa
     Translations manager.
     """
 
-    _TRANSLATORS: dict = {}
-    _LOCALE = DEFAULT_LOCALE
-
-    @staticmethod
-    def _update_env(locale: str) -> None:
-        """
-        Update the locale environment variables based on the settings.
-
-        Parameters
-        ----------
-        locale: str
-            The language name to use.
-        """
-        for key in ["LANGUAGE", "LANG"]:
-            os.environ[key] = f"{locale}.UTF-8"
+    _TRANSLATORS = {}
+    _LOCALE = SYS_LOCALE
 
     @staticmethod
     def normalize_domain(domain: str) -> str:
@@ -665,7 +622,6 @@ class translator:  # noqa
 
         if is_valid_locale(locale):
             cls._LOCALE = locale
-            translator._update_env(locale)
             for _, bundle in cls._TRANSLATORS.items():
                 bundle.update_locale(locale)
 
@@ -760,7 +716,3 @@ class translator:  # noqa
         translator._translate_schema_strings(translations, schema.copy())
 
         return new_schema
-
-
-if __name__ == "__main__":
-    _main()
