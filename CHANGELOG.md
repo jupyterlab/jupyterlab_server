@@ -2,6 +2,30 @@
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
+## 2.18.0
+
+([Full Changelog](https://github.com/jupyterlab/jupyterlab_server/compare/v2.17.0...a2528876192e34fa2856b8fb3941148c6447d591))
+
+### Enhancements made
+
+- Prepare for jupyter_server preferred_dir fix [#324](https://github.com/jupyterlab/jupyterlab_server/pull/324) ([@vidartf](https://github.com/vidartf))
+
+### Bugs fixed
+
+- Handle systems with `python3` [#362](https://github.com/jupyterlab/jupyterlab_server/pull/362) ([@blink1073](https://github.com/blink1073))
+
+### Maintenance and upkeep improvements
+
+- Clean up docs build [#363](https://github.com/jupyterlab/jupyterlab_server/pull/363) ([@blink1073](https://github.com/blink1073))
+
+### Contributors to this release
+
+([GitHub contributors page for this release](https://github.com/jupyterlab/jupyterlab_server/graphs/contributors?from=2022-12-26&to=2023-01-03&type=c))
+
+[@blink1073](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Ablink1073+updated%3A2022-12-26..2023-01-03&type=Issues) | [@codecov-commenter](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Acodecov-commenter+updated%3A2022-12-26..2023-01-03&type=Issues) | [@fcollonval](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Afcollonval+updated%3A2022-12-26..2023-01-03&type=Issues) | [@pre-commit-ci](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Apre-commit-ci+updated%3A2022-12-26..2023-01-03&type=Issues) | [@vidartf](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Avidartf+updated%3A2022-12-26..2023-01-03&type=Issues)
+
+<!-- <END NEW CHANGELOG ENTRY> -->
+
 ## 2.17.0
 
 ([Full Changelog](https://github.com/jupyterlab/jupyterlab_server/compare/v2.16.6...6870153670345c20e2b86a02e6a35394703fbbf5))
@@ -17,8 +41,6 @@
 ([GitHub contributors page for this release](https://github.com/jupyterlab/jupyterlab_server/graphs/contributors?from=2022-12-23&to=2022-12-26&type=c))
 
 [@blink1073](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Ablink1073+updated%3A2022-12-23..2022-12-26&type=Issues) | [@codecov-commenter](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Acodecov-commenter+updated%3A2022-12-23..2022-12-26&type=Issues)
-
-<!-- <END NEW CHANGELOG ENTRY> -->
 
 ## 2.16.6
 
