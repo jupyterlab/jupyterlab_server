@@ -275,7 +275,7 @@
 ### Enhancements made
 
 - Make openapi optional and lazy [#253](https://github.com/jupyterlab/jupyterlab_server/pull/253) ([@blink1073](https://github.com/blink1073))
-- Adds notebook_starts_kernel option to make "canStartKernel" configurable [#248](https://github.com/jupyterlab/jupyterlab_server/pull/248) ([@jweill-aws](https://github.com/jweill-aws))
+- Adds notebook_starts_kernel option to make "canStartKernel" configurable [#248](https://github.com/jupyterlab/jupyterlab_server/pull/248) ([@jweill-aws](https://github.com/JasonWeill))
 - Clean up tests and add public openapi_spec [#247](https://github.com/jupyterlab/jupyterlab_server/pull/247) ([@blink1073](https://github.com/blink1073))
 
 ### Maintenance and upkeep improvements
@@ -285,7 +285,7 @@
 
 ### Documentation improvements
 
-- Updates parameter description for notebook_starts_kernel [#250](https://github.com/jupyterlab/jupyterlab_server/pull/250) ([@jweill-aws](https://github.com/jweill-aws))
+- Updates parameter description for notebook_starts_kernel [#250](https://github.com/jupyterlab/jupyterlab_server/pull/250) ([@jweill-aws](https://github.com/JasonWeill))
 
 ### Contributors to this release
 
