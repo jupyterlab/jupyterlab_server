@@ -25,7 +25,7 @@ class ThemesHandler(FileFindHandler):
         labextensions_path=None,
         **kwargs,
     ):
-
+        """Initialize the handler."""
         # Get all of the available theme paths in order
         labextensions_path = labextensions_path or []
         ext_paths = []

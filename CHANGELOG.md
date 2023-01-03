@@ -2,6 +2,43 @@
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
+## 2.17.0
+
+([Full Changelog](https://github.com/jupyterlab/jupyterlab_server/compare/v2.16.6...6870153670345c20e2b86a02e6a35394703fbbf5))
+
+### Maintenance and upkeep improvements
+
+- Do not repeat requirements [#361](https://github.com/jupyterlab/jupyterlab_server/pull/361) ([@blink1073](https://github.com/blink1073))
+- Add support for newer openapi spec [#360](https://github.com/jupyterlab/jupyterlab_server/pull/360) ([@blink1073](https://github.com/blink1073))
+- Add spelling and docstring enforcement [#358](https://github.com/jupyterlab/jupyterlab_server/pull/358) ([@blink1073](https://github.com/blink1073))
+
+### Contributors to this release
+
+([GitHub contributors page for this release](https://github.com/jupyterlab/jupyterlab_server/graphs/contributors?from=2022-12-23&to=2022-12-26&type=c))
+
+[@blink1073](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Ablink1073+updated%3A2022-12-23..2022-12-26&type=Issues) | [@codecov-commenter](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Acodecov-commenter+updated%3A2022-12-23..2022-12-26&type=Issues)
+
+<!-- <END NEW CHANGELOG ENTRY> -->
+
+## 2.16.6
+
+([Full Changelog](https://github.com/jupyterlab/jupyterlab_server/compare/v2.16.5...b8135b4a661f75560d39b52aab90f3e951884c39))
+
+### Bugs fixed
+
+- Restore print outputs in process [#357](https://github.com/jupyterlab/jupyterlab_server/pull/357) ([@blink1073](https://github.com/blink1073))
+
+### Maintenance and upkeep improvements
+
+- Bump tj-actions/changed-files from 34 to 35 [#355](https://github.com/jupyterlab/jupyterlab_server/pull/355) ([@dependabot](https://github.com/dependabot))
+- Fix license header job [#354](https://github.com/jupyterlab/jupyterlab_server/pull/354) ([@fcollonval](https://github.com/fcollonval))
+
+### Contributors to this release
+
+([GitHub contributors page for this release](https://github.com/jupyterlab/jupyterlab_server/graphs/contributors?from=2022-12-08&to=2022-12-23&type=c))
+
+[@blink1073](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Ablink1073+updated%3A2022-12-08..2022-12-23&type=Issues) | [@codecov-commenter](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Acodecov-commenter+updated%3A2022-12-08..2022-12-23&type=Issues) | [@dependabot](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Adependabot+updated%3A2022-12-08..2022-12-23&type=Issues) | [@fcollonval](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Afcollonval+updated%3A2022-12-08..2022-12-23&type=Issues)
+
 ## 2.16.5
 
 ([Full Changelog](https://github.com/jupyterlab/jupyterlab_server/compare/v2.16.4...ee8db6a651c68fc1413935fa1d10d58a38f1ccc1))
@@ -15,8 +52,6 @@
 ([GitHub contributors page for this release](https://github.com/jupyterlab/jupyterlab_server/graphs/contributors?from=2022-12-08&to=2022-12-08&type=c))
 
 [@blink1073](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Ablink1073+updated%3A2022-12-08..2022-12-08&type=Issues)
-
-<!-- <END NEW CHANGELOG ENTRY> -->
 
 ## 2.16.4
 
@@ -240,7 +275,7 @@
 ### Enhancements made
 
 - Make openapi optional and lazy [#253](https://github.com/jupyterlab/jupyterlab_server/pull/253) ([@blink1073](https://github.com/blink1073))
-- Adds notebook_starts_kernel option to make "canStartKernel" configurable [#248](https://github.com/jupyterlab/jupyterlab_server/pull/248) ([@jweill-aws](https://github.com/jweill-aws))
+- Adds notebook_starts_kernel option to make "canStartKernel" configurable [#248](https://github.com/jupyterlab/jupyterlab_server/pull/248) ([@jweill-aws](https://github.com/JasonWeill))
 - Clean up tests and add public openapi_spec [#247](https://github.com/jupyterlab/jupyterlab_server/pull/247) ([@blink1073](https://github.com/blink1073))
 
 ### Maintenance and upkeep improvements
@@ -250,7 +285,7 @@
 
 ### Documentation improvements
 
-- Updates parameter description for notebook_starts_kernel [#250](https://github.com/jupyterlab/jupyterlab_server/pull/250) ([@jweill-aws](https://github.com/jweill-aws))
+- Updates parameter description for notebook_starts_kernel [#250](https://github.com/jupyterlab/jupyterlab_server/pull/250) ([@jweill-aws](https://github.com/JasonWeill))
 
 ### Contributors to this release
 

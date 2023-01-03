@@ -98,10 +98,12 @@ class LabServerApp(ExtensionAppJinjaMixin, LabConfig, ExtensionApp):
             setattr(self, new_attr, change.new)
 
     def initialize_templates(self):
+        """Initialize templates."""
         self.static_paths = [self.static_dir]
         self.template_paths = [self.templates_dir]
 
     def initialize_handlers(self):
+        """Initialize handlers."""
         add_handlers(self.handlers, self)
 
 

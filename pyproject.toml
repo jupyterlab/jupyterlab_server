@@ -29,7 +29,7 @@ dependencies = [
   "importlib_metadata>=4.8.3;python_version<\"3.10\"",
   "jinja2>=3.0.3",
   "json5>=0.9.0",
-  "jsonschema>=3.0.1",
+  "jsonschema>=4.17.3",
   "jupyter_server>=1.21,<3",
   "packaging>=21.3",
   "requests>=2.28",
@@ -63,31 +63,24 @@ docs = [
   "jinja2<3.2.0"
 ]
 openapi = [
-  "openapi_core>=0.14.2",
+  "openapi_core>=0.16.1",
   "ruamel.yaml",
 ]
 test = [
   "codecov",
   "ipykernel",
   "pytest-jupyter[server]>=0.6.2",
-  # openapi_core 0.15.0 alpha is not working
-  "openapi_core~=0.14.2",
-  "openapi-spec-validator<0.6",
+  "jupyterlab_server[openapi]",
+  "openapi-spec-validator>=0.5.1",
+  "sphinxcontrib_spelling",
   "requests_mock",
   "pytest>=7.0",
   "pytest-console-scripts",
   "pytest-cov",
   "pytest-timeout",
-  "ruamel.yaml",
-  "strict-rfc3339"
+  "strict-rfc3339",
+  "werkzeug",
 ]
-lint = [
-  "black[jupyter]>=22.6.0",
-  "mdformat>0.7",
-  "mdformat-gfm>=0.3.5",
-  "ruff>=0.0.156"
-]
-typing = ["mypy>=0.990"]
 
 [tool.hatch.version]
 path = "jupyterlab_server/_version.py"
@@ -112,12 +105,19 @@ test = "python -m pytest -vv --cov jupyterlab_server --cov-branch --cov-report t
 nowarn = "test -W default {args}"
 
 [tool.hatch.envs.typing]
-features = ["typing", "test"]
+features = ["test"]
+dependencies = ["mypy>=0.990"]
 [tool.hatch.envs.typing.scripts]
 test = "mypy --install-types --non-interactive {args:jupyterlab_server tests}"
 
 [tool.hatch.envs.lint]
-features = ["lint"]
+dependencies = [
+  "black[jupyter]==22.6.0",
+  "mdformat>0.7",
+  "mdformat-gfm>=0.3.5",
+  "ruff==0.0.189"
+]
+detatched = true
 [tool.hatch.envs.lint.scripts]
 style = [
   "ruff {args:.}",
@@ -216,3 +216,13 @@ ignore = [
 "tests/*" = ["S101", "A001", "F841"]
 # F401 `foo` imported but unused
 "jupyterlab_server/server.py" = ["F401"]
+
+[tool.interrogate]
+ignore-init-module=true
+ignore-private=true
+ignore-semiprivate=true
+ignore-property-decorators=true
+ignore-nested-functions=true
+ignore-nested-classes=true
+fail-under=100
+exclude = ["tests", "docs"]

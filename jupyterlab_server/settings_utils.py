@@ -419,6 +419,7 @@ class SchemaHandler(APIHandler):
     """Base handler for handler requiring access to settings."""
 
     def initialize(self, app_settings_dir, schemas_dir, settings_dir, labextensions_path, **kwargs):
+        """Initialize the handler."""
         super().initialize(**kwargs)
         self.overrides, error = _get_overrides(app_settings_dir)
         self.app_settings_dir = app_settings_dir
