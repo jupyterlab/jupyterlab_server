@@ -1,3 +1,6 @@
+# Copyright (c) Jupyter Development Team.
+# Distributed under the terms of the Modified BSD License.
+
 """A lab app that runs a sub process for a demo or a test."""
 import sys
 

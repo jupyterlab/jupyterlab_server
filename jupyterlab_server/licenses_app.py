@@ -1,3 +1,6 @@
+# Copyright (c) Jupyter Development Team.
+# Distributed under the terms of the Modified BSD License.
+
 """A license reporting CLI
 
 Mostly ready-to-use, the downstream must provide the location of the application's

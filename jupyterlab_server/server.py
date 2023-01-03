@@ -1,3 +1,6 @@
+# Copyright (c) Jupyter Development Team.
+# Distributed under the terms of the Modified BSD License.
+
 """Server api."""
 from jupyter_server import _tz as tz  # noqa
 from jupyter_server.base.handlers import (

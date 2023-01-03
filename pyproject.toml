@@ -1,3 +1,6 @@
+# Copyright (c) Jupyter Development Team.
+# Distributed under the terms of the Modified BSD License.
+
 [build-system]
 requires = ["hatchling>=1.5"]
 build-backend = "hatchling.build"
@@ -69,7 +72,7 @@ openapi = [
 test = [
   "codecov",
   "ipykernel",
-  "pytest-jupyter[server]>=0.6",
+  "pytest-jupyter[server]>=0.6.2",
   "jupyterlab_server[openapi]",
   "openapi-spec-validator>=0.5.1",
   "sphinxcontrib_spelling",
@@ -143,6 +146,7 @@ filterwarnings = [
   "module:make_current is deprecated:DeprecationWarning",
   "module:clear_current is deprecated:DeprecationWarning",
   "module:There is no current event loop:DeprecationWarning",
+  "ignore:ServerApp.preferred_dir config is deprecated:FutureWarning",
   "ignore:Passing a schema to Validator.iter_errors:DeprecationWarning",
   "module:Subclassing validator classes is not intended to be part of their public API:DeprecationWarning"
 ]
