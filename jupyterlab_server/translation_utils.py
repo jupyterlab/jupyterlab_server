@@ -387,6 +387,7 @@ class TranslationBundle:
         """Initialize the bundle."""
         self._domain = domain
         self._locale = locale
+        self._translator = gettext.NullTranslations()
 
         self.update_locale(locale)
 
@@ -412,7 +413,7 @@ class TranslationBundle:
                 # no-op
                 pass
 
-        gettext.bindtextdomain(self._domain, localedir=localedir)
+        self._translator = gettext.translation(self._domain, localedir=localedir, languages=(self._locale, ), fallback=True)
 
     def gettext(self, msgid: str) -> str:
         """
@@ -428,7 +429,7 @@ class TranslationBundle:
         str
             The translated string.
         """
-        return gettext.dgettext(self._domain, msgid)
+        return self._translator.dgettext(self._domain, msgid)
 
     def ngettext(self, msgid: str, msgid_plural: str, n: int) -> str:
         """
@@ -448,7 +449,7 @@ class TranslationBundle:
         str
             The translated string.
         """
-        return gettext.dngettext(self._domain, msgid, msgid_plural, n)
+        return self._translator.ngettext(msgid, msgid_plural, n)
 
     def pgettext(self, msgctxt: str, msgid: str) -> str:
         """
@@ -469,9 +470,9 @@ class TranslationBundle:
         # Python 3.7 or lower does not offer translations based on context.
         # On these versions `pgettext` falls back to `gettext`
         if PY37_OR_LOWER:
-            translation = gettext.dgettext(self._domain, msgid)
+            translation = self._translator.gettext(msgid)
         else:
-            translation = gettext.dpgettext(self._domain, msgctxt, msgid)
+            translation = self._translator.pgettext(msgctxt, msgid)
 
         return translation
 
@@ -498,9 +499,9 @@ class TranslationBundle:
         # Python 3.7 or lower does not offer translations based on context.
         # On these versions `npgettext` falls back to `ngettext`
         if PY37_OR_LOWER:
-            translation = gettext.dngettext(self._domain, msgid, msgid_plural, n)
+            translation = self._translator.ngettext(msgid, msgid_plural, n)
         else:
-            translation = gettext.dnpgettext(self._domain, msgctxt, msgid, msgid_plural, n)
+            translation = self._translator.npgettext(msgctxt, msgid, msgid_plural, n)
 
         return translation
 
@@ -713,6 +714,6 @@ class translator:  # noqa
         )
 
         new_schema = schema.copy()
-        translator._translate_schema_strings(translations, schema.copy())
+        translator._translate_schema_strings(translations, new_schema)
 
         return new_schema
