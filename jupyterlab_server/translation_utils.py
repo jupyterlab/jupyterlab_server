@@ -413,7 +413,9 @@ class TranslationBundle:
                 # no-op
                 pass
 
-        self._translator = gettext.translation(self._domain, localedir=localedir, languages=(self._locale, ), fallback=True)
+        self._translator = gettext.translation(
+            self._domain, localedir=localedir, languages=(self._locale,), fallback=True
+        )
 
     def gettext(self, msgid: str) -> str:
         """

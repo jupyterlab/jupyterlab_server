@@ -12,10 +12,10 @@ import tornado
 
 from .settings_utils import SchemaHandler
 from .translation_utils import (
+    SYS_LOCALE,
     get_language_pack,
     get_language_packs,
     is_valid_locale,
-    SYS_LOCALE,
     translator,
 )
 
@@ -41,9 +41,7 @@ class TranslationsHandler(SchemaHandler):
             if locale is None:
                 data, message = await current_loop.run_in_executor(
                     None,
-                    partial(
-                        get_language_packs, display_locale=self.get_current_locale()
-                    ),
+                    partial(get_language_packs, display_locale=self.get_current_locale()),
                 )
             else:
                 locale = locale or SYS_LOCALE

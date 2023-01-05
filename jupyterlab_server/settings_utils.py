@@ -13,7 +13,7 @@ from jupyter_server.services.config.manager import ConfigManager, recursive_upda
 from tornado import web
 
 from .server import APIHandler, tz
-from .translation_utils import DEFAULT_LOCALE, SYS_LOCALE, L10N_SCHEMA_NAME, is_valid_locale
+from .translation_utils import DEFAULT_LOCALE, L10N_SCHEMA_NAME, SYS_LOCALE, is_valid_locale
 
 # The JupyterLab settings file extension.
 SETTINGS_EXTENSION = ".jupyterlab-settings"
