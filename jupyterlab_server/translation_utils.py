@@ -158,6 +158,7 @@ def is_valid_locale(locale_: str) -> bool:
         babel.Locale.parse(locale_)
         valid = True
     except (babel.core.UnknownLocaleError, ValueError):
+        # Expected error if the locale is unknown
         pass
 
     return valid
