@@ -432,7 +432,7 @@ class TranslationBundle:
         str
             The translated string.
         """
-        return self._translator.dgettext(self._domain, msgid)
+        return self._translator.gettext(msgid)
 
     def ngettext(self, msgid: str, msgid_plural: str, n: int) -> str:
         """
