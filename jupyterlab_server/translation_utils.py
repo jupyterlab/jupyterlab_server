@@ -591,7 +591,7 @@ class translator:  # noqa
     Translations manager.
     """
 
-    _TRANSLATORS = {}
+    _TRANSLATORS: Dict[str, TranslationBundle] = {}
     _LOCALE = SYS_LOCALE
 
     @staticmethod
