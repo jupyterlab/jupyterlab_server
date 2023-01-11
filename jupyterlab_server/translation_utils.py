@@ -653,7 +653,7 @@ class translator:  # noqa
             trans = TranslationBundle(norm_domain, cls._LOCALE)
             cls._TRANSLATORS[norm_domain] = trans
 
-        return trans  # type:ignore
+        return trans
 
     @staticmethod
     def _translate_schema_strings(
