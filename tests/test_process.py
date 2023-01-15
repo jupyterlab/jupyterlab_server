@@ -33,7 +33,7 @@ async def test_watch_helper():
     helper.wait()
 
 
-def test_process_app():
+async def test_process_app():
     class TestApp(ProcessApp):
         name = "tests"
 
