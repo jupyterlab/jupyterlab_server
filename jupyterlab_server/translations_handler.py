@@ -22,6 +22,7 @@ from .translation_utils import (
 
 class TranslationsHandler(SchemaHandler):
     """An API handler for translations."""
+
     @tornado.web.authenticated
     async def get(self, locale=None):
         """
