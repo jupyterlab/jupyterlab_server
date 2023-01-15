@@ -35,10 +35,10 @@ jobs:
       - name: Base Setup
         uses: jupyterlab/maintainer-tools/.github/actions/base-setup@v1
       - name: Run the tests
-        if: ${{ !startsWith(matrix.python-version, 'pypy') }}
+        if: ${{ !startsWith(matrix.python-version, 'pypy') && !startsWith(matrix.python-version, '3.7') }}
         run: hatch run cov:test
       - name: Run the tests on pypy
-        if: ${{ startsWith(matrix.python-version, 'pypy') }}
+        if: ${{ startsWith(matrix.python-version, 'pypy') || startsWith(matrix.python-version, '3.7') }}
         run: hatch run cov:nowarn
       - name: Upload coverage
         run: |
