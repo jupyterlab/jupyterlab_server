@@ -13,7 +13,7 @@ from jupyter_server.services.config.manager import ConfigManager, recursive_upda
 from tornado import web
 
 from .server import APIHandler, tz
-from .translation_utils import DEFAULT_LOCALE, L10N_SCHEMA_NAME, is_valid_locale
+from .translation_utils import DEFAULT_LOCALE, L10N_SCHEMA_NAME, SYS_LOCALE, is_valid_locale
 
 # The JupyterLab settings file extension.
 SETTINGS_EXTENSION = ".jupyterlab-settings"
@@ -454,12 +454,14 @@ class SchemaHandler(APIHandler):
                 labextensions_path=self.labextensions_path,
             )
         except web.HTTPError as e:
-            schema_warning = "Missing or misshappen translation settings schema:\n%s"
+            schema_warning = "Missing or misshapen translation settings schema:\n%s"
             self.log.warning(schema_warning % str(e))
 
             settings = {}
 
-        current_locale = settings.get("settings", {}).get("locale", DEFAULT_LOCALE)
+        current_locale = settings.get("settings", {}).get("locale") or SYS_LOCALE
+        if current_locale == "default":
+            current_locale = SYS_LOCALE
         if not is_valid_locale(current_locale):
             current_locale = DEFAULT_LOCALE
 

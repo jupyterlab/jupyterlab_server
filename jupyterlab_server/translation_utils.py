@@ -9,6 +9,7 @@ localization data.
 import gettext
 import importlib
 import json
+import locale
 import os
 import re
 import sys
@@ -31,6 +32,7 @@ JUPYTERLAB_LOCALE_ENTRY = "jupyterlab.locale"
 
 # Constants
 DEFAULT_LOCALE = "en"
+SYS_LOCALE = locale.getlocale()[0] or DEFAULT_LOCALE
 LOCALE_DIR = "locale"
 LC_MESSAGES_DIR = "LC_MESSAGES"
 DEFAULT_DOMAIN = "jupyterlab"
@@ -85,12 +87,6 @@ def _get_installed_language_pack_locales():
     tuple
         A tuple, where the first item is the result and the second item any
         error messages.
-
-    Notes
-    -----
-    This functions are meant to be called via a subprocess to guarantee the
-    results represent the most up-to-date entry point information, which
-    seems to be defined on interpreter startup.
     """
     data = {}
     messages = []
@@ -114,12 +110,6 @@ def _get_installed_package_locales():
         A tuple, where the first item is the result and the second item any
         error messages. The value for the key points to the root location
         the package.
-
-    Notes
-    -----
-    This functions are meant to be called via a subprocess to guarantee the
-    results represent the most up-to-date entry point information, which
-    seems to be defined on interpreter startup.
     """
     data = {}
     messages = []
@@ -133,35 +123,15 @@ def _get_installed_package_locales():
     return data, message
 
 
-def _main():
-    """
-    Run functions in this file in a subprocess and prints to stdout the results.
-    """
-    data = {}
-    message = ""
-    if len(sys.argv) == 2:
-        func_name = sys.argv[-1]
-        func = globals().get(func_name, None)
-        if func:
-            try:
-                data, message = func()
-            except Exception:
-                message = traceback.format_exc()
-    else:
-        message = "Invalid number of arguments!"
-
-    sys.stdout.write(json.dumps({"data": data, "message": message}))
-
-
 # --- Helpers
 # ----------------------------------------------------------------------------
-def is_valid_locale(locale: str) -> bool:
+def is_valid_locale(locale_: str) -> bool:
     """
-    Check if a `locale` value is valid.
+    Check if a `locale_` value is valid.
 
     Parameters
     ----------
-    locale: str
+    locale_: str
         Language locale code.
 
     Notes
@@ -179,39 +149,40 @@ def is_valid_locale(locale: str) -> bool:
     - Australian Spanish: "es_AU"
     - Brazilian German: "de_BR"
     """
+    # Add exception for Norwegian
+    if locale_ == "no_NO":
+        return True
+
     valid = False
     try:
-        babel.Locale.parse(locale)
+        babel.Locale.parse(locale_)
         valid = True
-    except babel.core.UnknownLocaleError:
-        # no-op
-        pass
-    except ValueError:
-        # no-op
+    except (babel.core.UnknownLocaleError, ValueError):
+        # Expected error if the locale is unknown
         pass
 
     return valid
 
 
-def get_display_name(locale: str, display_locale: str = DEFAULT_LOCALE) -> str:
+def get_display_name(locale_: str, display_locale: str = DEFAULT_LOCALE) -> str:
     """
     Return the language name to use with a `display_locale` for a given language locale.
 
     Parameters
     ----------
-    locale: str
+    locale_: str
         The language name to use.
     display_locale: str, optional
-        The language to display the `locale`.
+        The language to display the `locale_`.
 
     Returns
     -------
     str
-        Localized `locale` and capitalized language name using `display_locale` as language.
+        Localized `locale_` and capitalized language name using `display_locale` as language.
     """
-    locale = locale if is_valid_locale(locale) else DEFAULT_LOCALE
+    locale_ = locale_ if is_valid_locale(locale_) else DEFAULT_LOCALE
     display_locale = display_locale if is_valid_locale(display_locale) else DEFAULT_LOCALE
-    loc = babel.Locale.parse(locale)
+    loc = babel.Locale.parse(locale_)
     display_name = loc.get_display_name(display_locale)
     if display_name:
         display_name = display_name[0].upper() + display_name[1:]
@@ -255,7 +226,7 @@ def merge_locale_data(language_pack_locale_data, package_locale_data):
     return result
 
 
-def get_installed_packages_locale(locale: str) -> Tuple[dict, str]:
+def get_installed_packages_locale(locale_: str) -> Tuple[dict, str]:
     """
     Get all jupyterlab extensions installed that contain locale data.
 
@@ -289,10 +260,10 @@ def get_installed_packages_locale(locale: str) -> Tuple[dict, str]:
             except Exception:
                 messages.append(traceback.format_exc())
 
-            if locale.lower() in locales:
+            if locale_.lower() in locales:
                 locale_json_path = os.path.join(
                     locale_path,
-                    locales[locale.lower()],
+                    locales[locale_.lower()],
                     LC_MESSAGES_DIR,
                     f"{package_name}.json",
                 )
@@ -332,11 +303,11 @@ def get_language_packs(display_locale: str = DEFAULT_LOCALE) -> Tuple[dict, str]
         invalid_locales = []
         valid_locales = []
         messages = []
-        for locale in found_locales:
-            if is_valid_locale(locale):
-                valid_locales.append(locale)
+        for locale_ in found_locales:
+            if is_valid_locale(locale_):
+                valid_locales.append(locale_)
             else:
-                invalid_locales.append(locale)
+                invalid_locales.append(locale_)
 
         display_locale = display_locale if display_locale in valid_locales else DEFAULT_LOCALE
         locales = {
@@ -345,10 +316,10 @@ def get_language_packs(display_locale: str = DEFAULT_LOCALE) -> Tuple[dict, str]
                 "nativeName": get_display_name(DEFAULT_LOCALE, DEFAULT_LOCALE),
             }
         }
-        for locale in valid_locales:
-            locales[locale] = {
-                "displayName": get_display_name(locale, display_locale),
-                "nativeName": get_display_name(locale, locale),
+        for locale_ in valid_locales:
+            locales[locale_] = {
+                "displayName": get_display_name(locale_, display_locale),
+                "nativeName": get_display_name(locale_, locale_),
             }
 
         if invalid_locales:
@@ -357,9 +328,9 @@ def get_language_packs(display_locale: str = DEFAULT_LOCALE) -> Tuple[dict, str]
     return locales, "\n".join(messages)
 
 
-def get_language_pack(locale: str) -> tuple:
+def get_language_pack(locale_: str) -> tuple:
     """
-    Get a language pack for a given `locale` and update with any installed
+    Get a language pack for a given `locale_` and update with any installed
     package locales.
 
     Returns
@@ -374,12 +345,12 @@ def get_language_pack(locale: str) -> tuple:
     information, which seems to be defined on interpreter startup.
     """
     found_locales, message = _get_installed_language_pack_locales()
-    found_packages_locales, message = get_installed_packages_locale(locale)
+    found_packages_locales, message = get_installed_packages_locale(locale_)
     locale_data = {}
     messages = message.split("\n")
-    if not message and is_valid_locale(locale):
-        if locale in found_locales:
-            path = found_locales[locale]
+    if not message and is_valid_locale(locale_):
+        if locale_ in found_locales:
+            path = found_locales[locale_]
             for root, __, files in os.walk(path, topdown=False):
                 for name in files:
                     if name.endswith(".json"):
@@ -413,27 +384,28 @@ class TranslationBundle:
     Translation bundle providing gettext translation functionality.
     """
 
-    def __init__(self, domain: str, locale: str):
+    def __init__(self, domain: str, locale_: str):
         """Initialize the bundle."""
         self._domain = domain
-        self._locale = locale
+        self._locale = locale_
+        self._translator = gettext.NullTranslations()
 
-        self.update_locale(locale)
+        self.update_locale(locale_)
 
-    def update_locale(self, locale: str) -> None:
+    def update_locale(self, locale_: str) -> None:
         """
-        Update the locale environment variables.
+        Update the locale.
 
         Parameters
         ----------
-        locale: str
+        locale_: str
             The language name to use.
         """
         # TODO: Need to handle packages that provide their own .mo files
-        self._locale = locale
+        self._locale = locale_
         localedir = None
-        if locale != DEFAULT_LOCALE:
-            language_pack_module = f"jupyterlab_language_pack_{locale}"
+        if locale_ != DEFAULT_LOCALE:
+            language_pack_module = f"jupyterlab_language_pack_{locale_}"
             try:
                 mod = importlib.import_module(language_pack_module)
                 assert mod.__file__ is not None  # noqa
@@ -442,7 +414,9 @@ class TranslationBundle:
                 # no-op
                 pass
 
-        gettext.bindtextdomain(self._domain, localedir=localedir)
+        self._translator = gettext.translation(
+            self._domain, localedir=localedir, languages=(self._locale,), fallback=True
+        )
 
     def gettext(self, msgid: str) -> str:
         """
@@ -458,7 +432,7 @@ class TranslationBundle:
         str
             The translated string.
         """
-        return gettext.dgettext(self._domain, msgid)
+        return self._translator.gettext(msgid)
 
     def ngettext(self, msgid: str, msgid_plural: str, n: int) -> str:
         """
@@ -478,7 +452,7 @@ class TranslationBundle:
         str
             The translated string.
         """
-        return gettext.dngettext(self._domain, msgid, msgid_plural, n)
+        return self._translator.ngettext(msgid, msgid_plural, n)
 
     def pgettext(self, msgctxt: str, msgid: str) -> str:
         """
@@ -499,9 +473,9 @@ class TranslationBundle:
         # Python 3.7 or lower does not offer translations based on context.
         # On these versions `pgettext` falls back to `gettext`
         if PY37_OR_LOWER:
-            translation = gettext.dgettext(self._domain, msgid)
+            translation = self._translator.gettext(msgid)
         else:
-            translation = gettext.dpgettext(self._domain, msgctxt, msgid)
+            translation = self._translator.pgettext(msgctxt, msgid)
 
         return translation
 
@@ -528,9 +502,9 @@ class TranslationBundle:
         # Python 3.7 or lower does not offer translations based on context.
         # On these versions `npgettext` falls back to `ngettext`
         if PY37_OR_LOWER:
-            translation = gettext.dngettext(self._domain, msgid, msgid_plural, n)
+            translation = self._translator.ngettext(msgid, msgid_plural, n)
         else:
-            translation = gettext.dnpgettext(self._domain, msgctxt, msgid, msgid_plural, n)
+            translation = self._translator.npgettext(msgctxt, msgid, msgid_plural, n)
 
         return translation
 
@@ -617,21 +591,8 @@ class translator:  # noqa
     Translations manager.
     """
 
-    _TRANSLATORS: dict = {}
-    _LOCALE = DEFAULT_LOCALE
-
-    @staticmethod
-    def _update_env(locale: str) -> None:
-        """
-        Update the locale environment variables based on the settings.
-
-        Parameters
-        ----------
-        locale: str
-            The language name to use.
-        """
-        for key in ["LANGUAGE", "LANG"]:
-            os.environ[key] = f"{locale}.UTF-8"
+    _TRANSLATORS: Dict[str, TranslationBundle] = {}
+    _LOCALE = SYS_LOCALE
 
     @staticmethod
     def normalize_domain(domain: str) -> str:
@@ -650,24 +611,23 @@ class translator:  # noqa
         return domain.replace("-", "_")
 
     @classmethod
-    def set_locale(cls, locale: str) -> None:
+    def set_locale(cls, locale_: str) -> None:
         """
         Set locale for the translation bundles based on the settings.
 
         Parameters
         ----------
-        locale: str
+        locale_: str
             The language name to use.
         """
-        if locale == cls._LOCALE:
+        if locale_ == cls._LOCALE:
             # Nothing to do bail early
             return
 
-        if is_valid_locale(locale):
-            cls._LOCALE = locale
-            translator._update_env(locale)
+        if is_valid_locale(locale_):
+            cls._LOCALE = locale_
             for _, bundle in cls._TRANSLATORS.items():
-                bundle.update_locale(locale)
+                bundle.update_locale(locale_)
 
     @classmethod
     def load(cls, domain: str) -> TranslationBundle:
@@ -693,7 +653,7 @@ class translator:  # noqa
             trans = TranslationBundle(norm_domain, cls._LOCALE)
             cls._TRANSLATORS[norm_domain] = trans
 
-        return trans  # type:ignore
+        return trans
 
     @staticmethod
     def _translate_schema_strings(
@@ -757,10 +717,6 @@ class translator:  # noqa
         )
 
         new_schema = schema.copy()
-        translator._translate_schema_strings(translations, schema.copy())
+        translator._translate_schema_strings(translations, new_schema)
 
         return new_schema
-
-
-if __name__ == "__main__":
-    _main()

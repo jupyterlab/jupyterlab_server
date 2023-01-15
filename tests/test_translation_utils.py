@@ -1,21 +1,13 @@
 # Copyright (c) Jupyter Development Team.
 # Distributed under the terms of the Modified BSD License.
 
-import sys
 
 from jupyterlab_server.translation_utils import (
     TranslationBundle,
-    _main,
     get_installed_packages_locale,
     get_language_packs,
     translator,
 )
-
-
-def test_transutils_main():
-    sys.argv = ["", "get_language_packs"]
-    _main()
-    sys.argv = [""]
 
 
 def test_get_installed_packages_locale(jp_environ):
