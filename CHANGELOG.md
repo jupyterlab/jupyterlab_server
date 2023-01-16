@@ -2,6 +2,27 @@
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
+## 2.19.0
+
+([Full Changelog](https://github.com/jupyterlab/jupyterlab_server/compare/v2.18.0...a226eaa4e0a55a167ef7ab6ef7da53a2013a3fb1))
+
+### Enhancements made
+
+- Don't change language environment variable [#366](https://github.com/jupyterlab/jupyterlab_server/pull/366) ([@fcollonval](https://github.com/fcollonval))
+
+### Maintenance and upkeep improvements
+
+- Fix test_process_app [#367](https://github.com/jupyterlab/jupyterlab_server/pull/367) ([@blink1073](https://github.com/blink1073))
+- Sync lint deps [#365](https://github.com/jupyterlab/jupyterlab_server/pull/365) ([@blink1073](https://github.com/blink1073))
+
+### Contributors to this release
+
+([GitHub contributors page for this release](https://github.com/jupyterlab/jupyterlab_server/graphs/contributors?from=2023-01-03&to=2023-01-16&type=c))
+
+[@blink1073](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Ablink1073+updated%3A2023-01-03..2023-01-16&type=Issues) | [@codecov-commenter](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Acodecov-commenter+updated%3A2023-01-03..2023-01-16&type=Issues) | [@fcollonval](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Afcollonval+updated%3A2023-01-03..2023-01-16&type=Issues)
+
+<!-- <END NEW CHANGELOG ENTRY> -->
+
 ## 2.18.0
 
 ([Full Changelog](https://github.com/jupyterlab/jupyterlab_server/compare/v2.17.0...a2528876192e34fa2856b8fb3941148c6447d591))
@@ -23,8 +44,6 @@
 ([GitHub contributors page for this release](https://github.com/jupyterlab/jupyterlab_server/graphs/contributors?from=2022-12-26&to=2023-01-03&type=c))
 
 [@blink1073](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Ablink1073+updated%3A2022-12-26..2023-01-03&type=Issues) | [@codecov-commenter](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Acodecov-commenter+updated%3A2022-12-26..2023-01-03&type=Issues) | [@fcollonval](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Afcollonval+updated%3A2022-12-26..2023-01-03&type=Issues) | [@pre-commit-ci](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Apre-commit-ci+updated%3A2022-12-26..2023-01-03&type=Issues) | [@vidartf](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Avidartf+updated%3A2022-12-26..2023-01-03&type=Issues)
-
-<!-- <END NEW CHANGELOG ENTRY> -->
 
 ## 2.17.0
 
