@@ -348,31 +348,30 @@ def get_language_pack(locale_: str) -> tuple:
     found_packages_locales, message = get_installed_packages_locale(locale_)
     locale_data = {}
     messages = message.split("\n")
-    if not message and is_valid_locale(locale_):
-        if locale_ in found_locales:
-            path = found_locales[locale_]
-            for root, __, files in os.walk(path, topdown=False):
-                for name in files:
-                    if name.endswith(".json"):
-                        pkg_name = name.replace(".json", "")
-                        json_path = os.path.join(root, name)
-                        try:
-                            with open(json_path, encoding="utf-8") as fh:
-                                merged_data = json.load(fh)
-                        except Exception:
-                            messages.append(traceback.format_exc())
+    if not message and is_valid_locale(locale_) and locale_ in found_locales:
+        path = found_locales[locale_]
+        for root, __, files in os.walk(path, topdown=False):
+            for name in files:
+                if name.endswith(".json"):
+                    pkg_name = name.replace(".json", "")
+                    json_path = os.path.join(root, name)
+                    try:
+                        with open(json_path, encoding="utf-8") as fh:
+                            merged_data = json.load(fh)
+                    except Exception:
+                        messages.append(traceback.format_exc())
 
-                        # Load packages with locale data and merge them
-                        if pkg_name in found_packages_locales:
-                            pkg_data = found_packages_locales[pkg_name]
-                            merged_data = merge_locale_data(merged_data, pkg_data)
+                    # Load packages with locale data and merge them
+                    if pkg_name in found_packages_locales:
+                        pkg_data = found_packages_locales[pkg_name]
+                        merged_data = merge_locale_data(merged_data, pkg_data)
 
-                        locale_data[pkg_name] = merged_data
+                    locale_data[pkg_name] = merged_data
 
-            # Check if package locales exist that do not exists in language pack
-            for pkg_name, data in found_packages_locales.items():
-                if pkg_name not in locale_data:
-                    locale_data[pkg_name] = data
+        # Check if package locales exist that do not exists in language pack
+        for pkg_name, data in found_packages_locales.items():
+            if pkg_name not in locale_data:
+                locale_data[pkg_name] = data
 
     return locale_data, "\n".join(messages)
 

@@ -85,7 +85,8 @@ class LicensesManager(LoggingConfigurable):
                 "text/markdown",
             )
 
-        raise ValueError(f"Unsupported report format {report_format}.")
+        msg = f"Unsupported report format {report_format}."
+        raise ValueError(msg)
 
     def report_json(self, bundles):
         """create a JSON report
@@ -97,7 +98,7 @@ class LicensesManager(LoggingConfigurable):
         """create a CSV report"""
         outfile = io.StringIO()
         fieldnames = ["name", "versionInfo", "licenseId", "extractedText"]
-        writer = csv.DictWriter(outfile, fieldnames=["bundle"] + fieldnames)
+        writer = csv.DictWriter(outfile, fieldnames=["bundle", *fieldnames])
         writer.writeheader()
         for bundle_name, bundle in bundles.items():
             for package in bundle["packages"]:

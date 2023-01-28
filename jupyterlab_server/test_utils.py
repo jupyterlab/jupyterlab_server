@@ -42,7 +42,8 @@ class TornadoOpenAPIRequest:
         self.request = request
         self.spec = spec
         if request.url is None:
-            raise RuntimeError("Request URL is missing")
+            msg = "Request URL is missing"
+            raise RuntimeError(msg)
         self._url_parsed = urlparse(request.url)
 
         cookie: SimpleCookie = SimpleCookie()
@@ -90,7 +91,8 @@ class TornadoOpenAPIRequest:
                     url = u[: len(path)] + r"foo"
 
         if url is None:
-            raise ValueError(f"Could not find matching pattern for {o.path}")
+            msg = f"Could not find matching pattern for {o.path}"
+            raise ValueError(msg)
         return url
 
     @property
@@ -103,7 +105,8 @@ class TornadoOpenAPIRequest:
         if self.request.body is None:
             return None
         if not isinstance(self.request.body, bytes):
-            raise AssertionError('Request body is invalid')
+            msg = 'Request body is invalid'
+            raise AssertionError(msg)
         return self.request.body.decode("utf-8")
 
     @property
@@ -128,7 +131,8 @@ class TornadoOpenAPIResponse:
     @property
     def data(self) -> str:
         if not isinstance(self.response.body, bytes):
-            raise AssertionError('Response body is invalid')
+            msg = 'Response body is invalid'
+            raise AssertionError(msg)
         return self.response.body.decode("utf-8")
 
     @property
@@ -165,21 +169,23 @@ def validate_request(response):
 
 def maybe_patch_ioloop():
     """a windows 3.8+ patch for the asyncio loop"""
-    if sys.platform.startswith("win") and tornado.version_info < (6, 1):
-        if sys.version_info >= (3, 8):
+    if (
+        sys.platform.startswith("win")
+        and tornado.version_info < (6, 1)
+        and sys.version_info >= (3, 8)
+    ):
+        try:
+            from asyncio import WindowsProactorEventLoopPolicy, WindowsSelectorEventLoopPolicy
+        except ImportError:
+            pass
+            # not affected
+        else:
+            from asyncio import get_event_loop_policy, set_event_loop_policy
 
-            try:
-                from asyncio import WindowsProactorEventLoopPolicy, WindowsSelectorEventLoopPolicy
-            except ImportError:
-                pass
-                # not affected
-            else:
-                from asyncio import get_event_loop_policy, set_event_loop_policy
-
-                if type(get_event_loop_policy()) is WindowsProactorEventLoopPolicy:
-                    # WindowsProactorEventLoopPolicy is not compatible with tornado 6
-                    # fallback to the pre-3.8 default of Selector
-                    set_event_loop_policy(WindowsSelectorEventLoopPolicy())
+            if type(get_event_loop_policy()) is WindowsProactorEventLoopPolicy:
+                # WindowsProactorEventLoopPolicy is not compatible with tornado 6
+                # fallback to the pre-3.8 default of Selector
+                set_event_loop_policy(WindowsSelectorEventLoopPolicy())
 
 
 def expected_http_error(error, expected_code, expected_message=None):

@@ -175,7 +175,8 @@ class WorkspaceImportApp(JupyterApp, LabConfig):
         workspace = json.load(data)
 
         if "data" not in workspace:
-            raise Exception("The `data` field is missing.")
+            msg = "The `data` field is missing."
+            raise Exception(msg)
 
         # If workspace_name is set in config, inject the
         # name into the workspace metadata.
@@ -183,6 +184,7 @@ class WorkspaceImportApp(JupyterApp, LabConfig):
             workspace["metadata"] = {"id": self.workspace_name}
         else:
             if "id" not in workspace["metadata"]:
-                raise Exception("The `id` field is missing in `metadata`.")
+                msg = "The `id` field is missing in `metadata`."
+                raise Exception(msg)
 
         return workspace

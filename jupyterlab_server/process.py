@@ -85,10 +85,12 @@ class Process:
             Whether to suppress output.
         """
         if not isinstance(cmd, (list, tuple)):
-            raise ValueError("Command must be given as a list")
+            msg = "Command must be given as a list"
+            raise ValueError(msg)
 
         if kill_event and kill_event.is_set():
-            raise ValueError("Process aborted")
+            msg = "Process aborted"
+            raise ValueError(msg)
 
         self.logger = logger or self.get_log()
         self._last_line = ""
@@ -143,7 +145,8 @@ class Process:
         while proc.poll() is None:
             if kill_event.is_set():
                 self.terminate()
-                raise ValueError("Process was aborted")
+                msg = "Process was aborted"
+                raise ValueError(msg)
             time.sleep(1.0)
         return self.terminate()
 
@@ -155,7 +158,8 @@ class Process:
         while proc.poll() is None:
             if kill_event.is_set():
                 self.terminate()
-                raise ValueError("Process was aborted")
+                msg = "Process was aborted"
+                raise ValueError(msg)
             yield gen.sleep(1.0)
 
         raise gen.Return(self.terminate())
@@ -218,7 +222,8 @@ class WatchHelper(Process):
         while 1:
             line = self._stdout.readline().decode("utf-8")
             if not line:
-                raise RuntimeError("Process ended improperly")
+                msg = "Process ended improperly"
+                raise RuntimeError(msg)
             print(line.rstrip())  # noqa
             if re.match(startup_regex, line):
                 break
