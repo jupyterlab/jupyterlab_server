@@ -12,10 +12,9 @@ from urllib.parse import parse_qs, urlparse
 
 import tornado.httpclient
 import tornado.web
+from openapi_core import V30RequestValidator, V30ResponseValidator
 from openapi_core.spec.paths import Spec
-from openapi_core.validation.request import openapi_request_validator
 from openapi_core.validation.request.datatypes import RequestParameters
-from openapi_core.validation.response import openapi_response_validator
 from tornado.httpclient import HTTPRequest, HTTPResponse
 from werkzeug.datastructures import Headers, ImmutableMultiDict
 
@@ -95,6 +94,8 @@ class TornadoOpenAPIRequest:
 
     @property
     def body(self) -> Optional[str]:
+        if self.request.body is None:
+            return None
         if not isinstance(self.request.body, bytes):
             raise AssertionError('Request body is invalid')
         return self.request.body.decode("utf-8")
@@ -142,11 +143,11 @@ def validate_request(response):
     openapi_spec = get_openapi_spec()
 
     request = TornadoOpenAPIRequest(response.request, openapi_spec)
-    result = openapi_request_validator.validate(openapi_spec, request)
+    result = V30RequestValidator(openapi_spec).validate(request)
     result.raise_for_errors()
 
     response = TornadoOpenAPIResponse(response)
-    result2 = openapi_response_validator.validate(openapi_spec, request, response)
+    result2 = V30ResponseValidator(openapi_spec).validate(request, response)
     result2.raise_for_errors()
 
 
