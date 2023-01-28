@@ -321,7 +321,8 @@ def _get_config_manager(level):
     """
     allowed = ["all", "user", "sys_prefix", "system", "app", "extension"]
     if level not in allowed:
-        raise ValueError(f"Page config level must be one of: {allowed}")
+        msg = f"Page config level must be one of: {allowed}"
+        raise ValueError(msg)
 
     config_name = "labconfig"
 

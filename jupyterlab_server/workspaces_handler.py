@@ -97,7 +97,8 @@ class WorkspacesManager(LoggingConfigurable):
         """Initialize a workspaces manager with content in ``path``."""
         super()
         if not path:
-            raise ValueError("Workspaces directory is not set")
+            msg = "Workspaces directory is not set"
+            raise ValueError(msg)
         self.workspaces_dir = Path(path)
 
     def delete(self, space_name):
@@ -106,7 +107,8 @@ class WorkspacesManager(LoggingConfigurable):
         workspace_path = self.workspaces_dir / (slug + WORKSPACE_EXTENSION)
 
         if not workspace_path.exists():
-            raise FileNotFoundError(f"Workspace {space_name!r} ({slug!r}) not found")
+            msg = f"Workspace {space_name!r} ({slug!r}) not found"
+            raise FileNotFoundError(msg)
 
         # to delete the workspace file.
         workspace_path.unlink()
