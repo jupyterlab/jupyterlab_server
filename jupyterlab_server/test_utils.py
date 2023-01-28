@@ -18,8 +18,7 @@ try:
 except ImportError:
     V30RequestValidator = None
     V30ResponseValidator = None
-    from openapi_core.validation.request import openapi_request_validator
-    from openapi_core.validation.response import openapi_response_validator
+    from openapi_core import openapi_request_validator, openapi_response_validator
 from openapi_core.spec.paths import Spec
 from openapi_core.validation.request.datatypes import RequestParameters
 from tornado.httpclient import HTTPRequest, HTTPResponse
@@ -153,14 +152,14 @@ def validate_request(response):
     if V30RequestValidator:
         result = V30RequestValidator(openapi_spec).validate(request)
     else:
-        result = openapi_request_validator(openapi_spec, request)
+        result = openapi_request_validator.validate(openapi_spec, request)
     result.raise_for_errors()
 
     response = TornadoOpenAPIResponse(response)
     if V30ResponseValidator:
         result2 = V30ResponseValidator(openapi_spec).validate(request, response)
     else:
-        result2 = openapi_response_validator(openapi_spec, request, response)
+        result2 = openapi_response_validator.validate(openapi_spec, request, response)
     result2.raise_for_errors()
 
 
