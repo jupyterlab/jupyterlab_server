@@ -14,10 +14,10 @@ HERE = Path(os.path.dirname(__file__)).resolve()
 
 def get_openapi_spec() -> "Spec":
     """Get the OpenAPI spec object."""
-    from openapi_core.spec.shortcuts import create_spec
+    from openapi_core.spec.paths import Spec
 
     openapi_spec_dict = get_openapi_spec_dict()
-    return create_spec(openapi_spec_dict)
+    return Spec.from_dict(openapi_spec_dict)
 
 
 def get_openapi_spec_dict():
