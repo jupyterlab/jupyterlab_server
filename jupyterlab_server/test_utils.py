@@ -14,7 +14,7 @@ import tornado.httpclient
 import tornado.web
 
 try:
-    from openapi_core import V30RequestValidator, V30ResponseValidator
+    from openapi_core import V30RequestValidator, V30ResponseValidator  # type:ignore[attr-defined]
 except ImportError:
     V30RequestValidator = None
     V30ResponseValidator = None
