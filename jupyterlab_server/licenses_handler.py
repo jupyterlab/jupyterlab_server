@@ -11,12 +11,12 @@ import re
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
+from jupyter_server.base.handlers import APIHandler
 from tornado import gen, web
 from traitlets import List, Unicode
 from traitlets.config import LoggingConfigurable
 
 from .config import get_federated_extensions
-from .server import APIHandler
 
 # this is duplicated in @juptyerlab/builder
 DEFAULT_THIRD_PARTY_LICENSE_FILE = "third-party-licenses.json"

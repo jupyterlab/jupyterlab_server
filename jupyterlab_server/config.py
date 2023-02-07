@@ -11,9 +11,8 @@ from os.path import join as pjoin
 
 from jupyter_core.paths import SYSTEM_CONFIG_PATH, jupyter_config_dir, jupyter_path
 from jupyter_server.services.config.manager import ConfigManager, recursive_update
+from jupyter_server.utils import url_path_join as ujoin
 from traitlets import Bool, HasTraits, List, Unicode, default
-
-from .server import url_path_join as ujoin
 
 # -----------------------------------------------------------------------------
 # Module globals

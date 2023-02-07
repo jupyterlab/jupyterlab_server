@@ -6,11 +6,10 @@
 import os
 import re
 from glob import glob
-from os import path as osp
 from urllib.parse import urlparse
 
-from .server import FileFindHandler
-from .server import url_path_join as ujoin
+from jupyter_server.base.handlers import FileFindHandler
+from jupyter_server.utils import url_path_join as ujoin
 
 
 class ThemesHandler(FileFindHandler):
@@ -50,7 +49,7 @@ class ThemesHandler(FileFindHandler):
         This method should either return a byte string or an iterator
         of byte strings.
         """
-        base, ext = osp.splitext(abspath)
+        base, ext = os.path.splitext(abspath)
         if ext != ".css":
             return FileFindHandler.get_content(abspath, start, end)
 
@@ -59,7 +58,7 @@ class ThemesHandler(FileFindHandler):
     def get_content_size(self):
         """Retrieve the total size of the resource at the given path."""
         assert self.absolute_path is not None  # noqa
-        base, ext = osp.splitext(self.absolute_path)
+        base, ext = os.path.splitext(self.absolute_path)
         if ext != ".css":
             return FileFindHandler.get_content_size(self)
         else:
@@ -71,7 +70,7 @@ class ThemesHandler(FileFindHandler):
         with open(self.absolute_path, "rb") as fid:
             data = fid.read().decode("utf-8")
 
-        basedir = osp.dirname(self.path).replace(os.sep, "/")
+        basedir = os.path.dirname(self.path).replace(os.sep, "/")
         basepath = ujoin(self.themes_url, basedir)
 
         # Replace local paths with mangled paths.

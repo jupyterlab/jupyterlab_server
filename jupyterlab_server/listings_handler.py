@@ -7,8 +7,7 @@ import json
 
 import requests
 import tornado
-
-from .server import APIHandler
+from jupyter_server.base.handlers import APIHandler
 
 LISTINGS_URL_SUFFIX = "@jupyterlab/extensionmanager-extension/listings.json"
 
