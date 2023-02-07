@@ -14,7 +14,6 @@ from jupyter_server.services.config.manager import ConfigManager, recursive_upda
 from jupyter_server.utils import url_path_join as ujoin
 from traitlets import Bool, HasTraits, List, Unicode, default
 
-
 # -----------------------------------------------------------------------------
 # Module globals
 # -----------------------------------------------------------------------------

@@ -16,7 +16,6 @@ from jupyter_server.utils import url_path_join as ujoin
 from tornado import web
 from traitlets.config import LoggingConfigurable
 
-
 # The JupyterLab workspace file extension.
 WORKSPACE_EXTENSION = ".jupyterlab-workspace"
 
