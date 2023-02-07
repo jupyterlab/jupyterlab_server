@@ -99,7 +99,7 @@ class LabHandler(ExtensionHandlerJinjaMixin, ExtensionHandlerMixin, JupyterHandl
                         .as_posix()
                     )
             except Exception:
-                pass  # we do not require the preferred_dir trait to be present
+                pass  # noqa  # we do not require the preferred_dir trait to be present
         # JupyterLab relies on an unset/default path being "/"
         page_config["preferredPath"] = preferred_path or "/"
 
@@ -175,7 +175,7 @@ class NotFoundHandler(LabHandler):
         return page_config
 
 
-def add_handlers(handlers, extension_app):
+def add_handlers(handlers, extension_app):  # noqa
     """Add the appropriate handlers to the web app."""
     # Normalize directories.
     for name in LabConfig.class_trait_names():
@@ -246,7 +246,6 @@ def add_handlers(handlers, extension_app):
 
     # Handle saved workspaces.
     if extension_app.workspaces_dir:
-
         workspaces_config = {"manager": WorkspacesManager(extension_app.workspaces_dir)}
 
         # Handle requests for the list of workspaces. Make slash optional.

@@ -48,7 +48,6 @@ def teardown_module(module):
 
 @pytest.fixture(autouse=True)
 def before_after_test(schemas_dir, user_settings_dir, labserverapp):
-
     # Code that will run before any test.
 
     # Copy the schema files.

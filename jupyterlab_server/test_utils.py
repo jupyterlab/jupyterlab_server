@@ -188,7 +188,7 @@ def maybe_patch_ioloop():
                 set_event_loop_policy(WindowsSelectorEventLoopPolicy())
 
 
-def expected_http_error(error, expected_code, expected_message=None):
+def expected_http_error(error, expected_code, expected_message=None):  # noqa
     """Check that the error matches the expected output error."""
     e = error.value
     if isinstance(e, tornado.web.HTTPError):

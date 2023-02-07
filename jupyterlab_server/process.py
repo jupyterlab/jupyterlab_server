@@ -119,7 +119,7 @@ class Process:
         try:
             proc.wait(timeout=2.0)
         except subprocess.TimeoutExpired:
-            if os.name == "nt":
+            if os.name == "nt":  # noqa
                 sig = signal.SIGBREAK  # type:ignore
             else:
                 sig = signal.SIGKILL

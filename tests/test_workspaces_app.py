@@ -13,7 +13,6 @@ from jupyterlab_server.workspaces_app import (
 
 
 def test_workspace_apps(jp_environ, tmp_path):
-
     sys.argv = [sys.argv[0]]
 
     data = {
