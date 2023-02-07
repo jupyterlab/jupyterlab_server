@@ -9,10 +9,11 @@ from glob import glob
 import json5  # type:ignore
 from jsonschema import Draft4Validator as Validator
 from jsonschema import ValidationError
+from jupyter_server import _tz as tz
+from jupyter_server.base.handlers import APIHandler
 from jupyter_server.services.config.manager import ConfigManager, recursive_update
 from tornado import web
 
-from .server import APIHandler, tz
 from .translation_utils import DEFAULT_LOCALE, L10N_SCHEMA_NAME, SYS_LOCALE, is_valid_locale
 
 # The JupyterLab settings file extension.
