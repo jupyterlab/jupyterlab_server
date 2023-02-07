@@ -246,7 +246,6 @@ def add_handlers(handlers, extension_app):
 
     # Handle saved workspaces.
     if extension_app.workspaces_dir:
-
         workspaces_config = {"manager": WorkspacesManager(extension_app.workspaces_dir)}
 
         # Handle requests for the list of workspaces. Make slash optional.

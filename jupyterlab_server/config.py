@@ -113,7 +113,7 @@ def get_page_config(labextensions_path, app_settings_dir=None, logger=None):
     # Ensure there is a disabled key
     page_config.setdefault(disabled_key, {})
 
-    for (_, ext_data) in federated_exts.items():
+    for _, ext_data in federated_exts.items():
         if "_build" not in ext_data["jupyterlab"]:
             logger.warning("%s is not a valid extension" % ext_data["name"])
             continue
@@ -143,7 +143,7 @@ def get_page_config(labextensions_path, app_settings_dir=None, logger=None):
             with open(package_data_file, encoding="utf-8") as fid:
                 app_data = json.load(fid)
             all_ext_data = app_data["jupyterlab"].get("extensionMetadata", {})
-            for (ext, ext_data) in all_ext_data.items():
+            for ext, ext_data in all_ext_data.items():
                 if ext in disabled_by_extensions_all:
                     continue
                 if ext_data.get(disabled_key):
@@ -164,8 +164,7 @@ def get_page_config(labextensions_path, app_settings_dir=None, logger=None):
     page_config[disabled_key] = rollup_disabled
 
     # Convert dictionaries to lists to give to the front end
-    for (key, value) in page_config.items():
-
+    for key, value in page_config.items():
         if isinstance(value, dict):
             page_config[key] = [subkey for subkey in value if value[subkey]]
 

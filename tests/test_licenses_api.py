@@ -192,4 +192,4 @@ def a_licenses_manager():
 def test_labextension_bundle(a_fake_labextension, a_licenses_manager):
     ext_path, ext_name = a_fake_labextension
     bundle = a_licenses_manager.license_bundle(ext_path, ext_name)
-    assert bundle["packages"][0]["name"] == dict(FULL_ENTRY)["name"]  # noqa
+    assert bundle["packages"][0]["name"] == dict(FULL_ENTRY)["name"]
