@@ -270,7 +270,7 @@ def add_handlers(handlers, extension_app):  # noqa
 
         sys.exit(-1)
 
-    ListingsHandler.listings_refresh_seconds = settings_config.get(  # type:ignore
+    ListingsHandler.listings_refresh_seconds = settings_config.get(
         "listings_refresh_seconds", 60 * 60
     )
     ListingsHandler.listings_request_opts = settings_config.get("listings_request_options", {})
@@ -290,10 +290,10 @@ def add_handlers(handlers, extension_app):  # noqa
     ):
         from tornado import ioloop
 
-        callback_time = (ListingsHandler.listings_refresh_seconds * 1000,)  # type:ignore
+        callback_time = ListingsHandler.listings_refresh_seconds * 1000
         ListingsHandler.pc = ioloop.PeriodicCallback(
             lambda: fetch_listings(None),  # type:ignore
-            callback_time=callback_time,  # type:ignore
+            callback_time=callback_time,
             jitter=0.1,
         )
         ListingsHandler.pc.start()  # type:ignore
