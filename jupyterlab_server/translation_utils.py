@@ -8,7 +8,6 @@ localization data.
 
 import gettext
 import importlib
-import json
 import locale
 import os
 import re
@@ -19,6 +18,8 @@ from typing import Any, Dict, Optional, Pattern, Tuple
 
 import babel
 from packaging.version import parse as parse_version
+
+from .json_utils import load_json
 
 # See compatibility note on `group` keyword in https://docs.python.org/3/library/importlib.metadata.html#entry-points
 if sys.version_info < (3, 10):  # pragma: no cover
@@ -269,8 +270,7 @@ def get_installed_packages_locale(locale_: str) -> Tuple[dict, str]:
                 )
                 if os.path.isfile(locale_json_path):
                     try:
-                        with open(locale_json_path, encoding="utf-8") as fh:
-                            packages_locale_data[package_name] = json.load(fh)
+                        packages_locale_data[package_name] = load_json(locale_json_path)
                     except Exception:
                         messages.append(traceback.format_exc())
 
@@ -356,8 +356,7 @@ def get_language_pack(locale_: str) -> tuple:
                     pkg_name = name.replace(".json", "")
                     json_path = os.path.join(root, name)
                     try:
-                        with open(json_path, encoding="utf-8") as fh:
-                            merged_data = json.load(fh)
+                        merged_data = load_json(json_path)
                     except Exception:
                         messages.append(traceback.format_exc())
 

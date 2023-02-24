@@ -12,6 +12,7 @@ from traitlets import Bool, Unicode
 
 from ._version import __version__
 from .config import LabConfig
+from .json_utils import load_json
 from .workspaces_handler import WorkspacesManager
 
 # Default workspace ID
@@ -172,7 +173,7 @@ class WorkspaceImportApp(JupyterApp, LabConfig):
             return file_path.open(encoding="utf-8")
 
     def _validate(self, data):
-        workspace = json.load(data)
+        workspace = load_json(data)
 
         if "data" not in workspace:
             msg = "The `data` field is missing."

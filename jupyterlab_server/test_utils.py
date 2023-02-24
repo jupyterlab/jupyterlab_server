@@ -26,10 +26,12 @@ from werkzeug.datastructures import Headers, ImmutableMultiDict
 
 from jupyterlab_server.spec import get_openapi_spec
 
+from .json_utils import load_json
+
 HERE = Path(os.path.dirname(__file__)).resolve()
 
 with open(HERE / "test_data" / "app-settings" / "overrides.json", encoding="utf-8") as fpt:
-    big_unicode_string = json.load(fpt)["@jupyterlab/unicode-extension:plugin"]["comment"]
+    big_unicode_string = load_json(fpt)["@jupyterlab/unicode-extension:plugin"]["comment"]
 
 
 class TornadoOpenAPIRequest:

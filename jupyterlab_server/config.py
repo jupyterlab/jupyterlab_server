@@ -3,7 +3,6 @@
 # Copyright (c) Jupyter Development Team.
 # Distributed under the terms of the Modified BSD License.
 
-import json
 import os.path as osp
 from glob import iglob
 from itertools import chain
@@ -13,6 +12,8 @@ from jupyter_core.paths import SYSTEM_CONFIG_PATH, jupyter_config_dir, jupyter_p
 from jupyter_server.services.config.manager import ConfigManager, recursive_update
 from jupyter_server.utils import url_path_join as ujoin
 from traitlets import Bool, HasTraits, List, Unicode, default
+
+from .json_utils import load_json
 
 # -----------------------------------------------------------------------------
 # Module globals
@@ -42,8 +43,7 @@ def get_federated_extensions(labextensions_path):
             iglob(pjoin(ext_dir, "[!@]*", "package.json")),
             iglob(pjoin(ext_dir, "@*", "*", "package.json")),
         ):
-            with open(ext_path, encoding="utf-8") as fid:
-                pkgdata = json.load(fid)
+            pkgdata = load_json(ext_path)
             if pkgdata["name"] not in federated_extensions:
                 data = dict(
                     name=pkgdata["name"],
@@ -58,8 +58,7 @@ def get_federated_extensions(labextensions_path):
                 )
                 install_path = osp.join(osp.dirname(ext_path), "install.json")
                 if osp.exists(install_path):
-                    with open(install_path, encoding="utf-8") as fid:
-                        data["install"] = json.load(fid)
+                    data["install"] = load_json(install_path)
                 federated_extensions[data["name"]] = data
     return federated_extensions
 
@@ -89,8 +88,7 @@ def get_page_config(labextensions_path, app_settings_dir=None, logger=None):  # 
     if app_settings_dir:
         app_page_config = pjoin(app_settings_dir, "page_config.json")
         if osp.exists(app_page_config):
-            with open(app_page_config, encoding="utf-8") as fid:
-                data = json.load(fid)
+            data = load_json(app_page_config)
 
             # Convert lists to dicts
             for key in [disabled_key, "deferredExtensions"]:
@@ -139,8 +137,7 @@ def get_page_config(labextensions_path, app_settings_dir=None, logger=None):  # 
         app_dir = osp.dirname(app_settings_dir)
         package_data_file = pjoin(app_dir, "static", "package.json")
         if osp.exists(package_data_file):
-            with open(package_data_file, encoding="utf-8") as fid:
-                app_data = json.load(fid)
+            app_data = load_json(package_data_file)
             all_ext_data = app_data["jupyterlab"].get("extensionMetadata", {})
             for ext, ext_data in all_ext_data.items():
                 if ext in disabled_by_extensions_all:

@@ -2,7 +2,6 @@
 
 # Copyright (c) Jupyter Development Team.
 # Distributed under the terms of the Modified BSD License.
-import json
 import os
 from glob import glob
 
@@ -14,6 +13,7 @@ from jupyter_server.base.handlers import APIHandler
 from jupyter_server.services.config.manager import ConfigManager, recursive_update
 from tornado import web
 
+from .json_utils import load_json
 from .translation_utils import DEFAULT_LOCALE, L10N_SCHEMA_NAME, SYS_LOCALE, is_valid_locale
 
 # The JupyterLab settings file extension.
@@ -46,13 +46,12 @@ def _get_schema(schemas_dir, schema_name, overrides, labextensions_path):
     if not os.path.exists(path):
         raise web.HTTPError(404, notfound_error % path)
 
-    with open(path, encoding="utf-8") as fid:
+    try:
         # Attempt to load the schema file.
-        try:
-            schema = json.load(fid)
-        except Exception as e:
-            name = schema_name
-            raise web.HTTPError(500, parse_error % (name, str(e))) from None
+        schema = load_json(path)
+    except Exception as e:
+        name = schema_name
+        raise web.HTTPError(500, parse_error % (name, str(e))) from None
 
     schema = _override(schema_name, schema, overrides)
 
@@ -115,9 +114,7 @@ def _get_version(schemas_dir, schema_name):
     package_path = os.path.join(os.path.split(path)[0], "package.json.orig")
 
     try:  # to load and parse the package.json.orig file.
-        with open(package_path, encoding="utf-8") as fid:
-            package = json.load(fid)
-            return package["version"]
+        return load_json(package_path)["version"]
     except Exception:
         return "N/A"
 
@@ -288,16 +285,12 @@ def _get_overrides(app_settings_dir):
         if not os.path.exists(overrides_path):
             continue
 
-        with open(overrides_path, encoding="utf-8") as fid:
-            try:
-                if overrides_path.endswith(".json5"):
-                    path_overrides = json5.load(fid)
-                else:
-                    path_overrides = json.load(fid)
-                for plugin_id, config in path_overrides.items():
-                    recursive_update(overrides.setdefault(plugin_id, {}), config)
-            except Exception as e:
-                error = e  # type:ignore
+        try:
+            path_overrides = load_json(overrides_path)
+            for plugin_id, config in path_overrides.items():
+                recursive_update(overrides.setdefault(plugin_id, {}), config)
+        except Exception as e:
+            error = e  # type:ignore
 
     # Allow `default_settings_overrides.json` files in <jupyter_config>/labconfig dirs
     # to allow layering of defaults

@@ -16,6 +16,8 @@ from jupyter_server.utils import url_path_join as ujoin
 from tornado import web
 from traitlets.config import LoggingConfigurable
 
+from .json_utils import load_json
+
 # The JupyterLab workspace file extension.
 WORKSPACE_EXTENSION = ".jupyterlab-workspace"
 
@@ -51,12 +53,11 @@ def _load_with_file_times(workspace_path: Path) -> dict:
     metadata with current file stat information
     """
     stat = workspace_path.stat()
-    with workspace_path.open(encoding="utf-8") as fid:
-        workspace = json.load(fid)
-        workspace["metadata"].update(
-            last_modified=tz.utcfromtimestamp(stat.st_mtime).isoformat(),
-            created=tz.utcfromtimestamp(stat.st_ctime).isoformat(),
-        )
+    workspace = load_json(workspace_path)
+    workspace["metadata"].update(
+        last_modified=tz.utcfromtimestamp(stat.st_mtime).isoformat(),
+        created=tz.utcfromtimestamp(stat.st_ctime).isoformat(),
+    )
     return workspace  # type:ignore
 
 
