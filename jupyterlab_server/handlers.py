@@ -99,7 +99,7 @@ class LabHandler(ExtensionHandlerJinjaMixin, ExtensionHandlerMixin, JupyterHandl
                         .as_posix()
                     )
             except Exception:
-                pass  # noqa  # we do not require the preferred_dir trait to be present
+                pass
         # JupyterLab relies on an unset/default path being "/"
         page_config["preferredPath"] = preferred_path or "/"
 
