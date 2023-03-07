@@ -409,7 +409,7 @@ class TranslationBundle:
                 mod = importlib.import_module(language_pack_module)
                 assert mod.__file__ is not None  # noqa
                 localedir = os.path.join(os.path.dirname(mod.__file__), LOCALE_DIR)
-            except Exception:
+            except Exception:  # noqa S110
                 # no-op
                 pass
 

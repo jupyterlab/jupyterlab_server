@@ -182,9 +182,8 @@ class WorkspaceImportApp(JupyterApp, LabConfig):
         # name into the workspace metadata.
         if self.workspace_name is not None and self.workspace_name != "":
             workspace["metadata"] = {"id": self.workspace_name}
-        else:
-            if "id" not in workspace["metadata"]:
-                msg = "The `id` field is missing in `metadata`."
-                raise Exception(msg)
+        elif "id" not in workspace["metadata"]:
+            msg = "The `id` field is missing in `metadata`."
+            raise Exception(msg)
 
         return workspace

@@ -77,12 +77,11 @@ class TornadoOpenAPIRequest:
         # https://github.com/OAI/OpenAPI-Specification/issues/892
         url = None
         o = urlparse(self.request.url)
-        for path in self.spec["paths"]:
+        for path_ in self.spec["paths"]:
             if url:
                 continue
-            has_arg = "{" in path
-            if has_arg:
-                path = path[: path.index("{")]
+            has_arg = "{" in path_
+            path = path_[: path.index("{")] if has_arg else path_
             if path in o.path:
                 u = o.path[o.path.index(path) :]
                 if not has_arg and len(u) == len(path):
