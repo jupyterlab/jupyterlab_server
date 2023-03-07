@@ -147,6 +147,8 @@ filterwarnings = [
   # From openapi_schema_validator
   "module:write property is deprecated:DeprecationWarning",
   "module:read property is deprecated:DeprecationWarning",
+  # From tornado.netutil.bind_sockets
+  "module:unclosed <socket.socket:ResourceWarning",
 ]
 
 [tool.coverage.report]
