@@ -81,7 +81,7 @@ class TornadoOpenAPIRequest:
             if url:
                 continue
             has_arg = "{" in path_
-            path = path_[: path.index("{")] if has_arg else path_
+            path = path_[: path_.index("{")] if has_arg else path_
             if path in o.path:
                 u = o.path[o.path.index(path) :]
                 if not has_arg and len(u) == len(path):
