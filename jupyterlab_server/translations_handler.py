@@ -57,10 +57,9 @@ class TranslationsHandler(SchemaHandler):
                         message = f"Language pack '{locale}' not installed!"
                     else:
                         message = f"Language pack '{locale}' not valid!"
-                else:
+                elif is_valid_locale(locale):
                     # only change locale if the language pack is installed and valid
-                    if is_valid_locale(locale):
-                        translator.set_locale(locale)
+                    translator.set_locale(locale)
         except Exception:
             message = traceback.format_exc()
 

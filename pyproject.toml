@@ -118,7 +118,7 @@ dependencies = [
   "black[jupyter]==23.1.0",
   "mdformat>0.7",
   "mdformat-gfm>=0.3.5",
-  "ruff==0.0.242"
+  "ruff==0.0.254"
 ]
 detatched = true
 [tool.hatch.envs.lint.scripts]
@@ -250,6 +250,8 @@ ignore = [
 "tests/*" = ["S101", "A001", "F841", "EM101", "EM102", "EM103", "PLR2004"]
 # F401 `foo` imported but unused
 "jupyterlab_server/server.py" = ["F401"]
+# Invalid module name
+"tests/translations/jupyterlab-language-pack-es_CO/jupyterlab_language_pack_es_CO/__init__.py" = ["N999"]
 
 [tool.interrogate]
 ignore-init-module=true
