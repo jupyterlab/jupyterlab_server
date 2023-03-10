@@ -78,6 +78,8 @@ class ListingsHandler(APIHandler):
     allowed_extensions: list = []
     # The provider request options to be used for the request library.
     listings_request_opts: dict = {}
+    # The callback time for the periodic callback in seconds.
+    listings_refresh_seconds: int
     # The PeriodicCallback that schedule the call to fetch_listings method.
     pc = None
 

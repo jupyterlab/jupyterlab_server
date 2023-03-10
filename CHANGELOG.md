@@ -2,6 +2,30 @@
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
+## 2.20.0
+
+([Full Changelog](https://github.com/jupyterlab/jupyterlab_server/compare/v2.19.0...4a08b8418248f4068a3ae0bdf4aa93c524130421))
+
+### Bugs fixed
+
+- Change periodic callback time from tuple to int (#376 [#376](https://github.com/jupyterlab/jupyterlab_server/pull/376) ([@rmoe](https://github.com/rmoe))
+
+### Maintenance and upkeep improvements
+
+- Pin openapi deps [#381](https://github.com/jupyterlab/jupyterlab_server/pull/381) ([@blink1073](https://github.com/blink1073))
+- Revert "Fix some CodeQL notices" [#372](https://github.com/jupyterlab/jupyterlab_server/pull/372) ([@fcollonval](https://github.com/fcollonval))
+- Fix some CodeQL notices [#371](https://github.com/jupyterlab/jupyterlab_server/pull/371) ([@fcollonval](https://github.com/fcollonval))
+- Add more linting [#369](https://github.com/jupyterlab/jupyterlab_server/pull/369) ([@blink1073](https://github.com/blink1073))
+- Clean up openapi compat and warnings [#368](https://github.com/jupyterlab/jupyterlab_server/pull/368) ([@blink1073](https://github.com/blink1073))
+
+### Contributors to this release
+
+([GitHub contributors page for this release](https://github.com/jupyterlab/jupyterlab_server/graphs/contributors?from=2023-01-16&to=2023-03-06&type=c))
+
+[@blink1073](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Ablink1073+updated%3A2023-01-16..2023-03-06&type=Issues) | [@codecov-commenter](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Acodecov-commenter+updated%3A2023-01-16..2023-03-06&type=Issues) | [@fcollonval](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Afcollonval+updated%3A2023-01-16..2023-03-06&type=Issues) | [@pre-commit-ci](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Apre-commit-ci+updated%3A2023-01-16..2023-03-06&type=Issues) | [@rmoe](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Armoe+updated%3A2023-01-16..2023-03-06&type=Issues) | [@welcome](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Awelcome+updated%3A2023-01-16..2023-03-06&type=Issues)
+
+<!-- <END NEW CHANGELOG ENTRY> -->
+
 ## 2.19.0
 
 ([Full Changelog](https://github.com/jupyterlab/jupyterlab_server/compare/v2.18.0...a226eaa4e0a55a167ef7ab6ef7da53a2013a3fb1))
@@ -20,8 +44,6 @@
 ([GitHub contributors page for this release](https://github.com/jupyterlab/jupyterlab_server/graphs/contributors?from=2023-01-03&to=2023-01-16&type=c))
 
 [@blink1073](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Ablink1073+updated%3A2023-01-03..2023-01-16&type=Issues) | [@codecov-commenter](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Acodecov-commenter+updated%3A2023-01-03..2023-01-16&type=Issues) | [@fcollonval](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Afcollonval+updated%3A2023-01-03..2023-01-16&type=Issues)
-
-<!-- <END NEW CHANGELOG ENTRY> -->
 
 ## 2.18.0
 
