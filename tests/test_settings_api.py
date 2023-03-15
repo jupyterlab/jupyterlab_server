@@ -123,9 +123,9 @@ async def test_listing_names(jp_fetch, labserverapp):
     assert set(response_ids) == set(ids)
 
     # Checks there is only the 'id' key in each item
-    assert all([
-        (len(item.keys()) == 1 and list(item.keys())[0] == 'id') for item in response["settings"]
-    ])
+    assert all(
+        [(len(item.keys()) == 1 and list(item.keys())[0] == 'id') for item in response["settings"]]
+    )
 
 
 async def test_patch(jp_fetch, labserverapp):

@@ -129,7 +129,7 @@ def _list_settings(
     extension=".json",
     labextensions_path=None,
     translator=None,
-    names_only=False
+    names_only=False,
 ):
     """
     Returns a tuple containing:
@@ -210,7 +210,9 @@ def _list_settings(
                     warnings.append(user_settings.pop("warning"))
 
                 # Add the plugin to the list of settings.
-                federated_settings[_id] = dict(id=_id, schema=schema, version=version, **user_settings)
+                federated_settings[_id] = dict(
+                    id=_id, schema=schema, version=version, **user_settings
+                )
 
     settings.update(federated_settings)
     settings_list = [settings[key] for key in sorted(settings.keys(), reverse=True)]
@@ -323,7 +325,7 @@ def get_settings(
     overrides=None,
     labextensions_path=None,
     translator=None,
-    names_only=False
+    names_only=False,
 ):
     """
     Get settings.
@@ -374,7 +376,7 @@ def get_settings(
             overrides,
             labextensions_path=labextensions_path,
             translator=translator,
-            names_only=names_only
+            names_only=names_only,
         )
         result = {
             "settings": settings_list,
