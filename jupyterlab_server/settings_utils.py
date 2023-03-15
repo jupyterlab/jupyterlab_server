@@ -375,6 +375,49 @@ def get_settings(
     return result, warnings
 
 
+def get_schemas_names(schemas_dir, extension=".json"):
+    """
+    Get a list of the schema names
+
+    Parameters
+    ----------
+    schemas_dir: str
+        Path to schemas.
+    extension: str
+        File extension of the schema, default is '.json'.
+
+    Returns
+    -------
+    tuple
+        The first item is a list of strings containing the list of the schemas names.
+        The second item a list of warnings (to be consistent with `get_settings`),
+        but can only contain one warning if the schema_dir does not exist.
+    """
+    names = []
+    warnings = []
+
+    if not os.path.exists(schemas_dir):
+        warnings = ["Settings directory does not exist at %s" % schemas_dir]
+        return ([], warnings)
+
+    schema_pattern = schemas_dir + "/**/*" + extension
+    schema_paths = [path for path in glob(schema_pattern, recursive=True)]
+    schema_paths.sort()
+
+    for schema_path in schema_paths:
+        # Generate the schema_name used to request individual settings.
+        rel_path = os.path.relpath(schema_path, schemas_dir)
+        rel_schema_dir, schema_base = os.path.split(rel_path)
+        schema_name = ":".join(
+            [rel_schema_dir, schema_base[: -len(extension)]]  # Remove file extension.
+        ).replace(
+            "\\", "/"
+        )  # Normalize slashes.
+
+        names.append(schema_name)
+    return (names, warnings)
+
+
 def save_settings(
     schemas_dir,
     settings_dir,

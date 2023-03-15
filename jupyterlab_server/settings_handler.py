@@ -8,7 +8,7 @@ from jsonschema import ValidationError
 from jupyter_server.extension.handler import ExtensionHandlerJinjaMixin, ExtensionHandlerMixin
 from tornado import web
 
-from .settings_utils import SchemaHandler, get_settings, save_settings
+from .settings_utils import SchemaHandler, get_settings, save_settings, get_schemas_names
 from .translation_utils import translator
 
 
@@ -26,21 +26,35 @@ class SettingsHandler(ExtensionHandlerMixin, ExtensionHandlerJinjaMixin, SchemaH
 
     @web.authenticated
     def get(self, schema_name=""):
-        """Get setting(s)"""
+        """
+        Get setting(s)
+
+        Parameters
+        ----------
+        schema_name: str
+            The id of a unique schema to send, added to the URL
+
+        ## NOTES:
+            An optional argument `names_only=true` can be provided in the URL to get only the
+            names of the schemas instead of the content.
+        """
         # Need to be update here as translator locale is not change when a new locale is put
         # from frontend
         locale = self.get_current_locale()
         translator.set_locale(locale)
 
-        result, warnings = get_settings(
-            self.app_settings_dir,
-            self.schemas_dir,
-            self.settings_dir,
-            labextensions_path=self.labextensions_path,
-            schema_name=schema_name,
-            overrides=self.overrides,
-            translator=translator.translate_schema,
-        )
+        if self.get_argument('names_only', False):
+            result, warnings = get_schemas_names(self.schemas_dir)
+        else:
+            result, warnings = get_settings(
+                self.app_settings_dir,
+                self.schemas_dir,
+                self.settings_dir,
+                labextensions_path=self.labextensions_path,
+                schema_name=schema_name,
+                overrides=self.overrides,
+                translator=translator.translate_schema,
+            )
 
         # Print all warnings.
         for w in warnings:
