@@ -8,7 +8,7 @@ from jsonschema import ValidationError
 from jupyter_server.extension.handler import ExtensionHandlerJinjaMixin, ExtensionHandlerMixin
 from tornado import web
 
-from .settings_utils import SchemaHandler, get_schemas_names, get_settings, save_settings
+from .settings_utils import SchemaHandler, get_settings, save_settings
 from .translation_utils import translator
 
 
@@ -43,18 +43,18 @@ class SettingsHandler(ExtensionHandlerMixin, ExtensionHandlerJinjaMixin, SchemaH
         locale = self.get_current_locale()
         translator.set_locale(locale)
 
-        if self.get_argument('names_only', False):
-            result, warnings = get_schemas_names(self.schemas_dir)
-        else:
-            result, warnings = get_settings(
-                self.app_settings_dir,
-                self.schemas_dir,
-                self.settings_dir,
-                labextensions_path=self.labextensions_path,
-                schema_name=schema_name,
-                overrides=self.overrides,
-                translator=translator.translate_schema,
-            )
+        names_only = self.get_argument('names_only', '') == 'true'
+
+        result, warnings = get_settings(
+            self.app_settings_dir,
+            self.schemas_dir,
+            self.settings_dir,
+            labextensions_path=self.labextensions_path,
+            schema_name=schema_name,
+            overrides=self.overrides,
+            translator=translator.translate_schema,
+            names_only=names_only,
+        )
 
         # Print all warnings.
         for w in warnings:

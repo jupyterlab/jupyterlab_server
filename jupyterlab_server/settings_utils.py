@@ -129,6 +129,7 @@ def _list_settings(
     extension=".json",
     labextensions_path=None,
     translator=None,
+    names_only=False
 ):
     """
     Returns a tuple containing:
@@ -159,16 +160,19 @@ def _list_settings(
         ).replace(
             "\\", "/"
         )  # Normalize slashes.
-        schema, version = _get_schema(schemas_dir, schema_name, overrides, None)
-        if translator is not None:
-            schema = translator(schema)
-        user_settings = _get_user_settings(settings_dir, schema_name, schema)
+        if names_only:
+            settings[_id] = dict(id=_id)
+        else:
+            schema, version = _get_schema(schemas_dir, schema_name, overrides, None)
+            if translator is not None:
+                schema = translator(schema)
+            user_settings = _get_user_settings(settings_dir, schema_name, schema)
 
-        if user_settings["warning"]:
-            warnings.append(user_settings.pop("warning"))
+            if user_settings["warning"]:
+                warnings.append(user_settings.pop("warning"))
 
-        # Add the plugin to the list of settings.
-        settings[_id] = dict(id=_id, schema=schema, version=version, **user_settings)
+            # Add the plugin to the list of settings.
+            settings[_id] = dict(id=_id, schema=schema, version=version, **user_settings)
 
     if labextensions_path is not None:
         schema_paths = []
@@ -194,17 +198,19 @@ def _list_settings(
             # bail if we've already handled the highest federated setting
             if _id in federated_settings:
                 continue
+            if names_only:
+                federated_settings[_id] = dict(id=_id)
+            else:
+                schema, version = _get_schema(
+                    schemas_dir, schema_name, overrides, labextensions_path=labextensions_path
+                )
+                user_settings = _get_user_settings(settings_dir, schema_name, schema)
 
-            schema, version = _get_schema(
-                schemas_dir, schema_name, overrides, labextensions_path=labextensions_path
-            )
-            user_settings = _get_user_settings(settings_dir, schema_name, schema)
+                if user_settings["warning"]:
+                    warnings.append(user_settings.pop("warning"))
 
-            if user_settings["warning"]:
-                warnings.append(user_settings.pop("warning"))
-
-            # Add the plugin to the list of settings.
-            federated_settings[_id] = dict(id=_id, schema=schema, version=version, **user_settings)
+                # Add the plugin to the list of settings.
+                federated_settings[_id] = dict(id=_id, schema=schema, version=version, **user_settings)
 
     settings.update(federated_settings)
     settings_list = [settings[key] for key in sorted(settings.keys(), reverse=True)]
@@ -317,6 +323,7 @@ def get_settings(
     overrides=None,
     labextensions_path=None,
     translator=None,
+    names_only=False
 ):
     """
     Get settings.
@@ -367,55 +374,13 @@ def get_settings(
             overrides,
             labextensions_path=labextensions_path,
             translator=translator,
+            names_only=names_only
         )
         result = {
             "settings": settings_list,
         }
 
     return result, warnings
-
-
-def get_schemas_names(schemas_dir, extension=".json"):
-    """
-    Get a list of the schema names
-
-    Parameters
-    ----------
-    schemas_dir: str
-        Path to schemas.
-    extension: str
-        File extension of the schema, default is '.json'.
-
-    Returns
-    -------
-    tuple
-        The first item is a list of strings containing the list of the schemas names.
-        The second item a list of warnings (to be consistent with `get_settings`),
-        but can only contain one warning if the schema_dir does not exist.
-    """
-    names = []
-    warnings = []
-
-    if not os.path.exists(schemas_dir):
-        warnings = ["Settings directory does not exist at %s" % schemas_dir]
-        return ([], warnings)
-
-    schema_pattern = schemas_dir + "/**/*" + extension
-    schema_paths = [path for path in glob(schema_pattern, recursive=True)]
-    schema_paths.sort()
-
-    for schema_path in schema_paths:
-        # Generate the schema_name used to request individual settings.
-        rel_path = os.path.relpath(schema_path, schemas_dir)
-        rel_schema_dir, schema_base = os.path.split(rel_path)
-        schema_name = ":".join(
-            [rel_schema_dir, schema_base[: -len(extension)]]  # Remove file extension.
-        ).replace(
-            "\\", "/"
-        )  # Normalize slashes.
-
-        names.append(schema_name)
-    return (names, warnings)
 
 
 def save_settings(
