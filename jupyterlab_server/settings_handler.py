@@ -8,7 +8,7 @@ from jsonschema import ValidationError
 from jupyter_server.extension.handler import ExtensionHandlerJinjaMixin, ExtensionHandlerMixin
 from tornado import web
 
-from .settings_utils import SchemaHandler, get_settings, save_settings, get_schemas_names
+from .settings_utils import SchemaHandler, get_schemas_names, get_settings, save_settings
 from .translation_utils import translator
 
 
