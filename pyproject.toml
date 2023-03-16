@@ -71,6 +71,7 @@ openapi = [
 ]
 test = [
   "codecov",
+  "hatch",
   "ipykernel",
   "pytest-jupyter[server]>=0.6.2",
   "jupyterlab_server[openapi]",
