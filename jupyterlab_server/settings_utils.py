@@ -134,7 +134,8 @@ def _list_settings(
     """
     Returns a tuple containing:
      - the list of plugins, schemas, and their settings,
-       respecting any defaults that may have been overridden.
+       respecting any defaults that may have been overridden if `ids_only=False`,
+       otherwise a list of dict containing only the ids of plugins.
      - the list of warnings that were generated when
        validating the user overrides against the schemas.
     """
@@ -160,6 +161,7 @@ def _list_settings(
         ).replace(
             "\\", "/"
         )  # Normalize slashes.
+
         if ids_only:
             settings[_id] = dict(id=_id)
         else:
@@ -198,6 +200,7 @@ def _list_settings(
             # bail if we've already handled the highest federated setting
             if _id in federated_settings:
                 continue
+
             if ids_only:
                 federated_settings[_id] = dict(id=_id)
             else:
@@ -352,9 +355,10 @@ def get_settings(
     -------
     tuple
         The first item is a dictionary with a list of setting if no `schema_name`
-        was provided, otherwise it is a dictionary with id, raw, scheme, settings
-        and version keys. The second item is a list of warnings. Warnings will
-        either be a list of i) strings with the warning messages or ii) `None`.
+        was provided (only the ids if `ids_only=True`), otherwise it is a dictionary
+        with id, raw, scheme, settings and version keys.
+        The second item is a list of warnings. Warnings will either be a list of
+        i) strings with the warning messages or ii) `None`.
     """
     result = {}
     warnings = []
