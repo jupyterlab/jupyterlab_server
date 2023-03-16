@@ -104,7 +104,7 @@ async def test_listing(jp_fetch, labserverapp):
     assert {None} == set(last_modifieds + createds)
 
 
-async def test_listing_names(jp_fetch, labserverapp):
+async def test_listing_ids(jp_fetch, labserverapp):
     ids = [
         "@jupyterlab/apputils-extension:themes",
         "@jupyterlab/apputils-extension-federated:themes",
@@ -114,7 +114,7 @@ async def test_listing_names(jp_fetch, labserverapp):
         "@jupyterlab/translation-extension:plugin",
         "@jupyterlab/unicode-extension:plugin",
     ]
-    r = await jp_fetch("lab", "api", "settings/", params={"names_only": "true"})
+    r = await jp_fetch("lab", "api", "settings/", params={"ids_only": "true"})
     validate_request(r)
     res = r.body.decode()
     response = json.loads(res)

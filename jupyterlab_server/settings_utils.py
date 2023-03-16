@@ -129,7 +129,7 @@ def _list_settings(
     extension=".json",
     labextensions_path=None,
     translator=None,
-    names_only=False,
+    ids_only=False,
 ):
     """
     Returns a tuple containing:
@@ -160,7 +160,7 @@ def _list_settings(
         ).replace(
             "\\", "/"
         )  # Normalize slashes.
-        if names_only:
+        if ids_only:
             settings[_id] = dict(id=_id)
         else:
             schema, version = _get_schema(schemas_dir, schema_name, overrides, None)
@@ -198,7 +198,7 @@ def _list_settings(
             # bail if we've already handled the highest federated setting
             if _id in federated_settings:
                 continue
-            if names_only:
+            if ids_only:
                 federated_settings[_id] = dict(id=_id)
             else:
                 schema, version = _get_schema(
@@ -325,7 +325,7 @@ def get_settings(
     overrides=None,
     labextensions_path=None,
     translator=None,
-    names_only=False,
+    ids_only=False,
 ):
     """
     Get settings.
@@ -376,7 +376,7 @@ def get_settings(
             overrides,
             labextensions_path=labextensions_path,
             translator=translator,
-            names_only=names_only,
+            ids_only=ids_only,
         )
         result = {
             "settings": settings_list,
