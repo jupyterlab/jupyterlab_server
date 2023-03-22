@@ -9,7 +9,7 @@ from glob import iglob
 from itertools import chain
 from os.path import join as pjoin
 
-import json5
+import json5  # type:ignore
 from jupyter_core.paths import SYSTEM_CONFIG_PATH, jupyter_config_dir, jupyter_path
 from jupyter_server.services.config.manager import ConfigManager, recursive_update
 from jupyter_server.utils import url_path_join as ujoin
