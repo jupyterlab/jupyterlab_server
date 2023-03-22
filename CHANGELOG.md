@@ -2,6 +2,28 @@
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
+## 2.21.0
+
+([Full Changelog](https://github.com/jupyterlab/jupyterlab_server/compare/v2.20.0...48be03a73c11b2f800ad768aed30d417b248d98e))
+
+### Enhancements made
+
+- Add json5 support for page_config.json [#388](https://github.com/jupyterlab/jupyterlab_server/pull/388) ([@peytondmurray](https://github.com/peytondmurray))
+
+### Maintenance and upkeep improvements
+
+- Updates test dependencies [#387](https://github.com/jupyterlab/jupyterlab_server/pull/387) ([@brichet](https://github.com/brichet))
+- Ignore warning from bind_sockets [#383](https://github.com/jupyterlab/jupyterlab_server/pull/383) ([@blink1073](https://github.com/blink1073))
+- Bump actions/checkout from 2 to 3 [#379](https://github.com/jupyterlab/jupyterlab_server/pull/379) ([@dependabot](https://github.com/dependabot))
+
+### Contributors to this release
+
+([GitHub contributors page for this release](https://github.com/jupyterlab/jupyterlab_server/graphs/contributors?from=2023-03-06&to=2023-03-22&type=c))
+
+[@blink1073](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Ablink1073+updated%3A2023-03-06..2023-03-22&type=Issues) | [@brichet](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Abrichet+updated%3A2023-03-06..2023-03-22&type=Issues) | [@codecov-commenter](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Acodecov-commenter+updated%3A2023-03-06..2023-03-22&type=Issues) | [@dependabot](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Adependabot+updated%3A2023-03-06..2023-03-22&type=Issues) | [@peytondmurray](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Apeytondmurray+updated%3A2023-03-06..2023-03-22&type=Issues) | [@pre-commit-ci](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Apre-commit-ci+updated%3A2023-03-06..2023-03-22&type=Issues) | [@welcome](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Awelcome+updated%3A2023-03-06..2023-03-22&type=Issues)
+
+<!-- <END NEW CHANGELOG ENTRY> -->
+
 ## 2.20.0
 
 ([Full Changelog](https://github.com/jupyterlab/jupyterlab_server/compare/v2.19.0...4a08b8418248f4068a3ae0bdf4aa93c524130421))
@@ -23,8 +45,6 @@
 ([GitHub contributors page for this release](https://github.com/jupyterlab/jupyterlab_server/graphs/contributors?from=2023-01-16&to=2023-03-06&type=c))
 
 [@blink1073](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Ablink1073+updated%3A2023-01-16..2023-03-06&type=Issues) | [@codecov-commenter](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Acodecov-commenter+updated%3A2023-01-16..2023-03-06&type=Issues) | [@fcollonval](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Afcollonval+updated%3A2023-01-16..2023-03-06&type=Issues) | [@pre-commit-ci](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Apre-commit-ci+updated%3A2023-01-16..2023-03-06&type=Issues) | [@rmoe](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Armoe+updated%3A2023-01-16..2023-03-06&type=Issues) | [@welcome](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Awelcome+updated%3A2023-01-16..2023-03-06&type=Issues)
-
-<!-- <END NEW CHANGELOG ENTRY> -->
 
 ## 2.19.0
 
