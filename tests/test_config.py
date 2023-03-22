@@ -4,7 +4,7 @@
 import json
 import os
 
-import json5
+import json5  # type:ignore
 import pytest
 
 from jupyterlab_server.config import get_page_config
