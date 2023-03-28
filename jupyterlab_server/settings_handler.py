@@ -26,11 +26,24 @@ class SettingsHandler(ExtensionHandlerMixin, ExtensionHandlerJinjaMixin, SchemaH
 
     @web.authenticated
     def get(self, schema_name=""):
-        """Get setting(s)"""
+        """
+        Get setting(s)
+
+        Parameters
+        ----------
+        schema_name: str
+            The id of a unique schema to send, added to the URL
+
+        ## NOTES:
+            An optional argument `ids_only=true` can be provided in the URL to get only the
+            ids of the schemas instead of the content.
+        """
         # Need to be update here as translator locale is not change when a new locale is put
         # from frontend
         locale = self.get_current_locale()
         translator.set_locale(locale)
+
+        ids_only = self.get_argument('ids_only', '') == 'true'
 
         result, warnings = get_settings(
             self.app_settings_dir,
@@ -40,6 +53,7 @@ class SettingsHandler(ExtensionHandlerMixin, ExtensionHandlerJinjaMixin, SchemaH
             schema_name=schema_name,
             overrides=self.overrides,
             translator=translator.translate_schema,
+            ids_only=ids_only,
         )
 
         # Print all warnings.

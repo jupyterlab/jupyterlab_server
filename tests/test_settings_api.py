@@ -104,6 +104,30 @@ async def test_listing(jp_fetch, labserverapp):
     assert {None} == set(last_modifieds + createds)
 
 
+async def test_listing_ids(jp_fetch, labserverapp):
+    ids = [
+        "@jupyterlab/apputils-extension:themes",
+        "@jupyterlab/apputils-extension-federated:themes",
+        "@jupyterlab/codemirror-extension:commands",
+        "@jupyterlab/codemirror-extension-federated:commands",
+        "@jupyterlab/shortcuts-extension:plugin",
+        "@jupyterlab/translation-extension:plugin",
+        "@jupyterlab/unicode-extension:plugin",
+    ]
+    r = await jp_fetch("lab", "api", "settings/", params={"ids_only": "true"})
+    validate_request(r)
+    res = r.body.decode()
+    response = json.loads(res)
+    response_ids = [item["id"] for item in response["settings"]]
+    # Checks the IDs list is correct
+    assert set(response_ids) == set(ids)
+
+    # Checks there is only the 'id' key in each item
+    assert all(
+        [(len(item.keys()) == 1 and list(item.keys())[0] == 'id') for item in response["settings"]]
+    )
+
+
 async def test_patch(jp_fetch, labserverapp):
     id = "@jupyterlab/shortcuts-extension:plugin"
 

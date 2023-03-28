@@ -129,11 +129,13 @@ def _list_settings(
     extension=".json",
     labextensions_path=None,
     translator=None,
+    ids_only=False,
 ):
     """
     Returns a tuple containing:
      - the list of plugins, schemas, and their settings,
-       respecting any defaults that may have been overridden.
+       respecting any defaults that may have been overridden if `ids_only=False`,
+       otherwise a list of dict containing only the ids of plugins.
      - the list of warnings that were generated when
        validating the user overrides against the schemas.
     """
@@ -159,16 +161,20 @@ def _list_settings(
         ).replace(
             "\\", "/"
         )  # Normalize slashes.
-        schema, version = _get_schema(schemas_dir, schema_name, overrides, None)
-        if translator is not None:
-            schema = translator(schema)
-        user_settings = _get_user_settings(settings_dir, schema_name, schema)
 
-        if user_settings["warning"]:
-            warnings.append(user_settings.pop("warning"))
+        if ids_only:
+            settings[_id] = dict(id=_id)
+        else:
+            schema, version = _get_schema(schemas_dir, schema_name, overrides, None)
+            if translator is not None:
+                schema = translator(schema)
+            user_settings = _get_user_settings(settings_dir, schema_name, schema)
 
-        # Add the plugin to the list of settings.
-        settings[_id] = dict(id=_id, schema=schema, version=version, **user_settings)
+            if user_settings["warning"]:
+                warnings.append(user_settings.pop("warning"))
+
+            # Add the plugin to the list of settings.
+            settings[_id] = dict(id=_id, schema=schema, version=version, **user_settings)
 
     if labextensions_path is not None:
         schema_paths = []
@@ -195,16 +201,21 @@ def _list_settings(
             if _id in federated_settings:
                 continue
 
-            schema, version = _get_schema(
-                schemas_dir, schema_name, overrides, labextensions_path=labextensions_path
-            )
-            user_settings = _get_user_settings(settings_dir, schema_name, schema)
+            if ids_only:
+                federated_settings[_id] = dict(id=_id)
+            else:
+                schema, version = _get_schema(
+                    schemas_dir, schema_name, overrides, labextensions_path=labextensions_path
+                )
+                user_settings = _get_user_settings(settings_dir, schema_name, schema)
 
-            if user_settings["warning"]:
-                warnings.append(user_settings.pop("warning"))
+                if user_settings["warning"]:
+                    warnings.append(user_settings.pop("warning"))
 
-            # Add the plugin to the list of settings.
-            federated_settings[_id] = dict(id=_id, schema=schema, version=version, **user_settings)
+                # Add the plugin to the list of settings.
+                federated_settings[_id] = dict(
+                    id=_id, schema=schema, version=version, **user_settings
+                )
 
     settings.update(federated_settings)
     settings_list = [settings[key] for key in sorted(settings.keys(), reverse=True)]
@@ -317,6 +328,7 @@ def get_settings(
     overrides=None,
     labextensions_path=None,
     translator=None,
+    ids_only=False,
 ):
     """
     Get settings.
@@ -343,9 +355,10 @@ def get_settings(
     -------
     tuple
         The first item is a dictionary with a list of setting if no `schema_name`
-        was provided, otherwise it is a dictionary with id, raw, scheme, settings
-        and version keys. The second item is a list of warnings. Warnings will
-        either be a list of i) strings with the warning messages or ii) `None`.
+        was provided (only the ids if `ids_only=True`), otherwise it is a dictionary
+        with id, raw, scheme, settings and version keys.
+        The second item is a list of warnings. Warnings will either be a list of
+        i) strings with the warning messages or ii) `None`.
     """
     result = {}
     warnings = []
@@ -367,6 +380,7 @@ def get_settings(
             overrides,
             labextensions_path=labextensions_path,
             translator=translator,
+            ids_only=ids_only,
         )
         result = {
             "settings": settings_list,
