@@ -68,12 +68,12 @@ class WorkspaceListApp(JupyterApp, LabConfig):
         workspaces = self.manager.list_workspaces()
         if self.jsonlines:
             for workspace in workspaces:
-                print(json.dumps(workspace))  # noqa
+                print(json.dumps(workspace))
         elif self.json:
-            print(json.dumps(workspaces))  # noqa
+            print(json.dumps(workspaces))
         else:
             for workspace in workspaces:
-                print(workspace["metadata"]["id"])  # noqa
+                print(workspace["metadata"]["id"])
 
 
 class WorkspaceExportApp(JupyterApp, LabConfig):
@@ -103,7 +103,7 @@ class WorkspaceExportApp(JupyterApp, LabConfig):
         raw = DEFAULT_WORKSPACE if not self.extra_args else self.extra_args[0]
         try:
             workspace = self.manager.load(raw)
-            print(json.dumps(workspace))  # noqa
+            print(json.dumps(workspace))
         except Exception:  # pragma: no cover
             self.log.error(json.dumps(dict(data=dict(), metadata=dict(id=raw))))
 
@@ -182,9 +182,8 @@ class WorkspaceImportApp(JupyterApp, LabConfig):
         # name into the workspace metadata.
         if self.workspace_name is not None and self.workspace_name != "":
             workspace["metadata"] = {"id": self.workspace_name}
-        else:
-            if "id" not in workspace["metadata"]:
-                msg = "The `id` field is missing in `metadata`."
-                raise Exception(msg)
+        elif "id" not in workspace["metadata"]:
+            msg = "The `id` field is missing in `metadata`."
+            raise Exception(msg)
 
         return workspace

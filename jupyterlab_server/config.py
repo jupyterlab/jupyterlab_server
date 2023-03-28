@@ -9,6 +9,7 @@ from glob import iglob
 from itertools import chain
 from os.path import join as pjoin
 
+import json5  # type:ignore
 from jupyter_core.paths import SYSTEM_CONFIG_PATH, jupyter_config_dir, jupyter_path
 from jupyter_server.services.config.manager import ConfigManager, recursive_update
 from jupyter_server.utils import url_path_join as ujoin
@@ -78,6 +79,26 @@ def get_static_page_config(app_settings_dir=None, logger=None, level="all"):
     return cm.get("page_config")
 
 
+def load_config(path):
+    """Load either a json5 or a json config file.
+
+    Parameters
+    ----------
+    path : str
+        Path to the file to be loaded
+
+    Returns
+    -------
+    Dict[Any, Any]
+        Dictionary of json or json5 data
+    """
+    with open(path, encoding="utf-8") as fid:
+        if path.endswith('.json5'):
+            return json5.load(fid)
+        else:
+            return json.load(fid)
+
+
 def get_page_config(labextensions_path, app_settings_dir=None, logger=None):  # noqa
     """Get the page config for the application handler"""
     # Build up the full page config
@@ -87,17 +108,20 @@ def get_page_config(labextensions_path, app_settings_dir=None, logger=None):  # 
 
     # Start with the app_settings_dir as lowest priority
     if app_settings_dir:
-        app_page_config = pjoin(app_settings_dir, "page_config.json")
-        if osp.exists(app_page_config):
-            with open(app_page_config, encoding="utf-8") as fid:
-                data = json.load(fid)
+        config_paths = [
+            pjoin(app_settings_dir, "page_config.json5"),
+            pjoin(app_settings_dir, "page_config.json"),
+        ]
+        for path in config_paths:
+            if osp.exists(path):
+                data = load_config(path)
+                # Convert lists to dicts
+                for key in [disabled_key, "deferredExtensions"]:
+                    if key in data:
+                        data[key] = {key: True for key in data[key]}
 
-            # Convert lists to dicts
-            for key in [disabled_key, "deferredExtensions"]:
-                if key in data:
-                    data[key] = {key: True for key in data[key]}
-
-            recursive_update(page_config, data)
+                recursive_update(page_config, data)
+                break
 
     # Get the traitlets config
     static_page_config = get_static_page_config(logger=logger, level="all")

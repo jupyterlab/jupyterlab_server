@@ -4,17 +4,27 @@
 import json
 import os
 
+import json5  # type:ignore
+import pytest
+
 from jupyterlab_server.config import get_page_config
 
 
-def test_get_page_config(tmp_path):
+@pytest.mark.parametrize(
+    "lib,extension",
+    (
+        (json, "json"),
+        (json5, "json5"),
+    ),
+)
+def test_get_page_config(tmp_path, lib, extension):
     labext_path = [os.path.join(tmp_path, "ext")]
     settings_path = os.path.join(tmp_path, "settings")
     os.mkdir(settings_path)
 
-    with open(os.path.join(settings_path, "page_config.json"), "w") as fid:
+    with open(os.path.join(settings_path, f"page_config.{extension}"), "w") as fid:
         data = dict(deferredExtensions=["foo"])
-        json.dump(data, fid)
+        lib.dump(data, fid)
 
     static_dir = os.path.join(tmp_path, "static")
     os.mkdir(static_dir)

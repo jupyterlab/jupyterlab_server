@@ -184,8 +184,8 @@ def _list_settings(
 
         schema_paths.sort()
 
-        for schema_path in schema_paths:
-            schema_path = schema_path.replace(os.sep, "/")
+        for schema_path_ in schema_paths:
+            schema_path = schema_path_.replace(os.sep, "/")
 
             base_dir, rel_path = schema_path.split("schemas/")
 

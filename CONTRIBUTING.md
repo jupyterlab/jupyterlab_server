@@ -28,7 +28,7 @@ To create a local test setup run the following commands (inside your virtual env
 git clone https://github.com/jupyterlab/jupyterlab_server.git
 cd jupyterlab_server
 pip install -e .[test]  # install test dependencies
-pytest --pyargs jupyterlab_server
+hatch run cov:test # optionally, arguments of the pytest CLI can be added
 ```
 
 ## Code Styling
