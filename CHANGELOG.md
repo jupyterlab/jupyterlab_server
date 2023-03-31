@@ -2,6 +2,22 @@
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
+## 2.22.0
+
+([Full Changelog](https://github.com/jupyterlab/jupyterlab_server/compare/v2.21.0...cd829a8f5ca1c941cddd08dfcdbf1d8b13a7d433))
+
+### Enhancements made
+
+- Optional argument to get only the schema names [#385](https://github.com/jupyterlab/jupyterlab_server/pull/385) ([@brichet](https://github.com/brichet))
+
+### Contributors to this release
+
+([GitHub contributors page for this release](https://github.com/jupyterlab/jupyterlab_server/graphs/contributors?from=2023-03-22&to=2023-03-31&type=c))
+
+[@brichet](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Abrichet+updated%3A2023-03-22..2023-03-31&type=Issues)
+
+<!-- <END NEW CHANGELOG ENTRY> -->
+
 ## 2.21.0
 
 ([Full Changelog](https://github.com/jupyterlab/jupyterlab_server/compare/v2.20.0...48be03a73c11b2f800ad768aed30d417b248d98e))
@@ -21,8 +37,6 @@
 ([GitHub contributors page for this release](https://github.com/jupyterlab/jupyterlab_server/graphs/contributors?from=2023-03-06&to=2023-03-22&type=c))
 
 [@blink1073](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Ablink1073+updated%3A2023-03-06..2023-03-22&type=Issues) | [@brichet](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Abrichet+updated%3A2023-03-06..2023-03-22&type=Issues) | [@codecov-commenter](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Acodecov-commenter+updated%3A2023-03-06..2023-03-22&type=Issues) | [@dependabot](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Adependabot+updated%3A2023-03-06..2023-03-22&type=Issues) | [@peytondmurray](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Apeytondmurray+updated%3A2023-03-06..2023-03-22&type=Issues) | [@pre-commit-ci](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Apre-commit-ci+updated%3A2023-03-06..2023-03-22&type=Issues) | [@welcome](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Awelcome+updated%3A2023-03-06..2023-03-22&type=Issues)
-
-<!-- <END NEW CHANGELOG ENTRY> -->
 
 ## 2.20.0
 
