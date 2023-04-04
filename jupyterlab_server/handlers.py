@@ -263,7 +263,7 @@ def add_handlers(handlers, extension_app):  # noqa
     allowed_extensions_uris = settings_config.get("allowed_extensions_uris", "")
 
     if (blocked_extensions_uris) and (allowed_extensions_uris):
-        warnings.warn(
+        warnings.warn(  # noqa B028
             "Simultaneous blocked_extensions_uris and allowed_extensions_uris is not supported. Please define only one of those."
         )
         import sys

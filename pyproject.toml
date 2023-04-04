@@ -116,10 +116,10 @@ test = "mypy --install-types --non-interactive {args:jupyterlab_server tests}"
 
 [tool.hatch.envs.lint]
 dependencies = [
-  "black[jupyter]==23.1.0",
+  "black[jupyter]==23.3.0",
   "mdformat>0.7",
   "mdformat-gfm>=0.3.5",
-  "ruff==0.0.254"
+  "ruff==0.0.260"
 ]
 detatched = true
 [tool.hatch.envs.lint.scripts]
@@ -249,8 +249,14 @@ ignore = [
 # F841 Local variable `list_data` is assigned to but never used
 # EM101 Exception must not use a string literal
 "tests/*" = ["S101", "A001", "F841", "EM101", "EM102", "EM103", "PLR2004"]
+# T201 `print` found
+"jupyterlab_server/licenses_app.py" = ["T201"]
+# T201 `print` found
+"jupyterlab_server/process.py" = ["T201"]
 # F401 `foo` imported but unused
 "jupyterlab_server/server.py" = ["F401"]
+# T201 `print` found
+"jupyterlab_server/workspaces_app.py" = ["B028", "T201"]
 # Invalid module name
 "tests/translations/jupyterlab-language-pack-es_CO/jupyterlab_language_pack_es_CO/__init__.py" = ["N999"]
 

@@ -143,28 +143,28 @@ async def test_backend_locale_extension(jp_fetch):
 def test_get_installed_language_pack_locales_passes():
     data, message = _get_installed_language_pack_locales()
     assert "es_CO" in data
-    assert message == ""
+    assert not message
 
 
 def test_get_installed_package_locales():
     data, message = _get_installed_package_locales()
     assert "jupyterlab_some_package" in data
     assert os.path.isdir(data["jupyterlab_some_package"])
-    assert message == ""
+    assert not message
 
 
 def test_get_installed_packages_locale():
     data, message = get_installed_packages_locale("es_CO")
     assert "jupyterlab_some_package" in data
     assert "" in data["jupyterlab_some_package"]
-    assert message == ""
+    assert not message
 
 
 def test_get_language_packs():
     data, message = get_language_packs("en")
     assert "en" in data
     assert "es_CO" in data
-    assert message == ""
+    assert not message
 
 
 def test_get_language_pack():
@@ -173,7 +173,7 @@ def test_get_language_pack():
     assert "jupyterlab_some_package" in data
     assert "" in data["jupyterlab"]
     assert "" in data["jupyterlab_some_package"]
-    assert message == ""
+    assert not message
 
 
 # --- Utils
