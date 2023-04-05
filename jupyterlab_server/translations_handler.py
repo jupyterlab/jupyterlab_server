@@ -52,7 +52,7 @@ class TranslationsHandler(SchemaHandler):
                 data, message = await current_loop.run_in_executor(
                     None, partial(get_language_pack, locale)
                 )
-                if data == {} and message == "":
+                if data == {} and not message:
                     if is_valid_locale(locale):
                         message = f"Language pack '{locale}' not installed!"
                     else:
