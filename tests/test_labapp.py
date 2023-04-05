@@ -52,7 +52,7 @@ async def test_page_config(labserverapp, jp_fetch):
     # Check that the lab template is loaded
     html = r.body.decode()
     page_config = extract_page_config(html)
-    assert page_config['treePath'] == ""
+    assert not page_config['treePath']
     assert page_config['preferredPath'] == "/"
 
     def ispath(p):

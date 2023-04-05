@@ -46,4 +46,4 @@ def test_process_app():
     # Kandle exception on older versions of server.
     except Exception as e:
         # Convert to warning so the test will pass on min version test.
-        warnings.warn(str(e))
+        warnings.warn(str(e))  # noqa B028

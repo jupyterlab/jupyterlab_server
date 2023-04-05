@@ -180,7 +180,7 @@ class WorkspaceImportApp(JupyterApp, LabConfig):
 
         # If workspace_name is set in config, inject the
         # name into the workspace metadata.
-        if self.workspace_name is not None and self.workspace_name != "":
+        if self.workspace_name is not None and self.workspace_name:
             workspace["metadata"] = {"id": self.workspace_name}
         elif "id" not in workspace["metadata"]:
             msg = "The `id` field is missing in `metadata`."
