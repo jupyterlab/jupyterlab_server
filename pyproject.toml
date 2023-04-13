@@ -70,7 +70,6 @@ openapi = [
   "ruamel.yaml",
 ]
 test = [
-  "codecov",
   "hatch",
   "ipykernel",
   "pytest-jupyter[server]>=0.6.2",
