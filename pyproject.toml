@@ -268,3 +268,7 @@ ignore-nested-functions=true
 ignore-nested-classes=true
 fail-under=100
 exclude = ["tests", "docs"]
+
+[tool.coverage.run]
+relative_files = true
+source = ["jupyterlab_server"]
