@@ -7,7 +7,7 @@ from jupyter_server.extension.application import ExtensionApp, ExtensionAppJinja
 from traitlets import Dict, Integer, Unicode, observe
 
 from ._version import __version__
-from .handlers import LabConfig, add_handlers
+from .handlers import LabConfig, LabFileFindHandler, add_handlers
 
 
 class LabServerApp(ExtensionAppJinjaMixin, LabConfig, ExtensionApp):
@@ -96,6 +96,13 @@ class LabServerApp(ExtensionAppJinjaMixin, LabConfig, ExtensionApp):
                 )
             )
             setattr(self, new_attr, change.new)
+
+    def _prepare_settings(self):
+        """ Initialize the app. """
+        super()._prepare_settings()
+        self.serverapp.web_app.settings.update({
+            "static_handler_class": LabFileFindHandler
+        })
 
     def initialize_templates(self):
         """Initialize templates."""
