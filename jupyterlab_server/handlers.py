@@ -174,8 +174,9 @@ class NotFoundHandler(LabHandler):
         page_config["notFoundUrl"] = self.request.path
         return page_config
 
+
 class LabFileFindHandler(FileFindHandler):
-    """ A handler to cache static files """
+    """A handler to cache static files"""
 
     def set_headers(self):
         """Set the headers."""
@@ -183,6 +184,7 @@ class LabFileFindHandler(FileFindHandler):
         # keep the "no-cache" settings for expected files
         if not any(self.request.path.startswith(path) for path in self.no_cache_paths):
             self.set_header("Cache-Control", "public, max-age=31536000, immutable")
+
 
 def add_handlers(handlers, extension_app):  # noqa
     """Add the appropriate handlers to the web app."""

@@ -98,11 +98,9 @@ class LabServerApp(ExtensionAppJinjaMixin, LabConfig, ExtensionApp):
             setattr(self, new_attr, change.new)
 
     def _prepare_settings(self):
-        """ Initialize the app. """
+        """Initialize the app."""
         super()._prepare_settings()
-        self.serverapp.web_app.settings.update({
-            "static_handler_class": LabFileFindHandler
-        })
+        self.serverapp.web_app.settings.update({"static_handler_class": LabFileFindHandler})
 
     def initialize_templates(self):
         """Initialize templates."""
