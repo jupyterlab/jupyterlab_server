@@ -37,13 +37,15 @@ def setup_module(module):
     """setup any state specific to the execution of this module."""
     for pkg in ["jupyterlab-some-package", "jupyterlab-language-pack-es_CO"]:
         src = os.path.join(HERE, "translations", pkg)
-        subprocess.Popen([sys.executable, "-m", "pip", "install", src]).communicate()
+        subprocess.Popen([sys.executable, "-m", "pip", "install", src]).communicate()  # noqa
 
 
 def teardown_module(module):
     """teardown any state that was previously setup."""
     for pkg in ["jupyterlab-some-package", "jupyterlab-language-pack-es_CO"]:
-        subprocess.Popen([sys.executable, "-m", "pip", "uninstall", pkg, "-y"]).communicate()
+        subprocess.Popen(
+            [sys.executable, "-m", "pip", "uninstall", pkg, "-y"]  # noqa
+        ).communicate()
 
 
 @pytest.fixture(autouse=True)
