@@ -174,7 +174,7 @@ class Process:
         if os.name == "nt":
             kwargs["shell"] = True
 
-        proc = subprocess.Popen(cmd, **kwargs)
+        proc = subprocess.Popen(cmd, **kwargs)  # noqa
         return proc
 
     @classmethod

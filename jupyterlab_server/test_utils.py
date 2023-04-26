@@ -60,7 +60,7 @@ class TornadoOpenAPIRequest:
 
         self.parameters = RequestParameters(
             query=ImmutableMultiDict(parse_qs(o.query)),
-            header=Headers(dict(request.headers)),
+            header=dict(request.headers),
             cookie=ImmutableMultiDict(cookies),
             path=path,
         )
