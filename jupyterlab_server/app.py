@@ -3,11 +3,15 @@
 # Copyright (c) Jupyter Development Team.
 # Distributed under the terms of the Modified BSD License.
 
+from glob import glob
+from os.path import relpath
+
 from jupyter_server.extension.application import ExtensionApp, ExtensionAppJinjaMixin
+from jupyter_server.utils import url_path_join as ujoin
 from traitlets import Dict, Integer, Unicode, observe
 
 from ._version import __version__
-from .handlers import LabConfig, LabFileFindHandler, add_handlers
+from .handlers import LabConfig, add_handlers
 
 
 class LabServerApp(ExtensionAppJinjaMixin, LabConfig, ExtensionApp):
@@ -97,10 +101,26 @@ class LabServerApp(ExtensionAppJinjaMixin, LabConfig, ExtensionApp):
             )
             setattr(self, new_attr, change.new)
 
-    def _prepare_settings(self):
-        """Initialize the app."""
-        super()._prepare_settings()
-        self.serverapp.web_app.settings.update({"static_handler_class": LabFileFindHandler})
+    def initialize_settings(self):
+        """Initialize the settings:
+
+        set the static files as immutable, since they should have all hashed name.
+        """
+        immutable_cache = set(self.settings.get("static_immutable_cache", []))
+
+        # Set lab static files as immutables
+        immutable_cache.add(self.static_url_prefix)
+
+        # Set extensions static files as immutables
+        for extension_path in self.labextensions_path + self.extra_labextensions_path:
+            extensions_url = [
+                ujoin(self.labextensions_url, relpath(path, extension_path))
+                for path in glob(f'{extension_path}/**/static', recursive=True)
+            ]
+
+            immutable_cache.update(extensions_url)
+
+        self.settings.update({"static_immutable_cache": list(immutable_cache)})
 
     def initialize_templates(self):
         """Initialize templates."""
