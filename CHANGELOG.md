@@ -2,6 +2,29 @@
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
+## 2.23.0
+
+([Full Changelog](https://github.com/jupyterlab/jupyterlab_server/compare/v2.22.1...19aa4d68e92e24523c88a88c92ee9e621de8f427))
+
+### Enhancements made
+
+- Set Cache-control immutable for static files [#394](https://github.com/jupyterlab/jupyterlab_server/pull/394) ([@brichet](https://github.com/brichet))
+
+### Maintenance and upkeep improvements
+
+- Update mistune requirement from \<3 to \<4 [#399](https://github.com/jupyterlab/jupyterlab_server/pull/399) ([@dependabot](https://github.com/dependabot))
+- Remove distuils pin [#397](https://github.com/jupyterlab/jupyterlab_server/pull/397) ([@blink1073](https://github.com/blink1073))
+- Lint and typing updates [#395](https://github.com/jupyterlab/jupyterlab_server/pull/395) ([@blink1073](https://github.com/blink1073))
+- Fix link to Docs [#393](https://github.com/jupyterlab/jupyterlab_server/pull/393) ([@blink1073](https://github.com/blink1073))
+
+### Contributors to this release
+
+([GitHub contributors page for this release](https://github.com/jupyterlab/jupyterlab_server/graphs/contributors?from=2023-04-13&to=2023-06-13&type=c))
+
+[@blink1073](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Ablink1073+updated%3A2023-04-13..2023-06-13&type=Issues) | [@brichet](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Abrichet+updated%3A2023-04-13..2023-06-13&type=Issues) | [@dependabot](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Adependabot+updated%3A2023-04-13..2023-06-13&type=Issues) | [@pre-commit-ci](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Apre-commit-ci+updated%3A2023-04-13..2023-06-13&type=Issues)
+
+<!-- <END NEW CHANGELOG ENTRY> -->
+
 ## 2.22.1
 
 ([Full Changelog](https://github.com/jupyterlab/jupyterlab_server/compare/v2.22.0...584d2f0138697f8972402e72a744e84ac3d26137))
@@ -15,8 +38,6 @@
 ([GitHub contributors page for this release](https://github.com/jupyterlab/jupyterlab_server/graphs/contributors?from=2023-03-31&to=2023-04-13&type=c))
 
 [@blink1073](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Ablink1073+updated%3A2023-03-31..2023-04-13&type=Issues) | [@pre-commit-ci](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Apre-commit-ci+updated%3A2023-03-31..2023-04-13&type=Issues)
-
-<!-- <END NEW CHANGELOG ENTRY> -->
 
 ## 2.22.0
 
