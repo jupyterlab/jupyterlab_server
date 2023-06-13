@@ -56,13 +56,12 @@ Tracker = "https://github.com/jupyterlab/jupyterlab_server/issues"
 [project.optional-dependencies]
 docs = [
   "autodoc-traits",
-  "docutils<0.20",
   "pydata_sphinx_theme",
   "sphinx",
   "sphinx-copybutton",
-  "sphinxcontrib-openapi",
+  "sphinxcontrib-openapi>0.8",
   "myst-parser",
-  "mistune<3",
+  "mistune<4",
   "jinja2<3.2.0"
 ]
 openapi = [
@@ -118,7 +117,7 @@ dependencies = [
   "black[jupyter]==23.3.0",
   "mdformat>0.7",
   "mdformat-gfm>=0.3.5",
-  "ruff==0.0.260"
+  "ruff==0.0.270"
 ]
 detatched = true
 [tool.hatch.envs.lint.scripts]
