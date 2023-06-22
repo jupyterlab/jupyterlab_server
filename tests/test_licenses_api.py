@@ -8,7 +8,7 @@ import io
 import json
 import mimetypes
 
-import mistune 
+import mistune
 import pytest
 
 from jupyterlab_server import LicensesApp
