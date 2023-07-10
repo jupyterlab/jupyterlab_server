@@ -65,7 +65,7 @@ docs = [
   "jinja2<3.2.0"
 ]
 openapi = [
-  "openapi_core~=0.16.1",
+  "openapi_core>=0.16.1,<0.19.0",
   "ruamel.yaml",
 ]
 test = [
