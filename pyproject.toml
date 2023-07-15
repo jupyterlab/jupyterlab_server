@@ -73,7 +73,7 @@ test = [
   "ipykernel",
   "pytest-jupyter[server]>=0.6.2",
   "jupyterlab_server[openapi]",
-  "openapi-spec-validator~=0.5.1",
+  "openapi-spec-validator>=0.5.1,<0.7.0",
   "sphinxcontrib_spelling",
   "requests_mock",
   "pytest>=7.0",
