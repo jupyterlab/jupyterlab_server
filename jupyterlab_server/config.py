@@ -292,9 +292,9 @@ class LabConfig(HasTraits):
         True, help="Whether a notebook should start a kernel automatically."
     ).tag(config=True)
 
-    copy_absolute_path = Bool(
-        False, help="Whether getting a absolute path when copy path."
-    ).tag(config=True)
+    copy_absolute_path = Bool(False, help="Whether getting a absolute path when copy path.").tag(
+        config=True
+    )
 
     @default("template_dir")
     def _default_template_dir(self):
