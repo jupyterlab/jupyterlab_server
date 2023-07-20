@@ -292,7 +292,7 @@ class LabConfig(HasTraits):
         True, help="Whether a notebook should start a kernel automatically."
     ).tag(config=True)
 
-    copy_absolute_path = Bool(False, help="Whether getting a absolute path when copy path.").tag(
+    copy_absolute_path = Bool(False, help="Whether getting a relative (False) or absolute (True) path when copying a path.").tag(
         config=True
     )
 
