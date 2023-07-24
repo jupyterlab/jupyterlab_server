@@ -2,6 +2,27 @@
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
+## 2.24.0
+
+([Full Changelog](https://github.com/jupyterlab/jupyterlab_server/compare/v2.23.0...de8f61e8175b0ebbb0a38beedb2bba579e6efc72))
+
+### Enhancements made
+
+- add lab config for copy absolute path [#405](https://github.com/jupyterlab/jupyterlab_server/pull/405) ([@pauky](https://github.com/pauky))
+
+### Maintenance and upkeep improvements
+
+- Update openapi-spec-validator requirement from ~=0.5.1 to >=0.5.1,\<0.7.0 [#403](https://github.com/jupyterlab/jupyterlab_server/pull/403) ([@dependabot](https://github.com/dependabot))
+- Fix lint error [#401](https://github.com/jupyterlab/jupyterlab_server/pull/401) ([@blink1073](https://github.com/blink1073))
+
+### Contributors to this release
+
+([GitHub contributors page for this release](https://github.com/jupyterlab/jupyterlab_server/graphs/contributors?from=2023-06-13&to=2023-07-24&type=c))
+
+[@blink1073](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Ablink1073+updated%3A2023-06-13..2023-07-24&type=Issues) | [@dependabot](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Adependabot+updated%3A2023-06-13..2023-07-24&type=Issues) | [@pauky](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Apauky+updated%3A2023-06-13..2023-07-24&type=Issues) | [@pre-commit-ci](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Apre-commit-ci+updated%3A2023-06-13..2023-07-24&type=Issues) | [@welcome](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Awelcome+updated%3A2023-06-13..2023-07-24&type=Issues)
+
+<!-- <END NEW CHANGELOG ENTRY> -->
+
 ## 2.23.0
 
 ([Full Changelog](https://github.com/jupyterlab/jupyterlab_server/compare/v2.22.1...19aa4d68e92e24523c88a88c92ee9e621de8f427))
@@ -22,8 +43,6 @@
 ([GitHub contributors page for this release](https://github.com/jupyterlab/jupyterlab_server/graphs/contributors?from=2023-04-13&to=2023-06-13&type=c))
 
 [@blink1073](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Ablink1073+updated%3A2023-04-13..2023-06-13&type=Issues) | [@brichet](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Abrichet+updated%3A2023-04-13..2023-06-13&type=Issues) | [@dependabot](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Adependabot+updated%3A2023-04-13..2023-06-13&type=Issues) | [@pre-commit-ci](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Apre-commit-ci+updated%3A2023-04-13..2023-06-13&type=Issues)
-
-<!-- <END NEW CHANGELOG ENTRY> -->
 
 ## 2.22.1
 
