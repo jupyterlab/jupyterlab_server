@@ -124,7 +124,7 @@ async def test_listing_ids(jp_fetch, labserverapp):
 
     # Checks there is only the 'id' key in each item
     assert all(
-        (len(item.keys()) == 1 and list(item.keys())[0] == 'id') for item in response["settings"]
+        (len(item.keys()) == 1 and next(iter(item.keys())) == 'id') for item in response["settings"]
     )
 
 
@@ -177,7 +177,7 @@ async def test_patch(jp_fetch, labserverapp):
     validate_request(r)
     data = json.loads(r.body.decode())
     listing = data["settings"]
-    list_data = [item for item in listing if item["id"] == id][0]
+    list_data = next(item for item in listing if item["id"] == id)
     # TODO(@echarles) Check this...
 
 

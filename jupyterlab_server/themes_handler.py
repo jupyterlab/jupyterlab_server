@@ -82,7 +82,7 @@ class ThemesHandler(FileFindHandler):
             """Replace the matched relative url with the mangled url."""
             group = m.group()
             # Get the part that matched
-            part = [g for g in m.groups() if g][0]
+            part = next(g for g in m.groups() if g)
 
             # Ignore urls that start with `/` or have a protocol like `http`.
             parsed = urlparse(part)
