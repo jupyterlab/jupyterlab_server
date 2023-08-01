@@ -150,10 +150,7 @@ class WorkspacesManager(LoggingConfigurable):
         metadata_id = metadata_id if metadata_id.startswith("/") else "/" + metadata_id
         metadata_id = urllib.parse.unquote(metadata_id)
         if metadata_id != "/" + space_name:
-            message = "Workspace metadata ID mismatch: expected {!r} got {!r}".format(
-                space_name,
-                metadata_id,
-            )
+            message = f"Workspace metadata ID mismatch: expected {space_name!r} got {metadata_id!r}"
             raise ValueError(message)
 
         slug = slugify(space_name)
