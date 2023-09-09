@@ -32,7 +32,7 @@ dependencies = [
   "importlib_metadata>=4.8.3;python_version<\"3.10\"",
   "jinja2>=3.0.3",
   "json5>=0.9.0",
-  "jsonschema>=4.17.3",
+  "jsonschema>=4.18.0",
   "jupyter_server>=1.21,<3",
   "packaging>=21.3",
   "requests>=2.28",
@@ -109,7 +109,7 @@ nowarn = "test -W default {args}"
 
 [tool.hatch.envs.typing]
 features = ["test"]
-dependencies = ["mypy>=0.990"]
+dependencies = ["mypy>=1.5.1"]
 [tool.hatch.envs.typing.scripts]
 test = "mypy --install-types --non-interactive {args:jupyterlab_server tests}"
 
@@ -149,6 +149,8 @@ filterwarnings = [
   "module:read property is deprecated:DeprecationWarning",
   # From tornado.netutil.bind_sockets
   "module:unclosed <socket.socket:ResourceWarning",
+  # From jupyter_client
+  "module:datetime.datetime.utcfromtimestamp:DeprecationWarning"
 ]
 
 [tool.coverage.report]
