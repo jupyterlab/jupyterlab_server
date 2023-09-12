@@ -12,13 +12,7 @@ from urllib.parse import parse_qs, urlparse
 
 import tornado.httpclient
 import tornado.web
-
-try:
-    from openapi_core import V30RequestValidator, V30ResponseValidator  # type:ignore[attr-defined]
-except ImportError:
-    V30RequestValidator = None
-    V30ResponseValidator = None
-    from openapi_core import openapi_request_validator, openapi_response_validator
+from openapi_core import V30RequestValidator, V30ResponseValidator
 from openapi_core.spec.paths import Spec
 from openapi_core.validation.request.datatypes import RequestParameters
 from tornado.httpclient import HTTPRequest, HTTPResponse
@@ -152,18 +146,10 @@ def validate_request(response):
     openapi_spec = get_openapi_spec()
 
     request = TornadoOpenAPIRequest(response.request, openapi_spec)
-    if V30RequestValidator:
-        result = V30RequestValidator(openapi_spec).validate(request)
-    else:
-        result = openapi_request_validator.validate(openapi_spec, request)
-    result.raise_for_errors()
+    V30RequestValidator(openapi_spec).validate(request)
 
     response = TornadoOpenAPIResponse(response)
-    if V30ResponseValidator:
-        result2 = V30ResponseValidator(openapi_spec).validate(request, response)
-    else:
-        result2 = openapi_response_validator.validate(openapi_spec, request, response)
-    result2.raise_for_errors()
+    V30ResponseValidator(openapi_spec).validate(request, response)
 
 
 def maybe_patch_ioloop():
