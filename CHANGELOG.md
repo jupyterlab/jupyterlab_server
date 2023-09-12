@@ -2,6 +2,24 @@
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
+## 2.25.0
+
+([Full Changelog](https://github.com/jupyterlab/jupyterlab_server/compare/v2.24.0...91b576d6a87e2fca0958e815c32391ebc8398945))
+
+### Maintenance and upkeep improvements
+
+- Bump openapi deps and support Python 3.8-3.12 [#410](https://github.com/jupyterlab/jupyterlab_server/pull/410) ([@blink1073](https://github.com/blink1073))
+- Bump actions/checkout from 3 to 4 [#408](https://github.com/jupyterlab/jupyterlab_server/pull/408) ([@dependabot](https://github.com/dependabot))
+- Bump apache/skywalking-eyes from 0.4.0 to 0.5.0 [#407](https://github.com/jupyterlab/jupyterlab_server/pull/407) ([@dependabot](https://github.com/dependabot))
+
+### Contributors to this release
+
+([GitHub contributors page for this release](https://github.com/jupyterlab/jupyterlab_server/graphs/contributors?from=2023-07-24&to=2023-09-12&type=c))
+
+[@blink1073](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Ablink1073+updated%3A2023-07-24..2023-09-12&type=Issues) | [@dependabot](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Adependabot+updated%3A2023-07-24..2023-09-12&type=Issues) | [@pre-commit-ci](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Apre-commit-ci+updated%3A2023-07-24..2023-09-12&type=Issues)
+
+<!-- <END NEW CHANGELOG ENTRY> -->
+
 ## 2.24.0
 
 ([Full Changelog](https://github.com/jupyterlab/jupyterlab_server/compare/v2.23.0...de8f61e8175b0ebbb0a38beedb2bba579e6efc72))
@@ -20,8 +38,6 @@
 ([GitHub contributors page for this release](https://github.com/jupyterlab/jupyterlab_server/graphs/contributors?from=2023-06-13&to=2023-07-24&type=c))
 
 [@blink1073](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Ablink1073+updated%3A2023-06-13..2023-07-24&type=Issues) | [@dependabot](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Adependabot+updated%3A2023-06-13..2023-07-24&type=Issues) | [@pauky](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Apauky+updated%3A2023-06-13..2023-07-24&type=Issues) | [@pre-commit-ci](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Apre-commit-ci+updated%3A2023-06-13..2023-07-24&type=Issues) | [@welcome](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Awelcome+updated%3A2023-06-13..2023-07-24&type=Issues)
-
-<!-- <END NEW CHANGELOG ENTRY> -->
 
 ## 2.23.0
 
