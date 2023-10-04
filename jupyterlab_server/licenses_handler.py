@@ -10,6 +10,7 @@ import mimetypes
 import re
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
+from typing import TYPE_CHECKING
 
 from jupyter_server.base.handlers import APIHandler
 from tornado import gen, web
@@ -50,6 +51,11 @@ class LicensesManager(LoggingConfigurable):
         This is expensive, but probably the only way to be sure to get
         up-to-date license information for extensions installed interactively.
         """
+        if TYPE_CHECKING:
+            from .app import LabServerApp
+
+            assert isinstance(self.parent, LabServerApp)
+
         labextensions_path: list = sum(
             [
                 self.parent.labextensions_path,
@@ -200,6 +206,10 @@ class LicensesManager(LoggingConfigurable):
         This will usually be in `static_dir`, but may also appear in the
         parent of `static_dir`.
         """
+        if TYPE_CHECKING:
+            from .app import LabServerApp
+
+            assert isinstance(self.parent, LabServerApp)
         path = Path(self.parent.static_dir)
         package_json = path / "package.json"
         if not package_json.exists():
@@ -252,6 +262,11 @@ class LicensesHandler(APIHandler):
             bundles_pattern=bundles_pattern,
             full_text=full_text,
         )
+
+        if TYPE_CHECKING:
+            from .app import LabServerApp
+
+            assert isinstance(self.manager.parent, LabServerApp)
 
         if download:
             filename = "{}-licenses{}".format(
