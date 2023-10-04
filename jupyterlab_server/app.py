@@ -19,8 +19,8 @@ class LabServerApp(ExtensionAppJinjaMixin, LabConfig, ExtensionApp):
 
     name = "jupyterlab_server"
     extension_url = "/lab"
-    app_name = "JupyterLab Server Application"
-    file_url_prefix = "/lab/tree"  # type:ignore
+    app_name = "JupyterLab Server Application"  # type:ignore[assignment]
+    file_url_prefix = "/lab/tree"  # type:ignore[assignment]
 
     @property
     def app_namespace(self):
