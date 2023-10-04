@@ -53,6 +53,7 @@ class LicensesManager(LoggingConfigurable):
         """
         if TYPE_CHECKING:
             from .app import LabServerApp
+
             assert isinstance(self.parent, LabServerApp)
 
         labextensions_path: list = sum(
@@ -207,6 +208,7 @@ class LicensesManager(LoggingConfigurable):
         """
         if TYPE_CHECKING:
             from .app import LabServerApp
+
             assert isinstance(self.parent, LabServerApp)
         path = Path(self.parent.static_dir)
         package_json = path / "package.json"
@@ -263,8 +265,9 @@ class LicensesHandler(APIHandler):
 
         if TYPE_CHECKING:
             from .app import LabServerApp
+
             assert isinstance(self.manager.parent, LabServerApp)
-        
+
         if download:
             filename = "{}-licenses{}".format(
                 self.manager.parent.app_name.lower(), mimetypes.guess_extension(mime)
