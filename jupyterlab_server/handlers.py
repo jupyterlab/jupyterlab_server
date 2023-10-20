@@ -69,9 +69,9 @@ class LabHandler(ExtensionHandlerJinjaMixin, ExtensionHandlerMixin, JupyterHandl
     @lru_cache()  # noqa
     def get_page_config(self) -> dict[str, Any]:
         """Construct the page config object"""
-        self.application.store_id = getattr(
+        self.application.store_id = getattr(  # type:ignore[attr-defined]
             self.application, "store_id", 0
-        )  # type:ignore[attr-defined]
+        )
         config = LabConfig()
         app: LabServerApp = self.extensionapp  # type:ignore[assignment]
         settings_dir = app.app_settings_dir

@@ -44,9 +44,9 @@ class ThemesHandler(FileFindHandler):
         )
         self.themes_url = themes_url
 
-    def get_content(
+    def get_content(  # type:ignore[override]
         self, abspath: str, start: int | None = None, end: int | None = None
-    ) -> bytes | Generator[bytes, None, None]:  # type:ignore[override]
+    ) -> bytes | Generator[bytes, None, None]:
         """Retrieve the content of the requested resource which is located
         at the given absolute path.
 

@@ -279,9 +279,9 @@ class LicensesHandler(APIHandler):
         self.write(report)
         await self.finish(_mime_type=mime)
 
-    async def finish(
+    async def finish(  # type:ignore[override]
         self, _mime_type: str, *args: Any, **kwargs: Any
-    ) -> Any:  # type:ignore[override]
+    ) -> Any:
         """Overload the regular finish, which (sensibly) always sets JSON"""
         self.update_api_activity()
         self.set_header("Content-Type", _mime_type)
