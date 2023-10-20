@@ -327,7 +327,9 @@ def _get_overrides(app_settings_dir: str) -> tuple[dict[str, Any], str]:
     # to allow layering of defaults
     cm = ConfigManager(config_dir_name="labconfig")
 
-    for plugin_id, config in cm.get("default_setting_overrides").items():
+    for plugin_id, config in cm.get(
+        "default_setting_overrides"
+    ).items():  # type:ignore[no-untyped-call]
         recursive_update(overrides.setdefault(plugin_id, {}), config)
 
     return overrides, error

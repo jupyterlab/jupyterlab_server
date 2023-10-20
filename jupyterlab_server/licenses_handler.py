@@ -4,6 +4,7 @@
 # Distributed under the terms of the Modified BSD License.
 from __future__ import annotations
 
+import asyncio
 import csv
 import io
 import json
@@ -72,11 +73,13 @@ class LicensesManager(LoggingConfigurable):
         """Asynchronous wrapper around the potentially slow job of locating
         and encoding all of the licenses
         """
-        return await self.executor.submit(  # type:ignore[misc]
-            self.report,
-            report_format=report_format,
-            bundles_pattern=bundles_pattern,
-            full_text=full_text,
+        return await asyncio.wrap_future(
+            self.executor.submit(
+                self.report,
+                report_format=report_format,
+                bundles_pattern=bundles_pattern,
+                full_text=full_text,
+            )
         )
 
     def report(self, report_format: str, bundles_pattern: str, full_text: bool) -> tuple[str, str]:

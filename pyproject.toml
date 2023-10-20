@@ -179,7 +179,6 @@ files = "jupyterlab_server"
 python_version = "3.8"
 strict = true
 disallow_any_generics = false
-disable_error_code = ["no-untyped-call"]
 enable_error_code = ["ignore-without-code", "redundant-expr", "truthy-bool"]
 no_implicit_reexport = false
 pretty = true

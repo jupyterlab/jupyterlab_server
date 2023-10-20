@@ -81,7 +81,7 @@ def get_static_page_config(
         The level at which to get config: can be 'all', 'user', 'sys_prefix', or 'system'
     """
     cm = _get_config_manager(level)
-    return cm.get("page_config")
+    return cm.get("page_config")  # type:ignore[no-untyped-call]
 
 
 def load_config(path: str) -> Any:
@@ -205,7 +205,7 @@ def get_page_config(  # noqa: PLR0915
 def write_page_config(page_config: dict[str, Any], level: str = "all") -> None:
     """Write page config to disk"""
     cm = _get_config_manager(level)
-    cm.set("page_config", page_config)
+    cm.set("page_config", page_config)  # type:ignore[no-untyped-call]
 
 
 class LabConfig(HasTraits):
