@@ -288,4 +288,4 @@ class LicensesHandler(APIHandler):
         """Overload the regular finish, which (sensibly) always sets JSON"""
         self.update_api_activity()
         self.set_header("Content-Type", _mime_type)
-        return await super(APIHandler, self).finish(*args, **kwargs)
+        return await super().finish(*args, **kwargs)

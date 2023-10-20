@@ -188,6 +188,12 @@ warn_return_any = false
 warn_unreachable = true
 exclude = "tests/translations/*"
 
+[[tool.mypy.overrides]]
+module = [
+    "ruamel"
+]
+ignore_missing_imports = true
+
 [tool.black]
 line-length = 100
 target-version = ["py38"]
