@@ -2,14 +2,17 @@
 
 # Copyright (c) Jupyter Development Team.
 # Distributed under the terms of the Modified BSD License.
+from __future__ import annotations
 
 import json
 import os.path as osp
 from glob import iglob
 from itertools import chain
+from logging import Logger
 from os.path import join as pjoin
+from typing import Any
 
-import json5  # type:ignore
+import json5  # type:ignore[import-untyped]
 from jupyter_core.paths import SYSTEM_CONFIG_PATH, jupyter_config_dir, jupyter_path
 from jupyter_server.services.config.manager import ConfigManager, recursive_update
 from jupyter_server.utils import url_path_join as ujoin
@@ -22,7 +25,7 @@ from traitlets import Bool, HasTraits, List, Unicode, default
 DEFAULT_TEMPLATE_PATH = osp.join(osp.dirname(__file__), "templates")
 
 
-def get_package_url(data):
+def get_package_url(data: dict[str, Any]) -> str:
     """Get the url from the extension data"""
     # homepage, repository  are optional
     if "homepage" in data:
@@ -34,7 +37,7 @@ def get_package_url(data):
     return url
 
 
-def get_federated_extensions(labextensions_path):
+def get_federated_extensions(labextensions_path: list[str]) -> dict[str, Any]:
     """Get the metadata about federated extensions"""
     federated_extensions = {}
     for ext_dir in labextensions_path:
@@ -65,7 +68,9 @@ def get_federated_extensions(labextensions_path):
     return federated_extensions
 
 
-def get_static_page_config(app_settings_dir=None, logger=None, level="all"):
+def get_static_page_config(
+    app_settings_dir: str | None = None, logger: Logger | None = None, level: str = "all"
+) -> dict[str, Any]:
     """Get the static page config for JupyterLab
 
     Parameters
@@ -79,7 +84,7 @@ def get_static_page_config(app_settings_dir=None, logger=None, level="all"):
     return cm.get("page_config")
 
 
-def load_config(path):
+def load_config(path: str) -> Any:
     """Load either a json5 or a json config file.
 
     Parameters
@@ -99,7 +104,9 @@ def load_config(path):
             return json.load(fid)
 
 
-def get_page_config(labextensions_path, app_settings_dir=None, logger=None):  # noqa
+def get_page_config(  # noqa: PLR0915
+    labextensions_path: list[str], app_settings_dir: str | None = None, logger: Logger | None = None
+) -> dict[str, Any]:
     """Get the page config for the application handler"""
     # Build up the full page config
     page_config: dict = {}
@@ -138,7 +145,8 @@ def get_page_config(labextensions_path, app_settings_dir=None, logger=None):  # 
 
     for _, ext_data in federated_exts.items():
         if "_build" not in ext_data["jupyterlab"]:
-            logger.warning("%s is not a valid extension" % ext_data["name"])
+            if logger:
+                logger.warning("%s is not a valid extension" % ext_data["name"])
             continue
         extbuild = ext_data["jupyterlab"]["_build"]
         extension = {"name": ext_data["name"], "load": extbuild["load"]}
@@ -194,7 +202,7 @@ def get_page_config(labextensions_path, app_settings_dir=None, logger=None):  # 
     return page_config
 
 
-def write_page_config(page_config, level="all"):
+def write_page_config(page_config: dict[str, Any], level: str = "all") -> None:
     """Write page config to disk"""
     cm = _get_config_manager(level)
     cm.set("page_config", page_config)
@@ -298,51 +306,51 @@ class LabConfig(HasTraits):
     ).tag(config=True)
 
     @default("template_dir")
-    def _default_template_dir(self):
+    def _default_template_dir(self) -> str:
         return DEFAULT_TEMPLATE_PATH
 
     @default("labextensions_url")
-    def _default_labextensions_url(self):
+    def _default_labextensions_url(self) -> str:
         return ujoin(self.app_url, "extensions/")
 
     @default("labextensions_path")
-    def _default_labextensions_path(self):
+    def _default_labextensions_path(self) -> list[str]:
         return jupyter_path("labextensions")
 
     @default("workspaces_url")
-    def _default_workspaces_url(self):
+    def _default_workspaces_url(self) -> str:
         return ujoin(self.app_url, "workspaces/")
 
     @default("workspaces_api_url")
-    def _default_workspaces_api_url(self):
+    def _default_workspaces_api_url(self) -> str:
         return ujoin(self.app_url, "api", "workspaces/")
 
     @default("settings_url")
-    def _default_settings_url(self):
+    def _default_settings_url(self) -> str:
         return ujoin(self.app_url, "api", "settings/")
 
     @default("listings_url")
-    def _default_listings_url(self):
+    def _default_listings_url(self) -> str:
         return ujoin(self.app_url, "api", "listings/")
 
     @default("themes_url")
-    def _default_themes_url(self):
+    def _default_themes_url(self) -> str:
         return ujoin(self.app_url, "api", "themes/")
 
     @default("licenses_url")
-    def _default_licenses_url(self):
+    def _default_licenses_url(self) -> str:
         return ujoin(self.app_url, "api", "licenses/")
 
     @default("tree_url")
-    def _default_tree_url(self):
+    def _default_tree_url(self) -> str:
         return ujoin(self.app_url, "tree/")
 
     @default("translations_api_url")
-    def _default_translations_api_url(self):
+    def _default_translations_api_url(self) -> str:
         return ujoin(self.app_url, "api", "translations/")
 
 
-def _get_config_manager(level):
+def _get_config_manager(level: str) -> ConfigManager:
     """Get the location of config files for the current context
     Returns the string to the environment
     """

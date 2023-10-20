@@ -2,20 +2,25 @@
 # Distributed under the terms of the Modified BSD License.
 
 """pytest fixtures."""
+from __future__ import annotations
+
 import json
 import os
 import os.path as osp
 import shutil
 from os.path import join as pjoin
+from pathlib import Path
+from typing import Any, Callable
 
 import pytest
+from jupyter_server.serverapp import ServerApp
 
 from jupyterlab_server import LabServerApp
 
 pytest_plugins = ["pytest_jupyter.jupyter_server"]
 
 
-def mkdir(tmp_path, *parts):
+def mkdir(tmp_path: Path, *parts: str) -> Path:
     """Util for making a directory."""
     path = tmp_path.joinpath(*parts)
     if not path.exists():
@@ -34,17 +39,17 @@ labextensions_dir = pytest.fixture(lambda tmp_path: mkdir(tmp_path, "labextensio
 
 @pytest.fixture
 def make_labserver_extension_app(
-    jp_root_dir,
-    jp_template_dir,
-    app_settings_dir,
-    user_settings_dir,
-    schemas_dir,
-    workspaces_dir,
-    labextensions_dir,
-):
+    jp_root_dir: Path,
+    jp_template_dir: Path,
+    app_settings_dir: Path,
+    user_settings_dir: Path,
+    schemas_dir: Path,
+    workspaces_dir: Path,
+    labextensions_dir: Path,
+) -> Callable[..., LabServerApp]:
     """Return a factory function for a labserver extension app."""
 
-    def _make_labserver_extension_app(**kwargs):
+    def _make_labserver_extension_app(**kwargs: Any) -> LabServerApp:
         """Factory function for lab server extension apps."""
         return LabServerApp(
             static_dir=str(jp_root_dir),
@@ -133,7 +138,9 @@ def make_labserver_extension_app(
 
 
 @pytest.fixture
-def labserverapp(jp_serverapp, make_labserver_extension_app):
+def labserverapp(
+    jp_serverapp: ServerApp, make_labserver_extension_app: Callable[..., LabServerApp]
+) -> LabServerApp:
     """A lab server app."""
     app = make_labserver_extension_app()
     app._link_jupyter_server_extension(jp_serverapp)

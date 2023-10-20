@@ -2,12 +2,15 @@
 
 # Copyright (c) Jupyter Development Team.
 # Distributed under the terms of the Modified BSD License.
+from __future__ import annotations
+
 import hashlib
 import json
 import re
 import unicodedata
 import urllib
 from pathlib import Path
+from typing import Any
 
 from jupyter_server import _tz as tz
 from jupyter_server.base.handlers import APIHandler
@@ -20,7 +23,7 @@ from traitlets.config import LoggingConfigurable
 WORKSPACE_EXTENSION = ".jupyterlab-workspace"
 
 
-def _list_workspaces(directory: Path, prefix: str) -> list:
+def _list_workspaces(directory: Path, prefix: str) -> list[dict[str, Any]]:
     """
     Return the list of workspaces in a given directory beginning with the
     given prefix.
@@ -57,10 +60,12 @@ def _load_with_file_times(workspace_path: Path) -> dict:
             last_modified=tz.utcfromtimestamp(stat.st_mtime).isoformat(),
             created=tz.utcfromtimestamp(stat.st_ctime).isoformat(),
         )
-    return workspace  # type:ignore
+    return workspace
 
 
-def slugify(raw, base="", sign=True, max_length=128 - len(WORKSPACE_EXTENSION)):  # noqa
+def slugify(
+    raw: str, base: str = "", sign: bool = True, max_length: int = 128 - len(WORKSPACE_EXTENSION)
+) -> str:
     """
     Use the common superset of raw and base values to build a slug shorter
     than max_length. By default, base value is an empty string.
@@ -93,7 +98,7 @@ def slugify(raw, base="", sign=True, max_length=128 - len(WORKSPACE_EXTENSION)):
 class WorkspacesManager(LoggingConfigurable):
     """A manager for workspaces."""
 
-    def __init__(self, path):
+    def __init__(self, path: str) -> None:
         """Initialize a workspaces manager with content in ``path``."""
         super()
         if not path:
@@ -101,7 +106,7 @@ class WorkspacesManager(LoggingConfigurable):
             raise ValueError(msg)
         self.workspaces_dir = Path(path)
 
-    def delete(self, space_name):
+    def delete(self, space_name: str) -> None:
         """Remove a workspace ``space_name``."""
         slug = slugify(space_name)
         workspace_path = self.workspaces_dir / (slug + WORKSPACE_EXTENSION)
@@ -159,19 +164,21 @@ class WorkspacesManager(LoggingConfigurable):
         # Write the workspace data to a file.
         workspace_path.write_text(raw, encoding="utf-8")
 
-        return workspace_path  # type:ignore
+        return workspace_path
 
 
 class WorkspacesHandler(ExtensionHandlerMixin, ExtensionHandlerJinjaMixin, APIHandler):
     """A workspaces API handler."""
 
-    def initialize(self, name, manager: WorkspacesManager, **kwargs) -> None:  # type:ignore
+    def initialize(
+        self, name: str, manager: WorkspacesManager, **kwargs: Any
+    ) -> None:  # type:ignore[override]
         """Initialize the handler."""
         super().initialize(name)
         self.manager = manager
 
     @web.authenticated
-    def delete(self, space_name):
+    def delete(self, space_name: str) -> None:
         """Remove a workspace"""
         if not space_name:
             raise web.HTTPError(400, "Workspace name is required for DELETE")
@@ -185,7 +192,7 @@ class WorkspacesHandler(ExtensionHandlerMixin, ExtensionHandlerJinjaMixin, APIHa
             raise web.HTTPError(500, str(e)) from e
 
     @web.authenticated
-    def get(self, space_name=""):
+    async def get(self, space_name: str = "") -> Any:
         """Get workspace(s) data"""
 
         try:
@@ -204,7 +211,7 @@ class WorkspacesHandler(ExtensionHandlerMixin, ExtensionHandlerJinjaMixin, APIHa
             raise web.HTTPError(500, str(e)) from e
 
     @web.authenticated
-    def put(self, space_name=""):
+    def put(self, space_name: str = "") -> None:
         """Update workspace data"""
         if not space_name:
             raise web.HTTPError(400, "Workspace name is required for PUT.")

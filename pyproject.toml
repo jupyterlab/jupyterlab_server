@@ -109,9 +109,9 @@ nowarn = "test -W default {args}"
 
 [tool.hatch.envs.typing]
 features = ["test"]
-dependencies = ["mypy>=1.6.1", "traitlets>=5.11.2", "jupyter_server>2.8"]
+dependencies = ["mypy>=1.6.1", "traitlets>=5.11.2", "jupyter_server>=2.8"]
 [tool.hatch.envs.typing.scripts]
-test = "mypy --install-types --non-interactive {args:jupyterlab_server tests}"
+test = "mypy --install-types --non-interactive {args}"
 
 [tool.hatch.envs.lint]
 dependencies = [
@@ -179,6 +179,7 @@ files = "jupyterlab_server"
 python_version = "3.8"
 strict = true
 disallow_any_generics = false
+disable_error_code = ["no-untyped-call"]
 enable_error_code = ["ignore-without-code", "redundant-expr", "truthy-bool"]
 no_implicit_reexport = false
 pretty = true
@@ -242,6 +243,8 @@ ignore = [
 "PLR0913",
 # RUF012 Mutable class attributes should be annotated with `typing.ClassVar`
 "RUF012",
+# S101 Use of `assert` detected
+"S101"
 ]
 
 [tool.ruff.per-file-ignores]

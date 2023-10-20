@@ -3,6 +3,7 @@ Translation handler.
 """
 # Copyright (c) Jupyter Development Team.
 # Distributed under the terms of the Modified BSD License.
+from __future__ import annotations
 
 import json
 import traceback
@@ -24,7 +25,7 @@ class TranslationsHandler(SchemaHandler):
     """An API handler for translations."""
 
     @tornado.web.authenticated
-    async def get(self, locale=None):
+    async def get(self, locale: str | None = None) -> None:
         """
         Get installed language packs.
 

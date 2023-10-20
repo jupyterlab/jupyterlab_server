@@ -2,11 +2,14 @@
 
 # Copyright (c) Jupyter Development Team.
 # Distributed under the terms of the Modified BSD License.
+from __future__ import annotations
+
 import json
 import os
 from glob import glob
+from typing import Any
 
-import json5  # type:ignore
+import json5  # type:ignore[import-untyped]
 from jsonschema import Draft4Validator as Validator
 from jsonschema import ValidationError
 from jupyter_server import _tz as tz
@@ -20,7 +23,12 @@ from .translation_utils import DEFAULT_LOCALE, L10N_SCHEMA_NAME, SYS_LOCALE, is_
 SETTINGS_EXTENSION = ".jupyterlab-settings"
 
 
-def _get_schema(schemas_dir, schema_name, overrides, labextensions_path):
+def _get_schema(
+    schemas_dir: str,
+    schema_name: str,
+    overrides: dict[str, Any],
+    labextensions_path: list[str] | None,
+) -> tuple[dict[str, Any], str]:
     """Returns a dict containing a parsed and validated JSON schema."""
     notfound_error = "Schema not found: %s"
     parse_error = "Failed parsing schema (%s): %s"
@@ -68,7 +76,7 @@ def _get_schema(schemas_dir, schema_name, overrides, labextensions_path):
     return schema, version
 
 
-def _get_user_settings(settings_dir, schema_name, schema):
+def _get_user_settings(settings_dir: str, schema_name: str, schema: Any) -> dict[str, Any]:
     """
     Returns a dictionary containing the raw user settings, the parsed user
     settings, a validation warning for a schema, and file times.
@@ -108,7 +116,7 @@ def _get_user_settings(settings_dir, schema_name, schema):
     )
 
 
-def _get_version(schemas_dir, schema_name):
+def _get_version(schemas_dir: str, schema_name: str) -> str:
     """Returns the package version for a given schema or 'N/A' if not found."""
 
     path = _path(schemas_dir, schema_name)
@@ -123,14 +131,14 @@ def _get_version(schemas_dir, schema_name):
 
 
 def _list_settings(
-    schemas_dir,
-    settings_dir,
-    overrides,
-    extension=".json",
-    labextensions_path=None,
-    translator=None,
-    ids_only=False,
-):
+    schemas_dir: str,
+    settings_dir: str,
+    overrides: dict[str, Any],
+    extension: str = ".json",
+    labextensions_path: list[str] | None = None,
+    translator: Any = None,
+    ids_only: bool = False,
+) -> tuple[list[Any], list[Any]]:
     """
     Returns a tuple containing:
      - the list of plugins, schemas, and their settings,
@@ -140,8 +148,8 @@ def _list_settings(
        validating the user overrides against the schemas.
     """
 
-    settings = {}
-    federated_settings = {}
+    settings: dict[str, Any] = {}
+    federated_settings: dict[str, Any] = {}
     warnings = []
 
     if not os.path.exists(schemas_dir):
@@ -223,7 +231,9 @@ def _list_settings(
     return (settings_list, warnings)
 
 
-def _override(schema_name, schema, overrides):
+def _override(
+    schema_name: str, schema: dict[str, Any], overrides: dict[str, Any]
+) -> dict[str, Any]:
     """Override default values in the schema if necessary."""
     if schema_name in overrides:
         defaults = overrides[schema_name]
@@ -243,7 +253,9 @@ def _override(schema_name, schema, overrides):
     return schema
 
 
-def _path(root_dir, schema_name, make_dirs=False, extension=".json"):
+def _path(
+    root_dir: str, schema_name: str, make_dirs: bool = False, extension: str = ".json"
+) -> str:
     """
     Returns the local file system path for a schema name in the given root
     directory. This function can be used to filed user overrides in addition to
@@ -270,14 +282,15 @@ def _path(root_dir, schema_name, make_dirs=False, extension=".json"):
     return path
 
 
-def _get_overrides(app_settings_dir):
+def _get_overrides(app_settings_dir: str) -> tuple[dict[str, Any], str]:
     """Get overrides settings from `app_settings_dir`.
 
     The ordering of paths is:
     - {app_settings_dir}/overrides.d/*.{json,json5} (many, namespaced by package)
     - {app_settings_dir}/overrides.{json,json5} (singleton, owned by the user)
     """
-    overrides: dict
+    overrides: dict[str, Any]
+    error: str
     overrides, error = {}, ""
 
     overrides_d = os.path.join(app_settings_dir, "overrides.d")
@@ -308,7 +321,7 @@ def _get_overrides(app_settings_dir):
                 for plugin_id, config in path_overrides.items():
                     recursive_update(overrides.setdefault(plugin_id, {}), config)
             except Exception as e:
-                error = e  # type:ignore
+                error = e  # type:ignore[assignment]
 
     # Allow `default_settings_overrides.json` files in <jupyter_config>/labconfig dirs
     # to allow layering of defaults
@@ -321,15 +334,15 @@ def _get_overrides(app_settings_dir):
 
 
 def get_settings(
-    app_settings_dir,
-    schemas_dir,
-    settings_dir,
-    schema_name="",
-    overrides=None,
-    labextensions_path=None,
-    translator=None,
-    ids_only=False,
-):
+    app_settings_dir: str,
+    schemas_dir: str,
+    settings_dir: str,
+    schema_name: str = "",
+    overrides: dict[str, Any] | None = None,
+    labextensions_path: list[str] | None = None,
+    translator: Any = None,
+    ids_only: bool = False,
+) -> tuple[dict[str, Any], list[Any]]:
     """
     Get settings.
 
@@ -390,13 +403,13 @@ def get_settings(
 
 
 def save_settings(
-    schemas_dir,
-    settings_dir,
-    schema_name,
-    raw_settings,
-    overrides,
-    labextensions_path=None,
-):
+    schemas_dir: str,
+    settings_dir: str,
+    schema_name: str,
+    raw_settings: str,
+    overrides: dict[str, Any],
+    labextensions_path: list[str] | None = None,
+) -> None:
     """
     Save ``raw_settings`` settings for ``schema_name``.
 
@@ -433,7 +446,14 @@ def save_settings(
 class SchemaHandler(APIHandler):
     """Base handler for handler requiring access to settings."""
 
-    def initialize(self, app_settings_dir, schemas_dir, settings_dir, labextensions_path, **kwargs):
+    def initialize(
+        self,
+        app_settings_dir: str,
+        schemas_dir: str,
+        settings_dir: str,
+        labextensions_path: list[str] | None,
+        **kwargs: Any,
+    ) -> None:
         """Initialize the handler."""
         super().initialize(**kwargs)
         self.overrides, error = _get_overrides(app_settings_dir)
@@ -446,7 +466,7 @@ class SchemaHandler(APIHandler):
             overrides_warning = "Failed loading overrides: %s"
             self.log.warning(overrides_warning % str(error))
 
-    def get_current_locale(self):
+    def get_current_locale(self) -> str:
         """
         Get the current locale as specified in the translation-extension settings.
 

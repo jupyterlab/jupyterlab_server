@@ -24,6 +24,8 @@ as configured in `labextensions_path` and `extra_labextensions_path`.
         )
 
 """
+from typing import Any
+
 from jupyter_core.application import JupyterApp, base_aliases, base_flags
 from traitlets import Bool, Enum, Instance, Unicode
 
@@ -75,18 +77,18 @@ class LicensesApp(JupyterApp, LabConfig):
         ),
     }
 
-    def initialize(self, *args, **kwargs):
+    def initialize(self, *args: Any, **kwargs: Any) -> None:
         """Initialize the app."""
         super().initialize(*args, **kwargs)
         self.init_licenses_manager()
 
-    def init_licenses_manager(self):
+    def init_licenses_manager(self) -> None:
         """Initialize the license manager."""
         self.licenses_manager = LicensesManager(
             parent=self,
         )
 
-    def start(self):
+    def start(self) -> None:
         """Start the app."""
         report = self.licenses_manager.report(
             report_format=self.report_format,

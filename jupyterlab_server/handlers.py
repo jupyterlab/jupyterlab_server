@@ -2,10 +2,13 @@
 
 # Copyright (c) Jupyter Development Team.
 # Distributed under the terms of the Modified BSD License.
+from __future__ import annotations
+
 import os
 import pathlib
 import warnings
 from functools import lru_cache
+from typing import TYPE_CHECKING, Any
 from urllib.parse import urlparse
 
 from jupyter_server.base.handlers import FileFindHandler, JupyterHandler
@@ -21,6 +24,8 @@ from .themes_handler import ThemesHandler
 from .translations_handler import TranslationsHandler
 from .workspaces_handler import WorkspacesHandler, WorkspacesManager
 
+if TYPE_CHECKING:
+    from .app import LabServerApp
 # -----------------------------------------------------------------------------
 # Module globals
 # -----------------------------------------------------------------------------
@@ -46,7 +51,7 @@ DEFAULT_TEMPLATE = template.Template(
 )
 
 
-def is_url(url):
+def is_url(url: str) -> bool:
     """Test whether a string is a full url (e.g. https://nasa.gov)
 
     https://stackoverflow.com/a/52455972
@@ -62,11 +67,13 @@ class LabHandler(ExtensionHandlerJinjaMixin, ExtensionHandlerMixin, JupyterHandl
     """Render the JupyterLab View."""
 
     @lru_cache()  # noqa
-    def get_page_config(self):
+    def get_page_config(self) -> dict[str, Any]:
         """Construct the page config object"""
-        self.application.store_id = getattr(self.application, "store_id", 0)  # type:ignore
+        self.application.store_id = getattr(
+            self.application, "store_id", 0
+        )  # type:ignore[attr-defined]
         config = LabConfig()
-        app = self.extensionapp
+        app: LabServerApp = self.extensionapp  # type:ignore[assignment]
         settings_dir = app.app_settings_dir
         # Handle page config data.
         page_config = self.settings.setdefault("page_config_data", {})
@@ -82,7 +89,7 @@ class LabHandler(ExtensionHandlerJinjaMixin, ExtensionHandlerMixin, JupyterHandl
         page_config.setdefault("terminalsAvailable", terminals)
         page_config.setdefault("ignorePlugins", [])
         page_config.setdefault("serverRoot", server_root)
-        page_config["store_id"] = self.application.store_id  # type:ignore
+        page_config["store_id"] = self.application.store_id  # type:ignore[attr-defined]
 
         server_root = os.path.normpath(os.path.expanduser(server_root))
         preferred_path = ""
@@ -103,7 +110,7 @@ class LabHandler(ExtensionHandlerJinjaMixin, ExtensionHandlerMixin, JupyterHandl
         # JupyterLab relies on an unset/default path being "/"
         page_config["preferredPath"] = preferred_path or "/"
 
-        self.application.store_id += 1  # type:ignore
+        self.application.store_id += 1  # type:ignore[attr-defined]
 
         mathjax_config = self.settings.get("mathjax_config", "TeX-AMS_HTML-full,Safe")
         # TODO Remove CDN usage.
@@ -124,7 +131,7 @@ class LabHandler(ExtensionHandlerJinjaMixin, ExtensionHandlerMixin, JupyterHandl
                 continue
             full_name = _camelCase("full_" + name)
             full_url = getattr(app, name)
-            if not is_url(full_url):
+            if base_url is not None and not is_url(full_url):
                 # Relative URL will be prefixed with base_url
                 full_url = ujoin(base_url, full_url)
             page_config[full_name] = full_url
@@ -144,7 +151,9 @@ class LabHandler(ExtensionHandlerJinjaMixin, ExtensionHandlerMixin, JupyterHandl
 
     @web.authenticated
     @web.removeslash
-    def get(self, mode=None, workspace=None, tree=None):
+    def get(
+        self, mode: str | None = None, workspace: str | None = None, tree: str | None = None
+    ) -> None:
         """Get the JupyterLab html page."""
         workspace = "default" if workspace is None else workspace.replace("/workspaces/", "")
         tree_path = "" if tree is None else tree.replace("/tree/", "")
@@ -168,14 +177,14 @@ class NotFoundHandler(LabHandler):
     """A handler for page not found."""
 
     @lru_cache()  # noqa
-    def get_page_config(self):
+    def get_page_config(self) -> dict[str, Any]:
         """Get the page config."""
         page_config = super().get_page_config()
         page_config["notFoundUrl"] = self.request.path
         return page_config
 
 
-def add_handlers(handlers, extension_app):  # noqa
+def add_handlers(handlers: list[Any], extension_app: LabServerApp) -> None:  # noqa
     """Add the appropriate handlers to the web app."""
     # Normalize directories.
     for name in LabConfig.class_trait_names():
@@ -217,7 +226,7 @@ def add_handlers(handlers, extension_app):  # noqa
 
     # Handle local settings.
     if extension_app.schemas_dir:
-        settings_config = {
+        settings_config: dict[str, Any] = {
             "app_settings_dir": extension_app.app_settings_dir,
             "schemas_dir": extension_app.schemas_dir,
             "settings_dir": extension_app.user_settings_dir,
@@ -259,8 +268,8 @@ def add_handlers(handlers, extension_app):  # noqa
     # Handle local listings.
 
     settings_config = extension_app.settings.get("config", {}).get("LabServerApp", {})
-    blocked_extensions_uris = settings_config.get("blocked_extensions_uris", "")
-    allowed_extensions_uris = settings_config.get("allowed_extensions_uris", "")
+    blocked_extensions_uris: str = settings_config.get("blocked_extensions_uris", "")
+    allowed_extensions_uris: str = settings_config.get("allowed_extensions_uris", "")
 
     if (blocked_extensions_uris) and (allowed_extensions_uris):
         warnings.warn(  # noqa B028
@@ -292,11 +301,11 @@ def add_handlers(handlers, extension_app):  # noqa
 
         callback_time = ListingsHandler.listings_refresh_seconds * 1000
         ListingsHandler.pc = ioloop.PeriodicCallback(
-            lambda: fetch_listings(None),  # type:ignore
+            lambda: fetch_listings(None),  # type:ignore[assignment]
             callback_time=callback_time,
             jitter=0.1,
         )
-        ListingsHandler.pc.start()  # type:ignore
+        ListingsHandler.pc.start()  # type:ignore[attr-defined]
 
     handlers.append((listings_path, ListingsHandler, {}))
 
@@ -330,7 +339,7 @@ def add_handlers(handlers, extension_app):  # noqa
     handlers.append((fallthrough_url, NotFoundHandler))
 
 
-def _camelCase(base):  # noqa
+def _camelCase(base: str) -> str:  # noqa
     """Convert a string to camelCase.
     https://stackoverflow.com/a/20744956
     """

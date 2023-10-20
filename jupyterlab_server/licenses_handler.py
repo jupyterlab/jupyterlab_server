@@ -2,6 +2,7 @@
 
 # Copyright (c) Jupyter Development Team.
 # Distributed under the terms of the Modified BSD License.
+from __future__ import annotations
 
 import csv
 import io
@@ -10,10 +11,10 @@ import mimetypes
 import re
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
 from jupyter_server.base.handlers import APIHandler
-from tornado import gen, web
+from tornado import web
 from traitlets import List, Unicode
 from traitlets.config import LoggingConfigurable
 
@@ -45,7 +46,7 @@ class LicensesManager(LoggingConfigurable):
     )
 
     @property
-    def federated_extensions(self):
+    def federated_extensions(self) -> dict[str, Any]:
         """Lazily load the currrently-available federated extensions.
 
         This is expensive, but probably the only way to be sure to get
@@ -65,20 +66,20 @@ class LicensesManager(LoggingConfigurable):
         )
         return get_federated_extensions(labextensions_path)
 
-    @gen.coroutine
-    def report_async(self, report_format="markdown", bundles_pattern=".*", full_text=False):
+    async def report_async(
+        self, report_format: str = "markdown", bundles_pattern: str = ".*", full_text: bool = False
+    ) -> tuple[str, str]:
         """Asynchronous wrapper around the potentially slow job of locating
         and encoding all of the licenses
         """
-        report = yield self.executor.submit(
+        return await self.executor.submit(  # type:ignore[misc]
             self.report,
             report_format=report_format,
             bundles_pattern=bundles_pattern,
             full_text=full_text,
         )
-        return report
 
-    def report(self, report_format, bundles_pattern, full_text):
+    def report(self, report_format: str, bundles_pattern: str, full_text: bool) -> tuple[str, str]:
         """create a human- or machine-readable report"""
         bundles = self.bundles(bundles_pattern=bundles_pattern)
         if report_format == "json":
@@ -94,13 +95,13 @@ class LicensesManager(LoggingConfigurable):
         msg = f"Unsupported report format {report_format}."
         raise ValueError(msg)
 
-    def report_json(self, bundles):
+    def report_json(self, bundles: dict[str, Any]) -> str:
         """create a JSON report
         TODO: SPDX
         """
         return json.dumps({"bundles": bundles}, indent=2, sort_keys=True)
 
-    def report_csv(self, bundles):
+    def report_csv(self, bundles: dict[str, Any]) -> str:
         """create a CSV report"""
         outfile = io.StringIO()
         fieldnames = ["name", "versionInfo", "licenseId", "extractedText"]
@@ -116,7 +117,7 @@ class LicensesManager(LoggingConfigurable):
                 )
         return outfile.getvalue()
 
-    def report_markdown(self, bundles, full_text=True):
+    def report_markdown(self, bundles: dict[str, Any], full_text: bool = True) -> str:
         """create a markdown report"""
         lines = []
         library_names = [
@@ -161,7 +162,7 @@ class LicensesManager(LoggingConfigurable):
                         lines += ["", "", "<pre/>", extracted_text, "</pre>", ""]
         return "\n".join(lines)
 
-    def license_bundle(self, path, bundle):
+    def license_bundle(self, path: Path, bundle: str | None) -> dict[str, Any]:
         """Return the content of a packages's license bundles"""
         bundle_json: dict = {"packages": []}
         checked_paths = []
@@ -200,7 +201,7 @@ class LicensesManager(LoggingConfigurable):
 
         return bundle_json
 
-    def app_static_info(self):
+    def app_static_info(self) -> tuple[Path | None, str | None]:
         """get the static directory for this app
 
         This will usually be in `static_dir`, but may also appear in the
@@ -221,7 +222,7 @@ class LicensesManager(LoggingConfigurable):
         name = json.loads(package_json.read_text(encoding="utf-8"))["name"]
         return path, name
 
-    def bundles(self, bundles_pattern=".*"):
+    def bundles(self, bundles_pattern: str = ".*") -> dict[str, Any]:
         """Read all of the licenses
         TODO: schema
         """
@@ -232,8 +233,10 @@ class LicensesManager(LoggingConfigurable):
         }
 
         app_path, app_name = self.app_static_info()
-        if app_path is not None and re.match(bundles_pattern, app_name):
-            bundles[app_name] = self.license_bundle(app_path, app_name)
+        if app_path is not None:
+            assert app_name is not None
+            if re.match(bundles_pattern, app_name):
+                bundles[app_name] = self.license_bundle(app_path, app_name)
 
         if not bundles:
             self.log.warning("No license bundles found at all")
@@ -250,7 +253,7 @@ class LicensesHandler(APIHandler):
         self.manager = manager
 
     @web.authenticated
-    async def get(self, _args):
+    async def get(self, _args: Any) -> None:
         """Return all the frontend licenses"""
         full_text = bool(json.loads(self.get_argument("full_text", "true")))
         report_format = self.get_argument("format", "json")
@@ -276,8 +279,10 @@ class LicensesHandler(APIHandler):
         self.write(report)
         await self.finish(_mime_type=mime)
 
-    def finish(self, _mime_type, *args, **kwargs):
+    async def finish(
+        self, _mime_type: str, *args: Any, **kwargs: Any
+    ) -> Any:  # type:ignore[override]
         """Overload the regular finish, which (sensibly) always sets JSON"""
         self.update_api_activity()
         self.set_header("Content-Type", _mime_type)
-        return super(APIHandler, self).finish(*args, **kwargs)
+        return await super(APIHandler, self).finish(*args, **kwargs)
