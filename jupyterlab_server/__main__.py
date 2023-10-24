@@ -6,4 +6,4 @@ import sys
 
 from jupyterlab_server.app import main
 
-sys.exit(main())
+sys.exit(main())  # type:ignore[no-untyped-call]

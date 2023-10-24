@@ -2,8 +2,10 @@
 
 # Copyright (c) Jupyter Development Team.
 # Distributed under the terms of the Modified BSD License.
+from __future__ import annotations
 
 import json
+from logging import Logger
 
 import requests
 import tornado
@@ -12,12 +14,13 @@ from jupyter_server.base.handlers import APIHandler
 LISTINGS_URL_SUFFIX = "@jupyterlab/extensionmanager-extension/listings.json"
 
 
-def fetch_listings(logger):
+def fetch_listings(logger: Logger | None) -> None:
     """Fetch the listings for the extension manager."""
     if not logger:
         from traitlets import log
 
-        logger = log.get_logger()
+        logger = log.get_logger()  # type:ignore[assignment]
+    assert logger is not None
     if len(ListingsHandler.blocked_extensions_uris) > 0:
         blocked_extensions = []
         for blocked_extensions_uri in ListingsHandler.blocked_extensions_uris:
@@ -44,7 +47,7 @@ def fetch_listings(logger):
             for w in j["allowed_extensions"]:
                 allowed_extensions.append(w)
         ListingsHandler.allowed_extensions = allowed_extensions
-    ListingsHandler.listings = json.dumps(  # type:ignore
+    ListingsHandler.listings = json.dumps(  # type:ignore[attr-defined]
         {
             "blocked_extensions_uris": list(ListingsHandler.blocked_extensions_uris),
             "allowed_extensions_uris": list(ListingsHandler.allowed_extensions_uris),
@@ -79,10 +82,10 @@ class ListingsHandler(APIHandler):
     # The PeriodicCallback that schedule the call to fetch_listings method.
     pc = None
 
-    def get(self, path):
+    def get(self, path: str) -> None:
         """Get the listings for the extension manager."""
         self.set_header("Content-Type", "application/json")
         if path == LISTINGS_URL_SUFFIX:
-            self.write(ListingsHandler.listings)  # type:ignore
+            self.write(ListingsHandler.listings)  # type:ignore[attr-defined]
         else:
             raise tornado.web.HTTPError(400)
