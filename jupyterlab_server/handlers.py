@@ -122,11 +122,11 @@ class LabHandler(ExtensionHandlerJinjaMixin, ExtensionHandlerMixin, JupyterHandl
         page_config.setdefault("fullMathjaxUrl", mathjax_url)
 
         # Put all our config in page_config
-        for name in config.trait_names():  # type:ignore[no-untyped-call]
+        for name in config.trait_names():
             page_config[_camelCase(name)] = getattr(app, name)
 
         # Add full versions of all the urls
-        for name in config.trait_names():  # type:ignore[no-untyped-call]
+        for name in config.trait_names():
             if not name.endswith("_url"):
                 continue
             full_name = _camelCase("full_" + name)
@@ -169,9 +169,7 @@ class LabHandler(ExtensionHandlerJinjaMixin, ExtensionHandlerMixin, JupyterHandl
         page_config["treePath"] = tree_path
 
         # Write the template with the config.
-        tpl = self.render_template(
-            "index.html", page_config=page_config
-        )  # type:ignore[no-untyped-call]
+        tpl = self.render_template("index.html", page_config=page_config)  # type:ignore[no-untyped-call]
         self.write(tpl)
 
 
@@ -189,7 +187,7 @@ class NotFoundHandler(LabHandler):
 def add_handlers(handlers: list[Any], extension_app: LabServerApp) -> None:  # noqa
     """Add the appropriate handlers to the web app."""
     # Normalize directories.
-    for name in LabConfig.class_trait_names():  # type:ignore[no-untyped-call]
+    for name in LabConfig.class_trait_names():
         if not name.endswith("_dir"):
             continue
         value = getattr(extension_app, name)
@@ -197,7 +195,7 @@ def add_handlers(handlers: list[Any], extension_app: LabServerApp) -> None:  # n
 
     # Normalize urls
     # Local urls should have a leading slash but no trailing slash
-    for name in LabConfig.class_trait_names():  # type:ignore[no-untyped-call]
+    for name in LabConfig.class_trait_names():
         if not name.endswith("_url"):
             continue
         value = getattr(extension_app, name)

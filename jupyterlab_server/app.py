@@ -116,7 +116,7 @@ class LabServerApp(ExtensionAppJinjaMixin, LabConfig, ExtensionApp):
         for extension_path in self.labextensions_path + self.extra_labextensions_path:
             extensions_url = [
                 ujoin(self.labextensions_url, relpath(path, extension_path))
-                for path in glob(f'{extension_path}/**/static', recursive=True)
+                for path in glob(f"{extension_path}/**/static", recursive=True)
             ]
 
             immutable_cache.update(extensions_url)

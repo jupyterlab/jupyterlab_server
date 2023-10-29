@@ -63,7 +63,7 @@ class TornadoOpenAPIRequest:
     @property
     def host_url(self) -> str:
         url = self.request.url
-        return url[: url.index('/lab')]
+        return url[: url.index("/lab")]
 
     @property
     def path(self) -> str:
@@ -99,7 +99,7 @@ class TornadoOpenAPIRequest:
         if self.request.body is None:
             return None  # type:ignore[unreachable]
         if not isinstance(self.request.body, bytes):
-            msg = 'Request body is invalid'  # type:ignore[unreachable]
+            msg = "Request body is invalid"  # type:ignore[unreachable]
             raise AssertionError(msg)
         return self.request.body.decode("utf-8")
 
@@ -125,7 +125,7 @@ class TornadoOpenAPIResponse:
     @property
     def data(self) -> str:
         if not isinstance(self.response.body, bytes):
-            msg = 'Response body is invalid'  # type:ignore[unreachable]
+            msg = "Response body is invalid"  # type:ignore[unreachable]
             raise AssertionError(msg)
         return self.response.body.decode("utf-8")
 

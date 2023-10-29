@@ -52,7 +52,7 @@ class SettingsHandler(ExtensionHandlerMixin, ExtensionHandlerJinjaMixin, SchemaH
         locale = self.get_current_locale()
         translator.set_locale(locale)
 
-        ids_only = self.get_argument('ids_only', '') == 'true'
+        ids_only = self.get_argument("ids_only", "") == "true"
 
         result, warnings = get_settings(
             self.app_settings_dir,
