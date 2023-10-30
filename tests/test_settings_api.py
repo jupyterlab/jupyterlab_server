@@ -124,7 +124,7 @@ async def test_listing_ids(jp_fetch, labserverapp):
 
     # Checks there is only the 'id' key in each item
     assert all(
-        (len(item.keys()) == 1 and next(iter(item.keys())) == 'id') for item in response["settings"]
+        (len(item.keys()) == 1 and next(iter(item.keys())) == "id") for item in response["settings"]
     )
 
 

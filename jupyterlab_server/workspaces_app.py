@@ -2,10 +2,13 @@
 # Distributed under the terms of the Modified BSD License.
 
 """A workspace management CLI"""
+from __future__ import annotations
+
 import json
 import sys
 import warnings
 from pathlib import Path
+from typing import Any
 
 from jupyter_core.application import JupyterApp
 from traitlets import Bool, Unicode
@@ -58,12 +61,12 @@ class WorkspaceListApp(JupyterApp, LabConfig):
         ),
     )
 
-    def initialize(self, *args, **kwargs):
+    def initialize(self, *args: Any, **kwargs: Any) -> None:
         """Initialize the app."""
         super().initialize(*args, **kwargs)
         self.manager = WorkspacesManager(self.workspaces_dir)
 
-    def start(self):
+    def start(self) -> None:
         """Start the app."""
         workspaces = self.manager.list_workspaces()
         if self.jsonlines:
@@ -89,12 +92,12 @@ class WorkspaceExportApp(JupyterApp, LabConfig):
     If no workspace is found, this command will export an empty workspace.
     """
 
-    def initialize(self, *args, **kwargs):
+    def initialize(self, *args: Any, **kwargs: Any) -> None:
         """Initialize the app."""
         super().initialize(*args, **kwargs)
         self.manager = WorkspacesManager(self.workspaces_dir)
 
-    def start(self):
+    def start(self) -> None:
         """Start the app."""
         if len(self.extra_args) > 1:  # pragma: no cover
             warnings.warn("Too many arguments were provided for workspace export.")
@@ -131,12 +134,12 @@ class WorkspaceImportApp(JupyterApp, LabConfig):
 
     aliases = {"name": "WorkspaceImportApp.workspace_name"}
 
-    def initialize(self, *args, **kwargs):
+    def initialize(self, *args: Any, **kwargs: Any) -> None:
         """Initialize the app."""
         super().initialize(*args, **kwargs)
         self.manager = WorkspacesManager(self.workspaces_dir)
 
-    def start(self):
+    def start(self) -> None:
         """Start the app."""
         if len(self.extra_args) != 1:  # pragma: no cover
             self.log.info("One argument is required for workspace import.")
@@ -157,7 +160,7 @@ class WorkspaceImportApp(JupyterApp, LabConfig):
 
         self.log.info(f"Saved workspace: {workspace_path!s}")
 
-    def _smart_open(self):
+    def _smart_open(self) -> Any:
         file_name = self.extra_args[0]
 
         if file_name == "-":  # pragma: no cover
@@ -171,7 +174,7 @@ class WorkspaceImportApp(JupyterApp, LabConfig):
 
             return file_path.open(encoding="utf-8")
 
-    def _validate(self, data):
+    def _validate(self, data: Any) -> Any:
         workspace = json.load(data)
 
         if "data" not in workspace:

@@ -2,6 +2,7 @@
 
 # Copyright (c) Jupyter Development Team.
 # Distributed under the terms of the Modified BSD License.
+from __future__ import annotations
 
 import atexit
 import logging
@@ -13,27 +14,29 @@ import sys
 import threading
 import time
 import weakref
+from logging import Logger
 from shutil import which as _which
+from typing import Any
 
 from tornado import gen
 
 try:
     import pty
 except ImportError:
-    pty = False  # type:ignore
+    pty = None  # type:ignore[assignment]
 
 if sys.platform == "win32":
     list2cmdline = subprocess.list2cmdline
 else:
 
-    def list2cmdline(cmd_list):
+    def list2cmdline(cmd_list: list[str]) -> str:
         """Shim for list2cmdline on posix."""
         import shlex
 
         return " ".join(map(shlex.quote, cmd_list))
 
 
-def which(command, env=None):
+def which(command: str, env: dict[str, str] | None = None) -> str:
     """Get the full path to a command.
 
     Parameters
@@ -43,8 +46,8 @@ def which(command, env=None):
     env: dict, optional
         The environment variables, defaults to `os.environ`.
     """
-    env = env or os.environ
-    path = env.get("PATH") or os.defpath
+    env = env or os.environ  # type:ignore[assignment]
+    path = env.get("PATH") or os.defpath  # type:ignore[union-attr]
     command_with_path = _which(command, path=path)
 
     # Allow nodejs as an alias to node.
@@ -66,7 +69,15 @@ class Process:
     _procs: weakref.WeakSet = weakref.WeakSet()
     _pool = None
 
-    def __init__(self, cmd, logger=None, cwd=None, kill_event=None, env=None, quiet=False):
+    def __init__(
+        self,
+        cmd: list[str],
+        logger: Logger | None = None,
+        cwd: str | None = None,
+        kill_event: threading.Event | None = None,
+        env: dict[str, str] | None = None,
+        quiet: bool = False,
+    ) -> None:
         """Start a subprocess that can be run asynchronously.
 
         Parameters
@@ -85,7 +96,7 @@ class Process:
             Whether to suppress output.
         """
         if not isinstance(cmd, (list, tuple)):
-            msg = "Command must be given as a list"
+            msg = "Command must be given as a list"  # type:ignore[unreachable]
             raise ValueError(msg)
 
         if kill_event and kill_event.is_set():
@@ -107,7 +118,7 @@ class Process:
 
         Process._procs.add(self)
 
-    def terminate(self):
+    def terminate(self) -> int:
         """Terminate the process and return the exit code."""
         proc = self.proc
 
@@ -120,7 +131,7 @@ class Process:
             proc.wait(timeout=2.0)
         except subprocess.TimeoutExpired:
             if os.name == "nt":  # noqa
-                sig = signal.SIGBREAK  # type:ignore
+                sig = signal.SIGBREAK  # type:ignore[attr-defined]
             else:
                 sig = signal.SIGKILL
 
@@ -133,7 +144,7 @@ class Process:
 
         return proc.wait()
 
-    def wait(self):
+    def wait(self) -> int:
         """Wait for the process to finish.
 
         Returns
@@ -151,7 +162,7 @@ class Process:
         return self.terminate()
 
     @gen.coroutine
-    def wait_async(self):
+    def wait_async(self) -> Any:
         """Asynchronously wait for the process to finish."""
         proc = self.proc
         kill_event = self._kill_event
@@ -164,7 +175,7 @@ class Process:
 
         raise gen.Return(self.terminate())
 
-    def _create_process(self, **kwargs):
+    def _create_process(self, **kwargs: Any) -> subprocess.Popen[str]:
         """Create the process."""
         cmd = list(self.cmd)
         kwargs.setdefault("stderr", subprocess.STDOUT)
@@ -178,14 +189,14 @@ class Process:
         return proc
 
     @classmethod
-    def _cleanup(cls):
+    def _cleanup(cls: type[Process]) -> None:
         """Clean up the started subprocesses at exit."""
         for proc in list(cls._procs):
             proc.terminate()
 
-    def get_log(self):
+    def get_log(self) -> Logger:
         """Get our logger."""
-        if hasattr(self, "logger") and self.logger:
+        if hasattr(self, "logger") and self.logger is not None:
             return self.logger
         # fallback logger
         self.logger = logging.getLogger("jupyterlab")
@@ -196,7 +207,15 @@ class Process:
 class WatchHelper(Process):
     """A process helper for a watch process."""
 
-    def __init__(self, cmd, startup_regex, logger=None, cwd=None, kill_event=None, env=None):
+    def __init__(
+        self,
+        cmd: list[str],
+        startup_regex: str,
+        logger: Logger | None = None,
+        cwd: str | None = None,
+        kill_event: threading.Event | None = None,
+        env: dict[str, str] | None = None,
+    ) -> None:
         """Initialize the process helper.
 
         Parameters
@@ -216,11 +235,11 @@ class WatchHelper(Process):
         """
         super().__init__(cmd, logger=logger, cwd=cwd, kill_event=kill_event, env=env)
 
-        if not pty:
-            self._stdout = self.proc.stdout
+        if pty is None:
+            self._stdout = self.proc.stdout  # type:ignore[unreachable]
 
         while 1:
-            line = self._stdout.readline().decode("utf-8")
+            line = self._stdout.readline().decode("utf-8")  # type:ignore[has-type]
             if not line:
                 msg = "Process ended improperly"
                 raise RuntimeError(msg)
@@ -231,7 +250,7 @@ class WatchHelper(Process):
         self._read_thread = threading.Thread(target=self._read_incoming, daemon=True)
         self._read_thread.start()
 
-    def terminate(self):
+    def terminate(self) -> int:
         """Terminate the process."""
         proc = self.proc
 
@@ -251,38 +270,38 @@ class WatchHelper(Process):
 
         return proc.returncode
 
-    def _read_incoming(self):
+    def _read_incoming(self) -> None:
         """Run in a thread to read stdout and print"""
-        fileno = self._stdout.fileno()
+        fileno = self._stdout.fileno()  # type:ignore[has-type]
         while 1:
             try:
                 buf = os.read(fileno, 1024)
             except OSError as e:
                 self.logger.debug("Read incoming error %s", e)
-                return
+                return None
 
             if not buf:
-                return
+                return None
 
             print(buf.decode("utf-8"), end="")
 
-    def _create_process(self, **kwargs):
+    def _create_process(self, **kwargs: Any) -> subprocess.Popen[str]:
         """Create the watcher helper process."""
         kwargs["bufsize"] = 0
 
-        if pty:
+        if pty is not None:
             master, slave = pty.openpty()
             kwargs["stderr"] = kwargs["stdout"] = slave
             kwargs["start_new_session"] = True
-            self._stdout = os.fdopen(master, "rb")
+            self._stdout = os.fdopen(master, "rb")  # type:ignore[has-type]
         else:
-            kwargs["stdout"] = subprocess.PIPE
+            kwargs["stdout"] = subprocess.PIPE  # type:ignore[unreachable]
 
             if os.name == "nt":
-                startupinfo = subprocess.STARTUPINFO()  # type:ignore
-                startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW  # type:ignore
+                startupinfo = subprocess.STARTUPINFO()
+                startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
                 kwargs["startupinfo"] = startupinfo
-                kwargs["creationflags"] = subprocess.CREATE_NEW_PROCESS_GROUP  # type:ignore
+                kwargs["creationflags"] = subprocess.CREATE_NEW_PROCESS_GROUP
                 kwargs["shell"] = True
 
         return super()._create_process(**kwargs)

@@ -5,6 +5,7 @@
 Localization utilities to find available language packs and packages with
 localization data.
 """
+from __future__ import annotations
 
 import gettext
 import importlib
@@ -15,7 +16,7 @@ import re
 import sys
 import traceback
 from functools import lru_cache
-from typing import Any, Dict, Optional, Pattern, Tuple
+from typing import Any, Pattern
 
 import babel
 from packaging.version import parse as parse_version
@@ -58,15 +59,15 @@ DEFAULT_SCHEMA_SELECTORS = {
 }
 
 
-@lru_cache()
-def _get_default_schema_selectors() -> Dict[Pattern, str]:
+@lru_cache
+def _get_default_schema_selectors() -> dict[Pattern, str]:
     return {
         re.compile("^/" + pattern + "$"): context
         for pattern, context in DEFAULT_SCHEMA_SELECTORS.items()
     }
 
 
-def _prepare_schema_patterns(schema: dict) -> Dict[Pattern, str]:
+def _prepare_schema_patterns(schema: dict) -> dict[Pattern, str]:
     return {
         **_get_default_schema_selectors(),
         **{
@@ -78,7 +79,7 @@ def _prepare_schema_patterns(schema: dict) -> Dict[Pattern, str]:
 
 # --- Private process helpers
 # ----------------------------------------------------------------------------
-def _get_installed_language_pack_locales():
+def _get_installed_language_pack_locales() -> tuple[dict[str, Any], str]:
     """
     Get available installed language pack locales.
 
@@ -100,7 +101,7 @@ def _get_installed_language_pack_locales():
     return data, message
 
 
-def _get_installed_package_locales():
+def _get_installed_package_locales() -> tuple[dict[str, Any], str]:
     """
     Get available installed packages containing locale information.
 
@@ -186,10 +187,12 @@ def get_display_name(locale_: str, display_locale: str = DEFAULT_LOCALE) -> str:
     display_name = loc.get_display_name(display_locale)
     if display_name:
         display_name = display_name[0].upper() + display_name[1:]
-    return display_name  # type:ignore
+    return display_name  # type:ignore[return-value]
 
 
-def merge_locale_data(language_pack_locale_data, package_locale_data):
+def merge_locale_data(
+    language_pack_locale_data: dict[str, Any], package_locale_data: dict[str, Any]
+) -> dict[str, Any]:
     """
     Merge language pack data with locale data bundled in packages.
 
@@ -226,7 +229,7 @@ def merge_locale_data(language_pack_locale_data, package_locale_data):
     return result
 
 
-def get_installed_packages_locale(locale_: str) -> Tuple[dict, str]:
+def get_installed_packages_locale(locale_: str) -> tuple[dict, str]:
     """
     Get all jupyterlab extensions installed that contain locale data.
 
@@ -279,7 +282,7 @@ def get_installed_packages_locale(locale_: str) -> Tuple[dict, str]:
 
 # --- API
 # ----------------------------------------------------------------------------
-def get_language_packs(display_locale: str = DEFAULT_LOCALE) -> Tuple[dict, str]:
+def get_language_packs(display_locale: str = DEFAULT_LOCALE) -> tuple[dict, str]:
     """
     Return the available language packs installed in the system.
 
@@ -407,7 +410,7 @@ class TranslationBundle:
             language_pack_module = f"jupyterlab_language_pack_{locale_}"
             try:
                 mod = importlib.import_module(language_pack_module)
-                assert mod.__file__ is not None  # noqa
+                assert mod.__file__ is not None
                 localedir = os.path.join(os.path.dirname(mod.__file__), LOCALE_DIR)
             except Exception:  # noqa S110
                 # no-op
@@ -590,7 +593,7 @@ class translator:  # noqa
     Translations manager.
     """
 
-    _TRANSLATORS: Dict[str, TranslationBundle] = {}
+    _TRANSLATORS: dict[str, TranslationBundle] = {}
     _LOCALE = SYS_LOCALE
 
     @staticmethod
@@ -659,7 +662,7 @@ class translator:  # noqa
         translations: Any,
         schema: dict,
         prefix: str = "",
-        to_translate: Optional[Dict[Pattern, str]] = None,
+        to_translate: dict[Pattern, str] | None = None,
     ) -> None:
         """Translate a schema in-place."""
         if to_translate is None:
@@ -695,7 +698,7 @@ class translator:  # noqa
                     )
 
     @staticmethod
-    def translate_schema(schema: Dict) -> Dict:
+    def translate_schema(schema: dict) -> dict:
         """Translate a schema.
 
         Parameters

@@ -32,7 +32,7 @@ def extract_page_config(html):
             r'<script id="jupyter-config-data" type="application/json">\s*(?P<data>.*?)\s*</script>',
             html,
         ).group(  # type: ignore
-            'data'
+            "data"
         )
     )
 
@@ -52,49 +52,49 @@ async def test_page_config(labserverapp, jp_fetch):
     # Check that the lab template is loaded
     html = r.body.decode()
     page_config = extract_page_config(html)
-    assert not page_config['treePath']
-    assert page_config['preferredPath'] == "/"
+    assert not page_config["treePath"]
+    assert page_config["preferredPath"] == "/"
 
     def ispath(p):
         return p.endswith("Dir") or p.endswith("Path") or p == "serverRoot"
 
     nondirs = {k: v for k, v in page_config.items() if not ispath(k)}
     assert nondirs == {
-        'appName': 'JupyterLab Server Application',
-        'appNamespace': 'jupyterlab_server',
-        'appUrl': '/lab',
-        'appVersion': '',
-        'baseUrl': '/a%40b/',
-        'cacheFiles': True,
-        'disabledExtensions': [],
-        'federated_extensions': [],
-        'fullAppUrl': '/a%40b/lab',
-        'fullLabextensionsUrl': '/a%40b/lab/extensions',
-        'fullLicensesUrl': '/a%40b/lab/api/licenses',
-        'fullListingsUrl': '/a%40b/lab/api/listings',
-        'fullMathjaxUrl': 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js',
-        'fullSettingsUrl': '/a%40b/lab/api/settings',
-        'fullStaticUrl': '/a%40b/static/jupyterlab_server',
-        'fullThemesUrl': '/a%40b/lab/api/themes',
-        'fullTranslationsApiUrl': '/a%40b/lab/api/translations',
-        'fullTreeUrl': '/a%40b/lab/tree',
-        'fullWorkspacesApiUrl': '/a%40b/lab/api/workspaces',
-        'ignorePlugins': [],
-        'labextensionsUrl': '/lab/extensions',
-        'licensesUrl': '/lab/api/licenses',
-        'listingsUrl': '/lab/api/listings',
-        'mathjaxConfig': 'TeX-AMS_HTML-full,Safe',
-        'mode': 'multiple-document',
-        'notebookStartsKernel': True,
-        'settingsUrl': '/lab/api/settings',
-        'store_id': 0,
-        'terminalsAvailable': True,
-        'themesUrl': '/lab/api/themes',
-        'translationsApiUrl': '/lab/api/translations',
-        'treeUrl': '/lab/tree',
-        'workspace': 'default',
-        'workspacesApiUrl': '/lab/api/workspaces',
-        'wsUrl': '',
+        "appName": "JupyterLab Server Application",
+        "appNamespace": "jupyterlab_server",
+        "appUrl": "/lab",
+        "appVersion": "",
+        "baseUrl": "/a%40b/",
+        "cacheFiles": True,
+        "disabledExtensions": [],
+        "federated_extensions": [],
+        "fullAppUrl": "/a%40b/lab",
+        "fullLabextensionsUrl": "/a%40b/lab/extensions",
+        "fullLicensesUrl": "/a%40b/lab/api/licenses",
+        "fullListingsUrl": "/a%40b/lab/api/listings",
+        "fullMathjaxUrl": "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js",
+        "fullSettingsUrl": "/a%40b/lab/api/settings",
+        "fullStaticUrl": "/a%40b/static/jupyterlab_server",
+        "fullThemesUrl": "/a%40b/lab/api/themes",
+        "fullTranslationsApiUrl": "/a%40b/lab/api/translations",
+        "fullTreeUrl": "/a%40b/lab/tree",
+        "fullWorkspacesApiUrl": "/a%40b/lab/api/workspaces",
+        "ignorePlugins": [],
+        "labextensionsUrl": "/lab/extensions",
+        "licensesUrl": "/lab/api/licenses",
+        "listingsUrl": "/lab/api/listings",
+        "mathjaxConfig": "TeX-AMS_HTML-full,Safe",
+        "mode": "multiple-document",
+        "notebookStartsKernel": True,
+        "settingsUrl": "/lab/api/settings",
+        "store_id": 0,
+        "terminalsAvailable": True,
+        "themesUrl": "/lab/api/themes",
+        "translationsApiUrl": "/lab/api/translations",
+        "treeUrl": "/lab/tree",
+        "workspace": "default",
+        "workspacesApiUrl": "/lab/api/workspaces",
+        "wsUrl": "",
     }
 
 
@@ -113,7 +113,7 @@ async def test_app_preferred_dir(serverapp_preferred_dir, labserverapp, jp_fetch
     html = r.body.decode()
     page_config = extract_page_config(html)
     api_path = str(serverapp_preferred_dir.relative_to(labserverapp.serverapp.root_dir).as_posix())
-    assert page_config['preferredPath'] == api_path
+    assert page_config["preferredPath"] == api_path
 
 
 async def test_contents_manager_preferred_dir(jp_root_dir, labserverapp, jp_fetch):
@@ -131,7 +131,7 @@ async def test_contents_manager_preferred_dir(jp_root_dir, labserverapp, jp_fetc
     html = r.body.decode()
     page_config = extract_page_config(html)
     api_path = str(preferred_dir.relative_to(labserverapp.serverapp.root_dir).as_posix())
-    assert page_config['preferredPath'] == api_path
+    assert page_config["preferredPath"] == api_path
 
 
 async def test_notebook_handler(notebooks, jp_fetch):

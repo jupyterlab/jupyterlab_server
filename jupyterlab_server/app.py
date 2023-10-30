@@ -5,6 +5,7 @@
 
 from glob import glob
 from os.path import relpath
+from typing import Any
 
 from jupyter_server.extension.application import ExtensionApp, ExtensionAppJinjaMixin
 from jupyter_server.utils import url_path_join as ujoin
@@ -23,7 +24,7 @@ class LabServerApp(ExtensionAppJinjaMixin, LabConfig, ExtensionApp):
     file_url_prefix = "/lab/tree"  # type:ignore[assignment]
 
     @property
-    def app_namespace(self):
+    def app_namespace(self) -> str:  # type:ignore[override]
         return self.name
 
     default_url = Unicode("/lab", help="The default URL to redirect to from `/`")
@@ -82,10 +83,10 @@ class LabServerApp(ExtensionAppJinjaMixin, LabConfig, ExtensionApp):
     # Method copied from
     # https://github.com/jupyterhub/jupyterhub/blob/d1a85e53dccfc7b1dd81b0c1985d158cc6b61820/jupyterhub/auth.py#L143-L161
     @observe(*list(_deprecated_aliases))
-    def _deprecated_trait(self, change):
+    def _deprecated_trait(self, change: Any) -> None:
         """observer for deprecated traits"""
         old_attr = change.name
-        new_attr, version = self._deprecated_aliases.get(old_attr)  # type:ignore
+        new_attr, version = self._deprecated_aliases.get(old_attr)  # type:ignore[misc]
         new_value = getattr(self, new_attr)
         if new_value != change.new:
             # only warn if different
@@ -101,7 +102,7 @@ class LabServerApp(ExtensionAppJinjaMixin, LabConfig, ExtensionApp):
             )
             setattr(self, new_attr, change.new)
 
-    def initialize_settings(self):
+    def initialize_settings(self) -> None:
         """Initialize the settings:
 
         set the static files as immutable, since they should have all hashed name.
@@ -115,19 +116,19 @@ class LabServerApp(ExtensionAppJinjaMixin, LabConfig, ExtensionApp):
         for extension_path in self.labextensions_path + self.extra_labextensions_path:
             extensions_url = [
                 ujoin(self.labextensions_url, relpath(path, extension_path))
-                for path in glob(f'{extension_path}/**/static', recursive=True)
+                for path in glob(f"{extension_path}/**/static", recursive=True)
             ]
 
             immutable_cache.update(extensions_url)
 
         self.settings.update({"static_immutable_cache": list(immutable_cache)})
 
-    def initialize_templates(self):
+    def initialize_templates(self) -> None:
         """Initialize templates."""
         self.static_paths = [self.static_dir]
         self.template_paths = [self.templates_dir]
 
-    def initialize_handlers(self):
+    def initialize_handlers(self) -> None:
         """Initialize handlers."""
         add_handlers(self.handlers, self)
 

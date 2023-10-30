@@ -2,12 +2,13 @@
 # Distributed under the terms of the Modified BSD License.
 
 """Testing utils."""
+from __future__ import annotations
+
 import json
 import os
 import sys
 from http.cookies import SimpleCookie
 from pathlib import Path
-from typing import Optional
 from urllib.parse import parse_qs, urlparse
 
 import tornado.httpclient
@@ -22,8 +23,8 @@ from jupyterlab_server.spec import get_openapi_spec
 
 HERE = Path(os.path.dirname(__file__)).resolve()
 
-with open(HERE / "test_data" / "app-settings" / "overrides.json", encoding="utf-8") as fpt:
-    big_unicode_string = json.load(fpt)["@jupyterlab/unicode-extension:plugin"]["comment"]
+with open(HERE / "test_data" / "app-settings" / "overrides.json", encoding="utf-8") as fid:
+    big_unicode_string = json.load(fid)["@jupyterlab/unicode-extension:plugin"]["comment"]
 
 
 class TornadoOpenAPIRequest:
@@ -36,7 +37,7 @@ class TornadoOpenAPIRequest:
         self.request = request
         self.spec = spec
         if request.url is None:
-            msg = "Request URL is missing"
+            msg = "Request URL is missing"  # type:ignore[unreachable]
             raise RuntimeError(msg)
         self._url_parsed = urlparse(request.url)
 
@@ -62,7 +63,7 @@ class TornadoOpenAPIRequest:
     @property
     def host_url(self) -> str:
         url = self.request.url
-        return url[: url.index('/lab')]
+        return url[: url.index("/lab")]
 
     @property
     def path(self) -> str:
@@ -73,7 +74,7 @@ class TornadoOpenAPIRequest:
         o = urlparse(self.request.url)
         for path_ in self.spec["paths"]:
             if url:
-                continue
+                continue  # type:ignore[unreachable]
             has_arg = "{" in path_
             path = path_[: path_.index("{")] if has_arg else path_
             if path in o.path:
@@ -94,11 +95,11 @@ class TornadoOpenAPIRequest:
         return method and method.lower() or ""
 
     @property
-    def body(self) -> Optional[str]:
+    def body(self) -> str | None:
         if self.request.body is None:
-            return None
+            return None  # type:ignore[unreachable]
         if not isinstance(self.request.body, bytes):
-            msg = 'Request body is invalid'
+            msg = "Request body is invalid"  # type:ignore[unreachable]
             raise AssertionError(msg)
         return self.request.body.decode("utf-8")
 
@@ -124,7 +125,7 @@ class TornadoOpenAPIResponse:
     @property
     def data(self) -> str:
         if not isinstance(self.response.body, bytes):
-            msg = 'Response body is invalid'
+            msg = "Response body is invalid"  # type:ignore[unreachable]
             raise AssertionError(msg)
         return self.response.body.decode("utf-8")
 
@@ -141,18 +142,18 @@ class TornadoOpenAPIResponse:
         return Headers(dict(self.response.headers))
 
 
-def validate_request(response):
+def validate_request(response: HTTPResponse) -> None:
     """Validate an API request"""
     openapi_spec = get_openapi_spec()
 
     request = TornadoOpenAPIRequest(response.request, openapi_spec)
     V30RequestValidator(openapi_spec).validate(request)
 
-    response = TornadoOpenAPIResponse(response)
-    V30ResponseValidator(openapi_spec).validate(request, response)
+    torn_response = TornadoOpenAPIResponse(response)
+    V30ResponseValidator(openapi_spec).validate(request, torn_response)
 
 
-def maybe_patch_ioloop():
+def maybe_patch_ioloop() -> None:
     """a windows 3.8+ patch for the asyncio loop"""
     if (
         sys.platform.startswith("win")
@@ -173,9 +174,11 @@ def maybe_patch_ioloop():
                 set_event_loop_policy(WindowsSelectorEventLoopPolicy())
 
 
-def expected_http_error(error, expected_code, expected_message=None):  # noqa
+def expected_http_error(  # noqa: PLR0911
+    error: Exception, expected_code: int, expected_message: str | None = None
+) -> bool:
     """Check that the error matches the expected output error."""
-    e = error.value
+    e = error.value  # type:ignore[attr-defined]
     if isinstance(e, tornado.web.HTTPError):
         if expected_code != e.status_code:
             return False

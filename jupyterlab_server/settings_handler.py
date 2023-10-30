@@ -2,7 +2,10 @@
 
 # Copyright (c) Jupyter Development Team.
 # Distributed under the terms of the Modified BSD License.
+from __future__ import annotations
+
 import json
+from typing import Any
 
 from jsonschema import ValidationError
 from jupyter_server.extension.handler import ExtensionHandlerJinjaMixin, ExtensionHandlerMixin
@@ -15,9 +18,15 @@ from .translation_utils import translator
 class SettingsHandler(ExtensionHandlerMixin, ExtensionHandlerJinjaMixin, SchemaHandler):
     """A settings API handler."""
 
-    def initialize(
-        self, name, app_settings_dir, schemas_dir, settings_dir, labextensions_path, **kwargs
-    ):
+    def initialize(  # type:ignore[override]
+        self,
+        name: str,
+        app_settings_dir: str,
+        schemas_dir: str,
+        settings_dir: str,
+        labextensions_path: list[str],
+        **kwargs: Any,
+    ) -> None:
         """Initialize the handler."""
         SchemaHandler.initialize(
             self, app_settings_dir, schemas_dir, settings_dir, labextensions_path
@@ -25,7 +34,7 @@ class SettingsHandler(ExtensionHandlerMixin, ExtensionHandlerJinjaMixin, SchemaH
         ExtensionHandlerMixin.initialize(self, name)
 
     @web.authenticated
-    def get(self, schema_name=""):
+    def get(self, schema_name: str = "") -> Any:
         """
         Get setting(s)
 
@@ -43,7 +52,7 @@ class SettingsHandler(ExtensionHandlerMixin, ExtensionHandlerJinjaMixin, SchemaH
         locale = self.get_current_locale()
         translator.set_locale(locale)
 
-        ids_only = self.get_argument('ids_only', '') == 'true'
+        ids_only = self.get_argument("ids_only", "") == "true"
 
         result, warnings = get_settings(
             self.app_settings_dir,
@@ -64,7 +73,7 @@ class SettingsHandler(ExtensionHandlerMixin, ExtensionHandlerJinjaMixin, SchemaH
         return self.finish(json.dumps(result))
 
     @web.authenticated
-    def put(self, schema_name):
+    def put(self, schema_name: str) -> None:
         """Update a setting"""
         overrides = self.overrides
         schemas_dir = self.schemas_dir

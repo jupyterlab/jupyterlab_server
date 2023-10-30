@@ -2,7 +2,10 @@
 # Distributed under the terms of the Modified BSD License.
 
 """A lab app that runs a sub process for a demo or a test."""
+from __future__ import annotations
+
 import sys
+from typing import Any
 
 from jupyter_server.extension.application import ExtensionApp, ExtensionAppJinjaMixin
 from tornado.ioloop import IOLoop
@@ -19,27 +22,27 @@ class ProcessApp(ExtensionAppJinjaMixin, LabConfig, ExtensionApp):
     # Do not open a browser for process apps
     open_browser = False  # type:ignore[assignment]
 
-    def get_command(self):
+    def get_command(self) -> tuple[list[str], dict[str, Any]]:
         """Get the command and kwargs to run with `Process`.
         This is intended to be overridden.
         """
         return [sys.executable, "--version"], {}
 
-    def initialize_settings(self):
+    def initialize_settings(self) -> None:
         """Start the application."""
         IOLoop.current().add_callback(self._run_command)
 
-    def initialize_handlers(self):
+    def initialize_handlers(self) -> None:
         """Initialize the handlers."""
-        add_handlers(self.handlers, self)
+        add_handlers(self.handlers, self)  # type:ignore[arg-type]
 
-    def _run_command(self):
+    def _run_command(self) -> None:
         command, kwargs = self.get_command()
         kwargs.setdefault("logger", self.log)
         future = Process(command, **kwargs).wait_async()
         IOLoop.current().add_future(future, self._process_finished)
 
-    def _process_finished(self, future):
+    def _process_finished(self, future: Any) -> None:
         try:
             IOLoop.current().stop()
             sys.exit(future.result())

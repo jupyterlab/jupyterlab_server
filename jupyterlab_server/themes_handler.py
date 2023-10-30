@@ -2,10 +2,12 @@
 
 # Copyright (c) Jupyter Development Team.
 # Distributed under the terms of the Modified BSD License.
+from __future__ import annotations
 
 import os
 import re
 from glob import glob
+from typing import Any, Generator
 from urllib.parse import urlparse
 
 from jupyter_server.base.handlers import FileFindHandler
@@ -17,13 +19,13 @@ class ThemesHandler(FileFindHandler):
 
     def initialize(
         self,
-        path,
-        default_filename=None,
-        no_cache_paths=None,
-        themes_url=None,
-        labextensions_path=None,
-        **kwargs,
-    ):
+        path: str | list[str],
+        default_filename: str | None = None,
+        no_cache_paths: list[str] | None = None,
+        themes_url: str | None = None,
+        labextensions_path: list[str] | None = None,
+        **kwargs: Any,
+    ) -> None:
         """Initialize the handler."""
         # Get all of the available theme paths in order
         labextensions_path = labextensions_path or []
@@ -42,7 +44,9 @@ class ThemesHandler(FileFindHandler):
         )
         self.themes_url = themes_url
 
-    def get_content(self, abspath, start=None, end=None):
+    def get_content(  # type:ignore[override]
+        self, abspath: str, start: int | None = None, end: int | None = None
+    ) -> bytes | Generator[bytes, None, None]:
         """Retrieve the content of the requested resource which is located
         at the given absolute path.
 
@@ -55,20 +59,23 @@ class ThemesHandler(FileFindHandler):
 
         return self._get_css()
 
-    def get_content_size(self):
+    def get_content_size(self) -> int:
         """Retrieve the total size of the resource at the given path."""
-        assert self.absolute_path is not None  # noqa
+        assert self.absolute_path is not None
         base, ext = os.path.splitext(self.absolute_path)
         if ext != ".css":
             return FileFindHandler.get_content_size(self)
         else:
             return len(self._get_css())
 
-    def _get_css(self):
+    def _get_css(self) -> bytes:
         """Get the mangled css file contents."""
-        assert self.absolute_path is not None  # noqa
+        assert self.absolute_path is not None
         with open(self.absolute_path, "rb") as fid:
             data = fid.read().decode("utf-8")
+
+        if not self.themes_url:
+            return b""
 
         basedir = os.path.dirname(self.path).replace(os.sep, "/")
         basepath = ujoin(self.themes_url, basedir)
@@ -78,7 +85,7 @@ class ThemesHandler(FileFindHandler):
         # e.g. `url('../foo.css')`, `url('images/foo.png')`
         pattern = r"url\('(.*)'\)|url\('(.*)'\)"
 
-        def replacer(m):
+        def replacer(m: Any) -> Any:
             """Replace the matched relative url with the mangled url."""
             group = m.group()
             # Get the part that matched
