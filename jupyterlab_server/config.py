@@ -98,7 +98,7 @@ def load_config(path: str) -> Any:
         Dictionary of json or json5 data
     """
     with open(path, encoding="utf-8") as fid:
-        if path.endswith('.json5'):
+        if path.endswith(".json5"):
             return json5.load(fid)
         else:
             return json.load(fid)

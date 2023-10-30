@@ -75,7 +75,7 @@ class ThemesHandler(FileFindHandler):
             data = fid.read().decode("utf-8")
 
         if not self.themes_url:
-            return b''
+            return b""
 
         basedir = os.path.dirname(self.path).replace(os.sep, "/")
         basepath = ujoin(self.themes_url, basedir)

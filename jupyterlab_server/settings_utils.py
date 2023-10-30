@@ -166,9 +166,7 @@ def _list_settings(
         rel_schema_dir, schema_base = os.path.split(rel_path)
         _id = schema_name = ":".join(
             [rel_schema_dir, schema_base[: -len(extension)]]  # Remove file extension.
-        ).replace(
-            "\\", "/"
-        )  # Normalize slashes.
+        ).replace("\\", "/")  # Normalize slashes.
 
         if ids_only:
             settings[_id] = dict(id=_id)
@@ -201,9 +199,7 @@ def _list_settings(
             rel_schema_dir, schema_base = os.path.split(rel_path)
             _id = schema_name = ":".join(
                 [rel_schema_dir, schema_base[: -len(extension)]]  # Remove file extension.
-            ).replace(
-                "\\", "/"
-            )  # Normalize slashes.
+            ).replace("\\", "/")  # Normalize slashes.
 
             # bail if we've already handled the highest federated setting
             if _id in federated_settings:
@@ -327,9 +323,7 @@ def _get_overrides(app_settings_dir: str) -> tuple[dict[str, Any], str]:
     # to allow layering of defaults
     cm = ConfigManager(config_dir_name="labconfig")
 
-    for plugin_id, config in cm.get(
-        "default_setting_overrides"
-    ).items():  # type:ignore[no-untyped-call]
+    for plugin_id, config in cm.get("default_setting_overrides").items():  # type:ignore[no-untyped-call]
         recursive_update(overrides.setdefault(plugin_id, {}), config)
 
     return overrides, error
