@@ -73,7 +73,7 @@ test = [
   "ipykernel",
   "pytest-jupyter[server]>=0.6.2",
   "openapi_core~=0.18.0",
-  "openapi-spec-validator>=0.6.0,<0.7.0",
+  "openapi-spec-validator>=0.6.0,<0.8.0",
   "sphinxcontrib_spelling",
   "requests_mock",
   "ruamel.yaml",
