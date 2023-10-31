@@ -60,6 +60,11 @@ def get_federated_extensions(labextensions_path: list[str]) -> dict[str, Any]:
                     dependencies=pkgdata.get("dependencies", dict()),
                     jupyterlab=pkgdata.get("jupyterlab", dict()),
                 )
+
+                # Add repository info if available
+                if "repository" in pkgdata and "url" in pkgdata.get("repository", {}):
+                    data["repository"] = dict(url=pkgdata.get("repository").get("url"))
+
                 install_path = osp.join(osp.dirname(ext_path), "install.json")
                 if osp.exists(install_path):
                     with open(install_path, encoding="utf-8") as fid:
