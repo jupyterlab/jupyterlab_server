@@ -67,7 +67,7 @@ repos:
         additional_dependencies:
           [
             "traitlets>=5.3",
-            "jupyter_server>=2.9",
+            "jupyter_server>=2.10",
             "openapi_core",
             "json5",
             "pytest",

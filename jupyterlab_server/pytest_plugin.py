@@ -143,6 +143,6 @@ def labserverapp(
 ) -> LabServerApp:
     """A lab server app."""
     app = make_labserver_extension_app()
-    app._link_jupyter_server_extension(jp_serverapp)  # type:ignore[no-untyped-call]
+    app._link_jupyter_server_extension(jp_serverapp)
     app.initialize()  # type:ignore[no-untyped-call]
     return app
