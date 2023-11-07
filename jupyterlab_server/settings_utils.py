@@ -92,8 +92,8 @@ def _get_user_settings(settings_dir: str, schema_name: str, schema: Any) -> dict
 
     if os.path.exists(path):
         stat = os.stat(path)
-        last_modified = tz.utcfromtimestamp(stat.st_mtime).isoformat()
-        created = tz.utcfromtimestamp(stat.st_ctime).isoformat()
+        last_modified = tz.utcfromtimestamp(stat.st_mtime).isoformat()  # type:ignore[no-untyped-call]
+        created = tz.utcfromtimestamp(stat.st_ctime).isoformat()  # type:ignore[no-untyped-call]
         with open(path, encoding="utf-8") as fid:
             try:  # to load and parse the settings file.
                 raw = fid.read() or raw
