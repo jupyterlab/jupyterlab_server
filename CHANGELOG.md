@@ -2,6 +2,31 @@
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
+## 2.25.1
+
+([Full Changelog](https://github.com/jupyterlab/jupyterlab_server/compare/v2.25.0...641ddbe75cf194cd343f9fba05226f365d36765a))
+
+### Bugs fixed
+
+- Add repository info when getting federated extensions [#417](https://github.com/jupyterlab/jupyterlab_server/pull/417) ([@nbowditch-einblick](https://github.com/nbowditch-einblick))
+
+### Maintenance and upkeep improvements
+
+- Update typings for server 2.10 [#421](https://github.com/jupyterlab/jupyterlab_server/pull/421) ([@blink1073](https://github.com/blink1073))
+- chore: update pre-commit hooks [#420](https://github.com/jupyterlab/jupyterlab_server/pull/420) ([@pre-commit-ci](https://github.com/pre-commit-ci))
+- Clean up lint and ci [#418](https://github.com/jupyterlab/jupyterlab_server/pull/418) ([@blink1073](https://github.com/blink1073))
+- Adopt ruff format [#415](https://github.com/jupyterlab/jupyterlab_server/pull/415) ([@blink1073](https://github.com/blink1073))
+- Adopt sp-repo-review [#414](https://github.com/jupyterlab/jupyterlab_server/pull/414) ([@blink1073](https://github.com/blink1073))
+- Update openapi-spec-validator requirement from \<0.7.0,>=0.6.0 to >=0.6.0,\<0.8.0 [#412](https://github.com/jupyterlab/jupyterlab_server/pull/412) ([@dependabot](https://github.com/dependabot))
+
+### Contributors to this release
+
+([GitHub contributors page for this release](https://github.com/jupyterlab/jupyterlab_server/graphs/contributors?from=2023-09-12&to=2023-11-08&type=c))
+
+[@blink1073](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Ablink1073+updated%3A2023-09-12..2023-11-08&type=Issues) | [@dependabot](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Adependabot+updated%3A2023-09-12..2023-11-08&type=Issues) | [@fcollonval](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Afcollonval+updated%3A2023-09-12..2023-11-08&type=Issues) | [@nbowditch-einblick](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Anbowditch-einblick+updated%3A2023-09-12..2023-11-08&type=Issues) | [@pre-commit-ci](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Apre-commit-ci+updated%3A2023-09-12..2023-11-08&type=Issues) | [@welcome](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Awelcome+updated%3A2023-09-12..2023-11-08&type=Issues)
+
+<!-- <END NEW CHANGELOG ENTRY> -->
+
 ## 2.25.0
 
 ([Full Changelog](https://github.com/jupyterlab/jupyterlab_server/compare/v2.24.0...91b576d6a87e2fca0958e815c32391ebc8398945))
@@ -17,8 +42,6 @@
 ([GitHub contributors page for this release](https://github.com/jupyterlab/jupyterlab_server/graphs/contributors?from=2023-07-24&to=2023-09-12&type=c))
 
 [@blink1073](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Ablink1073+updated%3A2023-07-24..2023-09-12&type=Issues) | [@dependabot](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Adependabot+updated%3A2023-07-24..2023-09-12&type=Issues) | [@pre-commit-ci](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Apre-commit-ci+updated%3A2023-07-24..2023-09-12&type=Issues)
-
-<!-- <END NEW CHANGELOG ENTRY> -->
 
 ## 2.24.0
 
