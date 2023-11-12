@@ -1,4 +1,4 @@
-# see me at: http://petstore.swagger.io/?url=https://raw.githubusercontent.com/jupyterlab/jupyterlab_server/master/docs/rest-api.yml#/default
+# see me at: https://petstore.swagger.io/?url=https://raw.githubusercontent.com/jupyterlab/jupyterlab_server/main/jupyterlab_server/rest-api.yml#/default
 openapi: "3.0.3"
 info:
   title: JupyterLab Server
