@@ -10,7 +10,7 @@ from glob import glob
 from typing import Any
 
 import json5  # type:ignore[import-untyped]
-from jsonschema import Draft4Validator as Validator
+from jsonschema import Draft7Validator as Validator
 from jsonschema import ValidationError
 from jupyter_server import _tz as tz
 from jupyter_server.base.handlers import APIHandler
