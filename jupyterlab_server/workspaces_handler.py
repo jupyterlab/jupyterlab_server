@@ -57,8 +57,8 @@ def _load_with_file_times(workspace_path: Path) -> dict:
     with workspace_path.open(encoding="utf-8") as fid:
         workspace = json.load(fid)
         workspace["metadata"].update(
-            last_modified=tz.utcfromtimestamp(stat.st_mtime).isoformat(),  # type:ignore[no-untyped-call]
-            created=tz.utcfromtimestamp(stat.st_ctime).isoformat(),  # type:ignore[no-untyped-call]
+            last_modified=tz.utcfromtimestamp(stat.st_mtime).isoformat(),
+            created=tz.utcfromtimestamp(stat.st_ctime).isoformat(),
         )
     return workspace
 
@@ -170,9 +170,7 @@ class WorkspacesManager(LoggingConfigurable):
 class WorkspacesHandler(ExtensionHandlerMixin, ExtensionHandlerJinjaMixin, APIHandler):
     """A workspaces API handler."""
 
-    def initialize(  # type:ignore[override]
-        self, name: str, manager: WorkspacesManager, **kwargs: Any
-    ) -> None:
+    def initialize(self, name: str, manager: WorkspacesManager, **kwargs: Any) -> None:
         """Initialize the handler."""
         super().initialize(name)
         self.manager = manager
