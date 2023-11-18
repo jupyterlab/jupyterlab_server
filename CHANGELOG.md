@@ -2,6 +2,28 @@
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
+## 2.25.2
+
+([Full Changelog](https://github.com/jupyterlab/jupyterlab_server/compare/v2.25.1...20a463e065f7cb38ee607cce95c30b6915c80f1a))
+
+### Maintenance and upkeep improvements
+
+- Update typings for Server 2.10.1 and mypy 1.7 [#425](https://github.com/jupyterlab/jupyterlab_server/pull/425) ([@blink1073](https://github.com/blink1073))
+- Align JSON schema validator with one used on the frontend [#423](https://github.com/jupyterlab/jupyterlab_server/pull/423) ([@krassowski](https://github.com/krassowski))
+- Update ruff config [#422](https://github.com/jupyterlab/jupyterlab_server/pull/422) ([@blink1073](https://github.com/blink1073))
+
+### Documentation improvements
+
+- Fix link-rot for Swagger view of OpenAPI spec [#424](https://github.com/jupyterlab/jupyterlab_server/pull/424) ([@nopdotcom](https://github.com/nopdotcom))
+
+### Contributors to this release
+
+([GitHub contributors page for this release](https://github.com/jupyterlab/jupyterlab_server/graphs/contributors?from=2023-11-08&to=2023-11-18&type=c))
+
+[@blink1073](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Ablink1073+updated%3A2023-11-08..2023-11-18&type=Issues) | [@krassowski](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Akrassowski+updated%3A2023-11-08..2023-11-18&type=Issues) | [@nopdotcom](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Anopdotcom+updated%3A2023-11-08..2023-11-18&type=Issues) | [@welcome](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Awelcome+updated%3A2023-11-08..2023-11-18&type=Issues)
+
+<!-- <END NEW CHANGELOG ENTRY> -->
+
 ## 2.25.1
 
 ([Full Changelog](https://github.com/jupyterlab/jupyterlab_server/compare/v2.25.0...641ddbe75cf194cd343f9fba05226f365d36765a))
@@ -24,8 +46,6 @@
 ([GitHub contributors page for this release](https://github.com/jupyterlab/jupyterlab_server/graphs/contributors?from=2023-09-12&to=2023-11-08&type=c))
 
 [@blink1073](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Ablink1073+updated%3A2023-09-12..2023-11-08&type=Issues) | [@dependabot](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Adependabot+updated%3A2023-09-12..2023-11-08&type=Issues) | [@fcollonval](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Afcollonval+updated%3A2023-09-12..2023-11-08&type=Issues) | [@nbowditch-einblick](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Anbowditch-einblick+updated%3A2023-09-12..2023-11-08&type=Issues) | [@pre-commit-ci](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Apre-commit-ci+updated%3A2023-09-12..2023-11-08&type=Issues) | [@welcome](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Awelcome+updated%3A2023-09-12..2023-11-08&type=Issues)
-
-<!-- <END NEW CHANGELOG ENTRY> -->
 
 ## 2.25.0
 
