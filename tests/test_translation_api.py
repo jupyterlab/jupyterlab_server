@@ -37,19 +37,19 @@ def setup_module(module):
     """setup any state specific to the execution of this module."""
     for pkg in ["jupyterlab-some-package", "jupyterlab-language-pack-es_CO"]:
         src = os.path.join(HERE, "translations", pkg)
-        subprocess.Popen([sys.executable, "-m", "pip", "install", src]).communicate()  # noqa
+        subprocess.Popen([sys.executable, "-m", "pip", "install", src]).communicate()  # noqa: S603
 
 
 def teardown_module(module):
     """teardown any state that was previously setup."""
     for pkg in ["jupyterlab-some-package", "jupyterlab-language-pack-es_CO"]:
         subprocess.Popen(
-            [sys.executable, "-m", "pip", "uninstall", pkg, "-y"]  # noqa
+            [sys.executable, "-m", "pip", "uninstall", pkg, "-y"]  # noqa: S603
         ).communicate()
 
 
 @pytest.fixture(autouse=True)
-def before_after_test(schemas_dir, user_settings_dir, labserverapp):
+def before_after_test(schemas_dir, user_settings_dir, labserverapp):  # noqa: PT004
     # Code that will run before any test.
 
     # Copy the schema files.
@@ -73,7 +73,7 @@ def before_after_test(schemas_dir, user_settings_dir, labserverapp):
 
     # A test function will be run at this point.
 
-    yield
+    return
 
     # Code that will run after your test.
     # N/A

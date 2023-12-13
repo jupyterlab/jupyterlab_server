@@ -149,30 +149,30 @@ class WorkspaceImportApp(JupyterApp, LabConfig):
             try:  # to load, parse, and validate the workspace file.
                 workspace = self._validate(fid)
             except Exception as e:  # pragma: no cover
-                self.log.info(f"{fid.name} is not a valid workspace:\n{e}")
+                self.log.info("%s is not a valid workspace:\n%s", fid.name, e)
                 self.exit(1)
 
         try:
             workspace_path = self.manager.save(workspace["metadata"]["id"], json.dumps(workspace))
         except Exception as e:  # pragma: no cover
-            self.log.info(f"Workspace could not be exported:\n{e!s}")
+            self.log.info("Workspace could not be exported:\n%s", e)
             self.exit(1)
 
-        self.log.info(f"Saved workspace: {workspace_path!s}")
+        self.log.info("Saved workspace: %s", workspace_path)
 
     def _smart_open(self) -> Any:
         file_name = self.extra_args[0]
 
         if file_name == "-":  # pragma: no cover
             return sys.stdin
-        else:
-            file_path = Path(file_name).resolve()
 
-            if not file_path.exists():  # pragma: no cover
-                self.log.info(f"{file_name!s} does not exist.")
-                self.exit(1)
+        file_path = Path(file_name).resolve()
 
-            return file_path.open(encoding="utf-8")
+        if not file_path.exists():  # pragma: no cover
+            self.log.info("%s does not exist.", file_name)
+            self.exit(1)
+
+        return file_path.open(encoding="utf-8")
 
     def _validate(self, data: Any) -> Any:
         workspace = json.load(data)

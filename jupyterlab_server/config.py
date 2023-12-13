@@ -74,7 +74,9 @@ def get_federated_extensions(labextensions_path: list[str]) -> dict[str, Any]:
 
 
 def get_static_page_config(
-    app_settings_dir: str | None = None, logger: Logger | None = None, level: str = "all"
+    app_settings_dir: str | None = None,  # noqa: ARG001
+    logger: Logger | None = None,  # noqa: ARG001
+    level: str = "all",
 ) -> dict[str, Any]:
     """Get the static page config for JupyterLab
 
@@ -105,11 +107,10 @@ def load_config(path: str) -> Any:
     with open(path, encoding="utf-8") as fid:
         if path.endswith(".json5"):
             return json5.load(fid)
-        else:
-            return json.load(fid)
+        return json.load(fid)
 
 
-def get_page_config(  # noqa: PLR0915
+def get_page_config(
     labextensions_path: list[str], app_settings_dir: str | None = None, logger: Logger | None = None
 ) -> dict[str, Any]:
     """Get the page config for the application handler"""
@@ -151,7 +152,7 @@ def get_page_config(  # noqa: PLR0915
     for _, ext_data in federated_exts.items():
         if "_build" not in ext_data["jupyterlab"]:
             if logger:
-                logger.warning("%s is not a valid extension" % ext_data["name"])
+                logger.warning("%s is not a valid extension", ext_data["name"])
             continue
         extbuild = ext_data["jupyterlab"]["_build"]
         extension = {"name": ext_data["name"], "load": extbuild["load"]}

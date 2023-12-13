@@ -66,7 +66,7 @@ def is_url(url: str) -> bool:
 class LabHandler(ExtensionHandlerJinjaMixin, ExtensionHandlerMixin, JupyterHandler):
     """Render the JupyterLab View."""
 
-    @lru_cache()  # noqa
+    @lru_cache  # noqa: B019
     def get_page_config(self) -> dict[str, Any]:
         """Construct the page config object"""
         self.application.store_id = getattr(  # type:ignore[attr-defined]
@@ -105,7 +105,7 @@ class LabHandler(ExtensionHandlerJinjaMixin, ExtensionHandlerMixin, JupyterHandl
                         .relative_to(server_root)
                         .as_posix()
                     )
-            except Exception:  # noqa S110
+            except Exception:  # noqa: S110
                 pass
         # JupyterLab relies on an unset/default path being "/"
         page_config["preferredPath"] = preferred_path or "/"
@@ -176,7 +176,7 @@ class LabHandler(ExtensionHandlerJinjaMixin, ExtensionHandlerMixin, JupyterHandl
 class NotFoundHandler(LabHandler):
     """A handler for page not found."""
 
-    @lru_cache()  # noqa
+    @lru_cache  # noqa: B019
     def get_page_config(self) -> dict[str, Any]:
         """Get the page config."""
         page_config = super().get_page_config()
@@ -184,7 +184,7 @@ class NotFoundHandler(LabHandler):
         return page_config
 
 
-def add_handlers(handlers: list[Any], extension_app: LabServerApp) -> None:  # noqa
+def add_handlers(handlers: list[Any], extension_app: LabServerApp) -> None:
     """Add the appropriate handlers to the web app."""
     # Normalize directories.
     for name in LabConfig.class_trait_names():
@@ -272,8 +272,9 @@ def add_handlers(handlers: list[Any], extension_app: LabServerApp) -> None:  # n
     allowed_extensions_uris: str = settings_config.get("allowed_extensions_uris", "")
 
     if (blocked_extensions_uris) and (allowed_extensions_uris):
-        warnings.warn(  # noqa B028
-            "Simultaneous blocked_extensions_uris and allowed_extensions_uris is not supported. Please define only one of those."
+        warnings.warn(
+            "Simultaneous blocked_extensions_uris and allowed_extensions_uris is not supported. Please define only one of those.",
+            stacklevel=2,
         )
         import sys
 
@@ -339,7 +340,7 @@ def add_handlers(handlers: list[Any], extension_app: LabServerApp) -> None:  # n
     handlers.append((fallthrough_url, NotFoundHandler))
 
 
-def _camelCase(base: str) -> str:  # noqa
+def _camelCase(base: str) -> str:
     """Convert a string to camelCase.
     https://stackoverflow.com/a/20744956
     """

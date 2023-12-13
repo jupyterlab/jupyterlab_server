@@ -93,13 +93,14 @@ class LabServerApp(ExtensionAppJinjaMixin, LabConfig, ExtensionApp):
             # protects backward-compatible config from warnings
             # if they set the same value under both names
             self.log.warning(
-                "{cls}.{old} is deprecated in JupyterLab {version}, use {cls}.{new} instead".format(
-                    cls=self.__class__.__name__,
-                    old=old_attr,
-                    new=new_attr,
-                    version=version,
-                )
+                "%s.%s is deprecated in JupyterLab %s, use %s.%s instead",
+                self.__class__.__name__,
+                old_attr,
+                version,
+                self.__class__.__name__,
+                new_attr,
             )
+
             setattr(self, new_attr, change.new)
 
     def initialize_settings(self) -> None:

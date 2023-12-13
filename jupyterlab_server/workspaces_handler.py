@@ -131,9 +131,8 @@ class WorkspacesManager(LoggingConfigurable):
         if workspace_path.exists():
             # to load and parse the workspace file.
             return _load_with_file_times(workspace_path)
-        else:
-            _id = space_name if space_name.startswith("/") else "/" + space_name
-            return dict(data=dict(), metadata=dict(id=_id))
+        _id = space_name if space_name.startswith("/") else "/" + space_name
+        return dict(data=dict(), metadata=dict(id=_id))
 
     def save(self, space_name: str, raw: str) -> Path:
         """Save the ``raw`` data as workspace ``space_name``."""
@@ -170,7 +169,7 @@ class WorkspacesManager(LoggingConfigurable):
 class WorkspacesHandler(ExtensionHandlerMixin, ExtensionHandlerJinjaMixin, APIHandler):
     """A workspaces API handler."""
 
-    def initialize(self, name: str, manager: WorkspacesManager, **kwargs: Any) -> None:
+    def initialize(self, name: str, manager: WorkspacesManager, **kwargs: Any) -> None:  # noqa: ARG002
         """Initialize the handler."""
         super().initialize(name)
         self.manager = manager

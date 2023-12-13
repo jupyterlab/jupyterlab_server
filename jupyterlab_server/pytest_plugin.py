@@ -49,7 +49,7 @@ def make_labserver_extension_app(
 ) -> Callable[..., LabServerApp]:
     """Return a factory function for a labserver extension app."""
 
-    def _make_labserver_extension_app(**kwargs: Any) -> LabServerApp:
+    def _make_labserver_extension_app(**kwargs: Any) -> LabServerApp:  # noqa: ARG001
         """Factory function for lab server extension apps."""
         return LabServerApp(
             static_dir=str(jp_root_dir),
