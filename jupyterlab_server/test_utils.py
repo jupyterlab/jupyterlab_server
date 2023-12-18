@@ -174,7 +174,7 @@ def maybe_patch_ioloop() -> None:
                 set_event_loop_policy(WindowsSelectorEventLoopPolicy())
 
 
-def expected_http_error(  # noqa: PLR0911
+def expected_http_error(
     error: Exception, expected_code: int, expected_message: str | None = None
 ) -> bool:
     """Check that the error matches the expected output error."""
@@ -185,7 +185,7 @@ def expected_http_error(  # noqa: PLR0911
         if expected_message is not None and expected_message != str(e):
             return False
         return True
-    elif any(
+    if any(
         [
             isinstance(e, tornado.httpclient.HTTPClientError),
             isinstance(e, tornado.httpclient.HTTPError),

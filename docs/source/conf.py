@@ -23,12 +23,12 @@ import sys
 HERE = osp.abspath(osp.dirname(__file__))
 sys.path.insert(0, osp.join(HERE, "..", ".."))
 
-from jupyterlab_server import LabServerApp, _version  # noqa
+from jupyterlab_server import LabServerApp, _version  # noqa: E402
 
 # -- Project information -----------------------------------------------------
 
 project = "JupyterLab Server"
-copyright = "2021, Project Jupyter"  # noqa
+copyright = "2021, Project Jupyter"
 author = "Project Jupyter"
 
 # The short X.Y version.
@@ -53,7 +53,7 @@ extensions = [
 ]
 
 try:
-    import enchant  # type:ignore  # noqa
+    import enchant  # noqa: F401
 
     extensions += ["sphinxcontrib.spelling"]
 except ImportError:
@@ -131,7 +131,7 @@ enter::
 """
 
 
-def setup(app):
+def setup(app):  # noqa: ARG001
     dest = osp.join(HERE, "changelog.md")
     shutil.copy(osp.join(HERE, "..", "..", "CHANGELOG.md"), dest)
     destination = osp.join(HERE, "api/app-config.rst")

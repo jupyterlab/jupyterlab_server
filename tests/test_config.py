@@ -12,10 +12,10 @@ from jupyterlab_server.config import get_page_config
 
 @pytest.mark.parametrize(
     "lib,extension",
-    (
+    [
         (json, "json"),
         (json5, "json5"),
-    ),
+    ],
 )
 def test_get_page_config(tmp_path, lib, extension):
     labext_path = [os.path.join(tmp_path, "ext")]

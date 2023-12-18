@@ -24,15 +24,15 @@ class ThemesHandler(FileFindHandler):
         no_cache_paths: list[str] | None = None,
         themes_url: str | None = None,
         labextensions_path: list[str] | None = None,
-        **kwargs: Any,
+        **kwargs: Any,  # noqa: ARG002
     ) -> None:
         """Initialize the handler."""
         # Get all of the available theme paths in order
         labextensions_path = labextensions_path or []
-        ext_paths = []
+        ext_paths: list[str] = []
         for ext_dir in labextensions_path:
             theme_pattern = ext_dir + "/**/themes"
-            ext_paths.extend([path for path in glob(theme_pattern, recursive=True)])
+            ext_paths.extend(path for path in glob(theme_pattern, recursive=True))
 
         # Add the core theme path last
         if not isinstance(path, list):
@@ -65,8 +65,7 @@ class ThemesHandler(FileFindHandler):
         base, ext = os.path.splitext(self.absolute_path)
         if ext != ".css":
             return FileFindHandler.get_content_size(self)
-        else:
-            return len(self._get_css())
+        return len(self._get_css())
 
     def _get_css(self) -> bytes:
         """Get the mangled css file contents."""

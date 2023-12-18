@@ -87,9 +87,9 @@ class LicensesManager(LoggingConfigurable):
         bundles = self.bundles(bundles_pattern=bundles_pattern)
         if report_format == "json":
             return self.report_json(bundles), "application/json"
-        elif report_format == "csv":
+        if report_format == "csv":
             return self.report_csv(bundles), "text/csv"
-        elif report_format == "markdown":
+        if report_format == "markdown":
             return (
                 self.report_markdown(bundles, full_text=full_text),
                 "text/markdown",

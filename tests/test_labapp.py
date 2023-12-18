@@ -56,7 +56,7 @@ async def test_page_config(labserverapp, jp_fetch):
     assert page_config["preferredPath"] == "/"
 
     def ispath(p):
-        return p.endswith("Dir") or p.endswith("Path") or p == "serverRoot"
+        return p.endswith(("Dir", "Path")) or p == "serverRoot"
 
     nondirs = {k: v for k, v in page_config.items() if not ispath(k)}
     assert nondirs == {
@@ -98,7 +98,7 @@ async def test_page_config(labserverapp, jp_fetch):
     }
 
 
-@pytest.fixture(scope="function")
+@pytest.fixture
 def serverapp_preferred_dir(jp_server_config, jp_root_dir):
     preferred_dir = Path(jp_root_dir, "my", "preferred_dir")
     preferred_dir.mkdir(parents=True, exist_ok=True)

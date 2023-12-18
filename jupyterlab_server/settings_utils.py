@@ -157,7 +157,7 @@ def _list_settings(
         return ([], warnings)
 
     schema_pattern = schemas_dir + "/**/*" + extension
-    schema_paths = [path for path in glob(schema_pattern, recursive=True)]
+    schema_paths = [path for path in glob(schema_pattern, recursive=True)]  # noqa: C416
     schema_paths.sort()
 
     for schema_path in schema_paths:
@@ -186,7 +186,7 @@ def _list_settings(
         schema_paths = []
         for ext_dir in labextensions_path:
             schema_pattern = ext_dir + "/**/schemas/**/*" + extension
-            schema_paths.extend([path for path in glob(schema_pattern, recursive=True)])
+            schema_paths.extend(path for path in glob(schema_pattern, recursive=True))
 
         schema_paths.sort()
 
@@ -460,7 +460,7 @@ class SchemaHandler(APIHandler):
 
         if error:
             overrides_warning = "Failed loading overrides: %s"
-            self.log.warning(overrides_warning % str(error))
+            self.log.warning(overrides_warning, error)
 
     def get_current_locale(self) -> str:
         """
@@ -486,7 +486,7 @@ class SchemaHandler(APIHandler):
             )
         except web.HTTPError as e:
             schema_warning = "Missing or misshapen translation settings schema:\n%s"
-            self.log.warning(schema_warning % str(e))
+            self.log.warning(schema_warning, e)
 
             settings = {}
 

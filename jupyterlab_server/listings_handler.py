@@ -25,7 +25,7 @@ def fetch_listings(logger: Logger | None) -> None:
         blocked_extensions = []
         for blocked_extensions_uri in ListingsHandler.blocked_extensions_uris:
             logger.info(
-                f"Fetching blocked_extensions from {ListingsHandler.blocked_extensions_uris}"
+                "Fetching blocked_extensions from %s", ListingsHandler.blocked_extensions_uris
             )
             r = requests.request(
                 "GET", blocked_extensions_uri, **ListingsHandler.listings_request_opts
@@ -38,7 +38,7 @@ def fetch_listings(logger: Logger | None) -> None:
         allowed_extensions = []
         for allowed_extensions_uri in ListingsHandler.allowed_extensions_uris:
             logger.info(
-                f"Fetching allowed_extensions from {ListingsHandler.allowed_extensions_uris}"
+                "Fetching allowed_extensions from %s", ListingsHandler.allowed_extensions_uris
             )
             r = requests.request(
                 "GET", allowed_extensions_uri, **ListingsHandler.listings_request_opts

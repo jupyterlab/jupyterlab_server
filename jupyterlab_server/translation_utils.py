@@ -412,7 +412,7 @@ class TranslationBundle:
                 mod = importlib.import_module(language_pack_module)
                 assert mod.__file__ is not None
                 localedir = os.path.join(os.path.dirname(mod.__file__), LOCALE_DIR)
-            except Exception:  # noqa S110
+            except Exception:  # noqa: S110
                 # no-op
                 pass
 
@@ -588,7 +588,7 @@ class TranslationBundle:
         return self.npgettext(msgctxt, msgid, msgid_plural, n)
 
 
-class translator:  # noqa
+class translator:
     """
     Translations manager.
     """
@@ -673,7 +673,7 @@ class translator:  # noqa
 
             if isinstance(value, str):
                 matched = False
-                for pattern, context in to_translate.items():  # noqa
+                for pattern, context in to_translate.items():  # noqa: B007
                     if pattern.fullmatch(path):
                         matched = True
                         break

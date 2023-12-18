@@ -181,12 +181,12 @@ def a_fake_labextension(tmp_path):
     package_json.write_text(json.dumps(package_data), encoding="utf-8")
     third_party_licenses.write_text(json.dumps(bundle_data), encoding="utf-8")
 
-    yield ext_path, ext_name
+    return ext_path, ext_name
 
 
 @pytest.fixture
 def a_licenses_manager():
-    yield LicensesManager()
+    return LicensesManager()
 
 
 def test_labextension_bundle(a_fake_labextension, a_licenses_manager):

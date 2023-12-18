@@ -106,7 +106,7 @@ class Process:
         self.logger = logger or self.get_log()
         self._last_line = ""
         if not quiet:
-            self.logger.info(f"> {list2cmdline(cmd)}")
+            self.logger.info("> %s", list2cmdline(cmd))
         self.cmd = cmd
 
         kwargs = {}
@@ -130,7 +130,7 @@ class Process:
         try:
             proc.wait(timeout=2.0)
         except subprocess.TimeoutExpired:
-            if os.name == "nt":  # noqa
+            if os.name == "nt":  # noqa: SIM108
                 sig = signal.SIGBREAK  # type:ignore[attr-defined]
             else:
                 sig = signal.SIGKILL
@@ -185,8 +185,7 @@ class Process:
         if os.name == "nt":
             kwargs["shell"] = True
 
-        proc = subprocess.Popen(cmd, **kwargs)  # noqa
-        return proc
+        return subprocess.Popen(cmd, **kwargs)  # noqa: S603
 
     @classmethod
     def _cleanup(cls: type[Process]) -> None:
@@ -278,10 +277,10 @@ class WatchHelper(Process):
                 buf = os.read(fileno, 1024)
             except OSError as e:
                 self.logger.debug("Read incoming error %s", e)
-                return None
+                return
 
             if not buf:
-                return None
+                return
 
             print(buf.decode("utf-8"), end="")
 
