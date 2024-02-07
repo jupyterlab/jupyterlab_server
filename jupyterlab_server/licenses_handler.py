@@ -62,9 +62,7 @@ class LicensesManager(LoggingConfigurable):
             self.parent.labextensions_path,
             self.parent.extra_labextensions_path,
         ]
-        labextensions_path = [
-            extension for extensions in per_paths for extension in extensions
-        ]
+        labextensions_path = [extension for extensions in per_paths for extension in extensions]
         return get_federated_extensions(labextensions_path)
 
     async def report_async(
