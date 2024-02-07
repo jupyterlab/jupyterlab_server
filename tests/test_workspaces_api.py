@@ -121,9 +121,10 @@ async def test_listing_dates(jp_fetch, labserverapp):
     r = await jp_fetch("lab", "api", "workspaces")
     data = json.loads(r.body.decode())
     values = data["workspaces"]["values"]
-    times: list = sum(
-        ([ws["metadata"].get("last_modified"), ws["metadata"].get("created")] for ws in values), []
-    )
+    workspaces = [
+        [ws["metadata"].get("last_modified"), ws["metadata"].get("created")] for ws in values
+    ]
+    times = [time for workspace in workspaces for time in workspace]
     assert None not in times
     [rfc3339_to_timestamp(t) for t in times]
 

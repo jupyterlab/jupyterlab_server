@@ -58,13 +58,13 @@ class LicensesManager(LoggingConfigurable):
 
             assert isinstance(self.parent, LabServerApp)
 
-        labextensions_path: list = sum(
-            [
-                self.parent.labextensions_path,
-                self.parent.extra_labextensions_path,
-            ],
-            [],
-        )
+        per_paths = [
+            self.parent.labextensions_path,
+            self.parent.extra_labextensions_path,
+        ]
+        labextensions_path = [
+            extension for extensions in per_paths for extension in extensions
+        ]
         return get_federated_extensions(labextensions_path)
 
     async def report_async(
