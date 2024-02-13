@@ -179,7 +179,7 @@ class NotFoundHandler(LabHandler):
     @lru_cache  # noqa: B019
     def get_page_config(self) -> dict[str, Any]:
         """Get the page config."""
-        page_config = super().get_page_config()
+        page_config = super().get_page_config().copy()
         page_config["notFoundUrl"] = self.request.path
         return page_config
 
