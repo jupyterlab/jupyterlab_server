@@ -2,6 +2,33 @@
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
+## 2.25.3
+
+([Full Changelog](https://github.com/jupyterlab/jupyterlab_server/compare/v2.25.2...f30fddb8f5d3acb688a3c8a75e92c386b75a18dd))
+
+### Bugs fixed
+
+- URL Incorrect path Issue [#436](https://github.com/jupyterlab/jupyterlab_server/pull/436) ([@itsmevichu](https://github.com/itsmevichu))
+
+### Maintenance and upkeep improvements
+
+- chore: update pre-commit hooks [#435](https://github.com/jupyterlab/jupyterlab_server/pull/435) ([@pre-commit-ci](https://github.com/pre-commit-ci))
+- Bump the actions group with 1 update [#433](https://github.com/jupyterlab/jupyterlab_server/pull/433) ([@dependabot](https://github.com/dependabot))
+- chore: update pre-commit hooks [#432](https://github.com/jupyterlab/jupyterlab_server/pull/432) ([@pre-commit-ci](https://github.com/pre-commit-ci))
+- Bump github/codeql-action from 2 to 3 [#430](https://github.com/jupyterlab/jupyterlab_server/pull/430) ([@dependabot](https://github.com/dependabot))
+- Update ruff config [#429](https://github.com/jupyterlab/jupyterlab_server/pull/429) ([@blink1073](https://github.com/blink1073))
+- Bump apache/skywalking-eyes from e19b828cea6a6027cceae78f05d81317347d21be to ee81ff786927ea6ffa48b1e29c48e5289f4753aa [#428](https://github.com/jupyterlab/jupyterlab_server/pull/428) ([@dependabot](https://github.com/dependabot))
+- chore: update pre-commit hooks [#427](https://github.com/jupyterlab/jupyterlab_server/pull/427) ([@pre-commit-ci](https://github.com/pre-commit-ci))
+- Update the releaser workflows to the latest version [#426](https://github.com/jupyterlab/jupyterlab_server/pull/426) ([@fcollonval](https://github.com/fcollonval))
+
+### Contributors to this release
+
+([GitHub contributors page for this release](https://github.com/jupyterlab/jupyterlab_server/graphs/contributors?from=2023-11-18&to=2024-02-14&type=c))
+
+[@blink1073](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Ablink1073+updated%3A2023-11-18..2024-02-14&type=Issues) | [@dependabot](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Adependabot+updated%3A2023-11-18..2024-02-14&type=Issues) | [@fcollonval](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Afcollonval+updated%3A2023-11-18..2024-02-14&type=Issues) | [@itsmevichu](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Aitsmevichu+updated%3A2023-11-18..2024-02-14&type=Issues) | [@JasonWeill](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3AJasonWeill+updated%3A2023-11-18..2024-02-14&type=Issues) | [@pre-commit-ci](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Apre-commit-ci+updated%3A2023-11-18..2024-02-14&type=Issues) | [@welcome](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Awelcome+updated%3A2023-11-18..2024-02-14&type=Issues)
+
+<!-- <END NEW CHANGELOG ENTRY> -->
+
 ## 2.25.2
 
 ([Full Changelog](https://github.com/jupyterlab/jupyterlab_server/compare/v2.25.1...20a463e065f7cb38ee607cce95c30b6915c80f1a))
@@ -21,8 +48,6 @@
 ([GitHub contributors page for this release](https://github.com/jupyterlab/jupyterlab_server/graphs/contributors?from=2023-11-08&to=2023-11-18&type=c))
 
 [@blink1073](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Ablink1073+updated%3A2023-11-08..2023-11-18&type=Issues) | [@krassowski](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Akrassowski+updated%3A2023-11-08..2023-11-18&type=Issues) | [@nopdotcom](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Anopdotcom+updated%3A2023-11-08..2023-11-18&type=Issues) | [@welcome](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Awelcome+updated%3A2023-11-08..2023-11-18&type=Issues)
-
-<!-- <END NEW CHANGELOG ENTRY> -->
 
 ## 2.25.1
 
