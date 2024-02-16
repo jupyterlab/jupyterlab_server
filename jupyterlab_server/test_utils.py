@@ -61,6 +61,10 @@ class TornadoOpenAPIRequest:
         )
 
     @property
+    def content_type(self) -> str:
+        return "application/json"
+
+    @property
     def host_url(self) -> str:
         url = self.request.url
         return url[: url.index("/lab")]
@@ -95,13 +99,13 @@ class TornadoOpenAPIRequest:
         return method and method.lower() or ""
 
     @property
-    def body(self) -> str | None:
+    def body(self) -> bytes | None:
         if self.request.body is None:
             return None  # type:ignore[unreachable]
         if not isinstance(self.request.body, bytes):
             msg = "Request body is invalid"  # type:ignore[unreachable]
             raise AssertionError(msg)
-        return self.request.body.decode("utf-8")
+        return self.request.body
 
     @property
     def mimetype(self) -> str:
@@ -123,15 +127,19 @@ class TornadoOpenAPIResponse:
         self.response = response
 
     @property
-    def data(self) -> str:
+    def data(self) -> bytes | None:
         if not isinstance(self.response.body, bytes):
             msg = "Response body is invalid"  # type:ignore[unreachable]
             raise AssertionError(msg)
-        return self.response.body.decode("utf-8")
+        return self.response.body
 
     @property
     def status_code(self) -> int:
         return int(self.response.code)
+
+    @property
+    def content_type(self) -> str:
+        return "application/json"
 
     @property
     def mimetype(self) -> str:
