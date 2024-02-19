@@ -65,14 +65,14 @@ docs = [
   "jinja2<3.2.0"
 ]
 openapi = [
-  "openapi_core~=0.18.0",
+  "openapi_core>=0.18,<0.20",
   "ruamel.yaml",
 ]
 test = [
   "hatch",
   "ipykernel",
   "pytest-jupyter[server]>=0.6.2",
-  "openapi_core~=0.18.0",
+  "openapi_core>=0.18,<0.20",
   "openapi-spec-validator>=0.6.0,<0.8.0",
   "sphinxcontrib_spelling",
   "requests_mock",
