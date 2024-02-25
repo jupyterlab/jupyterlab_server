@@ -77,7 +77,7 @@ test = [
   "sphinxcontrib_spelling",
   "requests_mock",
   "ruamel.yaml",
-  "pytest>=7.0<8",
+  "pytest>=7.0,<8",
   "pytest-console-scripts",
   "pytest-cov",
   "pytest-timeout",
