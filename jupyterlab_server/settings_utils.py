@@ -9,7 +9,7 @@ import os
 from glob import glob
 from typing import Any
 
-import json5  # type:ignore[import-untyped]
+import json5
 from jsonschema import Draft7Validator as Validator
 from jsonschema import ValidationError
 from jupyter_server import _tz as tz
