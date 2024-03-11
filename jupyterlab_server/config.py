@@ -137,7 +137,8 @@ def get_page_config(
                     recursive_update(page_config, data)
                     break
                 except json.decoder.JSONDecodeError:
-                    logger.warning("%s is not valid JSON", path)
+                    if logger:
+                        logger.warning("%s is not valid JSON", path)
 
     # Get the traitlets config
     static_page_config = get_static_page_config(logger=logger, level="all")
