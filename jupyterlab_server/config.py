@@ -127,14 +127,17 @@ def get_page_config(
         ]
         for path in config_paths:
             if osp.exists(path):
-                data = load_config(path)
-                # Convert lists to dicts
-                for key in [disabled_key, "deferredExtensions"]:
-                    if key in data:
-                        data[key] = {key: True for key in data[key]}
+                try:
+                    data = load_config(path)
+                    # Convert lists to dicts
+                    for key in [disabled_key, "deferredExtensions"]:
+                        if key in data:
+                            data[key] = {key: True for key in data[key]}
 
-                recursive_update(page_config, data)
-                break
+                    recursive_update(page_config, data)
+                    break
+                except json.decoder.JSONDecodeError:
+                    logger.warning("%s is not valid JSON", path)
 
     # Get the traitlets config
     static_page_config = get_static_page_config(logger=logger, level="all")
