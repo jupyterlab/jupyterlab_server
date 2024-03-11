@@ -2,6 +2,25 @@
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
+## 2.25.4
+
+([Full Changelog](https://github.com/jupyterlab/jupyterlab_server/compare/v2.25.3...15e796699f04e06db9ed23a689d454feae36ffbd))
+
+### Maintenance and upkeep improvements
+
+- Use updated releaser workflows [#442](https://github.com/jupyterlab/jupyterlab_server/pull/442) ([@blink1073](https://github.com/blink1073))
+- Use json5 typings [#441](https://github.com/jupyterlab/jupyterlab_server/pull/441) ([@blink1073](https://github.com/blink1073))
+- Enforce pytest 7 [#439](https://github.com/jupyterlab/jupyterlab_server/pull/439) ([@blink1073](https://github.com/blink1073))
+- Fix test util typings [#437](https://github.com/jupyterlab/jupyterlab_server/pull/437) ([@blink1073](https://github.com/blink1073))
+
+### Contributors to this release
+
+([GitHub contributors page for this release](https://github.com/jupyterlab/jupyterlab_server/graphs/contributors?from=2024-02-14&to=2024-03-11&type=c))
+
+[@blink1073](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Ablink1073+updated%3A2024-02-14..2024-03-11&type=Issues)
+
+<!-- <END NEW CHANGELOG ENTRY> -->
+
 ## 2.25.3
 
 ([Full Changelog](https://github.com/jupyterlab/jupyterlab_server/compare/v2.25.2...f30fddb8f5d3acb688a3c8a75e92c386b75a18dd))
@@ -26,8 +45,6 @@
 ([GitHub contributors page for this release](https://github.com/jupyterlab/jupyterlab_server/graphs/contributors?from=2023-11-18&to=2024-02-14&type=c))
 
 [@blink1073](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Ablink1073+updated%3A2023-11-18..2024-02-14&type=Issues) | [@dependabot](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Adependabot+updated%3A2023-11-18..2024-02-14&type=Issues) | [@fcollonval](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Afcollonval+updated%3A2023-11-18..2024-02-14&type=Issues) | [@itsmevichu](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Aitsmevichu+updated%3A2023-11-18..2024-02-14&type=Issues) | [@JasonWeill](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3AJasonWeill+updated%3A2023-11-18..2024-02-14&type=Issues) | [@pre-commit-ci](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Apre-commit-ci+updated%3A2023-11-18..2024-02-14&type=Issues) | [@welcome](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Awelcome+updated%3A2023-11-18..2024-02-14&type=Issues)
-
-<!-- <END NEW CHANGELOG ENTRY> -->
 
 ## 2.25.2
 
