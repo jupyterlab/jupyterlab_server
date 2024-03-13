@@ -126,19 +126,15 @@ def get_page_config(
             pjoin(app_settings_dir, "page_config.json"),
         ]
         for path in config_paths:
-            if osp.exists(path):
-                try:
-                    data = load_config(path)
-                    # Convert lists to dicts
-                    for key in [disabled_key, "deferredExtensions"]:
-                        if key in data:
-                            data[key] = {key: True for key in data[key]}
+            if osp.exists(path) and osp.getsize(path):
+                data = load_config(path)
+                # Convert lists to dicts
+                for key in [disabled_key, "deferredExtensions"]:
+                    if key in data:
+                        data[key] = {key: True for key in data[key]}
 
-                    recursive_update(page_config, data)
-                    break
-                except json.decoder.JSONDecodeError:
-                    if logger:
-                        logger.warning("%s is not valid JSON", path)
+                recursive_update(page_config, data)
+                break
 
     # Get the traitlets config
     static_page_config = get_static_page_config(logger=logger, level="all")
