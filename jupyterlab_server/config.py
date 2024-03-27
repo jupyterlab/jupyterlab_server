@@ -163,8 +163,8 @@ def get_page_config(
             extension["mimeExtension"] = extbuild["mimeExtension"]
         if "style" in extbuild:
             extension["style"] = extbuild["style"]
-        if "version" in extbuild and "entrypoint" in extbuild and extbuild["version"] == "2":
-            extension["entrypoints"] = extbuild["entrypoint"]
+        # FIXME @experimental for plugin with no-code entrypoints.
+        extension["entrypoints"] = extbuild.get("entrypoints")
         extensions.append(extension)
 
         # If there is disabledExtensions metadata, consume it.
