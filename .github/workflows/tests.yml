@@ -36,10 +36,10 @@ jobs:
         uses: jupyterlab/maintainer-tools/.github/actions/base-setup@v1
       - name: Run the tests
         if: ${{ !startsWith(matrix.python-version, 'pypy') }}
-        run: hatch run cov:test
+        run: hatch -v run cov:test
       - name: Run the tests on pypy
         if: ${{ startsWith(matrix.python-version, 'pypy') }}
-        run: hatch run cov:nowarn
+        run: hatch -v run cov:nowarn
       - uses: jupyterlab/maintainer-tools/.github/actions/upload-coverage@v1
 
   coverage_report:
@@ -111,7 +111,7 @@ jobs:
           dependency_type: pre
       - name: Run the tests
         run: |
-          hatch run test:nowarn || hatch run test:nowarn --lf
+          hatch run -v test:nowarn || hatch -v run test:nowarn --lf
 
   make_sdist:
     name: Make SDist
