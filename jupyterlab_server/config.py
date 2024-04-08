@@ -126,7 +126,7 @@ def get_page_config(
             pjoin(app_settings_dir, "page_config.json"),
         ]
         for path in config_paths:
-            if osp.exists(path):
+            if osp.exists(path) and osp.getsize(path):
                 data = load_config(path)
                 # Convert lists to dicts
                 for key in [disabled_key, "deferredExtensions"]:
