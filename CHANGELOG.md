@@ -2,6 +2,26 @@
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
+## 2.26.0
+
+([Full Changelog](https://github.com/jupyterlab/jupyterlab_server/compare/v2.25.4...2cc9672e751943f5c51af9d4174f0b4d986e74a0))
+
+### New features added
+
+- For v2 extensions parse entrypoint data [#445](https://github.com/jupyterlab/jupyterlab_server/pull/445) ([@AshokChoudhary11](https://github.com/AshokChoudhary11))
+
+### Bugs fixed
+
+- Ignore pageconfig file if JSON is zero-length [#444](https://github.com/jupyterlab/jupyterlab_server/pull/444) ([@holzman](https://github.com/holzman))
+
+### Contributors to this release
+
+([GitHub contributors page for this release](https://github.com/jupyterlab/jupyterlab_server/graphs/contributors?from=2024-03-11&to=2024-04-08&type=c))
+
+[@AshokChoudhary11](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3AAshokChoudhary11+updated%3A2024-03-11..2024-04-08&type=Issues) | [@holzman](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Aholzman+updated%3A2024-03-11..2024-04-08&type=Issues) | [@manics](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Amanics+updated%3A2024-03-11..2024-04-08&type=Issues) | [@welcome](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Awelcome+updated%3A2024-03-11..2024-04-08&type=Issues)
+
+<!-- <END NEW CHANGELOG ENTRY> -->
+
 ## 2.25.4
 
 ([Full Changelog](https://github.com/jupyterlab/jupyterlab_server/compare/v2.25.3...15e796699f04e06db9ed23a689d454feae36ffbd))
@@ -18,8 +38,6 @@
 ([GitHub contributors page for this release](https://github.com/jupyterlab/jupyterlab_server/graphs/contributors?from=2024-02-14&to=2024-03-11&type=c))
 
 [@blink1073](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Ablink1073+updated%3A2024-02-14..2024-03-11&type=Issues)
-
-<!-- <END NEW CHANGELOG ENTRY> -->
 
 ## 2.25.3
 
