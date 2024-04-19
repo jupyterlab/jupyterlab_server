@@ -77,7 +77,7 @@ def get_static_page_config(
     app_settings_dir: str | None = None,  # noqa: ARG001
     logger: Logger | None = None,  # noqa: ARG001
     level: str = "all",
-    include_higher_levels: bool = False
+    include_higher_levels: bool = False,
 ) -> dict[str, Any]:
     """Get the static page config for JupyterLab
 
@@ -362,7 +362,8 @@ class LabConfig(HasTraits):
 def get_allowed_levels() -> list[str]:
     return ["all", "user", "sys_prefix", "system", "app", "extension"]
 
-def _get_config_manager(level: str, include_higher_levels: bool=False) -> ConfigManager:
+
+def _get_config_manager(level: str, include_higher_levels: bool = False) -> ConfigManager:
     """Get the location of config files for the current context
     Returns the string to the environment
     """
@@ -372,18 +373,20 @@ def _get_config_manager(level: str, include_higher_levels: bool=False) -> Config
         raise ValueError(msg)
 
     config_name = "labconfig"
-    
+
     if level == "all":
         return ConfigManager(config_dir_name=config_name)
 
-    paths = {"app": [], 
-             "system": SYSTEM_CONFIG_PATH, 
-             "sys_prefix": [ENV_CONFIG_PATH[0]], 
-             "user": [jupyter_config_dir()], 
-             "extension": []}
+    paths = {
+        "app": [],
+        "system": SYSTEM_CONFIG_PATH,
+        "sys_prefix": [ENV_CONFIG_PATH[0]],
+        "user": [jupyter_config_dir()],
+        "extension": [],
+    }
 
     if include_higher_levels:
-        levels = allowed[allowed.index(level):]
+        levels = allowed[allowed.index(level) :]
     else:
         levels = [level]
 
