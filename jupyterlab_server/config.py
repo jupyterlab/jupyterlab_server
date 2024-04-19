@@ -13,7 +13,7 @@ from os.path import join as pjoin
 from typing import Any
 
 import json5
-from jupyter_core.paths import SYSTEM_CONFIG_PATH, jupyter_config_dir, jupyter_path
+from jupyter_core.paths import ENV_CONFIG_PATH, SYSTEM_CONFIG_PATH, jupyter_config_dir, jupyter_path
 from jupyter_server.services.config.manager import ConfigManager, recursive_update
 from jupyter_server.utils import url_path_join as ujoin
 from traitlets import Bool, HasTraits, List, Unicode, default
@@ -77,6 +77,7 @@ def get_static_page_config(
     app_settings_dir: str | None = None,  # noqa: ARG001
     logger: Logger | None = None,  # noqa: ARG001
     level: str = "all",
+    include_higher_levels: bool = False
 ) -> dict[str, Any]:
     """Get the static page config for JupyterLab
 
@@ -87,7 +88,7 @@ def get_static_page_config(
     level: string, optional ['all']
         The level at which to get config: can be 'all', 'user', 'sys_prefix', or 'system'
     """
-    cm = _get_config_manager(level)
+    cm = _get_config_manager(level, include_higher_levels)
     return cm.get("page_config")  # type:ignore[no-untyped-call]
 
 
@@ -358,30 +359,40 @@ class LabConfig(HasTraits):
         return ujoin(self.app_url, "api", "translations/")
 
 
-def _get_config_manager(level: str) -> ConfigManager:
+def get_allowed_levels() -> list[str]:
+    return ["all", "user", "sys_prefix", "system", "app", "extension"]
+
+def _get_config_manager(level: str, include_higher_levels: bool=False) -> ConfigManager:
     """Get the location of config files for the current context
     Returns the string to the environment
     """
-    allowed = ["all", "user", "sys_prefix", "system", "app", "extension"]
+    allowed = get_allowed_levels()
     if level not in allowed:
         msg = f"Page config level must be one of: {allowed}"
         raise ValueError(msg)
 
     config_name = "labconfig"
-
+    
     if level == "all":
         return ConfigManager(config_dir_name=config_name)
 
-    if level == "user":
-        config_dir = jupyter_config_dir()
-    elif level == "sys_prefix":
-        # Delayed import since this gets monkey-patched in tests
-        from jupyter_core.paths import ENV_CONFIG_PATH
+    paths = {"app": [], 
+             "system": SYSTEM_CONFIG_PATH, 
+             "sys_prefix": [ENV_CONFIG_PATH[0]], 
+             "user": [jupyter_config_dir()], 
+             "extension": []}
 
-        config_dir = ENV_CONFIG_PATH[0]
+    if include_higher_levels:
+        levels = allowed[allowed.index(level):]
     else:
-        config_dir = SYSTEM_CONFIG_PATH[0]
+        levels = [level]
 
-    full_config_path = osp.join(config_dir, config_name)
+    read_config_paths, write_config_dir = [], None
 
-    return ConfigManager(read_config_path=[full_config_path], write_config_dir=full_config_path)
+    for _level in levels:
+        for p in paths[_level]:
+            read_config_paths.append(osp.join(p, config_name))
+        if write_config_dir is None and paths[_level]:
+            write_config_dir = osp.join(paths[_level][0], config_name)
+
+    return ConfigManager(read_config_path=read_config_paths, write_config_dir=write_config_dir)
