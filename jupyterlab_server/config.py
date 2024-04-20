@@ -377,13 +377,11 @@ def _get_config_manager(level: str, include_higher_levels: bool = False) -> Conf
     if level == "all":
         return ConfigManager(config_dir_name=config_name)
 
-    paths = {
-        "app": [],
-        "system": SYSTEM_CONFIG_PATH,
-        "sys_prefix": [ENV_CONFIG_PATH[0]],
-        "user": [jupyter_config_dir()],
-        "extension": [],
-    }
+    paths: dict[str, list] = {"app": [], 
+             "system": SYSTEM_CONFIG_PATH, 
+             "sys_prefix": [ENV_CONFIG_PATH[0]], 
+             "user": [jupyter_config_dir()], 
+             "extension": []}
 
     if include_higher_levels:
         levels = allowed[allowed.index(level) :]
@@ -395,7 +393,7 @@ def _get_config_manager(level: str, include_higher_levels: bool = False) -> Conf
     for _level in levels:
         for p in paths[_level]:
             read_config_paths.append(osp.join(p, config_name))
-        if write_config_dir is None and paths[_level]:
+        if write_config_dir is None and paths[_level]:  # type: ignore[redundant-expr]
             write_config_dir = osp.join(paths[_level][0], config_name)
 
     return ConfigManager(read_config_path=read_config_paths, write_config_dir=write_config_dir)
