@@ -377,11 +377,13 @@ def _get_config_manager(level: str, include_higher_levels: bool = False) -> Conf
     if level == "all":
         return ConfigManager(config_dir_name=config_name)
 
-    paths: dict[str, list] = {"app": [], 
-             "system": SYSTEM_CONFIG_PATH, 
-             "sys_prefix": [ENV_CONFIG_PATH[0]], 
-             "user": [jupyter_config_dir()], 
-             "extension": []}
+    paths: dict[str, list] = {
+        "app": [],
+        "system": SYSTEM_CONFIG_PATH,
+        "sys_prefix": [ENV_CONFIG_PATH[0]],
+        "user": [jupyter_config_dir()],
+        "extension": [],
+    }
 
     if include_higher_levels:
         levels = allowed[allowed.index(level) :]
