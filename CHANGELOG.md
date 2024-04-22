@@ -2,6 +2,22 @@
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
+## 2.27.0
+
+([Full Changelog](https://github.com/jupyterlab/jupyterlab_server/compare/v2.26.0...951b54c234a30aa2c8825d43a372ae812fd6dc78))
+
+### Enhancements made
+
+- Add util to get consolidated page_config from higher levels [#448](https://github.com/jupyterlab/jupyterlab_server/pull/448) ([@divyansshhh](https://github.com/divyansshhh))
+
+### Contributors to this release
+
+([GitHub contributors page for this release](https://github.com/jupyterlab/jupyterlab_server/graphs/contributors?from=2024-04-08&to=2024-04-22&type=c))
+
+[@divyansshhh](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Adivyansshhh+updated%3A2024-04-08..2024-04-22&type=Issues) | [@welcome](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Awelcome+updated%3A2024-04-08..2024-04-22&type=Issues)
+
+<!-- <END NEW CHANGELOG ENTRY> -->
+
 ## 2.26.0
 
 ([Full Changelog](https://github.com/jupyterlab/jupyterlab_server/compare/v2.25.4...2cc9672e751943f5c51af9d4174f0b4d986e74a0))
@@ -19,8 +35,6 @@
 ([GitHub contributors page for this release](https://github.com/jupyterlab/jupyterlab_server/graphs/contributors?from=2024-03-11&to=2024-04-08&type=c))
 
 [@AshokChoudhary11](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3AAshokChoudhary11+updated%3A2024-03-11..2024-04-08&type=Issues) | [@holzman](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Aholzman+updated%3A2024-03-11..2024-04-08&type=Issues) | [@manics](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Amanics+updated%3A2024-03-11..2024-04-08&type=Issues) | [@welcome](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Awelcome+updated%3A2024-03-11..2024-04-08&type=Issues)
-
-<!-- <END NEW CHANGELOG ENTRY> -->
 
 ## 2.25.4
 
