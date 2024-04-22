@@ -385,10 +385,7 @@ def _get_config_manager(level: str, include_higher_levels: bool = False) -> Conf
         "extension": [],
     }
 
-    if include_higher_levels:
-        levels = allowed[allowed.index(level) :]
-    else:
-        levels = [level]
+    levels = allowed[allowed.index(level):] if include_higher_levels else [level]
 
     read_config_paths, write_config_dir = [], None
 
