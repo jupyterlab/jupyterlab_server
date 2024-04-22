@@ -360,6 +360,9 @@ class LabConfig(HasTraits):
 
 
 def get_allowed_levels() -> list[str]:
+    """
+    Returns the levels where configs can be stored.
+    """
     return ["all", "user", "sys_prefix", "system", "app", "extension"]
 
 
