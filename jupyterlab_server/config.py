@@ -371,6 +371,7 @@ def _get_config_manager(level: str, include_higher_levels: bool = False) -> Conf
     Returns the string to the environment
     """
     from jupyter_core.paths import ENV_CONFIG_PATH
+
     allowed = get_allowed_levels()
     if level not in allowed:
         msg = f"Page config level must be one of: {allowed}"
