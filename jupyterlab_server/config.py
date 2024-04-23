@@ -13,7 +13,7 @@ from os.path import join as pjoin
 from typing import Any
 
 import json5
-from jupyter_core.paths import ENV_CONFIG_PATH, SYSTEM_CONFIG_PATH, jupyter_config_dir, jupyter_path
+from jupyter_core.paths import SYSTEM_CONFIG_PATH, jupyter_config_dir, jupyter_path
 from jupyter_server.services.config.manager import ConfigManager, recursive_update
 from jupyter_server.utils import url_path_join as ujoin
 from traitlets import Bool, HasTraits, List, Unicode, default
@@ -370,6 +370,9 @@ def _get_config_manager(level: str, include_higher_levels: bool = False) -> Conf
     """Get the location of config files for the current context
     Returns the string to the environment
     """
+    # Delayed import since this gets monkey-patched in tests
+    from jupyter_core.paths import ENV_CONFIG_PATH
+
     allowed = get_allowed_levels()
     if level not in allowed:
         msg = f"Page config level must be one of: {allowed}"
