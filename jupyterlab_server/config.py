@@ -370,6 +370,7 @@ def _get_config_manager(level: str, include_higher_levels: bool = False) -> Conf
     """Get the location of config files for the current context
     Returns the string to the environment
     """
+    # Delayed import since this gets monkey-patched in tests
     from jupyter_core.paths import ENV_CONFIG_PATH
 
     allowed = get_allowed_levels()
