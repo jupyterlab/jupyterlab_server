@@ -2,6 +2,22 @@
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
+## 2.27.1
+
+([Full Changelog](https://github.com/jupyterlab/jupyterlab_server/compare/v2.27.0...055a1695ba0aa0718764541b503bb0b5871e69c5))
+
+### Bugs fixed
+
+- Move ENV_CONFIG_PATH import back into \_get_config_manager [#450](https://github.com/jupyterlab/jupyterlab_server/pull/450) ([@divyansshhh](https://github.com/divyansshhh))
+
+### Contributors to this release
+
+([GitHub contributors page for this release](https://github.com/jupyterlab/jupyterlab_server/graphs/contributors?from=2024-04-22&to=2024-04-23&type=c))
+
+[@divyansshhh](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Adivyansshhh+updated%3A2024-04-22..2024-04-23&type=Issues)
+
+<!-- <END NEW CHANGELOG ENTRY> -->
+
 ## 2.27.0
 
 ([Full Changelog](https://github.com/jupyterlab/jupyterlab_server/compare/v2.26.0...951b54c234a30aa2c8825d43a372ae812fd6dc78))
@@ -15,8 +31,6 @@
 ([GitHub contributors page for this release](https://github.com/jupyterlab/jupyterlab_server/graphs/contributors?from=2024-04-08&to=2024-04-22&type=c))
 
 [@divyansshhh](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Adivyansshhh+updated%3A2024-04-08..2024-04-22&type=Issues) | [@welcome](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Awelcome+updated%3A2024-04-08..2024-04-22&type=Issues)
-
-<!-- <END NEW CHANGELOG ENTRY> -->
 
 ## 2.26.0
 
