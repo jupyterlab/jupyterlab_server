@@ -2,6 +2,22 @@
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
+## 2.27.2
+
+([Full Changelog](https://github.com/jupyterlab/jupyterlab_server/compare/v2.27.1...348c8ea202704ad1b5d87fa4ca90ccbdd541d1db))
+
+### Bugs fixed
+
+- Load overrides once, rather than in each settings handler [#452](https://github.com/jupyterlab/jupyterlab_server/pull/452) ([@krassowski](https://github.com/krassowski))
+
+### Contributors to this release
+
+([GitHub contributors page for this release](https://github.com/jupyterlab/jupyterlab_server/graphs/contributors?from=2024-04-23&to=2024-05-22&type=c))
+
+[@krassowski](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Akrassowski+updated%3A2024-04-23..2024-05-22&type=Issues)
+
+<!-- <END NEW CHANGELOG ENTRY> -->
+
 ## 2.27.1
 
 ([Full Changelog](https://github.com/jupyterlab/jupyterlab_server/compare/v2.27.0...055a1695ba0aa0718764541b503bb0b5871e69c5))
@@ -15,8 +31,6 @@
 ([GitHub contributors page for this release](https://github.com/jupyterlab/jupyterlab_server/graphs/contributors?from=2024-04-22&to=2024-04-23&type=c))
 
 [@divyansshhh](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Adivyansshhh+updated%3A2024-04-22..2024-04-23&type=Issues)
-
-<!-- <END NEW CHANGELOG ENTRY> -->
 
 ## 2.27.0
 
