@@ -448,19 +448,16 @@ class SchemaHandler(APIHandler):
         schemas_dir: str,
         settings_dir: str,
         labextensions_path: list[str] | None,
+        overrides: dict[str, Any],
         **kwargs: Any,
     ) -> None:
         """Initialize the handler."""
         super().initialize(**kwargs)
-        self.overrides, error = _get_overrides(app_settings_dir)
+        self.overrides = overrides
         self.app_settings_dir = app_settings_dir
         self.schemas_dir = schemas_dir
         self.settings_dir = settings_dir
         self.labextensions_path = labextensions_path
-
-        if error:
-            overrides_warning = "Failed loading overrides: %s"
-            self.log.warning(overrides_warning, error)
 
     def get_current_locale(self) -> str:
         """

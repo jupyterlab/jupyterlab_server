@@ -25,11 +25,12 @@ class SettingsHandler(ExtensionHandlerMixin, ExtensionHandlerJinjaMixin, SchemaH
         schemas_dir: str,
         settings_dir: str,
         labextensions_path: list[str],
+        overrides: dict[str, Any],
         **kwargs: Any,  # noqa: ARG002
     ) -> None:
         """Initialize the handler."""
         SchemaHandler.initialize(
-            self, app_settings_dir, schemas_dir, settings_dir, labextensions_path
+            self, app_settings_dir, schemas_dir, settings_dir, labextensions_path, overrides
         )
         ExtensionHandlerMixin.initialize(self, name)
 

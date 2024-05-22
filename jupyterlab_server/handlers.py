@@ -20,6 +20,7 @@ from .config import LabConfig, get_page_config, recursive_update
 from .licenses_handler import LicensesHandler, LicensesManager
 from .listings_handler import ListingsHandler, fetch_listings
 from .settings_handler import SettingsHandler
+from .settings_utils import _get_overrides
 from .themes_handler import ThemesHandler
 from .translations_handler import TranslationsHandler
 from .workspaces_handler import WorkspacesHandler, WorkspacesManager
@@ -227,11 +228,19 @@ def add_handlers(handlers: list[Any], extension_app: LabServerApp) -> None:
 
     # Handle local settings.
     if extension_app.schemas_dir:
+        # Load overrides once, rather than in each copy of the settings handler
+        overrides, error = _get_overrides(extension_app.app_settings_dir)
+
+        if error:
+            overrides_warning = "Failed loading overrides: %s"
+            extension_app.log.warning(overrides_warning, error)
+
         settings_config: dict[str, Any] = {
             "app_settings_dir": extension_app.app_settings_dir,
             "schemas_dir": extension_app.schemas_dir,
             "settings_dir": extension_app.user_settings_dir,
             "labextensions_path": labextensions_path,
+            "overrides": overrides,
         }
 
         # Handle requests for the list of settings. Make slash optional.
