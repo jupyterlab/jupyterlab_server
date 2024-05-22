@@ -30,9 +30,13 @@ async def test_get_settings_overrides_dicts(jp_fetch, labserverapp):
 
 
 @pytest.mark.parametrize("ext", ["json", "json5"])
-async def test_get_settings_overrides_d_dicts(jp_fetch, labserverapp, ext):
+async def test_get_settings_overrides_d_dicts(
+    jp_fetch, jp_serverapp, make_labserver_extension_app, ext
+):
     # Check that values that are dictionaries in overrides.d/*.json are
     # merged with the schema.
+    labserverapp = make_labserver_extension_app()
+    labserverapp._link_jupyter_server_extension(jp_serverapp)
     id = "@jupyterlab/apputils-extension:themes"
     overrides_d = Path(labserverapp.app_settings_dir) / "overrides.d"
     overrides_d.mkdir(exist_ok=True, parents=True)
@@ -41,6 +45,8 @@ async def test_get_settings_overrides_d_dicts(jp_fetch, labserverapp, ext):
         if ext == "json5":
             text += "\n// a comment"
         (overrides_d / f"foo-{i}.{ext}").write_text(text, encoding="utf-8")
+    # Initialize labserverapp only after the overrides were created
+    labserverapp.initialize()
     r = await jp_fetch("lab", "api", "settings", id)
     validate_request(r)
     res = r.body.decode()
