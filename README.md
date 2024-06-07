@@ -2,8 +2,7 @@
 
 [![Build Status](https://github.com/jupyterlab/jupyterlab_server/workflows/Tests/badge.svg?branch=master)](https://github.com/jupyterlab/jupyterlab_server/actions?query=branch%3Amaster+workflow%3A%22Tests%22)
 [![Documentation Status](https://readthedocs.org/projects/jupyterlab-server/badge/?version=stable)](http://jupyterlab-server.readthedocs.io/en/stable/)
-[![jupyterlab-server Downloads Last Month](https://assets.piptrends.com/get-last-month-downloads-badge/jupyterlab-server.svg 'jupyterlab-server Downloads Last Month by pip Trends')](https://piptrends.com/package/jupyterlab-server)
-
+[![jupyterlab-server Downloads Last Month](https://assets.piptrends.com/get-last-month-downloads-badge/jupyterlab-server.svg "jupyterlab-server Downloads Last Month by pip Trends")](https://piptrends.com/package/jupyterlab-server)
 
 ## Motivation
 
