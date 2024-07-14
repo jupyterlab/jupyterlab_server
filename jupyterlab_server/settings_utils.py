@@ -17,7 +17,13 @@ from jupyter_server.base.handlers import APIHandler
 from jupyter_server.services.config.manager import ConfigManager, recursive_update
 from tornado import web
 
-from .translation_utils import DEFAULT_LOCALE, L10N_SCHEMA_NAME, SYS_LOCALE, is_valid_locale
+from .translation_utils import (
+    DEFAULT_LOCALE,
+    L10N_SCHEMA_NAME,
+    PSEUDO_LANGUAGE,
+    SYS_LOCALE,
+    is_valid_locale,
+)
 
 # The JupyterLab settings file extension.
 SETTINGS_EXTENSION = ".jupyterlab-settings"
@@ -497,7 +503,7 @@ class SchemaHandler(APIHandler):
         current_locale = settings.get("settings", {}).get("locale") or SYS_LOCALE
         if current_locale == "default":
             current_locale = SYS_LOCALE
-        if not is_valid_locale(current_locale):
+        if not is_valid_locale(current_locale) and current_locale != PSEUDO_LANGUAGE:
             current_locale = DEFAULT_LOCALE
 
         return current_locale

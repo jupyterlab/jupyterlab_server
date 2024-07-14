@@ -321,16 +321,20 @@ def get_language_packs(display_locale: str = DEFAULT_LOCALE) -> tuple[dict, str]
             else:
                 invalid_locales.append(locale_)
 
-        display_locale = display_locale if display_locale in valid_locales else DEFAULT_LOCALE
+        display_locale_ = display_locale if display_locale in valid_locales else DEFAULT_LOCALE
         locales = {
             DEFAULT_LOCALE: {
-                "displayName": get_display_name(DEFAULT_LOCALE, display_locale),
+                "displayName": (
+                    get_display_name(DEFAULT_LOCALE, display_locale_)
+                    if display_locale != PSEUDO_LANGUAGE
+                    else "Default"
+                ),
                 "nativeName": get_display_name(DEFAULT_LOCALE, DEFAULT_LOCALE),
             }
         }
         for locale_ in valid_locales:
             locales[locale_] = {
-                "displayName": get_display_name(locale_, display_locale),
+                "displayName": get_display_name(locale_, display_locale_),
                 "nativeName": get_display_name(locale_, locale_),
             }
 
@@ -340,11 +344,15 @@ def get_language_packs(display_locale: str = DEFAULT_LOCALE) -> tuple[dict, str]
                 locales[PSEUDO_LANGUAGE] = {
                     "displayName": "Pseudo-language",
                     # Trick to ensure the proper language is selected in the language menu
-                    "nativeName": "to translate the UI"
-                    if display_locale != PSEUDO_LANGUAGE
-                    else "Pseudo-language",
+                    "nativeName": (
+                        "to translate the UI"
+                        if display_locale != PSEUDO_LANGUAGE
+                        else "Pseudo-language"
+                    ),
                 }
-            messages.append(f"The following locales are invalid: {invalid_locales}!")
+            # Check again as the pseudo-language was maybe the only invalid locale
+            if invalid_locales:
+                messages.append(f"The following locales are invalid: {invalid_locales}!")
 
     return locales, "\n".join(messages)
 
