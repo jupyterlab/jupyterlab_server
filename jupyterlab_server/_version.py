@@ -7,7 +7,7 @@ store the current version info of the server.
 """
 import re
 
-__version__ = "2.27.2"
+__version__ = "2.27.3"
 
 # Build up version_info tuple for backwards compatibility
 pattern = r"(?P<major>\d+).(?P<minor>\d+).(?P<patch>\d+)(?P<rest>.*)"

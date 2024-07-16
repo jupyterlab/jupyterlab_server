@@ -2,6 +2,26 @@
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
+## 2.27.3
+
+([Full Changelog](https://github.com/jupyterlab/jupyterlab_server/compare/v2.27.2...cac303a64815e1f373acb518c783bd25787c4d40))
+
+### Bugs fixed
+
+- Fix handling language packs for pseudo language [#456](https://github.com/jupyterlab/jupyterlab_server/pull/456) ([@fcollonval](https://github.com/fcollonval))
+
+### Maintenance and upkeep improvements
+
+- Run docs on ubuntu [#455](https://github.com/jupyterlab/jupyterlab_server/pull/455) ([@blink1073](https://github.com/blink1073))
+
+### Contributors to this release
+
+([GitHub contributors page for this release](https://github.com/jupyterlab/jupyterlab_server/graphs/contributors?from=2024-05-22&to=2024-07-16&type=c))
+
+[@blink1073](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Ablink1073+updated%3A2024-05-22..2024-07-16&type=Issues) | [@fcollonval](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Afcollonval+updated%3A2024-05-22..2024-07-16&type=Issues)
+
+<!-- <END NEW CHANGELOG ENTRY> -->
+
 ## 2.27.2
 
 ([Full Changelog](https://github.com/jupyterlab/jupyterlab_server/compare/v2.27.1...348c8ea202704ad1b5d87fa4ca90ccbdd541d1db))
@@ -15,8 +35,6 @@
 ([GitHub contributors page for this release](https://github.com/jupyterlab/jupyterlab_server/graphs/contributors?from=2024-04-23&to=2024-05-22&type=c))
 
 [@krassowski](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Akrassowski+updated%3A2024-04-23..2024-05-22&type=Issues)
-
-<!-- <END NEW CHANGELOG ENTRY> -->
 
 ## 2.27.1
 
