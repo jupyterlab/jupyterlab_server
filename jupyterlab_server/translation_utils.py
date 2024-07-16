@@ -5,6 +5,7 @@
 Localization utilities to find available language packs and packages with
 localization data.
 """
+
 from __future__ import annotations
 
 import gettext
@@ -39,6 +40,9 @@ LC_MESSAGES_DIR = "LC_MESSAGES"
 DEFAULT_DOMAIN = "jupyterlab"
 L10N_SCHEMA_NAME = "@jupyterlab/translation-extension:plugin"
 PY37_OR_LOWER = sys.version_info[:2] <= (3, 7)
+
+# Pseudo language locale for in-context translation
+PSEUDO_LANGUAGE = "ach_UG"
 
 _default_schema_context = "schema"
 _default_settings_context = "settings"
@@ -151,7 +155,9 @@ def is_valid_locale(locale_: str) -> bool:
     - Brazilian German: "de_BR"
     """
     # Add exception for Norwegian
-    if locale_ == "no_NO":
+    if locale_ in {
+        "no_NO",
+    }:
         return True
 
     valid = False
@@ -183,8 +189,11 @@ def get_display_name(locale_: str, display_locale: str = DEFAULT_LOCALE) -> str:
     """
     locale_ = locale_ if is_valid_locale(locale_) else DEFAULT_LOCALE
     display_locale = display_locale if is_valid_locale(display_locale) else DEFAULT_LOCALE
-    loc = babel.Locale.parse(locale_)
-    display_name = loc.get_display_name(display_locale)
+    try:
+        loc = babel.Locale.parse(locale_)
+        display_name = loc.get_display_name(display_locale)
+    except babel.UnknownLocaleError:
+        display_name = display_locale
     if display_name:
         display_name = display_name[0].upper() + display_name[1:]
     return display_name  # type:ignore[return-value]
@@ -312,21 +321,38 @@ def get_language_packs(display_locale: str = DEFAULT_LOCALE) -> tuple[dict, str]
             else:
                 invalid_locales.append(locale_)
 
-        display_locale = display_locale if display_locale in valid_locales else DEFAULT_LOCALE
+        display_locale_ = display_locale if display_locale in valid_locales else DEFAULT_LOCALE
         locales = {
             DEFAULT_LOCALE: {
-                "displayName": get_display_name(DEFAULT_LOCALE, display_locale),
+                "displayName": (
+                    get_display_name(DEFAULT_LOCALE, display_locale_)
+                    if display_locale != PSEUDO_LANGUAGE
+                    else "Default"
+                ),
                 "nativeName": get_display_name(DEFAULT_LOCALE, DEFAULT_LOCALE),
             }
         }
         for locale_ in valid_locales:
             locales[locale_] = {
-                "displayName": get_display_name(locale_, display_locale),
+                "displayName": get_display_name(locale_, display_locale_),
                 "nativeName": get_display_name(locale_, locale_),
             }
 
         if invalid_locales:
-            messages.append(f"The following locales are invalid: {invalid_locales}!")
+            if PSEUDO_LANGUAGE in invalid_locales:
+                invalid_locales.remove(PSEUDO_LANGUAGE)
+                locales[PSEUDO_LANGUAGE] = {
+                    "displayName": "Pseudo-language",
+                    # Trick to ensure the proper language is selected in the language menu
+                    "nativeName": (
+                        "to translate the UI"
+                        if display_locale != PSEUDO_LANGUAGE
+                        else "Pseudo-language"
+                    ),
+                }
+            # Check again as the pseudo-language was maybe the only invalid locale
+            if invalid_locales:
+                messages.append(f"The following locales are invalid: {invalid_locales}!")
 
     return locales, "\n".join(messages)
 
@@ -351,7 +377,11 @@ def get_language_pack(locale_: str) -> tuple:
     found_packages_locales, message = get_installed_packages_locale(locale_)
     locale_data = {}
     messages = message.split("\n")
-    if not message and is_valid_locale(locale_) and locale_ in found_locales:
+    if (
+        not message
+        and (locale_ == PSEUDO_LANGUAGE or is_valid_locale(locale_))
+        and locale_ in found_locales
+    ):
         path = found_locales[locale_]
         for root, __, files in os.walk(path, topdown=False):
             for name in files:
