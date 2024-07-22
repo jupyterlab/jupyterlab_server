@@ -82,6 +82,7 @@ class ListingsHandler(APIHandler):
     # The PeriodicCallback that schedule the call to fetch_listings method.
     pc = None
 
+    @tornado.web.authenticated
     def get(self, path: str) -> None:
         """Get the listings for the extension manager."""
         self.set_header("Content-Type", "application/json")
