@@ -82,10 +82,13 @@ class LabHandler(ExtensionHandlerJinjaMixin, ExtensionHandlerMixin, JupyterHandl
         server_root = self.settings.get("server_root_dir", "")
         server_root = server_root.replace(os.sep, "/")
         base_url = self.settings.get("base_url")
+        server_app = self.settings.get("serverapp")
+        allow_setup_custom_env_variables = server_app.allow_custom_env_variables
 
         # Remove the trailing slash for compatibility with html-webpack-plugin.
         full_static_url = self.static_url_prefix.rstrip("/")
         page_config.setdefault("fullStaticUrl", full_static_url)
+        page_config.setdefault("allow_setup_custom_env_variables", allow_setup_custom_env_variables)
 
         page_config.setdefault("terminalsAvailable", terminals)
         page_config.setdefault("ignorePlugins", [])
