@@ -86,6 +86,8 @@ class LabHandler(ExtensionHandlerJinjaMixin, ExtensionHandlerMixin, JupyterHandl
         assert server_app is not None
         if server_app.allow_insecure_kernelspec_params:
             allow_insecure_kernelspec_params = server_app.allow_insecure_kernelspec_params
+        else:
+            allow_insecure_kernelspec_params = False
 
         # Remove the trailing slash for compatibility with html-webpack-plugin.
         full_static_url = self.static_url_prefix.rstrip("/")
