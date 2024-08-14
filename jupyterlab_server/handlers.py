@@ -83,7 +83,11 @@ class LabHandler(ExtensionHandlerJinjaMixin, ExtensionHandlerMixin, JupyterHandl
         server_root = server_root.replace(os.sep, "/")
         base_url = self.settings.get("base_url")
         server_app = self.settings.get("serverapp")
-        allow_setup_custom_env_variables = server_app.allow_setup_custom_env_variables
+        assert server_app is not None
+        if server_app.allow_insecure_kernelspec_params:
+            allow_setup_custom_env_variables = server_app.allow_setup_custom_env_variables
+        else:
+            allow_setup_custom_env_variables = False
 
         # Remove the trailing slash for compatibility with html-webpack-plugin.
         full_static_url = self.static_url_prefix.rstrip("/")
