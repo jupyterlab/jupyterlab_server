@@ -84,7 +84,7 @@ class LabHandler(ExtensionHandlerJinjaMixin, ExtensionHandlerMixin, JupyterHandl
         base_url = self.settings.get("base_url")
         server_app = self.settings.get("serverapp")
         assert server_app is not None
-        if server_app.allow_insecure_kernelspec_params:
+        if hasattr(server_app, "allow_setup_custom_env_variables"):
             allow_setup_custom_env_variables = server_app.allow_setup_custom_env_variables
         else:
             allow_setup_custom_env_variables = False
