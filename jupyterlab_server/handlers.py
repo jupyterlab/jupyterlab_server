@@ -84,7 +84,7 @@ class LabHandler(ExtensionHandlerJinjaMixin, ExtensionHandlerMixin, JupyterHandl
         base_url = self.settings.get("base_url")
         server_app = self.settings.get("serverapp")
         assert server_app is not None
-        if hasattr(server_app, 'allow_insecure_kernelspec_params'):
+        if hasattr(server_app, "allow_insecure_kernelspec_params"):
             allow_insecure_kernelspec_params = server_app.allow_insecure_kernelspec_params
         else:
             allow_insecure_kernelspec_params = False
