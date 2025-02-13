@@ -4,25 +4,24 @@
 # Distributed under the terms of the Modified BSD License.
 
 from __future__ import annotations
+
 import os
 import pathlib
-import warnings
 from functools import lru_cache
 from typing import TYPE_CHECKING, Any
 from urllib.parse import urlparse
-from jupyterlab_server .utils import _camelCase
+
 from jupyter_server.base.handlers import FileFindHandler, JupyterHandler
 from jupyter_server.extension.handler import ExtensionHandlerJinjaMixin, ExtensionHandlerMixin
 from jupyter_server.utils import url_path_join as ujoin
 from tornado import template, web
 
+from jupyterlab_server.utils import _camelCase
+
 from .config import LabConfig, get_page_config, recursive_update
-from .licenses_handler import LicensesHandler, LicensesManager
 from .settings_handler import SettingsHandler
 from .settings_utils import _get_overrides
-from .themes_handler import ThemesHandler
 from .translations_handler import TranslationsHandler
-from .workspaces_handler import WorkspacesHandler, WorkspacesManager
 
 if TYPE_CHECKING:
     from .app import LabServerApp
@@ -35,7 +34,8 @@ MASTER_URL_PATTERN = (
     r"/(?P<mode>{}|doc)(?P<workspace>/workspaces/[a-zA-Z0-9\-\_]+)?(?P<tree>/tree/.*)?"
 )
 
-DEFAULT_TEMPLATE = template.Template("""
+DEFAULT_TEMPLATE = template.Template(
+    """
 <!DOCTYPE html>
 <html>
 <head>
@@ -47,7 +47,8 @@ DEFAULT_TEMPLATE = template.Template("""
 <p>In "{{path}}"</p>
 </body>
 </html>
-""")
+"""
+)
 
 
 def is_url(url: str) -> bool:
@@ -58,13 +59,16 @@ def is_url(url: str) -> bool:
     except ValueError:
         return False
     from urllib.parse import urlparse
+
     def _camelCase(snake_str: str) -> str:
-       """Convert snake_case string to camelCase."""
-    components = snake_str.split('_')
-    return components[0] + ''.join(x.title() for x in components[1:])
+        """Convert snake_case string to camelCase."""
+
+    components = snake_str.split("_")
+    return components[0] + "".join(x.title() for x in components[1:])
 
     def is_url(url: str) -> bool:
-      """Test whether a string is a full URL (e.g., https://nasa.gov)."""
+        """Test whether a string is a full URL (e.g., https://nasa.gov)."""
+
     try:
         result = urlparse(url)
         return all([result.scheme, result.netloc])
@@ -115,7 +119,9 @@ class LabHandler(ExtensionHandlerJinjaMixin, ExtensionHandlerMixin, JupyterHandl
 
         # MathJax settings
         mathjax_config = self.settings.get("mathjax_config", "TeX-AMS_HTML-full,Safe")
-        mathjax_url = self.mathjax_url or "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js"
+        mathjax_url = (
+            self.mathjax_url or "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js"
+        )
         page_config.setdefault("mathjaxConfig", mathjax_config)
         page_config.setdefault("fullMathjaxUrl", mathjax_url)
 
@@ -133,7 +139,10 @@ class LabHandler(ExtensionHandlerJinjaMixin, ExtensionHandlerMixin, JupyterHandl
                 page_config[full_name] = full_url
 
         recursive_update(
-            page_config, get_page_config(app.extra_labextensions_path + app.labextensions_path, settings_dir, logger=self.log)
+            page_config,
+            get_page_config(
+                app.extra_labextensions_path + app.labextensions_path, settings_dir, logger=self.log
+            ),
         )
 
         # Apply custom page config hook
@@ -145,7 +154,9 @@ class LabHandler(ExtensionHandlerJinjaMixin, ExtensionHandlerMixin, JupyterHandl
 
     @web.authenticated
     @web.removeslash
-    def get(self, mode: str | None = None, workspace: str | None = None, tree: str | None = None) -> None:
+    def get(
+        self, mode: str | None = None, workspace: str | None = None, tree: str | None = None
+    ) -> None:
         """Get the JupyterLab HTML page."""
         workspace = "default" if workspace is None else workspace.replace("/workspaces/", "")
         tree_path = "" if tree is None else tree.replace("/tree/", "")
@@ -190,11 +201,16 @@ def add_handlers(extension_app, handlers):
     # Handle federated lab extensions
     labextensions_path = extension_app.extra_labextensions_path + extension_app.labextensions_path
     labextensions_url = ujoin(extension_app.labextensions_url, "(.*)")
-    handlers.append((
-        labextensions_url,
-        FileFindHandler,
-        {"path": labextensions_path, "no_cache_paths": [] if extension_app.cache_files else ["/"]},
-    ))
+    handlers.append(
+        (
+            labextensions_url,
+            FileFindHandler,
+            {
+                "path": labextensions_path,
+                "no_cache_paths": [] if extension_app.cache_files else ["/"],
+            },
+        )
+    )
 
     # Handle local settings
     if extension_app.schemas_dir:
