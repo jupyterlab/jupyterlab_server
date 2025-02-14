@@ -273,7 +273,9 @@ class LicensesHandler(APIHandler):
             assert isinstance(self.manager.parent, LabServerApp)
 
         if download:
-            filename = f"{self.manager.parent.app_name.lower()}-licenses{mimetypes.guess_extension(mime)}"
+            filename = (
+                f"{self.manager.parent.app_name.lower()}-licenses{mimetypes.guess_extension(mime)}"
+            )
             self.set_attachment_header(filename)
         self.write(report)
         await self.finish(_mime_type=mime)

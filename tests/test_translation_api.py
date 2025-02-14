@@ -43,9 +43,7 @@ def setup_module(module):
 def teardown_module(module):
     """teardown any state that was previously setup."""
     for pkg in ["jupyterlab-some-package", "jupyterlab-language-pack-es_CO"]:
-        subprocess.Popen(
-            [sys.executable, "-m", "pip", "uninstall", pkg, "-y"]
-        ).communicate()
+        subprocess.Popen([sys.executable, "-m", "pip", "uninstall", pkg, "-y"]).communicate()
 
 
 @pytest.fixture(autouse=True)
