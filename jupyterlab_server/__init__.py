@@ -12,18 +12,18 @@ from .workspaces_app import WorkspaceExportApp, WorkspaceImportApp, WorkspaceLis
 from .workspaces_handler import WORKSPACE_EXTENSION, slugify
 
 __all__ = [
-    "__version__",
-    "add_handlers",
+    "WORKSPACE_EXTENSION",
     "LabConfig",
     "LabHandler",
     "LabServerApp",
     "LicensesApp",
-    "slugify",
-    "translator",
-    "WORKSPACE_EXTENSION",
     "WorkspaceExportApp",
     "WorkspaceImportApp",
     "WorkspaceListApp",
+    "__version__",
+    "add_handlers",
+    "slugify",
+    "translator",
 ]
 
 

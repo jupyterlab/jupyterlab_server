@@ -4,25 +4,29 @@
 # Distributed under the terms of the Modified BSD License.
 
 from __future__ import annotations
+
+import logging
+#define logger
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.INFO) #you can change to DEBUG, ERROR, etc.
 import os
 import pathlib
-import warnings
 from functools import lru_cache
+from operator import methodcaller
 from typing import TYPE_CHECKING, Any
 from urllib.parse import urlparse
-from jupyterlab_server .utils import _camelCase
+from tornado import template, web
+
+from jupyterlab_server.config import LabConfig, get_page_config, recursive_update
 from jupyter_server.base.handlers import FileFindHandler, JupyterHandler
 from jupyter_server.extension.handler import ExtensionHandlerJinjaMixin, ExtensionHandlerMixin
 from jupyter_server.utils import url_path_join as ujoin
-from tornado import template, web
+from jupyterlab_server.utils import _camelCase
 
 from .config import LabConfig, get_page_config, recursive_update
-from .licenses_handler import LicensesHandler, LicensesManager
 from .settings_handler import SettingsHandler
 from .settings_utils import _get_overrides
-from .themes_handler import ThemesHandler
 from .translations_handler import TranslationsHandler
-from .workspaces_handler import WorkspacesHandler, WorkspacesManager
 
 if TYPE_CHECKING:
     from .app import LabServerApp
@@ -31,9 +35,7 @@ if TYPE_CHECKING:
 # Module globals
 # -----------------------------------------------------------------------------
 
-MASTER_URL_PATTERN = (
-    r"/(?P<mode>{}|doc)(?P<workspace>/workspaces/[a-zA-Z0-9\-\_]+)?(?P<tree>/tree/.*)?"
-)
+MASTER_URL_PATTERN = r"/(?P<mode>{}|doc)(?P<workspace>/workspaces/[a-zA-Z0-9\-\_]+)?(?P<tree>/tree/.*)?"
 
 DEFAULT_TEMPLATE = template.Template("""
 <!DOCTYPE html>
@@ -57,31 +59,29 @@ def is_url(url: str) -> bool:
         return all([result.scheme, result.netloc])
     except ValueError:
         return False
-    from urllib.parse import urlparse
-    def _camelCase(snake_str: str) -> str:
-       """Convert snake_case string to camelCase."""
+
+
+def _camelCase(snake_str: str) -> str:
+    """Convert snake_case string to camelCase."""
+    if not snake_str:
+        return ""
     components = snake_str.split('_')
     return components[0] + ''.join(x.title() for x in components[1:])
-
-    def is_url(url: str) -> bool:
-      """Test whether a string is a full URL (e.g., https://nasa.gov)."""
-    try:
-        result = urlparse(url)
-        return all([result.scheme, result.netloc])
-    except ValueError:
-        return False
 
 
 class LabHandler(ExtensionHandlerJinjaMixin, ExtensionHandlerMixin, JupyterHandler):
     """Render the JupyterLab View."""
 
-    @lru_cache
+    @staticmethod
     def get_page_config(self) -> dict[str, Any]:
         """Construct the page config object"""
-        self.application.store_id = getattr(self.application, "store_id", 0)
-        config = LabConfig()
-        app: LabServerApp = self.extensionapp
-        settings_dir = app.app_settings_dir
+
+        @lru_cache(maxsize=128)  # Apply cache inside the method
+        def cached_config():
+            config = LabConfig()
+            app = LabServerApp()
+            settings_dir = app.app_settings_dir
+            return {"config": config, "settings_dir": settings_dir}
 
         page_config = self.settings.setdefault("page_config_data", {})
         terminals = self.settings.get("terminals_available", False)
@@ -99,18 +99,19 @@ class LabHandler(ExtensionHandlerJinjaMixin, ExtensionHandlerMixin, JupyterHandl
         preferred_path = ""
         try:
             preferred_path = self.serverapp.contents_manager.preferred_dir
-        except Exception:
+        except Exception as e:
+            logger.error(f"Error fetching preferred directory: {e}")  # Log the error
             try:
-                if self.serverapp.preferred_dir and self.serverapp.preferred_dir != server_root:
-                    preferred_path = (
-                        pathlib.Path(self.serverapp.preferred_dir)
-                        .relative_to(server_root)
-                        .as_posix()
-                    )
-            except Exception:
-                pass
-        page_config["preferredPath"] = preferred_path or "/"
+                preferred_path = (
+                    pathlib.Path(self.serverapp.preferred_dir)
+                    .relative_to(server_root)
+                    .as_posix()
+                )
+            except Exception as e:
+                logger.error(f"Error processing preferred directory: {e}", exc_info=True)
+                preferred_path = None  # Set a default or handle the error properly
 
+        page_config["preferredPath"] = preferred_path
         self.application.store_id += 1
 
         # MathJax settings
@@ -120,20 +121,23 @@ class LabHandler(ExtensionHandlerJinjaMixin, ExtensionHandlerMixin, JupyterHandl
         page_config.setdefault("fullMathjaxUrl", mathjax_url)
 
         # Add app-specific settings
+        config = cached_config()["config"]
+        app = cached_config()["settings_dir"]
+
         for name in config.trait_names():
-            page_config[_camelCase(name)] = getattr(app, name)
+            page_config[_camelCase(name)] = getattr(app, name, None)
 
         # Full URLs for extensions
         for name in config.trait_names():
             if name.endswith("_url"):
                 full_name = _camelCase("full_" + name)
-                full_url = getattr(app, name)
+                full_url = getattr(app, name, "")
                 if base_url and not is_url(full_url):
                     full_url = ujoin(base_url, full_url)
                 page_config[full_name] = full_url
 
         recursive_update(
-            page_config, get_page_config(app.extra_labextensions_path + app.labextensions_path, settings_dir, logger=self.log)
+            page_config, get_page_config(app, logger=logger)
         )
 
         # Apply custom page config hook
@@ -162,10 +166,14 @@ class LabHandler(ExtensionHandlerJinjaMixin, ExtensionHandlerMixin, JupyterHandl
 class NotFoundHandler(LabHandler):
     """Handler for 404 - Page Not Found."""
 
-    @lru_cache
     def get_page_config(self) -> dict[str, Any]:
-        page_config = super().get_page_config().copy()
-        page_config["notFoundUrl"] = self.request.path
+        return self._cached_page_config()
+
+    @staticmethod
+    @lru_cache(maxsize=128)  # Use a reasonable cache size
+    def _cached_page_config() -> dict[str, Any]:
+        page_config = super(NotFoundHandler, NotFoundHandler).get_page_config().copy()
+        page_config["notFoundUrl"] = "some_default_url"
         return page_config
 
 
@@ -195,27 +203,3 @@ def add_handlers(extension_app, handlers):
         FileFindHandler,
         {"path": labextensions_path, "no_cache_paths": [] if extension_app.cache_files else ["/"]},
     ))
-
-    # Handle local settings
-    if extension_app.schemas_dir:
-        overrides, error = _get_overrides(extension_app.app_settings_dir)
-        if error:
-            extension_app.log.warning("Failed loading overrides: %s", error)
-
-        settings_config = {
-            "app_settings_dir": extension_app.app_settings_dir,
-            "schemas_dir": extension_app.schemas_dir,
-            "settings_dir": extension_app.user_settings_dir,
-            "labextensions_path": labextensions_path,
-            "overrides": overrides,
-        }
-
-        settings_path = ujoin(extension_app.settings_url, "?")
-        handlers.append((settings_path, SettingsHandler, settings_config))
-
-        setting_path = ujoin(extension_app.settings_url, "(?P<schema_name>.+)")
-        handlers.append((setting_path, SettingsHandler, settings_config))
-
-        if extension_app.translations_api_url:
-            translations_path = ujoin(extension_app.translations_api_url, "?")
-            handlers.append((translations_path, TranslationsHandler, settings_config))

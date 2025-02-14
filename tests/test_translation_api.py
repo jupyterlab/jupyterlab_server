@@ -44,12 +44,12 @@ def teardown_module(module):
     """teardown any state that was previously setup."""
     for pkg in ["jupyterlab-some-package", "jupyterlab-language-pack-es_CO"]:
         subprocess.Popen(
-            [sys.executable, "-m", "pip", "uninstall", pkg, "-y"]  # noqa: S603
+            [sys.executable, "-m", "pip", "uninstall", pkg, "-y"]
         ).communicate()
 
 
 @pytest.fixture(autouse=True)
-def before_after_test(schemas_dir, user_settings_dir, labserverapp):  # noqa: PT004
+def before_after_test(schemas_dir, user_settings_dir, labserverapp):
     # Code that will run before any test.
 
     # Copy the schema files.

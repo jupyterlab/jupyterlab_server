@@ -96,7 +96,7 @@ class TornadoOpenAPIRequest:
     @property
     def method(self) -> str:
         method = self.request.method
-        return method and method.lower() or ""
+        return (method and method.lower()) or ""
 
     @property
     def body(self) -> bytes | None:
