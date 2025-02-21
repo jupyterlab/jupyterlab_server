@@ -33,7 +33,7 @@ JUPYTERLAB_LANGUAGEPACK_ENTRY = "jupyterlab.languagepack"
 JUPYTERLAB_LOCALE_ENTRY = "jupyterlab.locale"
 
 # Constants
-DEFAULT_LOCALE = "en"
+DEFAULT_LOCALE = "en_US"
 SYS_LOCALE = locale.getlocale()[0] or DEFAULT_LOCALE
 LOCALE_DIR = "locale"
 LC_MESSAGES_DIR = "LC_MESSAGES"
