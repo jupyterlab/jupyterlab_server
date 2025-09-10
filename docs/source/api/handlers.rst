@@ -30,13 +30,14 @@ Example (in a server extension ``load_jupyter_server_extension`` or ``_load_jupy
 .. code-block:: python
 
         def my_page_config_hook(handler, page_config: dict) -> dict:
-                page_config.setdefault('extraKeys', {})
-                page_config['extraKeys']['hello'] = 'world'
-                return page_config
+            page_config.setdefault("extraKeys", {})
+            page_config["extraKeys"]["hello"] = "world"
+            return page_config
+
 
         def load_jupyter_server_extension(serverapp):
-                web_app = serverapp.web_app
-                web_app.settings['page_config_hook'] = my_page_config_hook
+            web_app = serverapp.web_app
+            web_app.settings["page_config_hook"] = my_page_config_hook
 
 With this hook set, JupyterLab Server will call it during page configuration assembly, letting you inject or tweak values prior to rendering the index page.
 
