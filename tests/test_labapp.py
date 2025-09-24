@@ -59,6 +59,9 @@ async def test_page_config(labserverapp, jp_fetch):
         return p.endswith(("Dir", "Path")) or p == "serverRoot"
 
     nondirs = {k: v for k, v in page_config.items() if not ispath(k)}
+    untracked_message_types = getattr(
+        labserverapp.serverapp.kernel_manager, "untracked_message_types", None
+    )
     assert nondirs == {
         "appName": "JupyterLab Server Application",
         "appNamespace": "jupyterlab_server",
@@ -92,6 +95,7 @@ async def test_page_config(labserverapp, jp_fetch):
         "themesUrl": "/lab/api/themes",
         "translationsApiUrl": "/lab/api/translations",
         "treeUrl": "/lab/tree",
+        "untracked_message_types": untracked_message_types,
         "workspace": "default",
         "workspacesApiUrl": "/lab/api/workspaces",
         "wsUrl": "",
