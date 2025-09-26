@@ -62,7 +62,7 @@ async def test_page_config(labserverapp, jp_fetch):
     untracked_message_types = getattr(
         labserverapp.serverapp.kernel_manager, "untracked_message_types", None
     )
-    assert nondirs == {
+    expected_nondirs = {
         "appName": "JupyterLab Server Application",
         "appNamespace": "jupyterlab_server",
         "appUrl": "/lab",
@@ -95,11 +95,13 @@ async def test_page_config(labserverapp, jp_fetch):
         "themesUrl": "/lab/api/themes",
         "translationsApiUrl": "/lab/api/translations",
         "treeUrl": "/lab/tree",
-        "untracked_message_types": untracked_message_types,
         "workspace": "default",
         "workspacesApiUrl": "/lab/api/workspaces",
         "wsUrl": "",
     }
+    if untracked_message_types is not None:
+        expected_nondirs["untracked_message_types"] = untracked_message_types
+    assert nondirs == expected_nondirs
 
 
 @pytest.fixture
