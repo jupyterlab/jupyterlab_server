@@ -170,7 +170,7 @@ class LabHandler(ExtensionHandlerJinjaMixin, ExtensionHandlerMixin, JupyterHandl
         page_config["treePath"] = tree_path
 
         # Write the template with the config.
-        tpl = self.render_template("index.html", page_config=page_config)  # type:ignore[no-untyped-call]
+        tpl = self.render_template("index.html", page_config=page_config)
         self.write(tpl)
 
 
