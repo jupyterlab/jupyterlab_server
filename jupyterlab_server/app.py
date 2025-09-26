@@ -127,10 +127,10 @@ class LabServerApp(ExtensionAppJinjaMixin, LabConfig, ExtensionApp):
             untracked_message_types = getattr(
                 self.serverapp.kernel_manager, "untracked_message_types", None
             )
-        if untracked_message_types and self.serverapp:
-            web_app = self.serverapp.web_app
-            page_config_data = web_app.settings.setdefault("page_config_data", {})
-            page_config_data["untracked_message_types"] = list(untracked_message_types)
+            if untracked_message_types:
+                web_app = self.serverapp.web_app
+                page_config_data = web_app.settings.setdefault("page_config_data", {})
+                page_config_data["untracked_message_types"] = list(untracked_message_types)
 
     def initialize_templates(self) -> None:
         """Initialize templates."""
