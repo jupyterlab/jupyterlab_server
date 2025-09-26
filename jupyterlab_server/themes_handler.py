@@ -6,8 +6,9 @@ from __future__ import annotations
 
 import os
 import re
+from collections.abc import Generator
 from glob import glob
-from typing import Any, Generator
+from typing import Any
 from urllib.parse import urlparse
 
 from jupyter_server.base.handlers import FileFindHandler

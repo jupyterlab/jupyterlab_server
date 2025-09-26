@@ -17,7 +17,8 @@ import re
 import sys
 import traceback
 from functools import lru_cache
-from typing import Any, Pattern
+from re import Pattern
+from typing import Any
 
 import babel
 from packaging.version import parse as parse_version
