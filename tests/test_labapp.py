@@ -60,6 +60,7 @@ async def test_page_config(labserverapp, jp_fetch):
 
     nondirs = {k: v for k, v in page_config.items() if not ispath(k)}
     assert nondirs == {
+        "allow_insecure_kernelspec_params": False,
         "appName": "JupyterLab Server Application",
         "appNamespace": "jupyterlab_server",
         "appUrl": "/lab",
