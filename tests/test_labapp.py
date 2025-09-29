@@ -59,7 +59,10 @@ async def test_page_config(labserverapp, jp_fetch):
         return p.endswith(("Dir", "Path")) or p == "serverRoot"
 
     nondirs = {k: v for k, v in page_config.items() if not ispath(k)}
-    assert nondirs == {
+    untracked_message_types = getattr(
+        labserverapp.serverapp.kernel_manager, "untracked_message_types", None
+    )
+    expected_nondirs = {
         "appName": "JupyterLab Server Application",
         "appNamespace": "jupyterlab_server",
         "appUrl": "/lab",
@@ -96,6 +99,9 @@ async def test_page_config(labserverapp, jp_fetch):
         "workspacesApiUrl": "/lab/api/workspaces",
         "wsUrl": "",
     }
+    if untracked_message_types is not None:
+        expected_nondirs["untracked_message_types"] = untracked_message_types
+    assert nondirs == expected_nondirs
 
 
 @pytest.fixture
