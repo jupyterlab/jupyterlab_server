@@ -36,6 +36,7 @@ dependencies = [
   "jupyter_server>=1.21,<3",
   "packaging>=21.3",
   "requests>=2.31",
+  "jupyter_core>=5.9.1;python_version>=\"3.14\"",
 ]
 
 [[project.authors]]
@@ -71,7 +72,8 @@ openapi = [
 test = [
   "hatch",
   "ipykernel",
-  "pytest-jupyter[server]>=0.6.2",
+  "pytest-jupyter[server]>=0.6.2;python_version<\"3.14\"",
+  "pytest-jupyter[server]>=0.11.0;python_version>=\"3.14\"",
   "openapi_core~=0.18.0",
   "openapi-spec-validator>=0.6.0,<0.8.0",
   "sphinxcontrib_spelling",

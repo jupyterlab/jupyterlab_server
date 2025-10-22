@@ -167,6 +167,7 @@ def maybe_patch_ioloop() -> None:
         sys.platform.startswith("win")
         and tornado.version_info < (6, 1)
         and sys.version_info >= (3, 8)
+        and sys.version_info < (3, 14)
     ):
         try:
             from asyncio import WindowsProactorEventLoopPolicy, WindowsSelectorEventLoopPolicy
