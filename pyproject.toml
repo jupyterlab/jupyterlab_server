@@ -93,6 +93,7 @@ validate-bump = false
 features = ["docs"]
 [tool.hatch.envs.docs.scripts]
 build = "make -C docs html SPHINXOPTS='-W'"
+serve = "make -C docs serve"
 
 [tool.hatch.envs.test]
 features = ["test"]
