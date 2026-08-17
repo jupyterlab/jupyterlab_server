@@ -7,19 +7,22 @@ from __future__ import annotations
 import json
 import os
 import sys
+import typing
 from http.cookies import SimpleCookie
 from pathlib import Path
 from urllib.parse import parse_qs, urlparse
 
 import tornado.httpclient
 import tornado.web
-from openapi_core import V30RequestValidator, V30ResponseValidator
-from openapi_core.spec.paths import Spec
+from openapi_core import OpenAPI
 from openapi_core.validation.request.datatypes import RequestParameters
 from tornado.httpclient import HTTPRequest, HTTPResponse
 from werkzeug.datastructures import Headers, ImmutableMultiDict
 
-from jupyterlab_server.spec import get_openapi_spec
+from jupyterlab_server.spec import get_openapi_spec_dict
+
+if typing.TYPE_CHECKING:
+    from jsonschema_path import SchemaPath
 
 HERE = Path(os.path.dirname(__file__)).resolve()
 
@@ -32,7 +35,7 @@ class TornadoOpenAPIRequest:
     Converts a torando request to an OpenAPI one
     """
 
-    def __init__(self, request: HTTPRequest, spec: Spec):
+    def __init__(self, request: HTTPRequest, spec: SchemaPath):
         """Initialize the request."""
         self.request = request
         self.spec = spec
@@ -76,7 +79,7 @@ class TornadoOpenAPIRequest:
         # https://github.com/OAI/OpenAPI-Specification/issues/892
         url = None
         o = urlparse(self.request.url)
-        for path_ in self.spec["paths"]:
+        for path_ in self.spec["paths"].keys():  # noqa: SIM118
             if url:
                 continue  # type:ignore[unreachable]
             has_arg = "{" in path_
@@ -152,16 +155,13 @@ class TornadoOpenAPIResponse:
 
 def validate_request(response: HTTPResponse) -> None:
     """Validate an API request"""
-    openapi_spec = get_openapi_spec()
+    openapi = OpenAPI.from_dict(get_openapi_spec_dict())
 
-    # openapi_core 0.18 declares body, data and headers as str and Mapping in its
-    # Request and Response protocols. Tornado hands over bytes and a Headers object,
-    # and the validators read both, so the adapters above return what tornado gives.
-    request = TornadoOpenAPIRequest(response.request, openapi_spec)
-    V30RequestValidator(openapi_spec).validate(request)  # type: ignore[arg-type]
+    request = TornadoOpenAPIRequest(response.request, openapi.spec)
+    openapi.validate_request(request)
 
     torn_response = TornadoOpenAPIResponse(response)
-    V30ResponseValidator(openapi_spec).validate(request, torn_response)  # type: ignore[arg-type]
+    openapi.validate_response(request, torn_response)
 
 
 def maybe_patch_ioloop() -> None:
