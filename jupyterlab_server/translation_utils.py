@@ -17,17 +17,12 @@ import re
 import sys
 import traceback
 from functools import lru_cache
+from importlib.metadata import entry_points
 from re import Pattern
 from typing import Any
 
 import babel
 from packaging.version import parse as parse_version
-
-# See compatibility note on `group` keyword in https://docs.python.org/3/library/importlib.metadata.html#entry-points
-if sys.version_info < (3, 10):  # pragma: no cover
-    from importlib_metadata import entry_points
-else:  # pragma: no cover
-    from importlib.metadata import entry_points
 
 # Entry points
 JUPYTERLAB_LANGUAGEPACK_ENTRY = "jupyterlab.languagepack"
