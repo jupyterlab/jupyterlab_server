@@ -145,6 +145,12 @@ filterwarnings = [
   "module:unclosed <socket.socket:ResourceWarning",
   # From jupyter_client
   "module:datetime.datetime.utc:DeprecationWarning",
+  # From ServerApp._init_asyncio_patch on Windows, where Python 3.14 deprecated the
+  # event loop policy API. pytest-jupyter filters the same four for its own fixtures.
+  "ignore:'asyncio.WindowsProactorEventLoopPolicy' is deprecated:DeprecationWarning",
+  "ignore:'asyncio.WindowsSelectorEventLoopPolicy' is deprecated:DeprecationWarning",
+  "ignore:'asyncio.get_event_loop_policy' is deprecated:DeprecationWarning",
+  "ignore:'asyncio.set_event_loop_policy' is deprecated:DeprecationWarning",
 ]
 
 [tool.coverage.report]
