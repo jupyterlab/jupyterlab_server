@@ -64,8 +64,7 @@ repos:
         files: "^jupyterlab_server"
         stages: [manual]
         args: ["--install-types", "--non-interactive"]
-        additional_dependencies:
-          [
+        additional_dependencies: [
             "traitlets>=5.3",
             "jupyter_server>=2.10.1",
             # same range as the test extra: 0.20 removed openapi_core.spec.paths
