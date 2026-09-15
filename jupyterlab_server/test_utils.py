@@ -154,11 +154,14 @@ def validate_request(response: HTTPResponse) -> None:
     """Validate an API request"""
     openapi_spec = get_openapi_spec()
 
+    # openapi_core 0.18 declares body, data and headers as str and Mapping in its
+    # Request and Response protocols. Tornado hands over bytes and a Headers object,
+    # and the validators read both, so the adapters above return what tornado gives.
     request = TornadoOpenAPIRequest(response.request, openapi_spec)
-    V30RequestValidator(openapi_spec).validate(request)
+    V30RequestValidator(openapi_spec).validate(request)  # type: ignore[arg-type]
 
     torn_response = TornadoOpenAPIResponse(response)
-    V30ResponseValidator(openapi_spec).validate(request, torn_response)
+    V30ResponseValidator(openapi_spec).validate(request, torn_response)  # type: ignore[arg-type]
 
 
 def maybe_patch_ioloop() -> None:

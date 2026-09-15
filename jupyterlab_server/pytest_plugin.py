@@ -8,9 +8,10 @@ import json
 import os
 import os.path as osp
 import shutil
+from collections.abc import Callable
 from os.path import join as pjoin
 from pathlib import Path
-from typing import Any, Callable
+from typing import Any
 
 import pytest
 from jupyter_server.serverapp import ServerApp
