@@ -164,6 +164,11 @@ def get_page_config(
             extension["mimeExtension"] = extbuild["mimeExtension"]
         if "style" in extbuild:
             extension["style"] = extbuild["style"]
+        if "plugins" in extbuild:
+            # The plugins each exposed module provides, recorded when the
+            # extension was built. JupyterLab reads their ids to tell whether it
+            # has to load a module during the initial page load.
+            extension["plugins"] = extbuild["plugins"]
         # FIXME @experimental for plugin with no-code entrypoints.
         extension["entrypoints"] = extbuild.get("entrypoints")
         extensions.append(extension)

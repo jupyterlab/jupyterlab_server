@@ -38,3 +38,45 @@ def test_get_page_config(tmp_path, lib, extension):
         "federated_extensions": [],
         "disabledExtensions": ["bar"],
     }
+
+
+def test_get_page_config_forwards_build_metadata(tmp_path):
+    """The build metadata of a prebuilt extension reaches the page config.
+
+    JupyterLab reads `plugins` to tell whether it has to load a module during
+    the initial page load, so an entry which does not reach the page config
+    costs it that decision.
+    """
+    labext_path = [str(tmp_path / "ext")]
+    ext_dir = tmp_path / "ext" / "myextension"
+    ext_dir.mkdir(parents=True)
+    (ext_dir / "package.json").write_text(
+        json.dumps(
+            {
+                "name": "myextension",
+                "version": "0.1.0",
+                "jupyterlab": {
+                    "_build": {
+                        "load": "static/remoteEntry.abc.js",
+                        "extension": "./extension",
+                        "style": "./style",
+                        "plugins": {"./extension": [{"id": "myextension:plugin"}]},
+                    }
+                },
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    config = get_page_config(labext_path)
+
+    assert config["federated_extensions"] == [
+        {
+            "name": "myextension",
+            "load": "static/remoteEntry.abc.js",
+            "extension": "./extension",
+            "style": "./style",
+            "plugins": {"./extension": [{"id": "myextension:plugin"}]},
+            "entrypoints": None,
+        }
+    ]
