@@ -18,7 +18,12 @@ from jupyter_server.utils import url_path_join as ujoin
 class ThemesHandler(FileFindHandler):
     """A file handler that mangles local urls in CSS files."""
 
-    def initialize(
+    # tornado 6.5.9 took argument 3 of StaticFileHandler.initialize for
+    # allowed_symlink_directory; this handler, like FileFindHandler under it, has had
+    # no_cache_paths there for far longer. Harmless in practice: tornado binds these by
+    # name from the route kwargs (self.initialize(**kwargs)), so neither is ever passed
+    # positionally.
+    def initialize(  # type: ignore[override]
         self,
         path: str | list[str],
         default_filename: str | None = None,

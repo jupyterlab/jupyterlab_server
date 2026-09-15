@@ -95,7 +95,7 @@ class Process:
         quiet: bool, optional
             Whether to suppress output.
         """
-        if not isinstance(cmd, (list, tuple)):
+        if not isinstance(cmd, list | tuple):
             msg = "Command must be given as a list"  # type:ignore[unreachable]
             raise ValueError(msg)
 
