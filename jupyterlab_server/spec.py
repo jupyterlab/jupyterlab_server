@@ -9,17 +9,17 @@ import typing
 from pathlib import Path
 
 if typing.TYPE_CHECKING:
-    from openapi_core.spec.paths import Spec
+    from jsonschema_path import SchemaPath
 
 HERE = Path(os.path.dirname(__file__)).resolve()
 
 
-def get_openapi_spec() -> Spec:
+def get_openapi_spec() -> SchemaPath:
     """Get the OpenAPI spec object."""
-    from openapi_core.spec.paths import Spec
+    from openapi_core import OpenAPI
 
     openapi_spec_dict = get_openapi_spec_dict()
-    return Spec.from_dict(openapi_spec_dict)  # type:ignore[arg-type]
+    return OpenAPI.from_dict(openapi_spec_dict).spec
 
 
 def get_openapi_spec_dict() -> dict[str, typing.Any]:
