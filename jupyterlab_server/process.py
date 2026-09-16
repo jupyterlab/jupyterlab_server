@@ -8,9 +8,9 @@ import atexit
 import logging
 import os
 import re
+import shlex
 import signal
 import subprocess
-import sys
 import threading
 import time
 import weakref
@@ -25,15 +25,9 @@ try:
 except ImportError:
     pty = None  # type:ignore[assignment]
 
-if sys.platform == "win32":
-    list2cmdline = subprocess.list2cmdline
-else:
 
-    def list2cmdline(cmd_list: list[str]) -> str:
-        """Shim for list2cmdline on posix."""
-        import shlex
-
-        return " ".join(map(shlex.quote, cmd_list))
+# for backward compatibility
+list2cmdline = shlex.join
 
 
 def which(command: str, env: dict[str, str] | None = None) -> str:
@@ -106,7 +100,7 @@ class Process:
         self.logger = logger or self.get_log()
         self._last_line = ""
         if not quiet:
-            self.logger.info("> %s", list2cmdline(cmd))
+            self.logger.info("> %s", shlex.join(cmd))
         self.cmd = cmd
 
         kwargs = {}
