@@ -97,6 +97,8 @@ html_context = {
 # so disable
 numpydoc_show_class_members = False
 
+copybutton_prompt_text = "$ "
+
 config_header = """\
 .. _api-full-config:
 
