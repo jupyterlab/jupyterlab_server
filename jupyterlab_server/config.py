@@ -314,8 +314,8 @@ class LabConfig(HasTraits):
         help="Whether getting a relative (False) or absolute (True) path when copying a path.",
     ).tag(config=True)
 
-    @default("template_dir")
-    def _default_template_dir(self) -> str:
+    @default("templates_dir")
+    def _default_templates_dir(self) -> str:
         return DEFAULT_TEMPLATE_PATH
 
     @default("labextensions_url")

@@ -5,11 +5,13 @@
 """
 
 import json
+import os
 import re
 from pathlib import Path
 
 import pytest
 import tornado.httpclient
+from jupyter_server.base.handlers import FileFindHandler
 
 from jupyterlab_server.test_utils import expected_http_error
 
@@ -59,8 +61,10 @@ async def test_page_config(labserverapp, jp_fetch):
         return p.endswith(("Dir", "Path")) or p == "serverRoot"
 
     nondirs = {k: v for k, v in page_config.items() if not ispath(k)}
-    assert nondirs == {
-        "allow_insecure_kernelspec_params": False,
+    untracked_message_types = getattr(
+        labserverapp.serverapp.kernel_manager, "untracked_message_types", None
+    )
+    expected_nondirs = {
         "appName": "JupyterLab Server Application",
         "appNamespace": "jupyterlab_server",
         "appUrl": "/lab",
@@ -96,7 +100,11 @@ async def test_page_config(labserverapp, jp_fetch):
         "workspace": "default",
         "workspacesApiUrl": "/lab/api/workspaces",
         "wsUrl": "",
+        "allow_insecure_kernelspec_params": False,
     }
+    if untracked_message_types is not None:
+        expected_nondirs["untracked_message_types"] = untracked_message_types
+    assert nondirs == expected_nondirs
 
 
 @pytest.fixture
@@ -148,3 +156,19 @@ async def test_404(notebooks, jp_fetch):
     with pytest.raises(tornado.httpclient.HTTPClientError) as e:
         await jp_fetch("foo")
     assert expected_http_error(e, 404)
+
+
+@pytest.mark.skipif(os.name == "nt", reason="symlinks need extra permissions on Windows")
+@pytest.mark.skipif(
+    tornado.version_info >= (6, 5, 9) and not hasattr(FileFindHandler, "follow_dir_symlinks"),
+    reason="tornado >= 6.5.9 serves a symlinked extension only with follow_dir_symlinks support",
+)
+async def test_symlinked_labextension(labserverapp, labextensions_dir, tmp_path, jp_fetch):
+    # `jupyter labextension develop` links the extension in from its source tree
+    src = tmp_path / "ext-src" / "dev-ext"
+    (src / "static").mkdir(parents=True)
+    (src / "static" / "remoteEntry.abc123.js").write_text("entry")
+    os.symlink(src, labextensions_dir / "dev-ext")
+
+    r = await jp_fetch("lab", "extensions", "dev-ext", "static", "remoteEntry.abc123.js")
+    assert r.code == 200

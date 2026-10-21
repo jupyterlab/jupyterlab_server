@@ -2,6 +2,54 @@
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
+## 2.28.1
+
+([Full Changelog](https://github.com/jupyterlab/jupyterlab_server/compare/v2.28.0...490fe78389b2f8e36b21d6759f07e3ef09cd8d8b))
+
+### Maintenance and upkeep improvements
+
+- Fix CI, bump min Python version to 3.10 [#481](https://github.com/jupyterlab/jupyterlab_server/pull/481) ([@krassowski](https://github.com/krassowski), [@andrii-i](https://github.com/andrii-i))
+- Add regression test for serving symlinked labextensions [#480](https://github.com/jupyterlab/jupyterlab_server/pull/480) ([@andrii-i](https://github.com/andrii-i), [@krassowski](https://github.com/krassowski))
+- Fix develop extensions feature with tornado 6.5.9+ [#479](https://github.com/jupyterlab/jupyterlab_server/pull/479) ([@krassowski](https://github.com/krassowski), [@andrii-i](https://github.com/andrii-i))
+
+### Contributors to this release
+
+The following people contributed discussions, new ideas, code and documentation contributions, and review.
+See [our definition of contributors](https://github-activity.readthedocs.io/en/latest/use/#how-does-this-tool-define-contributions-in-the-reports).
+
+([GitHub contributors page for this release](https://github.com/jupyterlab/jupyterlab_server/graphs/contributors?from=2025-10-22&to=2026-09-15&type=c))
+
+@andrii-i ([activity](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Aandrii-i+updated%3A2025-10-22..2026-09-15&type=Issues)) | @krassowski ([activity](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Akrassowski+updated%3A2025-10-22..2026-09-15&type=Issues))
+
+<!-- <END NEW CHANGELOG ENTRY> -->
+
+## 2.28.0
+
+([Full Changelog](https://github.com/jupyterlab/jupyterlab_server/compare/v2.27.3...0cc8ebb4371cc481be90532d1486f1c4d7d2ebdc))
+
+### Enhancements made
+
+- Add `untracked_message_types` to Page Config [#471](https://github.com/jupyterlab/jupyterlab_server/pull/471) ([@Darshan808](https://github.com/Darshan808))
+
+### Bugs fixed
+
+- Fix typo in default for template directory traitlet (`template_dir` → `templates_dir`) [#463](https://github.com/jupyterlab/jupyterlab_server/pull/463) ([@krassowski](https://github.com/krassowski))
+- Add `@web.authenticated` for `ListingsHandler`'s `GET` method [#457](https://github.com/jupyterlab/jupyterlab_server/pull/457) ([@krassowski](https://github.com/krassowski))
+
+### Maintenance and upkeep improvements
+
+- Fix CI Failures [#472](https://github.com/jupyterlab/jupyterlab_server/pull/472) ([@Darshan808](https://github.com/Darshan808))
+
+### Documentation improvements
+
+- Add documentation for `page_config_hook` [#469](https://github.com/jupyterlab/jupyterlab_server/pull/469) ([@jtpio](https://github.com/jtpio))
+
+### Contributors to this release
+
+([GitHub contributors page for this release](https://github.com/jupyterlab/jupyterlab_server/graphs/contributors?from=2024-07-16&to=2025-10-22&type=c))
+
+[@Darshan808](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3ADarshan808+updated%3A2024-07-16..2025-10-22&type=Issues) | [@jtpio](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Ajtpio+updated%3A2024-07-16..2025-10-22&type=Issues) | [@krassowski](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Akrassowski+updated%3A2024-07-16..2025-10-22&type=Issues)
+
 ## 2.27.3
 
 ([Full Changelog](https://github.com/jupyterlab/jupyterlab_server/compare/v2.27.2...cac303a64815e1f373acb518c783bd25787c4d40))
@@ -19,8 +67,6 @@
 ([GitHub contributors page for this release](https://github.com/jupyterlab/jupyterlab_server/graphs/contributors?from=2024-05-22&to=2024-07-16&type=c))
 
 [@blink1073](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Ablink1073+updated%3A2024-05-22..2024-07-16&type=Issues) | [@fcollonval](https://github.com/search?q=repo%3Ajupyterlab%2Fjupyterlab_server+involves%3Afcollonval+updated%3A2024-05-22..2024-07-16&type=Issues)
-
-<!-- <END NEW CHANGELOG ENTRY> -->
 
 ## 2.27.2
 

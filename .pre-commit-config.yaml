@@ -64,16 +64,15 @@ repos:
         files: "^jupyterlab_server"
         stages: [manual]
         args: ["--install-types", "--non-interactive"]
-        additional_dependencies:
-          [
+        additional_dependencies: [
             "traitlets>=5.3",
             "jupyter_server>=2.10.1",
-            "openapi_core",
+            # same range as the test extra: 0.20 removed openapi_core.spec.paths
+            "openapi_core~=0.18.0",
             "json5",
             "pytest",
             "werkzeug",
             "ruamel.yaml",
-            "importlib_metadata",
           ]
 
   - repo: https://github.com/astral-sh/ruff-pre-commit
