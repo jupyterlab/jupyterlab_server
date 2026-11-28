@@ -14,7 +14,7 @@ from jsonschema import Draft7Validator as Validator
 from jsonschema import ValidationError
 from jupyter_server import _tz as tz
 from jupyter_server.base.handlers import APIHandler
-from jupyter_server.services.config.manager import ConfigManager, recursive_update
+from jupyter_server.services.config.manager import ConfigManager
 from tornado import web
 
 from .translation_utils import (
@@ -233,6 +233,17 @@ def _list_settings(
     return (settings_list, warnings)
 
 
+def _recursive_update(target: dict[str, Any], new: dict[str, Any]) -> None:
+    """Recursively update one dictionary using another, preserving None values."""
+    for key, value in new.items():
+        if isinstance(value, dict):
+            if not isinstance(target.get(key), dict):
+                target[key] = {}
+            _recursive_update(target[key], value)
+        else:
+            target[key] = value
+
+
 def _override(
     schema_name: str, schema: dict[str, Any], overrides: dict[str, Any]
 ) -> dict[str, Any]:
@@ -243,8 +254,8 @@ def _override(
             if key in schema["properties"]:
                 new_defaults = schema["properties"][key]["default"]
                 # If values for defaults are dicts do a recursive update
-                if isinstance(new_defaults, dict):
-                    recursive_update(new_defaults, defaults[key])
+                if isinstance(new_defaults, dict) and isinstance(defaults[key], dict):
+                    _recursive_update(new_defaults, defaults[key])
                 else:
                     new_defaults = defaults[key]
 
@@ -321,7 +332,7 @@ def _get_overrides(app_settings_dir: str) -> tuple[dict[str, Any], str]:
                 else:
                     path_overrides = json.load(fid)
                 for plugin_id, config in path_overrides.items():
-                    recursive_update(overrides.setdefault(plugin_id, {}), config)
+                    _recursive_update(overrides.setdefault(plugin_id, {}), config)
             except Exception as e:
                 error = e  # type:ignore[assignment]
 
@@ -330,7 +341,7 @@ def _get_overrides(app_settings_dir: str) -> tuple[dict[str, Any], str]:
     cm = ConfigManager(config_dir_name="labconfig")
 
     for plugin_id, config in cm.get("default_setting_overrides").items():  # type:ignore[no-untyped-call]
-        recursive_update(overrides.setdefault(plugin_id, {}), config)
+        _recursive_update(overrides.setdefault(plugin_id, {}), config)
 
     return overrides, error
 
