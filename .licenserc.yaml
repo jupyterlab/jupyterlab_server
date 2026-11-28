@@ -20,4 +20,4 @@ header:
     - "jupyterlab_server/test_data"
     - "jupyterlab_server/py.typed"
 
-  comment: on-failure
+  comment: never
