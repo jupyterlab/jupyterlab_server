@@ -100,6 +100,7 @@ async def test_page_config(labserverapp, jp_fetch):
         "workspace": "default",
         "workspacesApiUrl": "/lab/api/workspaces",
         "wsUrl": "",
+        "allow_insecure_kernelspec_params": False,
     }
     if untracked_message_types is not None:
         expected_nondirs["untracked_message_types"] = untracked_message_types
